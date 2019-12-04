@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - node
+
+os:
+  - linux
+
+stages:
+  - name: test
+
+jobs:
+  include:
+    - name: 'Tests'
+      stage: test
+      script:
+        - echo "done"
