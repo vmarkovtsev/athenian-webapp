@@ -7,10 +7,15 @@ os:
 
 stages:
   - name: test
+  - name: build
 
 jobs:
   include:
     - name: 'Tests'
       stage: test
       script:
-        - echo "done"
+        - yarn test
+    - name: 'Build'
+      stage: build
+      script:
+        - yarn build
