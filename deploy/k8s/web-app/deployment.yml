@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app-deployment
+  namespace: web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      namespace: web-app
+      labels:
+        app: web-app
+    spec:
+      containers:
+        - name: web-app-server
+          # NOTE: this image is used only during the initial deployment
+          # in the future version controller will change only `image` field during the updates
+          image: gcr.io/athenian-1/web-app:v1
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80

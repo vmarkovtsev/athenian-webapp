@@ -5,11 +5,19 @@ node_js:
 os:
   - linux
 
+cache:
+  directories:
+    - "$HOME/google-cloud-sdk/"
+
+env:
+  global:
+    - GOOGLE_DOCKER_IMAGE=gcr.io/athenian-1/web-app
+
 stages:
   - name: test
   - name: build
   - name: deploy
-    if: branch = master AND type = push
+    if: branch = master AND type != pull_request
 
 jobs:
   fast_finish: true
@@ -23,7 +31,16 @@ jobs:
       script:
         - yarn build
     - stage: deploy
-      name: 'Deploy Athenian Webapp'
+      name: 'Deploy App'
       script:
-        - docker build --tag=athenian-app:$TRAVIS_COMMIT .
-        #- docker push athenian-app:$TRAVIS_COMMIT
+        - gcloud version || true
+        - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com | bash; fi
+        # Add gcloud to $PATH
+        - source /home/travis/google-cloud-sdk/path.bash.inc
+        - gcloud version
+        # Login to GCP
+        - echo ${GOOGLE_CREDENTIALS} | base64 --decode > google-credentials.json
+        - gcloud -q auth activate-service-account --key-file google-credentials.json
+        - gcloud config set project ${GOOGLE_PROJECT}
+        # Push
+        - ./deploy/deploy.sh ${GOOGLE_DOCKER_IMAGE}:${TRAVIS_BRANCH}-${TRAVIS_COMMIT:0:7}
