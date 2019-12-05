@@ -10,12 +10,13 @@ stages:
   - name: build
 
 jobs:
+  fast_finish: true
   include:
-    - name: 'Tests'
-      stage: test
+    - stage: test
+      name: 'Frontend Tests'
       script:
         - yarn test
-    - name: 'Build'
-      stage: build
+    - stage: build
+      name: 'Frontend Build'
       script:
         - yarn build
