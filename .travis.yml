@@ -8,6 +8,8 @@ os:
 stages:
   - name: test
   - name: build
+  - name: deploy
+    if: branch = master AND type = push
 
 jobs:
   fast_finish: true
@@ -20,3 +22,8 @@ jobs:
       name: 'Frontend Build'
       script:
         - yarn build
+    - stage: deploy
+      name: 'Deploy Athenian Webapp'
+      script:
+        - docker build --tag=athenian-app:$TRAVIS_COMMIT .
+        #- docker push athenian-app:$TRAVIS_COMMIT
