@@ -1,0 +1,11 @@
+/.git
+/.github
+/build
+/docs
+/node_modules
+.dockerignore
+.gitignore
+Dockerfile
+MAINTAINERS
+README.md
+.travis.yml
