@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: web-app-certificate
+  namespace: web-app
+spec:
+  domains:
+    - owl.athenian.co
