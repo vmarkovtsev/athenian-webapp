@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import logo from './images/logos/logo-transparent.png';
 
-import Example from './components/charts/Example';
 import ExampleCustomized from './components/charts/ExampleCustomized';
+import PipelineCard from './components/pipeline/PipelineCard';
 
 const getData = () => [
   {x: 0, y: 10*Math.random()},
@@ -89,22 +89,19 @@ export default function() {
         </div>
 
         <div className="row mb-4">
-          { pipeline.map((card, i) =>
-            <div className="col-md-2" key={ i }>
-              <div className="card shadow py-2">
-                <div className="card-body">
-                  <div className="row no-gutters align-items-center">
-                    <div className="col mr-2">
-                      <div className="text-xs font-weight-bold text-uppercase mb-1">{ card.title }</div>
-                      <div className="row no-gutters align-items-center">
-                        <Example data={ pipelineData } color={ card.color } />
-                      </div>
-                    </div>
-                  </div>
+          {
+            pipeline.map(
+              (card, i) =>
+                <div className="col-md-2" key={ i }>
+                  <PipelineCard
+                    title={ card.title }
+                    color={ card.color }
+                    data={ pipelineData }
+                  >
+                  </PipelineCard>
                 </div>
-              </div>
-            </div>
-          ) }
+            )
+          }
         </div>
 
         <div className="row mb-4">
