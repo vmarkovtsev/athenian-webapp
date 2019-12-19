@@ -1,3 +1,6 @@
+# Package configuration
+PROJECT = athenian-webapp
+
 CI_REPOSITORY ?= https://github.com/athenianco/ci
 CI_BRANCH ?= master
 CI_PATH ?= .ci
