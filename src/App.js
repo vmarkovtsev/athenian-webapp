@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import logo from './images/logos/logo-transparent.png';
 
-import Example from './components/charts/Example';
-import ExampleCustomized from './components/charts/ExampleCustomized';
+import Pipeline from './components/pipeline/Pipeline';
 
 const getData = () => [
   {x: 0, y: 10*Math.random()},
@@ -18,41 +17,50 @@ const getData = () => [
   {x: 9, y: 10*Math.random()}
 ];
 
-const addNew = data => data.map((_, i) => {
-  return {
-    x: i,
-    y: data[i+1] ? data[i+1]['y'] : 10*Math.random()
-  };
-});
-
-const pipeline = [
-  {title: 'PR created', color: '#FF7D3A'},
-  {title: 'Work in progress', color: '#FA1D62'},
-  {title: 'first review', color: '#62C2DF'},
-  {title: 'approval', color: '#9460DA'},
-  {title: 'PR merged', color: '#FF7D3A'},
-  {title: 'release', color: '#62C2DF'},
-];
-
-const wipStage = [
+const sampleCharts = [
   {title: 'Time to Commit in Base Branch', color: '#62C2DF'},
   {title: 'Time to Release', color: '#FA1D62'},
   {title: 'Merged Pull Request', color: '#FF7D3A'},
 ];
 
+const pipeline = [
+  {
+    tab: {title: 'PR created', color: '#FF7D3A'},
+    body: {charts: sampleCharts}
+  },
+  {
+    tab: {title: 'Work in progress', color: '#FA1D62'},
+    body: {charts: sampleCharts}
+  },
+  {
+    tab: {title: 'first review', color: '#62C2DF'},
+    body: {charts: sampleCharts}
+  },
+  {
+    tab: {title: 'approval', color: '#9460DA'},
+    body: {charts: sampleCharts}
+  },
+  {
+    tab: {title: 'PR merged', color: '#FF7D3A'},
+    body: {charts: sampleCharts}
+  },
+  {
+    tab: {title: 'release', color: '#62C2DF'},
+    body: {charts: sampleCharts}
+  },
+];
+
+
 export default function() {
-  const [pipelineData] = useState(getData());
-  const [data, setData] = useState(getData());
 
-  useEffect(() => {
-    const updater = window.setInterval(() => {
-      setData(old => addNew(old));
-    }, 1000);
-
-    return () => {
-      window.clearInterval(updater);
+  const data = pipeline.map((stage, i) => {
+    return {
+      tab: {...stage.tab, data: getData()},
+      body: {charts: stage.body.charts.map(c => {
+        return {...c, title:c.title + ' ' + i, data: getData()}
+      }) }
     }
-  }, []);
+  });
 
   return (
     <React.StrictMode>
@@ -84,43 +92,7 @@ export default function() {
 
       <div className="container">
 
-        <div className="d-sm-flex align-items-center justify-content-between mb-4">
-          <h1 className="h3 mb-0 text-gray-800">Lead Time</h1>
-        </div>
-
-        <div className="row mb-4">
-          { pipeline.map((card, i) =>
-            <div className="col-md-2" key={ i }>
-              <div className="card shadow py-2">
-                <div className="card-body">
-                  <div className="row no-gutters align-items-center">
-                    <div className="col mr-2">
-                      <div className="text-xs font-weight-bold text-uppercase mb-1">{ card.title }</div>
-                      <div className="row no-gutters align-items-center">
-                        <Example data={ pipelineData } color={ card.color } />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) }
-        </div>
-
-        <div className="row mb-4">
-          { wipStage.map((card, i) =>
-            <div className="col-lg-4" key={ i }>
-              <div className="card shadow">
-                <div className="card-header">
-                { card.title }
-                </div>
-                <div className="card-body">
-                  <ExampleCustomized data={ data } color={ card.color } />
-                </div>
-              </div>
-            </div>
-          ) }
-        </div>
+        <Pipeline pipeline={ data }></Pipeline>
 
       </div>
 
