@@ -10,7 +10,7 @@ class PipelineCard extends React.Component {
     const data = this.props.data;
 
     return (
-      <div className="card shadow py-2" onClick={ this.props.onClick }>
+      <div className={ 'card shadow py-2 ' + (this.props.active ? 'active' : '') } onClick={ this.props.onClick }>
         <div className="card-body">
           <div className="row no-gutters align-items-center">
             <div className="col mr-2">

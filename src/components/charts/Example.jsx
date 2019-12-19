@@ -14,7 +14,7 @@ export default function(props) {
   const key = Math.random().toString(36).substring(2, 15);
 
   return (
-    <div style={{background:'white'}}>
+    <div style={{background:'transparent'}}>
       <XYPlot height={100} width={120}>
           <GradientDefs>
             <linearGradient id={ 'CoolGradient-' + key } x1="0" x2="0" y1="0" y2="1">

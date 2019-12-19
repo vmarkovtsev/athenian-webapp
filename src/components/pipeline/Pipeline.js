@@ -27,6 +27,7 @@ class Pipeline extends React.Component {
                   color={ card.tab.color }
                   data={ card.tab.data }
                   onClick={(e) => this.onPipelineCardClick(i)}
+                  active={ this.state.activeCard === i }
                 >
                 </PipelineCard>
               </div>

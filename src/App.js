@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import logo from './images/logos/logo-transparent.png';
 
@@ -16,13 +16,6 @@ const getData = () => [
   {x: 8, y: 10*Math.random()},
   {x: 9, y: 10*Math.random()}
 ];
-
-const addNew = data => data.map((_, i) => {
-  return {
-    x: i,
-    y: data[i+1] ? data[i+1]['y'] : 10*Math.random()
-  };
-});
 
 const sampleCharts = [
   {title: 'Time to Commit in Base Branch', color: '#62C2DF'},
@@ -59,28 +52,15 @@ const pipeline = [
 
 
 export default function() {
-  const [pipelineData] = useState(getData());
-  const [data, setData] = useState(getData());
 
-  pipeline.map(step => {
-    step.tab.data = pipelineData;
-    return;
+  const data = pipeline.map((stage, i) => {
+    return {
+      tab: {...stage.tab, data: getData()},
+      body: {charts: stage.body.charts.map(c => {
+        return {...c, title:c.title + ' ' + i, data: getData()}
+      }) }
+    }
   });
-
-  sampleCharts.map(card => {
-    card.data = data;
-    return;
-  });
-
-  useEffect(() => {
-    const updater = window.setInterval(() => {
-      setData(old => addNew(old));
-    }, 1000);
-
-    return () => {
-      window.clearInterval(updater);
-    };
-  }, []);
 
   return (
     <React.StrictMode>
@@ -112,7 +92,7 @@ export default function() {
 
       <div className="container">
 
-        <Pipeline pipeline={ pipeline }></Pipeline>
+        <Pipeline pipeline={ data }></Pipeline>
 
       </div>
 
