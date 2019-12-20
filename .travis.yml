@@ -12,6 +12,7 @@ cache:
 env:
   global:
     - GOOGLE_DOCKER_IMAGE=gcr.io/athenian-1/web-app
+    - IMAGE_BRANCH_COMMIT=${GOOGLE_DOCKER_IMAGE}:${TRAVIS_BRANCH}-${TRAVIS_COMMIT:0:7}
 
 stages:
   - name: test
@@ -33,4 +34,6 @@ jobs:
     - stage: deploy
       name: 'Deploy App'
       script:
-        - IMAGE=${GOOGLE_DOCKER_IMAGE}:${TRAVIS_BRANCH}-${TRAVIS_COMMIT:0:7} make deploy
+        - IMAGE=${IMAGE_BRANCH_COMMIT} make deploy
+        - docker tag ${IMAGE_BRANCH_COMMIT} ${GOOGLE_DOCKER_IMAGE}:latest
+        - IMAGE=${GOOGLE_DOCKER_IMAGE}:latest make docker-push
