@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Example from '../charts/Example';
+import CleanAreaChart from '../charts/CleanAreaChart';
 
 class PipelineCard extends React.Component {
 
@@ -16,7 +16,8 @@ class PipelineCard extends React.Component {
             <div className="col mr-2">
               <div className="text-xs font-weight-bold text-uppercase mb-1">{ title }</div>
               <div className="row no-gutters align-items-center">
-                <Example data={ data } color={ color } />
+                <PipelineCardMiniChart data={ data } color={ color }
+                                       width={ 120 } height={ 100 }/>
               </div>
             </div>
           </div>
@@ -25,6 +26,35 @@ class PipelineCard extends React.Component {
     );
   }
 
+}
+
+class PipelineCardMiniChart extends React.Component {
+
+  render = () => {
+    const gradient = {
+      direction: 'vertical',
+      sense: 0,
+      stops: [
+        {
+          offset: "0%",
+          stopColor: this.props.color,
+          stopOpacity: 1
+        },
+        {
+          offset: "100%",
+          stopColor: this.props.color,
+          stopOpacity: 0
+        }
+      ]
+    };
+
+    return (
+      <CleanAreaChart data={this.props.data}
+                      width={this.props.width} height={this.props.height}
+                      fill={gradient} stroke={gradient}>
+      </CleanAreaChart>
+    );
+  }
 }
 
 export default PipelineCard;
