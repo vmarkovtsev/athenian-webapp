@@ -18,9 +18,26 @@ const getData = () => [
 ];
 
 const sampleCharts = [
-  {title: 'Time to Commit in Base Branch', color: '#62C2DF'},
-  {title: 'Time to Release', color: '#FA1D62'},
-  {title: 'Merged Pull Request', color: '#FF7D3A'},
+  {
+    title: 'Time to Commit in Base Branch',
+    color: '#62C2DF',
+    insights: [
+      {title: "insight 1", value: "foobar 1"},
+      {title: "insight 2", value: "foobar 2"}
+    ]
+  },
+  {
+    title: 'Time to Release',
+    color: '#FA1D62',
+    insights: [
+      {title: "insight 3", value: "foobar 3"}
+    ]
+  },
+  {
+    title: 'Merged Pull Request',
+    color: '#FF7D3A',
+    insights: []
+  },
 ];
 
 const pipeline = [
