@@ -1,28 +1,23 @@
 import React from 'react';
 
 import CleanAreaChart from '../charts/CleanAreaChart';
+import Card from '../base/Card';
 
 class PipelineCard extends React.Component {
 
   render = () => {
-    const title = this.props.title;
-    const color = this.props.color;
-    const data = this.props.data;
-
     return (
-      <div className={ 'card shadow py-2 ' + (this.props.active ? 'active' : '') } onClick={ this.props.onClick }>
-        <div className="card-body">
-          <div className="row no-gutters align-items-center">
-            <div className="col mr-2">
-              <div className="text-xs font-weight-bold text-uppercase mb-1">{ title }</div>
-              <div className="row no-gutters align-items-center">
-                <PipelineCardMiniChart data={ data } color={ color }
-                                       width={ 120 } height={ 100 }/>
-              </div>
+      <Card active={ this.props.active } onClick={ this.props.onClick }>
+        <div className="row no-gutters align-items-center">
+          <div className="col mr-2">
+            <div className="text-xs font-weight-bold text-uppercase mb-1">{ this.props.title }</div>
+            <div className="row no-gutters align-items-center">
+              <PipelineCardMiniChart data={ this.props.data } color={ this.props.color }
+                                     width={ 120 } height={ 100 }/>
             </div>
           </div>
         </div>
-      </div>
+      </Card>
     );
   }
 
