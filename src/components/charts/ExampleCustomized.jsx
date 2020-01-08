@@ -1,15 +1,14 @@
 import React from 'react';
 
-import { XYPlot, LineSeries, MarkSeries,
+import { FlexibleWidthXYPlot, LineSeries, MarkSeries,
   VerticalGridLines, HorizontalGridLines,
   XAxis, YAxis } from 'react-vis';
 
 export default function(props) {
   return (
     <div style={{background:'white'}}>
-      <XYPlot
+      <FlexibleWidthXYPlot
         height={300}
-        width={300}
         xDomain={[0, 10]}
         yDomain={[0, 10]}
       >
@@ -31,7 +30,7 @@ export default function(props) {
           data={props.data}
           animation="stiff"
         />
-      </XYPlot>
+      </FlexibleWidthXYPlot>
     </div>
   );
 }
