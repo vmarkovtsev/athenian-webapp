@@ -1,23 +1,58 @@
 import React from 'react';
 
 import CleanAreaChart, { vertical } from '../charts/CleanAreaChart';
-import Card from '../base/Card';
 
-export default ({ title, color, data, active, onClick }) => (
-  <Card active={active} onClick={onClick}>
-    <div className="row no-gutters align-items-center">
-      <div className="col mr-2">
-        <div className="text-xs font-weight-bold text-uppercase mb-1">{title}</div>
-        <div className="row no-gutters align-items-center">
-          <PipelineCardMiniChart data={data} color={color} width={120} height={100} />
+import { hexToRGBParts, rgba } from '../../utils/colors';
+
+export default ({ title, text, badge, color, data, active, onClick }) => {
+  const cardStyle = {};
+  if (active) {
+    cardStyle.background = rgba(hexToRGBParts(color), .7);
+    cardStyle.borderBottomColor = color;
+  };
+
+  return (
+    <div className={"card shadow pipeline-thumbnail" + (active ? ' active' : '')} onClick={onClick} style={cardStyle}>
+      <div className="card-body">
+        <div className="row no-gutters card-title text-xs text-uppercase">
+          <div className="col font-weight-bold">{title}</div>
+          <div className="col-auto">
+            <span className="badge badge-pill badge-secondary align-middle py-1 px-2">{badge}</span>
+          </div>
+        </div>
+        <div className="row no-gutters card-text">
+          <div className="col-5 text-md font-weight-bold">{text}</div>
+          <div className="col-7 pl-2" style={{ height: 80 }}>
+            <PipelineCardMiniChart data={data} color={color} active={active} />
+          </div>
         </div>
       </div>
-    </div>
-  </Card>
-);
+    </div >
+  )
+};
 
-const PipelineCardMiniChart = ({ color, data, width, height }) => {
-  const gradient = {
+const PipelineCardMiniChart = ({ color, active, data }) => {
+  if (active) {
+    color = '#FFFFFF';
+  }
+
+  const fill = {
+    direction: vertical,
+    stops: [
+      {
+        offset: "0%",
+        color,
+        opacity: .5
+      },
+      {
+        offset: "100%",
+        color,
+        opacity: 0
+      }
+    ]
+  };
+
+  const stroke = {
     direction: vertical,
     stops: [
       {
@@ -28,15 +63,14 @@ const PipelineCardMiniChart = ({ color, data, width, height }) => {
       {
         offset: "100%",
         color,
-        opacity: 0
+        opacity: 1
       }
     ]
   };
 
   return (
     <CleanAreaChart data={data}
-      width={width} height={height}
-      fill={gradient} stroke={gradient} >
+      fill={fill} stroke={stroke} >
     </CleanAreaChart>
   );
 };

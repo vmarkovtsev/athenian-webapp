@@ -10,17 +10,19 @@
     height: 50px;
 }
 
-.card {
+.pipeline-thumbnail {
     &:hover {
         background: transparent;
         cursor: pointer;
     }
 
     &.active {
-        background: #eee;
+        color: white;
+        border-bottom-width: 4px;
+        border-bottom-style: solid;
+        padding-bottom: 10px;
 
         &:hover {
-            border-width: 1px;
             cursor: default;
         }
     }
