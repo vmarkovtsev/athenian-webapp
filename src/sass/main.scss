@@ -1,9 +1,10 @@
-@import './overrides.scss';
+@import 'variables.scss';
+@import 'overrides.scss';
 
 @import '~react-vis/dist/style.css';
-
 @import '~startbootstrap-sb-admin-2/scss/sb-admin-2.scss';
-@import '~bootstrap/scss/bootstrap.scss';
+
+@import 'typography.scss';
 
 .app-logo {
     height: 50px;

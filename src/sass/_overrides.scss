@@ -22,7 +22,7 @@ $container-max-widths: (
     sm: 720px,
     md: 960px,
     lg: 1140px,
-    xl: 1270px
+    xl: 1280px
 );
 
 /**
@@ -30,4 +30,4 @@ $container-max-widths: (
  * https://getbootstrap.com/docs/4.3/content/typography/#global-settings
  */
 
-$body-bg: #f5f5f5;
+$body-bg: $at-main-bg;
