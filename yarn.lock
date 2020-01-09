@@ -963,6 +963,18 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
+"@dpordomingo/startbootstrap-sb-admin-2@^4.0.8":
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/@dpordomingo/startbootstrap-sb-admin-2/-/startbootstrap-sb-admin-2-4.0.8.tgz#408df4bb0d1e7ae88eb1467121edf60e9b752d43"
+  integrity sha512-O6khllYgk89h0XuOxzs6++/f1HigFICzZ6KIRiimJ0l3QOFwe0sxmQIJfJAUly/dctCTtaxfm8k5g9opWySI3Q==
+  dependencies:
+    "@fortawesome/fontawesome-free" "5.10.2"
+    bootstrap "4.3.1"
+    chart.js "2.8.0"
+    datatables.net-bs4 "1.10.19"
+    jquery "3.4.1"
+    jquery.easing "^1.4.1"
+
 "@fortawesome/fontawesome-free@5.10.2":
   version "5.10.2"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.10.2.tgz#27e02da1e34b50c9869179d364fb46627b521130"
@@ -9795,18 +9807,6 @@ stack-utils@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/stack-utils/-/stack-utils-1.0.2.tgz#33eba3897788558bebfc2db059dc158ec36cebb8"
   integrity sha512-MTX+MeG5U994cazkjd/9KNAapsHnibjMLnfXodlkXw76JEea0UiNzrqidzo1emMwk7w5Qhc9jd4Bn9TBb1MFwA==
-
-startbootstrap-sb-admin-2@^4.0.7:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/startbootstrap-sb-admin-2/-/startbootstrap-sb-admin-2-4.0.7.tgz#66def78f51dc333b21d0fae5fe49bb5a57430eca"
-  integrity sha512-4MIqbo/Y9Kz/CJ2H/EDHXGLfKuT7tHgmy9+b+SMXK/IwEX06ftJ4/75/IGMFqLazg+VriBJLp1B9dPuHBzaPVw==
-  dependencies:
-    "@fortawesome/fontawesome-free" "5.10.2"
-    bootstrap "4.3.1"
-    chart.js "2.8.0"
-    datatables.net-bs4 "1.10.19"
-    jquery "3.4.1"
-    jquery.easing "^1.4.1"
 
 static-extend@^0.1.1:
   version "0.1.2"
