@@ -1,67 +1,50 @@
 import React from 'react';
 
-import ExampleCustomized from '../charts/ExampleCustomized';
 import Card from '../base/Card';
+import TimeSeries from '../charts/TimeSeries';
 
-class PipelineBody extends React.Component {
-
-  render = () => {
-    const bodySections = this.props.charts.map((chart) => {
-      return <PipelineBodyCard
-               title={ chart.title }
-               chart={
-                 <ExampleCustomized data={ chart.data }
-                                    color={ chart.color } />
-               }
-               insights={ chart.insights }>
-             </PipelineBodyCard>;
-    });
-
-    return [
-      <div className="row">
-        <div className="col-12">
-          <p className="text-centerleft">{ this.props.section }</p>
-        </div>
-      </div>,
-      ...bodySections
-    ];
-  }
-
-}
-
-class PipelineBodyCard extends React.Component {
-
-  render = () => {
-    const insights = this.props.insights.map(
-      (ins) => <Card title={ ins.title }>{ ins.value }</Card>);
-
-    let content;
-
-    if (insights.length > 0) {
-      content = [
-        <div className="col-8">
-          { this.props.chart }
-        </div>,
-        <div className="col-4 align-self-center">
-          { insights }
-        </div>
-      ];
-    } else {
-      content = <div className="col-12">
-                  { this.props.chart }
-                </div>;
+export default ({ charts, section }) => (
+  <div>
+    <div className="row">
+      <div className="col-12">
+        <p className="text-centerleft">{section}</p>
+      </div>
+    </div>
+    {
+      charts.map((chart, i) => {
+        return <PipelineBodyCard key={i}
+          title={chart.title}
+          chart={
+            <TimeSeries data={chart.data}
+              color={chart.color} />
+          }
+          insights={chart.insights}>
+        </PipelineBodyCard>;
+      })
     }
+  </div>
+);
 
-    return (
-      <Card title={ this.props.title }>
-        <div className="row mb-4">
-          { content }
-        </div>
-      </Card>
-    );
-  }
-
-}
-
-
-export default PipelineBody;
+const PipelineBodyCard = ({ insights, title, chart }) => (
+  <Card title={title}>
+    {
+      insights.length > 0 ?
+        (
+          <div className="row mb-4">
+            <div className="col-8">
+              {chart}
+            </div>
+            <div className="col-4 align-self-center">
+              {insights.map((ins, i) => <Card title={ins.title} key={i}>{ins.value}</Card>)}
+            </div>
+          </div>
+        ) : (
+          <div className="row mb-4">
+            <div className="col-12">
+              {chart}
+            </div>
+          </div>
+        )
+    }
+  </Card >
+);
