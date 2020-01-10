@@ -1,7 +1,7 @@
 export const hexToRGBA = (hex, alpha) => {
   const rgb = hexToRGBParts(hex);
   alpha = alpha > 1 || alpha < 0 || typeof alpha !== 'number' ? 1 : alpha
-  return "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", " + alpha + ")";
+  return rgba(rgb, alpha);
 };
 
 export const hexToRGBParts = hex => {
@@ -10,4 +10,8 @@ export const hexToRGBParts = hex => {
     g: parseInt(hex.slice(3, 5), 16),
     b: parseInt(hex.slice(5, 7), 16)
   };
+};
+
+export const rgba = (rgb, alpha) => {
+  return "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", " + alpha + ")";
 };

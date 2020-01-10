@@ -42,27 +42,27 @@ const sampleCharts = [
 
 const pipeline = [
   {
-    tab: { title: 'PR created', color: '#FF7D3A' },
+    tab: { title: 'PR created', color: '#FF7D3A', text: '2 days', badge: 10 },
     body: { charts: sampleCharts }
   },
   {
-    tab: { title: 'Work in progress', color: '#FA1D62' },
+    tab: { title: 'Work in progress', color: '#FA1D62', text: '5 weeks', badge: 235 },
     body: { charts: sampleCharts }
   },
   {
-    tab: { title: 'first review', color: '#62C2DF' },
+    tab: { title: 'first review', color: '#FF7D3A', text: '10 months', badge: 5 },
     body: { charts: sampleCharts }
   },
   {
-    tab: { title: 'approval', color: '#9460DA' },
+    tab: { title: 'approval', color: '#9460DA', text: '4 days', badge: 15 },
     body: { charts: sampleCharts }
   },
   {
-    tab: { title: 'PR merged', color: '#FF7D3A' },
+    tab: { title: 'PR merged', color: '#FF7D3A', text: '5 weeks', badge: 33 },
     body: { charts: sampleCharts }
   },
   {
-    tab: { title: 'release', color: '#62C2DF' },
+    tab: { title: 'release', color: '#62C2DF', text: '3 days', badge: 12 },
     body: { charts: sampleCharts }
   },
 ];
