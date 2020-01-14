@@ -42,15 +42,15 @@ const sampleCharts = [
     title: 'Time to Commit in Base Branch',
     color: '#62C2DF',
     insights: [
-      { title: "insight 1", value: "foobar 1" },
-      { title: "insight 2", value: "foobar 2" }
+      { title: { text: "insight 1", bold: true }, subtitle: { text: "subtitle 1" }, value: 15 },
+      { title: { text: "insight 2", bold: false }, value: -20 }
     ]
   },
   {
     title: 'Time to Release',
     color: '#FA1D62',
     insights: [
-      { title: "insight 3", value: "foobar 3" }
+      { title: { text: "insight 3" }, value: 5 }
     ]
   },
   {
