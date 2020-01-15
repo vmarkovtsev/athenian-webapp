@@ -1,84 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import logo from './images/logos/logo-transparent.png';
 
 import Pipeline from './components/pipeline/Pipeline';
 
-const getData = () => [
-  { x: 0, y: 10 * Math.random() },
-  { x: 1, y: 10 * Math.random() },
-  { x: 2, y: 10 * Math.random() },
-  { x: 3, y: 10 * Math.random() },
-  { x: 4, y: 10 * Math.random() },
-  { x: 5, y: 10 * Math.random() },
-  { x: 6, y: 10 * Math.random() },
-  { x: 7, y: 10 * Math.random() },
-  { x: 8, y: 10 * Math.random() },
-  { x: 9, y: 10 * Math.random() }
-];
+import { getPipelineDataInitial, getPipelineDataAPI } from './services/api.js'
 
-const sampleCharts = [
-  {
-    title: 'Time to Commit in Base Branch',
-    color: '#62C2DF',
-    insights: [
-      { title: "insight 1", value: "foobar 1" },
-      { title: "insight 2", value: "foobar 2" }
-    ]
-  },
-  {
-    title: 'Time to Release',
-    color: '#FA1D62',
-    insights: [
-      { title: "insight 3", value: "foobar 3" }
-    ]
-  },
-  {
-    title: 'Merged Pull Request',
-    color: '#FF7D3A',
-    insights: []
-  },
-];
+export default () => {
+  const [pipelineState, setPipelineData] = useState(getPipelineDataInitial());
 
-const pipeline = [
-  {
-    tab: { title: 'PR created', color: '#FF7D3A', text: '2 days', badge: 10 },
-    body: { charts: sampleCharts }
-  },
-  {
-    tab: { title: 'Work in progress', color: '#FA1D62', text: '5 weeks', badge: 235 },
-    body: { charts: sampleCharts }
-  },
-  {
-    tab: { title: 'first review', color: '#FF7D3A', text: '10 months', badge: 5 },
-    body: { charts: sampleCharts }
-  },
-  {
-    tab: { title: 'approval', color: '#9460DA', text: '4 days', badge: 15 },
-    body: { charts: sampleCharts }
-  },
-  {
-    tab: { title: 'PR merged', color: '#FF7D3A', text: '5 weeks', badge: 33 },
-    body: { charts: sampleCharts }
-  },
-  {
-    tab: { title: 'release', color: '#62C2DF', text: '3 days', badge: 12 },
-    body: { charts: sampleCharts }
-  },
-];
-
-export default function () {
-
-  const data = pipeline.map((stage, i) => {
-    return {
-      tab: { ...stage.tab, data: getData() },
-      body: {
-        charts: stage.body.charts.map(c => {
-          return { ...c, title: c.title + ' ' + i, data: getData() }
-        })
-      }
-    }
-  });
+  useEffect(() => {
+    getPipelineDataAPI().then(data => {
+      setPipelineData(data);
+    });
+  }, []);
 
   return (
     <React.StrictMode>
@@ -108,7 +43,7 @@ export default function () {
       </nav>
 
       <div className="container">
-        <Pipeline pipeline={data} />
+        <Pipeline pipeline={pipelineState} />
       </div>
 
       <footer className="sticky-footer bg-white">
