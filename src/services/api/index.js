@@ -22,6 +22,27 @@ const getHours = secondsString => {
   return seconds / HOUR;
 };
 
+export const getUser = () => {
+
+  const api = new DefaultApi();
+
+  // TODO(dpordomingo): this will be read from env as in
+  // https://github.com/athenianco/athenian-webapp/pull/26/files#diff-c3eb372a41ec3e6950cec346be31458cR1
+  api.apiClient.basePath = 'https://api.owl.athenian.co/v1';
+
+  return api.getUser().then(data => {
+    if (!data.name) {
+      data.name = data.email;
+    }
+
+    return data;
+  }).catch(error => {
+    // TODO(dpordomingo): notify to an error handler which may rise a toast
+    console.error('ERROR calling endpoint', error);
+    throw error;
+  });
+};
+
 export const getPipelineDataAPI = () => {
   const metrics = ['lead-time', 'wip-time', 'wait-first-review-time', 'review-time', 'merging-time', 'release-time'];
 
