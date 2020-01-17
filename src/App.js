@@ -9,7 +9,7 @@ import {
 import history from "./utils/history";
 
 import Home from './pages/Home';
-import Registration from './pages/Registration';
+import Login from './pages/Login';
 import Logout from './pages/Logout';
 
 export default () => {
@@ -18,8 +18,8 @@ export default () => {
     <React.StrictMode>
       <Router history={history}>
         <Switch>
-          <Route path="/registration">
-            <Registration />
+          <Route path="/login">
+            <Login />
           </Route>
           <Route path="/logout">
             <Logout />
