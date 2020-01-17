@@ -6,6 +6,8 @@ import {
   Route,
 } from "react-router-dom";
 
+import history from "./utils/history";
+
 import Home from './pages/Home';
 import Registration from './pages/Registration';
 import Logout from './pages/Logout';
@@ -14,7 +16,7 @@ export default () => {
 
   return (
     <React.StrictMode>
-      <Router>
+      <Router history={history}>
         <Switch>
           <Route path="/registration">
             <Registration />
