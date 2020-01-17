@@ -11,9 +11,9 @@
     "node-sass": "^4.13.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
-    "react-vis": "^1.11.7",
-    "@dpordomingo/startbootstrap-sb-admin-2": "^4.0.8"
+    "react-vis": "^1.11.7"
   },
   "scripts": {
     "start": "react-scripts start",
