@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 
 import Home from './pages/Home';
+import Registration from './pages/Registration';
 
 export default () => {
 
@@ -14,6 +15,9 @@ export default () => {
     <React.StrictMode>
       <Router>
         <Switch>
+          <Route path="/registration">
+            <Registration />
+          </Route>
           <Route path="/">
             <Home />
           </Route>
