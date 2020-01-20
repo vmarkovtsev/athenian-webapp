@@ -26,11 +26,11 @@ jobs:
     - stage: test
       name: 'Frontend Tests'
       script:
-        - yarn test
+        - make test
     - stage: build
       name: 'Frontend Build'
       script:
-        - yarn build
+        - make build
     - stage: deploy
       name: 'Deploy App'
       script:

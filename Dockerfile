@@ -6,10 +6,10 @@ WORKDIR /app
 
 COPY package.json .
 COPY yarn.lock .
-RUN yarn install
+RUN make dependencies
 
 COPY / .
-RUN yarn build
+RUN make build
 
 
 # Build server
