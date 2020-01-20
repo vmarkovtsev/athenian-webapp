@@ -1,3 +1,8 @@
+import { DefaultApi, MetricsRequest } from './openapi-client';
+import Granularity from './openapi-client/model/Granularity';
+import ForSet from './openapi-client/model/ForSet';
+import MetricID from './openapi-client/model/MetricID';
+
 export const getPipelineDataInitial = () => getPipelineData([], () => []);
 
 const SECOND = 1;
@@ -18,26 +23,26 @@ const getHours = secondsString => {
 };
 
 export const getPipelineDataAPI = () => {
-  const metrics = ['pr-lead-time', 'pr-wip-time', 'pr-wait-first-review-time', 'pr-review-time', 'pr-merging-time', 'pr-release-time'];
+  const metrics = ['lead-time', 'wip-time', 'wait-first-review-time', 'review-time', 'merging-time', 'release-time'];
 
   return api(metrics).then(apiData => {
     const thumbsData = [];
 
     if (apiData.calculated) {
-    apiData.calculated[0].values.forEach(day => {
-      day.values.forEach((value, metricNo) => {
-        if (!thumbsData[metricNo]) {
-          thumbsData[metricNo] = [];
-        }
+      apiData.calculated[0].values.forEach(day => {
+        day.values.forEach((value, metricNo) => {
+          if (!thumbsData[metricNo]) {
+            thumbsData[metricNo] = [];
+          }
 
-        thumbsData[metricNo].push({ x: new Date(day.date), y: getHours(value) });
+          thumbsData[metricNo].push({ x: new Date(day.date), y: getHours(value) });
+        });
       });
-    });
 
     }
 
     return getPipelineData(thumbsData, getRandData);
-  })
+  });
 };
 
 const sampleCharts = [
@@ -91,47 +96,38 @@ const pipeline = [
 ];
 
 const api = metrics => {
-  const repos = [
+  const forset = [new ForSet([
     'github.com/athenianco/athenian-webapp',
     'github.com/athenianco/athenian-api',
     'github.com/athenianco/metadata',
-    'https://github.com/athenianco/metadata-retrieval'
-  ];
-  const granularity = 'week';
+    'github.com/athenianco/metadata-retrieval'
+  ])];
+  const granularity = (new Granularity())['week'];
+  const dateFrom = new Date('2019-11-19');
+  const dateTo = new Date('2020-02-11');
+  const metricsIDs = metrics.map(metric => (new MetricID())[metric]);
 
-  const dateFrom = '2019-11-19';
-  const dateTo = '2020-02-11';
+  const api = new DefaultApi();
 
-  const query = {
-    'for': [{
-      'repositories': repos,
-    }],
-    'metrics': metrics,
-    'date_from': dateFrom,
-    'date_to': dateTo,
-    'granularity': granularity,
-  };
+  // TODO(dpordomingo): this will be read from env as in
+  // https://github.com/athenianco/athenian-webapp/pull/26/files#diff-c3eb372a41ec3e6950cec346be31458cR1
+  api.apiClient.basePath = 'https://api.owl.athenian.co/v1';
 
-  const options = {
-    method: 'POST',
-    body: JSON.stringify(query)
-  };
-
-  let url = 'https://api.owl.athenian.co/v1/metrics_line';
-
-  return fetch(url, options)
-    .then(response => response.json());
+  const body = new MetricsRequest(forset, metricsIDs, dateFrom, dateTo, granularity);
+  return api.calcMetricsLine(body).then(data => {
+    return data;
+  }, function (error) {
+    console.error('ERROR calling endpoint', error);
+    return;
+  });
 };
 
-
-const getPipelineData = (thumbData, randGenerator) => pipeline.map((stage, i) => {
-  return {
-    tab: { ...stage.tab, data: thumbData[i] },
-    body: {
-      charts: stage.body.charts.map(c => ({ ...c, title: c.title + ' ' + i, data: randGenerator() }))
-    }
+const getPipelineData = (thumbData, randGenerator) => pipeline.map((stage, i) => ({
+  tab: { ...stage.tab, data: thumbData[i] },
+  body: {
+    charts: stage.body.charts.map(c => ({ ...c, title: c.title + ' ' + i, data: randGenerator() }))
   }
-});
+}));
 
 const getRandData = () => [
   { x: 0, y: 10 * Math.random() },
