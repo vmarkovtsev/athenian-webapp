@@ -14,7 +14,7 @@ export default ({ title, text, badge, color, data, active, onClick }) => {
   return (
     <div className={"card shadow pipeline-thumbnail" + (active ? ' active' : '')} onClick={onClick} style={cardStyle}>
       <div className="card-body">
-        <div className="row no-gutters card-title text-xs text-uppercase">
+        <div className="row no-gutters card-title text-xs text-uppercase mb-3">
           <div className="col font-weight-bold">{title}</div>
           <div className="col-auto">
             <span className="badge badge-pill badge-secondary align-middle py-1 px-2">{badge}</span>
@@ -22,7 +22,7 @@ export default ({ title, text, badge, color, data, active, onClick }) => {
         </div>
         <div className="row no-gutters card-text">
           <div className="col-5 text-md font-weight-bold">{text}</div>
-          <div className="col-7 pl-2" style={{ height: 80 }}>
+          <div className="col-7 pl-2" style={{ height: 40 }}>
             <PipelineCardMiniChart data={data} color={color} active={active} />
           </div>
         </div>
