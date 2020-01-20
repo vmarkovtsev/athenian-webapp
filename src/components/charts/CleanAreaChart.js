@@ -28,7 +28,7 @@ export default ({ fill, stroke, data }) => {
   }
 
   return (
-    <FlexibleXYPlot>
+    <FlexibleXYPlot margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
       <GradientDefs>
         {gradients}
       </GradientDefs>
