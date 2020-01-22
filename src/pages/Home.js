@@ -4,7 +4,7 @@ import logo from '../images/logos/logo-transparent.png';
 
 import Pipeline from '../components/pipeline/Pipeline';
 
-import { getPipelineDataInitial, getPipelineDataAPI } from '../services/api.js';
+import { getPipelineDataInitial, getPipelineDataAPI } from '../services/api';
 
 export default () => {
   const [pipelineState, setPipelineData] = useState(getPipelineDataInitial());

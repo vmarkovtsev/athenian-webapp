@@ -42,6 +42,10 @@ export const getPipelineDataAPI = () => {
     }
 
     return getPipelineData(thumbsData, getRandData);
+  }).catch(error => {
+    // TODO(dpordomingo): notify to an error handler which may rise a toast
+    console.error('ERROR calling endpoint', error);
+    throw error;
   });
 };
 
@@ -106,6 +110,7 @@ const api = metrics => {
   const dateFrom = new Date('2019-11-19');
   const dateTo = new Date('2020-02-11');
   const metricsIDs = metrics.map(metric => (new MetricID())[metric]);
+  const account = 1;
 
   const api = new DefaultApi();
 
@@ -113,13 +118,8 @@ const api = metrics => {
   // https://github.com/athenianco/athenian-webapp/pull/26/files#diff-c3eb372a41ec3e6950cec346be31458cR1
   api.apiClient.basePath = 'https://api.owl.athenian.co/v1';
 
-  const body = new MetricsRequest(forset, metricsIDs, dateFrom, dateTo, granularity);
-  return api.calcMetricsLine(body).then(data => {
-    return data;
-  }, function (error) {
-    console.error('ERROR calling endpoint', error);
-    return;
-  });
+  const body = new MetricsRequest(forset, metricsIDs, dateFrom, dateTo, granularity, account);
+  return api.calcMetricsLine(body);
 };
 
 const getPipelineData = (thumbData, randGenerator) => pipeline.map((stage, i) => ({
