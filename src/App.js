@@ -4,9 +4,9 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-} from "react-router-dom";
+} from 'react-router-dom';
 
-import history from "./utils/history";
+import history from './utils/history';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -18,13 +18,13 @@ export default () => {
     <React.StrictMode>
       <Router history={history}>
         <Switch>
-          <Route path="/login">
+          <Route path='/login'>
             <Login />
           </Route>
-          <Route path="/logout">
+          <Route path='/logout'>
             <Logout />
           </Route>
-          <Route path="/">
+          <Route path='/'>
             <Home />
           </Route>
         </Switch>
