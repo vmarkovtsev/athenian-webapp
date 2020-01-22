@@ -1,6 +1,6 @@
 window.ENV = {
   auth: {
-    domain: "<auth0 domain>",
-    clientId: "<auth0 client id>",
+    "domain": "se7entyse7en.eu.auth0.com",
+    "clientId": "mZT4tikRnWDVQmSHGJAL5RPV5lhqhStW"
   }
 };

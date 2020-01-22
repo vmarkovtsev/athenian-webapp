@@ -23,6 +23,7 @@ export const getPipelineDataAPI = () => {
   return api(metrics).then(apiData => {
     const thumbsData = [];
 
+    if (apiData.calculated) {
     apiData.calculated[0].values.forEach(day => {
       day.values.forEach((value, metricNo) => {
         if (!thumbsData[metricNo]) {
@@ -32,6 +33,8 @@ export const getPipelineDataAPI = () => {
         thumbsData[metricNo].push({ x: new Date(day.date), y: getHours(value) });
       });
     });
+
+    }
 
     return getPipelineData(thumbsData, getRandData);
   })
