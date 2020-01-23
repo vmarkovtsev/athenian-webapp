@@ -8,6 +8,8 @@ import {
 
 import history from './utils/history';
 
+import PrivateRoute from "./components/PrivateRoute";
+
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
@@ -29,9 +31,7 @@ export default () => {
           <Route path='/callback'>
             <Callback />
           </Route>
-          <Route path='/waiting'>
-            <Waiting />
-          </Route>
+          <PrivateRoute path='/waiting' component={Waiting} />
           <Route path='/'>
             <Home />
           </Route>
