@@ -1,16 +1,20 @@
 import React from 'react';
 
 import {
-  BrowserRouter as Router,
+  Router,
   Switch,
   Route,
 } from 'react-router-dom';
 
 import history from './utils/history';
 
+import PrivateRoute from "./components/PrivateRoute";
+
 import Home from './pages/Home';
-import Login from './pages/Login';
-import Logout from './pages/Logout';
+import Login from './pages/auth/Login';
+import Logout from './pages/auth/Logout';
+import Callback from './pages/auth/Callback';
+import Waiting from './pages/Waiting';
 
 export default () => {
 
@@ -24,6 +28,10 @@ export default () => {
           <Route path='/logout'>
             <Logout />
           </Route>
+          <Route path='/callback'>
+            <Callback />
+          </Route>
+          <PrivateRoute path='/waiting' component={Waiting} />
           <Route path='/'>
             <Home />
           </Route>

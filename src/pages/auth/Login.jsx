@@ -1,9 +1,9 @@
 import React from 'react';
 
-import logo from '../images/logos/logo-transparent.png';
+import logo from '../../images/logos/logo-transparent.png';
 
 import { useHistory } from 'react-router-dom';
-import { useAuth0 } from '../react-auth0-spa';
+import { useAuth0 } from '../../react-auth0-spa';
 
 export default () => {
   const history = useHistory();
@@ -26,7 +26,17 @@ export default () => {
       </div>
       <div className="row mt-5">
         <div className="col-12 text-center">
-          <button type="button" onClick={() => loginWithRedirect({})} className="btn btn-primary btn-lg">Login</button>
+          <button
+            type="button"
+            className="btn btn-primary btn-lg"
+            onClick={
+              () => loginWithRedirect({
+                appState: { targetUrl: "/waiting" }
+              })
+            }
+          >
+            Login
+          </button>
         </div>
       </div>
     </div>
