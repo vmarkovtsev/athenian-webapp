@@ -11,9 +11,9 @@ import history from './utils/history';
 import PrivateRoute from "./components/PrivateRoute";
 
 import Home from './pages/Home';
-import Login from './pages/Login';
-import Logout from './pages/Logout';
-import Callback from './pages/Callback';
+import Login from './pages/auth/Login';
+import Logout from './pages/auth/Logout';
+import Callback from './pages/auth/Callback';
 import Waiting from './pages/Waiting';
 
 export default () => {

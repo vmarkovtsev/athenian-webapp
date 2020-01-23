@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { useAuth0 } from '../react-auth0-spa';
+import { useAuth0 } from '../../react-auth0-spa';
 
 export default () => {
-  const { loading, isAuthenticated, logout } = useAuth0();
+  const { loading, isAuthenticated } = useAuth0();
 
   if (loading) {
     return <div>Loading...</div>;
@@ -13,6 +13,5 @@ export default () => {
     return <div>Not authenticated!</div>;
   }
 
-  logout();
   return [];
 };
