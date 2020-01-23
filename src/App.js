@@ -11,6 +11,7 @@ import history from './utils/history';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
+import Waiting from './pages/Waiting';
 
 export default () => {
 
@@ -23,6 +24,9 @@ export default () => {
           </Route>
           <Route path='/logout'>
             <Logout />
+          </Route>
+          <Route path='/waiting'>
+            <Waiting />
           </Route>
           <Route path='/'>
             <Home />
