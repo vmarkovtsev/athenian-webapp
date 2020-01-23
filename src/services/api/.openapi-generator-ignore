@@ -1,0 +1,8 @@
+openapi-client/.openapi-generator
+openapi-client/.openapi-generator-ignore
+openapi-client/.babelrc
+openapi-client/.travis.yml
+openapi-client/git_push.sh
+openapi-client/mocha.opts
+openapi-client/package.json
+openapi-client/README.md
