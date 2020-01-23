@@ -58,10 +58,10 @@ test:
 generate: api-generate
 
 .PHONY: dependencies
-dependencies: api-dependencies
+dependencies: app-dependencies
 
-.PHONY: api-dependencies
-api-dependencies:
+.PHONY: app-dependencies
+app-dependencies:
 	yarn install
 
-$(OPENAPI_GENERATOR): api-dependencies
+$(OPENAPI_GENERATOR): app-dependencies
