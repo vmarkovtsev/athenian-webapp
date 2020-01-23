@@ -12,7 +12,6 @@ export default ({ user }) => (
   </nav>
 );
 
-
 const User = ({ user }) => user ? (
   <ul className="navbar-nav ml-auto">
     <li className="nav-item dropdown no-arrow">
@@ -21,7 +20,7 @@ const User = ({ user }) => user ? (
         <img className="img-profile rounded-circle" alt="" src={user.picture} />
       </a>
       <div className="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-        <a className="dropdown-item" href="#login" data-toggle="modal" data-target="#logoutModal">
+        <a className="dropdown-item" href="/logout">
           <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
           Logout
         </a>
