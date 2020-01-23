@@ -26,7 +26,17 @@ export default () => {
       </div>
       <div className="row mt-5">
         <div className="col-12 text-center">
-          <button type="button" onClick={() => loginWithRedirect({})} className="btn btn-primary btn-lg">Login</button>
+          <button
+            type="button"
+            className="btn btn-primary btn-lg"
+            onClick={
+              () => loginWithRedirect({
+                appState: { targetUrl: "/waiting" }
+              })
+            }
+          >
+            Login
+          </button>
         </div>
       </div>
     </div>
