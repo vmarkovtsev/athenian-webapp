@@ -1,16 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Navbar from './Navbar';
 import Footer from './Footer';
 
-export default (props) => {
+import { getUser } from '../../services/api';
+
+export default ({ children }) => {
+  const [userState, setUser] = useState(null);
+
+  useEffect(() => {
+    getUser().then(setUser);
+  }, []);
 
   return (
     <>
-      <Navbar />
+      <Navbar user={userState} />
 
       <div className="container">
-        {props.children}
+        {children}
       </div>
 
       <Footer />
