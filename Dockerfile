@@ -1,12 +1,16 @@
 # Build web app
 # ----------------
-FROM node:13.1-alpine AS app-builder
+FROM node:13.7-alpine AS app-builder
 
 WORKDIR /app
 
 COPY package.json .
 COPY yarn.lock .
-RUN make dependencies
+COPY Makefile .
+
+RUN apk update && \
+    apk add make git bash && \
+    make dependencies
 
 COPY / .
 RUN make build
