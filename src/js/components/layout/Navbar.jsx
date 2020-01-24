@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../../../images/logos/logo-transparent.png';
+import logo from 'images/logos/logo-transparent.png';
 
 export default ({ user }) => (
   <nav className="navbar navbar-expand-sm navbar-light bg-white topbar mb-4 static-top shadow">

@@ -1,7 +1,7 @@
-import { DefaultApi, MetricsRequest } from './openapi-client';
-import Granularity from './openapi-client/model/Granularity';
-import ForSet from './openapi-client/model/ForSet';
-import MetricID from './openapi-client/model/MetricID';
+import { DefaultApi, MetricsRequest } from 'js/services/api/openapi-client';
+import Granularity from 'js/services/api/openapi-client/model/Granularity';
+import ForSet from 'js/services/api/openapi-client/model/ForSet';
+import MetricID from 'js/services/api/openapi-client/model/MetricID';
 
 export const getPipelineDataInitial = () => getPipelineData([], () => []);
 

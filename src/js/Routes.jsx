@@ -6,15 +6,15 @@ import {
   Route,
 } from 'react-router-dom';
 
-import history from './services/history';
+import history from 'js/services/history';
 
-import PrivateRoute from './PrivateRoute';
+import PrivateRoute from 'js/PrivateRoute';
 
-import Home from './pages/Home';
-import Login from './pages/auth/Login';
-import Logout from './pages/auth/Logout';
-import Callback from './pages/auth/Callback';
-import Waiting from './pages/Waiting';
+import Home from 'js/pages/Home';
+import Login from 'js/pages/auth/Login';
+import Logout from 'js/pages/auth/Logout';
+import Callback from 'js/pages/auth/Callback';
+import Waiting from 'js/pages/Waiting';
 
 export default () => {
 

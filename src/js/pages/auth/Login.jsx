@@ -1,9 +1,9 @@
 import React from 'react';
-
-import logo from '../../../images/logos/logo-transparent.png';
-
 import { useHistory } from 'react-router-dom';
-import { useAuth0 } from '../../services/react-auth0-spa';
+
+import logo from 'images/logos/logo-transparent.png';
+
+import { useAuth0 } from 'js/services/react-auth0-spa';
 
 export default () => {
   const history = useHistory();

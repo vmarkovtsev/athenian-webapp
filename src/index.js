@@ -1,5 +1,5 @@
 import 'bootstrap/dist/js/bootstrap.js';
 
-import './sass/main.scss';
+import 'sass/main.scss';
 
-require('./js/App.jsx');
+require('js/App.jsx');

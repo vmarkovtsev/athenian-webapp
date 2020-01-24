@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
-
-import Page from '../templates/Page';
-
 import { useHistory } from 'react-router-dom';
+
+import Page from 'js/pages/templates/Page';
 
 const slides = [
   {

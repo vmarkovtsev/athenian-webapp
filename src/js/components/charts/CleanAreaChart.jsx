@@ -2,7 +2,7 @@ import React from 'react';
 
 import { FlexibleXYPlot, AreaSeries, LineSeries, GradientDefs } from 'react-vis';
 
-import { hexToRGBA } from '../../services/colors';
+import { hexToRGBA } from 'js/services/colors';
 
 export default ({ fill, stroke, data }) => {
 

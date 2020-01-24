@@ -2,7 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faAngleUp, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 
-import TimeSeries from '../charts/TimeSeries';
+import TimeSeries from 'js/components/charts/TimeSeries';
 
 export default ({ charts, section }) => (
   <div>

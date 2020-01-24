@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Routes from './Routes';
+import Routes from 'js/Routes';
 
-import * as serviceWorker from './services/serviceWorker';
-import { Auth0Provider } from './services/react-auth0-spa';
-import history from './services/history';
+import * as serviceWorker from 'js/services/serviceWorker';
+import { Auth0Provider } from 'js/services/react-auth0-spa';
+import history from 'js/services/history';
 
 // A function that routes the user to the right place
 // after login

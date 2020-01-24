@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import PipelineCard from './PipelineCard';
-import PipelineBody from './PipelineBody';
+import PipelineCard from 'js/components/pipeline/PipelineCard';
+import PipelineBody from 'js/components/pipeline/PipelineBody';
 
 export default ({ pipeline }) => {
 

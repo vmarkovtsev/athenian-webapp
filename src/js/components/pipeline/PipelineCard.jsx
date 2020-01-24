@@ -1,8 +1,8 @@
 import React from 'react';
 
-import CleanAreaChart, { vertical } from '../charts/CleanAreaChart';
+import CleanAreaChart, { vertical } from 'js/components/charts/CleanAreaChart';
 
-import { hexToRGBParts, rgba } from '../../services/colors';
+import { hexToRGBParts, rgba } from 'js/services/colors';
 
 export default ({ title, text, badge, color, data, active, onClick }) => {
   const cardStyle = {};
