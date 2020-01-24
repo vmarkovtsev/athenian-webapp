@@ -2,7 +2,7 @@ import React from 'react';
 
 import CleanAreaChart, { vertical } from '../charts/CleanAreaChart';
 
-import { hexToRGBParts, rgba } from '../../utils/colors';
+import { hexToRGBParts, rgba } from '../../services/colors';
 
 export default ({ title, text, badge, color, data, active, onClick }) => {
   const cardStyle = {};

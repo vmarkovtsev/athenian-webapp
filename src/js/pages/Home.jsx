@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import Pipeline from '../components/pipeline/Pipeline';
-import Page from '../components/layout/Page';
+import Page from '../templates/Page';
 
 import { getPipelineDataInitial, getPipelineDataAPI, getUser } from '../services/api';
 

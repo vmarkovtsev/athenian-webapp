@@ -6,9 +6,9 @@ import {
   Route,
 } from 'react-router-dom';
 
-import history from './utils/history';
+import history from './services/history';
 
-import PrivateRoute from './components/PrivateRoute';
+import PrivateRoute from './PrivateRoute';
 
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
