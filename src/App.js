@@ -8,7 +8,7 @@ import {
 
 import history from './utils/history';
 
-import PrivateRoute from "./components/PrivateRoute";
+import PrivateRoute from './components/PrivateRoute';
 
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
