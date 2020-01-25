@@ -44,7 +44,7 @@ export const getUser = () => {
 };
 
 export const getPipelineDataAPI = () => {
-  const metrics = ['lead-time', 'wip-time', 'wait-first-review-time', 'review-time', 'merging-time', 'release-time'];
+  const metrics = ['wip-time', 'wait-first-review-time', 'merging-time', 'release-time'];
 
   return api(metrics).then(apiData => {
     const thumbsData = [];
@@ -95,27 +95,19 @@ const sampleCharts = [
 
 const pipeline = [
   {
-    tab: { title: 'PR created', color: '#FF7D3A', text: '2 days', badge: 10, metric: 'pr-lead-time' },
+    tab: { title: 'Work in progress', color: '#FF7D3A', text: '5 weeks', badge: 235, metric: 'pr-wip-time' },
     body: { charts: sampleCharts }
   },
   {
-    tab: { title: 'Work in progress', color: '#FA1D62', text: '5 weeks', badge: 235, metric: 'pr-wip-time' },
+    tab: { title: 'Review', color: '#FECD33', text: '10 months', badge: 5, metric: 'pr-wait-first-review-time' },
     body: { charts: sampleCharts }
   },
   {
-    tab: { title: 'first review', color: '#FF7D3A', text: '10 months', badge: 5, metric: 'pr-wait-first-review-time' },
+    tab: { title: 'Merge', color: '#9460DA', text: '5 weeks', badge: 33, metric: 'pr-merging-time' },
     body: { charts: sampleCharts }
   },
   {
-    tab: { title: 'approval', color: '#9460DA', text: '4 days', badge: 15, metric: 'pr-review-time' },
-    body: { charts: sampleCharts }
-  },
-  {
-    tab: { title: 'PR merged', color: '#FF7D3A', text: '5 weeks', badge: 33, metric: 'pr-merging-time' },
-    body: { charts: sampleCharts }
-  },
-  {
-    tab: { title: 'release', color: '#62C2DF', text: '3 days', badge: 12, metric: 'pr-release-time' },
+    tab: { title: 'Release', color: '#37CB70', text: '3 days', badge: 12, metric: 'pr-release-time' },
     body: { charts: sampleCharts }
   },
 ];

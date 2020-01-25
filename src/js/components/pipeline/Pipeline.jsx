@@ -16,7 +16,7 @@ export default ({ pipeline }) => {
         {
           pipeline.map(
             (card, i) =>
-              <div className="col-md-2" key={i}>
+              <div className="col-md-3" key={i}>
                 <PipelineCard
                   title={card.tab.title}
                   text={card.tab.text}
