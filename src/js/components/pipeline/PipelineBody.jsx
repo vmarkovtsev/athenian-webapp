@@ -2,9 +2,10 @@ import React from 'react';
 import classnames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleDown, faAngleUp, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 
 import TimeSeries from 'js/components/charts/TimeSeries';
+import Badge from 'js/components/ui/Badge';
 
 export default ({ charts, section }) => (
   <div>
@@ -52,13 +53,7 @@ const PipelineBodyCard = ({ insights, title, chart }) => (
                       <div className="font-weight-bold">
                         <span className="text-lg mr-1">11</span>
                         <span className="mr-2">hours</span>
-                        <span className={classnames('badge', ins.value < 0 ? 'badge-danger' : 'badge-success')}>
-                          <FontAwesomeIcon
-                            icon={ins.value < 0 ? faAngleDown : faAngleUp}
-                            className="align-bottom mr-1"
-                          />
-                          {ins.value < 0 ? -ins.value : ins.value}%
-                      </span>
+                        <Badge value={ins.value} trend className="ml-2" />
                       </div>
                     </PipelineBodyHint>
                     )}

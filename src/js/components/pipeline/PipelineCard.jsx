@@ -2,6 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 
 import CleanAreaChart, { vertical } from 'js/components/charts/CleanAreaChart';
+import Badge from 'js/components/ui/Badge';
 
 import { hexToRGBParts, rgba } from 'js/services/colors';
 
@@ -17,9 +18,7 @@ export default ({ title, text, badge, color, data, active, onClick }) => {
       <div className="card-body">
         <div className="row no-gutters card-title text-xs text-uppercase mb-3">
           <div className="col font-weight-bold">{title}</div>
-          <div className="col-auto">
-            <span className="badge badge-pill badge-secondary align-middle py-1 px-2">{badge}</span>
-          </div>
+          <Badge value={badge} />
         </div>
         <div className="row no-gutters card-text">
           <div className="col-5 text-md font-weight-bold">{text}</div>
