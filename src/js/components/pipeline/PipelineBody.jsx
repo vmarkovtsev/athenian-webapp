@@ -6,6 +6,7 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 
 import TimeSeries from 'js/components/charts/TimeSeries';
 import Badge from 'js/components/ui/Badge';
+import { BigNumber } from 'js/components/ui/Typography';
 
 export default ({ charts, section }) => (
   <div>
@@ -51,8 +52,7 @@ const PipelineBodyCard = ({ insights, title, chart }) => (
                       subtitle={ins.subtitle}
                     >
                       <div className="font-weight-bold">
-                        <span className="text-lg mr-1">11</span>
-                        <span className="mr-2">hours</span>
+                        <BigNumber content="11 hours" />
                         <Badge value={ins.value} trend className="ml-2" />
                       </div>
                     </PipelineBodyHint>

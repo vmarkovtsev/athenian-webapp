@@ -3,6 +3,7 @@ import classnames from 'classnames';
 
 import CleanAreaChart, { vertical } from 'js/components/charts/CleanAreaChart';
 import Badge from 'js/components/ui/Badge';
+import { BigNumber, SmallTitle } from 'js/components/ui/Typography';
 
 import { hexToRGBParts, rgba } from 'js/services/colors';
 
@@ -16,12 +17,14 @@ export default ({ title, text, badge, color, data, active, onClick }) => {
   return (
     <div className={classnames('card shadow pipeline-thumbnail', active && 'active')} onClick={onClick} style={cardStyle}>
       <div className="card-body">
-        <div className="row no-gutters card-title text-xs text-uppercase mb-3">
-          <div className="col font-weight-bold">{title}</div>
+        <div className="card-title d-flex justify-content-between align-items-center mb-3">
+          <span>
+            <SmallTitle content={title} />
+          </span>
           <Badge value={badge} />
         </div>
         <div className="row no-gutters card-text">
-          <div className="col-5 text-md font-weight-bold">{text}</div>
+          <BigNumber content={text} />
           <div className="col-7 pl-2" style={{ height: 40 }}>
             <PipelineCardMiniChart data={data} color={color} active={active} />
           </div>
