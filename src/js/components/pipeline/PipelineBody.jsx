@@ -1,12 +1,10 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-
 import TimeSeries from 'js/components/charts/TimeSeries';
 import Badge from 'js/components/ui/Badge';
 import { BigNumber } from 'js/components/ui/Typography';
+import Info from 'js/components/ui/Info'
 
 export default ({ charts, section }) => (
   <div>
@@ -34,7 +32,7 @@ const PipelineBodyCard = ({ insights, title, chart }) => (
   <div className="card shadow mb-4">
     <div className="card-header bg-white font-weight-bold">
       {title}
-      <FontAwesomeIcon icon={faInfoCircle} className="ml-2 text-secondary" />
+      <Info content="Some chart description" />
     </div>
     <div className="card-body">
       {

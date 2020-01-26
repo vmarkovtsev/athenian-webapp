@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import CleanAreaChart, { vertical } from 'js/components/charts/CleanAreaChart';
 import Badge from 'js/components/ui/Badge';
 import { BigNumber, SmallTitle } from 'js/components/ui/Typography';
+import Info from 'js/components/ui/Info'
 
 import { hexToRGBParts, rgba } from 'js/services/colors';
 
@@ -20,6 +21,7 @@ export default ({ title, text, badge, color, data, active, onClick }) => {
         <div className="card-title d-flex justify-content-between align-items-center mb-3">
           <span>
             <SmallTitle content={title} />
+            <Info content="Some pipeline description" />
           </span>
           <Badge value={badge} />
         </div>
