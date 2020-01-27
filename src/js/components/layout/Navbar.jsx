@@ -2,18 +2,28 @@ import React from 'react';
 import logo from 'images/logos/logo-transparent.png';
 
 export default ({ user }) => (
-  <nav className="navbar navbar-expand-sm navbar-light bg-white topbar mb-4 static-top shadow">
-    <div className="container">
-      <a href="/" rel="noopener noreferrer">
-        <img src={logo} className="app-logo" alt="athenian" />
-      </a>
-      <User user={user} />
+  <>
+    <div className="navbar navbar-expand-sm navbar-light bg-white topbar static-top border-bottom">
+      <div className="container d-flex justify-content-between align-items-center">
+        <a href="/" rel="noopener noreferrer">
+          <img src={logo} className="app-logo" alt="athenian" />
+        </a>
+        <User user={user} />
+      </div>
     </div>
-  </nav>
+    <div className="navbar navbar-expand-sm navbar-light bg-white static-top border-bottom mb-4">
+      <div className="container">
+        <ol id="mainBreadcrums" className="breadcrumb bg-white mb-0 py-0 p-0" aria-label="breadcrumb">
+          <li className="breadcrumb-item text-xs"><a href="/" className="text-secondary">Home</a></li>
+          <li className="breadcrumb-item active" aria-current="page">Work in progress</li>
+        </ol>
+      </div>
+    </div>
+  </>
 );
 
 const User = ({ user }) => user ? (
-  <ul className="navbar-nav ml-auto">
+  <ul className="navbar-nav ml-auto pr-0">
     <li className="nav-item dropdown no-arrow">
       <a className="nav-link dropdown-toggle" href="/" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span className="mr-2 d-inline text-gray-600 small">{user.name}</span>
