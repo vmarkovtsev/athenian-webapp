@@ -6,6 +6,7 @@ import Routes from 'js/Routes';
 import * as serviceWorker from 'js/services/serviceWorker';
 import { Auth0Provider } from 'js/services/react-auth0-spa';
 import history from 'js/services/history';
+import Development from 'js/components/development';
 
 // A function that routes the user to the right place
 // after login
@@ -17,7 +18,7 @@ const onRedirectCallback = appState => {
   );
 };
 
-ReactDOM.render(
+ReactDOM.render(<>
   <Auth0Provider
     domain={window.ENV.auth.domain}
     client_id={window.ENV.auth.clientId}
@@ -25,7 +26,9 @@ ReactDOM.render(
     onRedirectCallback={onRedirectCallback}
   >
     <Routes />
-  </Auth0Provider>,
+  </Auth0Provider>
+  {process.env.NODE_ENV === 'development' && <Development.Breakpoints />}
+</>,
   document.getElementById('root')
 );
 
