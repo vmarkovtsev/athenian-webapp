@@ -22,6 +22,23 @@ const getHours = secondsString => {
   return seconds / HOUR;
 };
 
+export const getPRs = () => {
+  const getRandItem = () => ({
+    organization: getRandElement('athenian', 'bblfsh'),
+    repo: getRandElement('webapp'),
+    title: getRandElement('Make the table responsive again', 'Lorem Ipsum', '[RFC] Responsive design'),
+    creator: getRandElement('dpordomingo'),
+    size: getRand(1, 1000),
+    lines: { add: getRand(20, 200), remove: getRand(1, 200) },
+    comments: getRand(0, 5),
+    participants: getRandElement(['marcos', 'lucas'], ['marcos', 'dpordomingo', 'vmarkotsev'], ['vmarkotsev']),
+    age: getRandElement('1 hour', '5 days', '2 weeks', '1 month'),
+    status: getRandElement('wip', 'merged', 'closed')
+  });
+
+  return Array.from(Array(57)).map(() => getRandItem());
+}
+
 export const getUser = () => {
 
   const api = new DefaultApi();
@@ -154,3 +171,6 @@ const getRandData = () => [
   { x: 8, y: 10 * Math.random() },
   { x: 9, y: 10 * Math.random() }
 ];
+
+const getRand = (min, max) => Math.round(min + (Math.random() * (max - min)));
+const getRandElement = (...args) => args[getRand(0, args.length - 1)];
