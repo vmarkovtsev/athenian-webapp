@@ -29,9 +29,9 @@ export default ({ charts, section }) => (
 );
 
 const PipelineBodyCard = ({ insights, title, chart }) => (
-  <div className="card shadow mb-4">
+  <div className="card mb-4">
     <div className="card-header bg-white font-weight-bold">
-      {title}
+      <span className="text-gray-900">{title}</span>
       <Info content="Some chart description" />
     </div>
     <div className="card-body">

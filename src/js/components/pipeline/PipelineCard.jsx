@@ -16,7 +16,7 @@ export default ({ title, text, badge, color, data, active, onClick }) => {
   };
 
   return (
-    <div className={classnames('card shadow pipeline-thumbnail', active && 'active')} onClick={onClick} style={cardStyle}>
+    <div className={classnames('card pipeline-thumbnail', active && 'active')} onClick={onClick} style={cardStyle}>
       <div className="card-body">
         <div className="card-title d-flex justify-content-between align-items-center mb-3">
           <span>
