@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+import { faSignOutAlt, faSignInAlt } from '@fortawesome/free-solid-svg-icons'
 
 import logo from 'images/logos/logo-transparent.png';
 
@@ -41,5 +41,10 @@ const User = ({ user }) => user ? (
     </li>
   </ul>
 ) : (
-    <span className="navbar-nav ml-auto"><a href="/login">Login</a></span>
+    <span className="navbar-nav ml-auto">
+      <a href="/login">
+        <FontAwesomeIcon icon={faSignInAlt} className="ml-2 text-secondary mr-2 text-gray-400" />
+        Login
+      </a>
+    </span>
   );
