@@ -1,10 +1,10 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleDown, faAngleUp, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-
 import TimeSeries from 'js/components/charts/TimeSeries';
+import Badge from 'js/components/ui/Badge';
+import { BigNumber } from 'js/components/ui/Typography';
+import Info from 'js/components/ui/Info'
 
 export default ({ charts, section }) => (
   <div>
@@ -29,10 +29,10 @@ export default ({ charts, section }) => (
 );
 
 const PipelineBodyCard = ({ insights, title, chart }) => (
-  <div className="card shadow mb-4">
+  <div className="card mb-4">
     <div className="card-header bg-white font-weight-bold">
-      {title}
-      <FontAwesomeIcon icon={faInfoCircle} className="ml-2 text-secondary" />
+      <span className="text-gray-900">{title}</span>
+      <Info content="Some chart description" />
     </div>
     <div className="card-body">
       {
@@ -50,15 +50,8 @@ const PipelineBodyCard = ({ insights, title, chart }) => (
                       subtitle={ins.subtitle}
                     >
                       <div className="font-weight-bold">
-                        <span className="text-lg mr-1">11</span>
-                        <span className="mr-2">hours</span>
-                        <span className={classnames('badge', ins.value < 0 ? 'badge-danger' : 'badge-success')}>
-                          <FontAwesomeIcon
-                            icon={ins.value < 0 ? faAngleDown : faAngleUp}
-                            className="align-bottom mr-1"
-                          />
-                          {ins.value < 0 ? -ins.value : ins.value}%
-                      </span>
+                        <BigNumber content="11 hours" />
+                        <Badge value={ins.value} trend className="ml-2" />
                       </div>
                     </PipelineBodyHint>
                     )}

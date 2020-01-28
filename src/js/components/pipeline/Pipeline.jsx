@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 
 import PipelineCard from 'js/components/pipeline/PipelineCard';
 import PipelineBody from 'js/components/pipeline/PipelineBody';
+import TopFilter from 'js/components/pipeline/TopFilter';
+import MainMetrics from 'js/components/pipeline/MainMetrics';
 
 export default ({ pipeline }) => {
 
@@ -9,9 +11,9 @@ export default ({ pipeline }) => {
 
   return (
     <div>
-      <div className="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 className="h3 mb-0 text-gray-800 font-weight-bold text-lg">Lead Time</h1>
-      </div>
+      <TopFilter />
+      <MainMetrics />
+
       <div className="row mb-4 align-items-end">
         {
           pipeline.map(
