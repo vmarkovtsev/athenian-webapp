@@ -41,9 +41,9 @@ For locally testing the authentication, you need to configure Auth0 and GitHub t
 
 1. Create an Auth0 account,
 2. Create an application with "Application Type" set to "Single Page Application", using the following settings (eventually change the port with the one you plan to use):
-    - "Allowed Callback URLs": `http://localhost:3000/callback`
+    - "Allowed Callback URLs": `http://localhost:3000/login/callback`
     - "Allowed Web Origins": `http://localhost:3000`
-    - "Allowed Logout URLs": `http://localhost:3000/logout`
+    - "Allowed Logout URLs": `http://localhost:3000`
 
 #### 2. Connect your Auth0 app to a GitHub OAuth App ([docs](https://auth0.com/docs/connections/social/github))
 
