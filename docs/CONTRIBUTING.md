@@ -51,7 +51,7 @@ For locally testing the authentication, you need to configure Auth0 and GitHub t
     - "Homepage URL": `http://localhost:3000`
     - "Authorization callback URL": `https://<auth0 domain>/login/callback` (e.g., `your-app.eu.auth0.com`)
 2. Enable the connection with GitHub from your Auth0 Dashboard providing the `Client ID` and `Client Secret` of the GitHub OAuth App from the previous step, and ask for these permissions:
-    - `repo:user`
+    - `read:user`
 
 #### 3. Configure Athenian App
 
