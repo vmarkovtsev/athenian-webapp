@@ -13,6 +13,6 @@ export default () => {
     return <div>Not authenticated!</div>;
   }
 
-  logout();
+  logout({ returnTo: 'http://localhost:3000/' })
   return [];
 };

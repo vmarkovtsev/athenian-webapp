@@ -1,4 +1,7 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+
 import logo from 'images/logos/logo-transparent.png';
 
 export default ({ user }) => (
@@ -31,7 +34,7 @@ const User = ({ user }) => user ? (
       </a>
       <div className="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
         <a className="dropdown-item" href="/logout">
-          <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+          <FontAwesomeIcon icon={faSignOutAlt} className="ml-2 text-secondary mr-2 text-gray-400" />
           Logout
         </a>
       </div>
