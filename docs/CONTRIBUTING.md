@@ -55,4 +55,4 @@ For locally testing the authentication, you need to configure Auth0 and GitHub t
 
 #### 3. Configure Athenian App
 
-Update the [`config.js`](https://github.com/athenianco/athenian-webapp/blob/master/public/config.js) file by setting both `auth.domain` and `auth.clientId` with the corresponding values of the Auth0 application.
+Update the [`config.js`](https://github.com/athenianco/athenian-webapp/blob/master/public/config.js) file by setting both `auth.domain`, `auth.clientId`, `auth.redirectUri` and `auth.logoutRedirectUri` with the corresponding values of the Auth0 application.
