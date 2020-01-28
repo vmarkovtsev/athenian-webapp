@@ -8,7 +8,7 @@ import { getPipelineDataInitial, getPipelineDataAPI, getPRs } from 'js/services/
 
 export default () => {
   const [pipelineState, setPipelineData] = useState(getPipelineDataInitial());
-  const [prsState, _] = useState(getPRs);
+  const [prsState, _] = useState(getPRs());
 
   useEffect(() => {
     getPipelineDataAPI().then(data => {
