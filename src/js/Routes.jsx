@@ -22,14 +22,14 @@ export default () => {
     <React.StrictMode>
       <Router history={history}>
         <Switch>
+          <Route path='/login/callback'>
+            <Callback />
+          </Route>
           <Route path='/login'>
             <Login />
           </Route>
           <Route path='/logout'>
             <Logout />
-          </Route>
-          <Route path='/callback'>
-            <Callback />
           </Route>
           <PrivateRoute path='/waiting' component={Waiting} />
           <Route path='/'>
