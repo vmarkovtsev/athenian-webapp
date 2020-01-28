@@ -1,8 +1,9 @@
 import React from 'react';
+import classnames from 'classnames';
 
-import CleanAreaChart, { vertical } from '../charts/CleanAreaChart';
+import CleanAreaChart, { vertical } from 'js/components/charts/CleanAreaChart';
 
-import { hexToRGBParts, rgba } from '../../utils/colors';
+import { hexToRGBParts, rgba } from 'js/services/colors';
 
 export default ({ title, text, badge, color, data, active, onClick }) => {
   const cardStyle = {};
@@ -12,7 +13,7 @@ export default ({ title, text, badge, color, data, active, onClick }) => {
   };
 
   return (
-    <div className={"card shadow pipeline-thumbnail" + (active ? ' active' : '')} onClick={onClick} style={cardStyle}>
+    <div className={classnames('card shadow pipeline-thumbnail', active && 'active')} onClick={onClick} style={cardStyle}>
       <div className="card-body">
         <div className="row no-gutters card-title text-xs text-uppercase mb-3">
           <div className="col font-weight-bold">{title}</div>

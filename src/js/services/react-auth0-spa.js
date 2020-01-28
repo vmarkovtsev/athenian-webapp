@@ -1,3 +1,5 @@
+// From https://auth0.com/docs/quickstart/spa/react#install-the-auth0-react-wrapper
+
 import React, { useState, useEffect, useContext } from 'react';
 import createAuth0Client from '@auth0/auth0-spa-js';
 

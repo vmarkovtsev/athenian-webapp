@@ -1,10 +1,7 @@
 import React, { useEffect } from 'react';
-
-import 'bootstrap/dist/js/bootstrap.js';
-
-import Page from '../components/layout/Page';
-
 import { useHistory } from 'react-router-dom';
+
+import Page from 'js/pages/templates/Page';
 
 const slides = [
   {
@@ -38,13 +35,13 @@ export default () => {
           <div id="carousel-waiting" className="carousel slide w-75 mx-auto" data-ride="carousel">
             <ol className="carousel-indicators">
               {slides.map((slide, index) => {
-                return <li key={index} data-target="#carousel-waiting" data-slide-to={index} className={index === 0 ? "active": ""}></li>;
+                return <li key={index} data-target="#carousel-waiting" data-slide-to={index} className={index === 0 ? "active" : ""}></li>;
               })}
             </ol>
             <div className="carousel-inner">
               {slides.map((slide, index) => {
                 return (
-                  <div key={index} className={index === 0 ? "carousel-item active": "carousel-item"}>
+                  <div key={index} className={index === 0 ? "carousel-item active" : "carousel-item"}>
                     <img className="d-block w-100" src={slide.src} alt={slide.alt} />
                   </div>
                 );

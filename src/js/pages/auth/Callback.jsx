@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useAuth0 } from '../../react-auth0-spa';
+import { useAuth0 } from 'js/services/react-auth0-spa';
 
 export default () => {
   const { loading, isAuthenticated } = useAuth0();

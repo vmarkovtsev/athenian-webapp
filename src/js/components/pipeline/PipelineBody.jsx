@@ -1,8 +1,10 @@
 import React from 'react';
+import classnames from 'classnames';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faAngleUp, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 
-import TimeSeries from '../charts/TimeSeries';
+import TimeSeries from 'js/components/charts/TimeSeries';
 
 export default ({ charts, section }) => (
   <div>
@@ -50,7 +52,7 @@ const PipelineBodyCard = ({ insights, title, chart }) => (
                       <div className="font-weight-bold">
                         <span className="text-lg mr-1">11</span>
                         <span className="mr-2">hours</span>
-                        <span className={"badge" + (ins.value < 0 ? " badge-danger" : " badge-success")}>
+                        <span className={classnames('badge', ins.value < 0 ? 'badge-danger' : 'badge-success')}>
                           <FontAwesomeIcon
                             icon={ins.value < 0 ? faAngleDown : faAngleUp}
                             className="align-bottom mr-1"
@@ -79,8 +81,8 @@ const PipelineBodyCard = ({ insights, title, chart }) => (
 const PipelineBodyHint = ({ title, subtitle, children }) => (
   <div className="card mb-4 bg-light border-0">
     <div className="card-body">
-      {title && <h5 className={"card-title text-xs text-uppercase" + (title.bold && ' font-weight-bold')}>{title.text}</h5>}
-      {subtitle && <h6 className={"card-subtitle mb-2 text-xs text-uppercase" + (subtitle.bold && ' font-weight-bold')}>{subtitle.text}</h6>}
+      {title && <h5 className={classnames('card-title text-xs text-uppercase', title.bold && 'font-weight-bold')}>{title.text}</h5>}
+      {subtitle && <h6 className={classnames('card-subtitle mb-2 text-xs text-uppercase', subtitle.bold && 'font-weight-bold')}>{subtitle.text}</h6>}
       <div className="card-text">
         {children}
       </div>
