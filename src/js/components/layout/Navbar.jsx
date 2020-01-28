@@ -13,7 +13,7 @@ export default ({ user }) => (
     </div>
     <div className="navbar navbar-expand-sm navbar-light bg-white static-top border-bottom mb-4">
       <div className="container">
-        <ol id="mainBreadcrums" className="breadcrumb bg-white mb-0 py-0 p-0" aria-label="breadcrumb">
+        <ol id="mainBreadcrumbs" className="breadcrumb bg-white mb-0 py-0 p-0" aria-label="breadcrumb">
           <li className="breadcrumb-item text-xs"><a href="/" className="text-secondary">Home</a></li>
           <li className="breadcrumb-item active" aria-current="page">Work in progress</li>
         </ol>
