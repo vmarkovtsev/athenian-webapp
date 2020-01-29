@@ -25,7 +25,7 @@ export default () => {
     }, [loading, isAuthenticated, getTokenSilently]);
 
     return (
-        <Page>
+        <Page breadcrumbs={{ current: 'Overview' }}>
             <TopFilter />
             <MainMetrics />
             <Stages stages={pipelineState} />

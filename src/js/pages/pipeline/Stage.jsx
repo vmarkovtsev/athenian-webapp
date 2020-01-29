@@ -27,9 +27,14 @@ export default () => {
             .then(setPipelineData);
     }, [loading, isAuthenticated, getTokenSilently]);
 
+    const links = {
+        current: pipelineState[activeStageState].tab.title,
+        ancestors: [{ url: '/', text: 'Overview' }],
+    };
+
     return (
         activeStageState >= 0 ? (
-            <Page>
+            <Page breadcrumbs={links}>
                 <TopFilter />
                 <MainMetrics />
                 <Stages stages={pipelineState} activeCard={activeStageState} />
