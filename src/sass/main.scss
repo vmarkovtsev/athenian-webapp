@@ -39,3 +39,11 @@
 .pr-tab {
     border-bottom-color: #FF7D3A !important;
 }
+
+a {
+    text-decoration: none !important;
+
+    & .card {
+        color: $body-color;
+    }
+}

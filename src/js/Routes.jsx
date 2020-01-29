@@ -11,6 +11,7 @@ import history from 'js/services/history';
 import PrivateRoute from 'js/PrivateRoute';
 
 import Home from 'js/pages/Home';
+import Stage from 'js/pages/pipeline/Stage';
 import Login from 'js/pages/auth/Login';
 import Logout from 'js/pages/auth/Logout';
 import Callback from 'js/pages/auth/Callback';
@@ -25,6 +26,9 @@ export default () => {
         <Switch>
           <Route exact path='/'>
             <Home />
+          </Route>
+          <Route path='/stage/:name'>
+            <Stage />
           </Route>
           <Route path='/login/callback'>
             <Callback />

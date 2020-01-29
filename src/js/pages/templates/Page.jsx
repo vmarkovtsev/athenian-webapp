@@ -12,21 +12,13 @@ export default ({ children }) => {
   const [userState, setUser] = useState(null);
 
   useEffect(() => {
-    const callAPI = async () => {
-      if (loading || !isAuthenticated) {
-        return;
-      };
-
-      getTokenSilently()
-        .then(token => {
-          return fetchApi(token, getUser);
-        })
-        .then(data => {
-          setUser();
-        });
+    if (loading || !isAuthenticated) {
+      return;
     };
 
-    callAPI();
+    getTokenSilently()
+      .then(token => fetchApi(token, getUser))
+      .then(setUser);
   }, [loading, isAuthenticated, getTokenSilently]);;
 
   return (

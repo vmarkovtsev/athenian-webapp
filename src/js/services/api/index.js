@@ -105,19 +105,19 @@ const sampleCharts = [
 
 const pipeline = [
   {
-    tab: { title: 'Work in progress', color: '#FF7D3A', text: '5 weeks', badge: 235, metric: 'pr-wip-time' },
+    tab: { title: 'Work in progress', slug: 'work-in-progress', color: '#FF7D3A', text: '5 weeks', badge: 235, metric: 'pr-wip-time' },
     body: { charts: sampleCharts }
   },
   {
-    tab: { title: 'Review', color: '#FECD33', text: '10 months', badge: 5, metric: 'pr-wait-first-review-time' },
+    tab: { title: 'Review', slug: 'review', color: '#FECD33', text: '10 months', badge: 5, metric: 'pr-wait-first-review-time' },
     body: { charts: sampleCharts }
   },
   {
-    tab: { title: 'Merge', color: '#9460DA', text: '5 weeks', badge: 33, metric: 'pr-merging-time' },
+    tab: { title: 'Merge', slug: 'merge', color: '#9460DA', text: '5 weeks', badge: 33, metric: 'pr-merging-time' },
     body: { charts: sampleCharts }
   },
   {
-    tab: { title: 'Release', color: '#37CB70', text: '3 days', badge: 12, metric: 'pr-release-time' },
+    tab: { title: 'Release', slug: 'release', color: '#37CB70', text: '3 days', badge: 12, metric: 'pr-release-time' },
     body: { charts: sampleCharts }
   },
 ];
