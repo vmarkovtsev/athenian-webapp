@@ -14,9 +14,9 @@ export default () => (
                             Repositories
                         </button>
                         <div className="dropdown-menu text-xs" aria-labelledby="dropdownMenuButton">
-                            <a className="dropdown-item" href="#">Repo 1</a>
-                            <a className="dropdown-item" href="#">Repo 2</a>
-                            <a className="dropdown-item" href="#">Repo 3</a>
+                            <span className="dropdown-item">Repo 1</span>
+                            <span className="dropdown-item">Repo 2</span>
+                            <span className="dropdown-item">Repo 3</span>
                         </div>
                     </div>
                     <div className="dropdown col">
@@ -28,9 +28,9 @@ export default () => (
                             Users
                         </button>
                         <div className="dropdown-menu text-xs" aria-labelledby="dropdownMenuButton">
-                            <a className="dropdown-item" href="#">User 1</a>
-                            <a className="dropdown-item" href="#">User 2</a>
-                            <a className="dropdown-item" href="#">User 3</a>
+                            <span className="dropdown-item">User 1</span>
+                            <span className="dropdown-item">User 2</span>
+                            <span className="dropdown-item">User 3</span>
                         </div>
                     </div>
                 </div>

@@ -47,14 +47,14 @@ export default () => {
                 );
               })}
             </div>
-            <a className="carousel-control-prev" href="#carousel-waiting" role="button" data-slide="prev">
+            <span className="carousel-control-prev" data-target="#carousel-waiting" role="button" data-slide="prev">
               <span className="carousel-control-prev-icon" aria-hidden="true"></span>
               <span className="sr-only">Previous</span>
-            </a>
-            <a className="carousel-control-next" href="#carousel-waiting" role="button" data-slide="next">
+            </span>
+            <span className="carousel-control-next" data-target="#carousel-waiting" role="button" data-slide="next">
               <span className="carousel-control-next-icon" aria-hidden="true"></span>
               <span className="sr-only">Next</span>
-            </a>
+            </span>
           </div>
         </div>
       </div>
