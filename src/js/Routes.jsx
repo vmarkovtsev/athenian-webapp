@@ -15,6 +15,7 @@ import Login from 'js/pages/auth/Login';
 import Logout from 'js/pages/auth/Logout';
 import Callback from 'js/pages/auth/Callback';
 import Waiting from 'js/pages/Waiting';
+import NotFound404 from 'js/pages/NotFound404';
 
 export default () => {
 
@@ -22,6 +23,9 @@ export default () => {
     <React.StrictMode>
       <Router history={history}>
         <Switch>
+          <Route exact path='/'>
+            <Home />
+          </Route>
           <Route path='/login/callback'>
             <Callback />
           </Route>
@@ -32,8 +36,8 @@ export default () => {
             <Logout />
           </Route>
           <PrivateRoute path='/waiting' component={Waiting} />
-          <Route path='/'>
-            <Home />
+          <Route path='*'>
+            <NotFound404 />
           </Route>
         </Switch>
       </Router>
