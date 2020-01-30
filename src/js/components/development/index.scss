@@ -1,0 +1,81 @@
+@import 'sass/_variables.scss';
+@import 'sass/_overrides.scss';
+@import '~@dpordomingo/startbootstrap-sb-admin-2/scss/sb-admin-2.scss';
+
+#breakpoint-helper {
+    position: fixed;
+    bottom: 3px;
+    right: 3px;
+    text-align: right;
+    cursor: help;
+    display: block;
+    border: 1px solid #888;
+    background-color: #ddd;
+
+    &:hover {
+        .breakPoints {
+            display: block;
+        }
+    }
+
+    .name,
+    .desc,
+    .size {
+        display: inline-block;
+        line-height: 20px;
+    }
+
+    .name,
+    .size {
+        text-align: center;
+    }
+
+    .size {
+        width: 50px;
+        font-size: 9px;
+    }
+
+    .name {
+        width: 30px;
+        font-family: courier;
+    }
+
+    .desc {
+        padding-left: 5px;
+    }
+
+    .breakPoint {
+        display: none;
+    }
+
+    #xs {
+        @include media-breakpoint-only(xs) {
+            display: block;
+        }
+    }
+
+    #sm {
+        @include media-breakpoint-only(sm) {
+            display: block;
+        }
+    }
+
+    #md {
+        @include media-breakpoint-only(md) {
+            display: block;
+        }
+    }
+
+    #lg {
+        @include media-breakpoint-only(lg) {
+            display: block;
+        }
+    }
+
+    #xl {
+        @include media-breakpoint-up(xl) {
+            display: block;
+        }
+    }
+
+}
