@@ -16,7 +16,7 @@ CI ?=
 # TODO (dpordomingo): consider locking to fixed version once we start doing releases.
 API_SPECS_URL ?= https://raw.githubusercontent.com/athenianco/athenian-api/master/server/athenian/api/openapi/openapi.yaml
 
-API_SERVICE_PATH := src/services/api
+API_SERVICE_PATH := src/js/services/api
 API_CLIENT_CODE_PATH := $(API_SERVICE_PATH)/openapi-client
 
 OPENAPI_GENERATOR := node_modules/@openapitools/openapi-generator-cli/bin/openapi-generator
