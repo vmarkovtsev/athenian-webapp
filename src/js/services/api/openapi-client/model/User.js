@@ -69,7 +69,7 @@ class User {
                 obj['picture'] = ApiClient.convertToType(data['picture'], 'String');
             }
             if (data.hasOwnProperty('updated')) {
-                obj['updated'] = ApiClient.convertToType(data['updated'], 'String');
+                obj['updated'] = ApiClient.convertToType(data['updated'], 'Date');
             }
             if (data.hasOwnProperty('accounts')) {
                 obj['accounts'] = ApiClient.convertToType(data['accounts'], Object);
@@ -107,7 +107,7 @@ User.prototype['picture'] = undefined;
 
 /**
  * Date and time of the last profile update.
- * @member {String} updated
+ * @member {Date} updated
  */
 User.prototype['updated'] = undefined;
 

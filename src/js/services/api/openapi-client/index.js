@@ -23,6 +23,9 @@ import GenericError from './model/GenericError';
 import Granularity from './model/Granularity';
 import InvalidRequestError from './model/InvalidRequestError';
 import InvalidRequestErrorAllOf from './model/InvalidRequestErrorAllOf';
+import InvitationCheckResult from './model/InvitationCheckResult';
+import InvitationLink from './model/InvitationLink';
+import InvitedUser from './model/InvitedUser';
 import MetricID from './model/MetricID';
 import MetricsRequest from './model/MetricsRequest';
 import NoSourceDataError from './model/NoSourceDataError';
@@ -130,6 +133,24 @@ export {
      * @property {module:model/InvalidRequestErrorAllOf}
      */
     InvalidRequestErrorAllOf,
+
+    /**
+     * The InvitationCheckResult model constructor.
+     * @property {module:model/InvitationCheckResult}
+     */
+    InvitationCheckResult,
+
+    /**
+     * The InvitationLink model constructor.
+     * @property {module:model/InvitationLink}
+     */
+    InvitationLink,
+
+    /**
+     * The InvitedUser model constructor.
+     * @property {module:model/InvitedUser}
+     */
+    InvitedUser,
 
     /**
      * The MetricID model constructor.

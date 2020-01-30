@@ -52,10 +52,10 @@ class RepositorySetListItem {
                 obj['id'] = ApiClient.convertToType(data['id'], 'Number');
             }
             if (data.hasOwnProperty('created')) {
-                obj['created'] = ApiClient.convertToType(data['created'], 'String');
+                obj['created'] = ApiClient.convertToType(data['created'], 'Date');
             }
             if (data.hasOwnProperty('updated')) {
-                obj['updated'] = ApiClient.convertToType(data['updated'], 'String');
+                obj['updated'] = ApiClient.convertToType(data['updated'], 'Date');
             }
             if (data.hasOwnProperty('items_count')) {
                 obj['items_count'] = ApiClient.convertToType(data['items_count'], 'Number');
@@ -75,13 +75,13 @@ RepositorySetListItem.prototype['id'] = undefined;
 
 /**
  * Date and time of creation of the repository set.
- * @member {String} created
+ * @member {Date} created
  */
 RepositorySetListItem.prototype['created'] = undefined;
 
 /**
  * Date and time of the last change of the repository set.
- * @member {String} updated
+ * @member {Date} updated
  */
 RepositorySetListItem.prototype['updated'] = undefined;
 
