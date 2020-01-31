@@ -53,6 +53,33 @@ export const getUser = (api) => {
   });
 };
 
+export const getRepos = () => {
+  return new Promise(resolve => window.setTimeout(() => {
+    resolve([
+      'github.com/athenianco/athenian-webapp',
+      'github.com/athenianco/athenian-api',
+      'github.com/athenianco/metadata',
+      'github.com/athenianco/metadata-retrieval',
+      'github.com/bblfsh/metadata-retrieval',
+    ]);
+  }, 1000));
+};
+
+export const getContributors = () => {
+  return new Promise(resolve => window.setTimeout(() => {
+    resolve([
+      'github.com/dennwc',
+      'github.com/dpordomingo',
+      'github.com/eiso',
+      'github.com/lwsanty',
+      'github.com/marnovo',
+      'github.com/se7entyse7en',
+      'github.com/vmarkovtsev',
+      'github.com/warenlg',
+    ]);
+  }, 1500));
+};
+
 export const getPipelineDataAPI = (api) => {
   const metrics = ['wip-time', 'review-time', 'merging-time', 'release-time'];
 
