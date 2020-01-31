@@ -3,6 +3,7 @@ window.ENV = {
     "domain": "yourtenant.auth0.com",
     "clientId": "your-cliend-id",
     "redirectUri": "http://localhost:3000/login/callback",
-    "logoutRedirectUri": "http://localhost:3000"
+    "logoutRedirectUri": "http://localhost:3000",
+    "audience": "https://yourtenant.auth0.com/api/v2/"
   }
 };
