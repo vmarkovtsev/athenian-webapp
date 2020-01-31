@@ -16,12 +16,19 @@ export default () => {
     const [prsState] = useState(getPRs());
 
     useEffect(() => {
-        if (loading || !isAuthenticated) {
+        if (loading) {
             return;
         };
-        getTokenSilently()
-            .then(token => fetchApi(token, getPipelineDataAPI))
-            .then(setPipelineData);
+
+        let pipelinePromise;
+        if (isAuthenticated) {
+            pipelinePromise = getTokenSilently()
+                .then(token => fetchApi(token, getPipelineDataAPI));
+        } else {
+            pipelinePromise = fetchApi('', getPipelineDataAPI);
+        }
+
+        pipelinePromise.then(setPipelineData);
     }, [loading, isAuthenticated, getTokenSilently]);
 
     return (

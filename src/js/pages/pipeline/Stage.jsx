@@ -19,12 +19,19 @@ export default () => {
     const activeStageState = pipelineState.findIndex(stage => stage.tab.slug === name);
 
     useEffect(() => {
-        if (loading || !isAuthenticated) {
+        if (loading) {
             return;
         };
-        getTokenSilently()
-            .then(token => fetchApi(token, getPipelineDataAPI))
-            .then(setPipelineData);
+
+        let pipelinePromise;
+        if (isAuthenticated) {
+            pipelinePromise = getTokenSilently()
+                .then(token => fetchApi(token, getPipelineDataAPI));
+        } else {
+            pipelinePromise = fetchApi('', getPipelineDataAPI);
+        }
+
+        pipelinePromise.then(setPipelineData);
     }, [loading, isAuthenticated, getTokenSilently]);
 
     const links = {

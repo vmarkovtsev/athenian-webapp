@@ -18,7 +18,10 @@ export default ({ breadcrumbs, children }) => {
 
     getTokenSilently()
       .then(token => fetchApi(token, getUser))
-      .then(setUser);
+      .then(setUser)
+      .catch(e => setUser({})); // TODO (dpordomingo):
+    // if could not get the user, but Auth0 is in logged in state, it will set an empty user
+    // We'll handle errors later, but this is blocker to ensure that at least the user can logout.
   }, [loading, isAuthenticated, getTokenSilently]);;
 
   return (
