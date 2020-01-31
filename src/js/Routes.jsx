@@ -4,6 +4,7 @@ import {
   Router,
   Switch,
   Route,
+  Redirect,
 } from 'react-router-dom';
 
 import history from 'js/services/history';
@@ -30,12 +31,21 @@ export default () => {
           <Route path='/stage/:name'>
             <Stage />
           </Route>
+          <Route
+            path='/i/:code(\w{8})'
+            render={props => (
+              <Redirect to={
+                {
+                  pathname: '/login',
+                  state: { inviteLink: window.location.href }
+                }
+              }/>
+            )}
+          />
           <Route path='/login/callback'>
             <Callback />
           </Route>
-          <Route path='/login'>
-            <Login />
-          </Route>
+          <Route path='/login' component={Login} />
           <Route path='/logout'>
             <Logout />
           </Route>
