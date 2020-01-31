@@ -47,3 +47,13 @@ a {
         color: $body-color;
     }
 }
+
+.filters  {
+    .filter {
+        min-width: 250px;
+    }
+
+    .datepicker {
+        height: 38px;
+    }
+}
