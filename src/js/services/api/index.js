@@ -1,4 +1,4 @@
-import { DefaultApi, MetricsRequest } from 'js/services/api/openapi-client';
+import { DefaultApi, ApiClient, MetricsRequest } from 'js/services/api/openapi-client';
 import Granularity from 'js/services/api/openapi-client/model/Granularity';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import MetricID from 'js/services/api/openapi-client/model/MetricID';
@@ -39,14 +39,7 @@ export const getPRs = () => {
   return Array.from(Array(57)).map(() => getRandItem());
 }
 
-export const getUser = () => {
-
-  const api = new DefaultApi();
-
-  // TODO(dpordomingo): this will be read from env as in
-  // https://github.com/athenianco/athenian-webapp/pull/26/files#diff-c3eb372a41ec3e6950cec346be31458cR1
-  api.apiClient.basePath = 'https://api.owl.athenian.co/v1';
-
+export const getUser = (api) => {
   return api.getUser().then(data => {
     if (!data.name) {
       data.name = data.email;
@@ -60,10 +53,10 @@ export const getUser = () => {
   });
 };
 
-export const getPipelineDataAPI = () => {
+export const getPipelineDataAPI = (api) => {
   const metrics = ['wip-time', 'wait-first-review-time', 'merging-time', 'release-time'];
 
-  return api(metrics).then(apiData => {
+  return fetchApiMetricsLine(api, metrics).then(apiData => {
     const thumbsData = [];
 
     if (apiData.calculated) {
@@ -129,7 +122,7 @@ const pipeline = [
   },
 ];
 
-const api = metrics => {
+const fetchApiMetricsLine = (api, metrics) => {
   const forset = [new ForSet([
     'github.com/athenianco/athenian-webapp',
     'github.com/athenianco/athenian-api',
@@ -142,14 +135,19 @@ const api = metrics => {
   const metricsIDs = metrics.map(metric => (new MetricID())[metric]);
   const account = 1;
 
-  const api = new DefaultApi();
-
-  // TODO(dpordomingo): this will be read from env as in
-  // https://github.com/athenianco/athenian-webapp/pull/26/files#diff-c3eb372a41ec3e6950cec346be31458cR1
-  api.apiClient.basePath = 'https://api.owl.athenian.co/v1';
-
   const body = new MetricsRequest(forset, metricsIDs, dateFrom, dateTo, granularity, account);
   return api.calcMetricsLine(body);
+};
+
+export const fetchApi = (token, apiCall, ...args) => {
+  const client = new ApiClient();
+  client.authentications.bearerAuth.accessToken = token;
+  // TODO(dpordomingo): this will be read from env as in
+  // https://github.com/athenianco/athenian-webapp/pull/26/files#diff-c3eb372a41ec3e6950cec346be31458cR1
+  client.basePath = 'https://api.owl.athenian.co/v1';
+
+  const api = new DefaultApi(client);
+  return apiCall(api, ...args);
 };
 
 const getPipelineData = (thumbData, randGenerator) => pipeline.map((stage, i) => ({

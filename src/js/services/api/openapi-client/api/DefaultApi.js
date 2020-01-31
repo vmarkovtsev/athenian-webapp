@@ -68,7 +68,7 @@ export default class DefaultApi {
       let formParams = {
       };
 
-      let authNames = [];
+      let authNames = ['bearerAuth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
       let returnType = InvitedUser;
@@ -113,7 +113,7 @@ export default class DefaultApi {
       let formParams = {
       };
 
-      let authNames = [];
+      let authNames = ['bearerAuth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
       let returnType = CalculatedMetrics;
@@ -201,7 +201,7 @@ export default class DefaultApi {
       let formParams = {
       };
 
-      let authNames = [];
+      let authNames = ['bearerAuth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
       let returnType = CreatedIdentifier;
@@ -248,7 +248,7 @@ export default class DefaultApi {
       let formParams = {
       };
 
-      let authNames = [];
+      let authNames = ['bearerAuth'];
       let contentTypes = [];
       let accepts = ['application/json'];
       let returnType = Object;
@@ -294,7 +294,7 @@ export default class DefaultApi {
       let formParams = {
       };
 
-      let authNames = [];
+      let authNames = ['bearerAuth'];
       let contentTypes = [];
       let accepts = ['application/json'];
       let returnType = InvitationLink;
@@ -340,7 +340,7 @@ export default class DefaultApi {
       let formParams = {
       };
 
-      let authNames = [];
+      let authNames = ['bearerAuth'];
       let contentTypes = [];
       let accepts = ['application/json'];
       let returnType = Account;
@@ -386,7 +386,7 @@ export default class DefaultApi {
       let formParams = {
       };
 
-      let authNames = [];
+      let authNames = ['bearerAuth'];
       let contentTypes = [];
       let accepts = ['application/json'];
       let returnType = ['String'];
@@ -426,7 +426,7 @@ export default class DefaultApi {
       let formParams = {
       };
 
-      let authNames = [];
+      let authNames = ['bearerAuth'];
       let contentTypes = [];
       let accepts = ['application/json'];
       let returnType = User;
@@ -471,7 +471,7 @@ export default class DefaultApi {
       let formParams = {
       };
 
-      let authNames = [];
+      let authNames = ['bearerAuth'];
       let contentTypes = [];
       let accepts = ['application/json'];
       let returnType = [RepositorySetListItem];
@@ -520,7 +520,7 @@ export default class DefaultApi {
       let formParams = {
       };
 
-      let authNames = [];
+      let authNames = ['bearerAuth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
       let returnType = Object;
