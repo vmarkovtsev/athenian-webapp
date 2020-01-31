@@ -42,7 +42,7 @@ export default () => {
               }/>
             )}
           />
-          <Route path='/login/callback'>
+          <Route path='/callback'>
             <Callback />
           </Route>
           <Route path='/login' component={Login} />
