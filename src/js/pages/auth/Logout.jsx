@@ -1,16 +1,21 @@
 import React from 'react';
 
 import { useAuth0 } from 'js/services/react-auth0-spa';
+import Simple from 'js/pages/templates/Simple';
 
 export default () => {
   const { loading, isAuthenticated, logout } = useAuth0();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Simple>Loading...</Simple>;
   }
 
   if (!isAuthenticated) {
-    return <div>Not authenticated!</div>;
+    return (
+      <Simple>
+        Not authenticated!
+      </Simple>
+    );
   }
 
   logout({ returnTo: window.ENV.auth.logoutRedirectUri });

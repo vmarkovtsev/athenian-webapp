@@ -6,29 +6,31 @@ import Badge from 'js/components/ui/Badge';
 import { BigNumber } from 'js/components/ui/Typography';
 import Info from 'js/components/ui/Info'
 
-export default ({ charts, section }) => (
-  <div>
-    <div className="row">
-      <div className="col-12">
-        <p className="text-centerleft font-weight-bold text-lg">{section}</p>
+export default ({ title, metrics }) => {
+  return (
+    <div>
+      <div className="row">
+        <div className="col-12">
+          <p className="text-centerleft font-weight-bold text-lg">{title}</p>
+        </div>
       </div>
+      {
+        metrics.map((chart, i) => {
+          return <Metric key={i}
+            title={chart.title}
+            chart={
+              <TimeSeries data={chart.data}
+                color={chart.color} />
+            }
+            insights={chart.insights}>
+          </Metric>;
+        })
+      }
     </div>
-    {
-      charts.map((chart, i) => {
-        return <PipelineBodyCard key={i}
-          title={chart.title}
-          chart={
-            <TimeSeries data={chart.data}
-              color={chart.color} />
-          }
-          insights={chart.insights}>
-        </PipelineBodyCard>;
-      })
-    }
-  </div>
-);
+  );
+}
 
-const PipelineBodyCard = ({ insights, title, chart }) => (
+const Metric = ({ insights, title, chart }) => (
   <div className="card mb-4">
     <div className="card-header bg-white font-weight-bold">
       <span className="text-gray-900">{title}</span>
@@ -45,7 +47,7 @@ const PipelineBodyCard = ({ insights, title, chart }) => (
               <div className="col-5 align-self-center">
                 <div className="row justify-content-center">
                   <div className="col-8">
-                    {insights.map((ins, i) => <PipelineBodyHint key={i}
+                    {insights.map((ins, i) => <MetricKPI key={i}
                       title={ins.title}
                       subtitle={ins.subtitle}
                     >
@@ -53,7 +55,7 @@ const PipelineBodyCard = ({ insights, title, chart }) => (
                         <BigNumber content="11 hours" />
                         <Badge value={ins.value} trend className="ml-2" />
                       </div>
-                    </PipelineBodyHint>
+                    </MetricKPI>
                     )}
                   </div>
                 </div>
@@ -71,7 +73,7 @@ const PipelineBodyCard = ({ insights, title, chart }) => (
   </div >
 );
 
-const PipelineBodyHint = ({ title, subtitle, children }) => (
+const MetricKPI = ({ title, subtitle, children }) => (
   <div className="card mb-4 bg-light border-0">
     <div className="card-body">
       {title && <h5 className={classnames('card-title text-xs text-uppercase', title.bold && 'font-weight-bold')}>{title.text}</h5>}
