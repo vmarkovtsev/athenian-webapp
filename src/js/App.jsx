@@ -23,6 +23,7 @@ ReactDOM.render(<>
     domain={window.ENV.auth.domain}
     client_id={window.ENV.auth.clientId}
     redirect_uri={window.ENV.auth.redirectUri}
+    audience={window.ENV.auth.audience}
     onRedirectCallback={onRedirectCallback}
   >
     <Routes />
