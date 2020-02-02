@@ -18,7 +18,6 @@ export default ({ component: Component, path, ...rest }) => {
   }, [loading, isAuthenticated, loginWithRedirect, path]);
 
   const render = props => {
-    console.log(isAuthenticated);
     return isAuthenticated === true ? <Component {...props} /> : null;
   };
 
