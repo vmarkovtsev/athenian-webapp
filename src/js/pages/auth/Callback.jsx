@@ -23,19 +23,27 @@ export default () => {
       .then(token => {
         const api = buildApi(token);
         const inviteLink = query.get('inviteLink');
+        let invType;
 
         if (inviteLink) {
           const body = new InvitationLink(inviteLink);
           api.checkInvitation(body)
             .then(check => {
               if (check.valid && check.active) {
-                const invType = check.type;
+                invType = check.type;
                 return api.acceptInvitation(body);
               }
 
               return Promise.reject(new Error('invalid invitation'));
             })
-            .then(resp => setRedirectTo(query.get('targetUrl')))
+            .then(resp => {
+              if (invType === 'admin') {
+                const win = window.open(window.ENV.application.githubAppUri, '_blank');
+                win.focus();
+              }
+
+              setRedirectTo(query.get('targetUrl'));
+            })
             .catch(err => setErrorMessage(err.message));
         } else {
           setRedirectTo(query.get('targetUrl'));
