@@ -5,5 +5,8 @@ window.ENV = {
     "redirectUri": "http://localhost:3000/login/callback",
     "logoutRedirectUri": "http://localhost:3000",
     "audience": "https://yourtenant.auth0.com/api/v2/"
+  },
+  api: {
+    "basePath": "http://localhost:8080/v1"
   }
 };
