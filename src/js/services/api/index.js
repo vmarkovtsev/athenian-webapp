@@ -142,9 +142,7 @@ const fetchApiMetricsLine = (api, metrics) => {
 export const fetchApi = (token, apiCall, ...args) => {
   const client = new ApiClient();
   client.authentications.bearerAuth.accessToken = token;
-  // TODO(dpordomingo): this will be read from env as in
-  // https://github.com/athenianco/athenian-webapp/pull/26/files#diff-c3eb372a41ec3e6950cec346be31458cR1
-  client.basePath = 'https://api.owl.athenian.co/v1';
+  client.basePath = window.ENV.api.basePath;
 
   const api = new DefaultApi(client);
   return apiCall(api, ...args);
