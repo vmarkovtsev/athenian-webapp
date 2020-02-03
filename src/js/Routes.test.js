@@ -11,6 +11,7 @@ it('renders without crashing', () => {
     .spyOn(Auth0, 'useAuth0')
     .mockImplementation(() => ({}))
 
+  window.ENV = { api: {} };
 
   const div = document.createElement('div');
   act(() => {
