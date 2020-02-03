@@ -22,6 +22,7 @@ export default () => {
       .then(async (token) => {
         const api = buildApi(token);
         const inviteLink = query.get('inviteLink');
+        let invType;
 
         if (inviteLink) {
           const body = new InvitationLink(inviteLink);
@@ -40,6 +41,8 @@ export default () => {
               throw new Error(`Invitation is not ${cause}`);
             }
 
+            invType = check.type;
+
             try {
               await api.acceptInvitation(body);
             } catch (err) {
@@ -57,6 +60,11 @@ export default () => {
             window.setTimeout(() => logout({ returnTo: window.ENV.auth.logoutRedirectUri }), 3000);
             return;
           }
+        }
+
+        if (invType === 'admin') {
+          const win = window.open(window.ENV.application.githubAppUri, '_blank');
+          win.focus();
         }
 
         setRedirectTo(query.get('targetUrl'));
