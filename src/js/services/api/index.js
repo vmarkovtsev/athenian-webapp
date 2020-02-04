@@ -54,7 +54,7 @@ export const getUser = (api) => {
 };
 
 export const getPipelineDataAPI = (api) => {
-  const metrics = ['wip-time', 'wait-first-review-time', 'merging-time', 'release-time'];
+  const metrics = ['wip-time', 'review-time', 'merging-time', 'release-time'];
 
   return fetchApiMetricsLine(api, metrics).then(apiData => {
     const thumbsData = [];
@@ -109,7 +109,7 @@ const pipeline = [
     body: { charts: sampleCharts }
   },
   {
-    tab: { title: 'Review', slug: 'review', color: '#FECD33', text: '10 months', badge: 5, metric: 'pr-wait-first-review-time' },
+    tab: { title: 'Review', slug: 'review', color: '#FECD33', text: '10 months', badge: 5, metric: 'pr-review-time' },
     body: { charts: sampleCharts }
   },
   {
