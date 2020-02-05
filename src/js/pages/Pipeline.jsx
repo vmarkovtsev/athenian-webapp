@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import Body from 'js/components/pipeline/Body';
+import Page from 'js/pages/templates/Page';
+
+import TopFilter from 'js/components/pipeline/TopFilter';
+import MainMetrics from 'js/components/pipeline/MainMetrics';
+import Stages from 'js/components/pipeline/Stages';
 
 import { useAuth0 } from 'js/context/Auth0';
 
 import { getPipelineDataInitial, getPipelineDataAPI, fetchApi } from 'js/services/api';
 
-export default () => {
+export default ({ children }) => {
     const { loading, isAuthenticated, getTokenSilently } = useAuth0();
-
     const [pipelineState, setPipelineData] = useState(getPipelineDataInitial());
-
     const { name } = useParams()
     const activeStageState = pipelineState.findIndex(stage => stage.tab.slug === name);
 
@@ -31,14 +33,19 @@ export default () => {
         pipelinePromise.then(setPipelineData);
     }, [loading, isAuthenticated, getTokenSilently]);
 
+    const links = activeStageState >= 0 ? {
+        current: pipelineState[activeStageState].tab.title,
+        ancestors: [{ url: '/', text: 'Overview' }],
+    } : {
+            current: 'Overview',
+        };
+
     return (
-        activeStageState >= 0 ? (
-            <Body
-                title={pipelineState[activeStageState].tab.title}
-                metrics={pipelineState[activeStageState].body.charts}
-            />
-        ) : (
-                <p>{name} is not a valid pipeline stage.</p>
-            )
+        <Page breadcrumbs={links}>
+            <TopFilter />
+            <MainMetrics />
+            <Stages stages={pipelineState} activeCard={activeStageState} />
+            {children}
+        </Page>
     );
 };

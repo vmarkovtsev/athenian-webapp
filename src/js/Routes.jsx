@@ -13,7 +13,9 @@ import PrivateRoute from 'js/PrivateRoute';
 
 import Home from 'js/pages/Home';
 import UserContext from 'js/context/User';
+import Pipeline from 'js/pages/Pipeline';
 import Stage from 'js/pages/pipeline/Stage';
+import Overview from 'js/pages/pipeline/Overview';
 import Login from 'js/pages/auth/Login';
 import Logout from 'js/pages/auth/Logout';
 import Callback from 'js/pages/auth/Callback';
@@ -30,8 +32,20 @@ export default () => {
             <Route exact path='/'>
               <Home />
             </Route>
-            <Route path='/stage/:name'>
-              <Stage />
+            <Route path='/stage/:name?'>
+              <Pipeline>
+                <Switch>
+                  <Route exact path='/stage'>
+                    <Redirect to='/stage/overview' />
+                  </Route>
+                  <Route exact path='/stage/overview'>
+                    <Overview />
+                  </Route>
+                  <Route path='/stage/:name'>
+                    <Stage />
+                  </Route>
+                </Switch>
+              </Pipeline>
             </Route>
             <Route path='/i/:code(\w{8})'>
               <Redirect to={
