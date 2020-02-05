@@ -33,15 +33,8 @@ export default ({ children }) => {
         pipelinePromise.then(setPipelineData);
     }, [loading, isAuthenticated, getTokenSilently]);
 
-    const links = activeStageState >= 0 ? {
-        current: pipelineState[activeStageState].tab.title,
-        ancestors: [{ url: '/', text: 'Overview' }],
-    } : {
-            current: 'Overview',
-        };
-
     return (
-        <Page breadcrumbs={links}>
+        <Page>
             <TopFilter />
             <MainMetrics />
             <Stages stages={pipelineState} activeCard={activeStageState} />

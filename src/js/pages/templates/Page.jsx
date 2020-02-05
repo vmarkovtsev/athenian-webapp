@@ -1,25 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+import { useUserContext } from 'js/context/User';
+import BreadcrumbsContext from 'js/context/Breadcrumbs';
 
 import Navbar from 'js/components/layout/Navbar';
 import Breadcrumbs from 'js/components/layout/Breadcrumbs';
 import Footer from 'js/components/layout/Footer';
-import { useUserContext } from 'js/context/User';
 
-export default ({ breadcrumbs, children }) => {
+export default ({ children }) => {
   const userContext = useUserContext();
+  const [breadcrumbsState, setBreadcrumbsState] = useState(null);
 
   return (
-    <>
+    <BreadcrumbsContext setBreadcrumbsFn={setBreadcrumbsState}>
       <Navbar user={userContext} />
-      {breadcrumbs && (
-        <Breadcrumbs breadcrumbs={breadcrumbs} />
-      )}
+      <Breadcrumbs breadcrumbs={breadcrumbsState} />
 
       <div className="container mt-4">
         {children}
       </div>
 
       <Footer />
-    </>
+    </BreadcrumbsContext>
   );
 };

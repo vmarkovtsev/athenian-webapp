@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Body from 'js/components/pipeline/Body';
 
 import { useAuth0 } from 'js/context/Auth0';
+import { useBreadcrumbsContext } from 'js/context/Breadcrumbs';
 
 import { getPipelineDataInitial, getPipelineDataAPI, fetchApi } from 'js/services/api';
 
@@ -14,6 +15,15 @@ export default () => {
 
     const { name } = useParams()
     const activeStageState = pipelineState.findIndex(stage => stage.tab.slug === name);
+
+    const links = activeStageState >= 0 ? {
+        current: pipelineState[activeStageState].tab.title,
+        ancestors: [{ url: '/stage/overview', text: 'Overview' }],
+    } : {
+            current: 'Overview',
+        };
+
+    useBreadcrumbsContext(links);
 
     useEffect(() => {
         if (loading) {

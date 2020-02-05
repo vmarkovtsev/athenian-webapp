@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default ({ breadcrumbs }) => (
+export default ({ breadcrumbs }) => breadcrumbs && (
     <div className="navbar navbar-expand-sm navbar-light bg-white static-top border-bottom">
         <div className="container">
             <ol id="mainBreadcrumbs" className="breadcrumb bg-white mb-0 py-0 p-0" aria-label="breadcrumb">
