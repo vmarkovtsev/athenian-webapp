@@ -31,21 +31,20 @@ export default () => {
           <Route path='/stage/:name'>
             <Stage />
           </Route>
-          <Route
-            path='/i/:code(\w{8})'
-            render={props => (
-              <Redirect to={
-                {
-                  pathname: '/login',
-                  state: { inviteLink: window.location.href }
-                }
-              }/>
-            )}
-          />
+          <Route path='/i/:code(\w{8})'>
+            <Redirect to={
+              {
+                pathname: '/login',
+                state: { inviteLink: window.location.href }
+              }
+            } />
+          </Route>
           <Route path='/callback'>
             <Callback />
           </Route>
-          <Route path='/login' component={Login} />
+          <Route path='/login'>
+            <Login />
+          </Route>
           <Route path='/logout'>
             <Logout />
           </Route>
