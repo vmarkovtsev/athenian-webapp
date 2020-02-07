@@ -18,9 +18,9 @@ import CalculatedMetric from './model/CalculatedMetric';
 import CalculatedMetricValues from './model/CalculatedMetricValues';
 import CalculatedMetrics from './model/CalculatedMetrics';
 import CreatedIdentifier from './model/CreatedIdentifier';
+import FilterItemsRequest from './model/FilterItemsRequest';
 import ForSet from './model/ForSet';
 import GenericError from './model/GenericError';
-import Granularity from './model/Granularity';
 import InvalidRequestError from './model/InvalidRequestError';
 import InvalidRequestErrorAllOf from './model/InvalidRequestErrorAllOf';
 import InvitationCheckResult from './model/InvitationCheckResult';
@@ -105,6 +105,12 @@ export {
     CreatedIdentifier,
 
     /**
+     * The FilterItemsRequest model constructor.
+     * @property {module:model/FilterItemsRequest}
+     */
+    FilterItemsRequest,
+
+    /**
      * The ForSet model constructor.
      * @property {module:model/ForSet}
      */
@@ -115,12 +121,6 @@ export {
      * @property {module:model/GenericError}
      */
     GenericError,
-
-    /**
-     * The Granularity model constructor.
-     * @property {module:model/Granularity}
-     */
-    Granularity,
 
     /**
      * The InvalidRequestError model constructor.

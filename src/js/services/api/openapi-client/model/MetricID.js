@@ -27,13 +27,6 @@ export default class MetricID {
 
     
         /**
-         * value: "pr-wait-first-review-time"
-         * @const
-         */
-        "wait-first-review-time" = "pr-wait-first-review-time";
-
-    
-        /**
          * value: "pr-review-time"
          * @const
          */

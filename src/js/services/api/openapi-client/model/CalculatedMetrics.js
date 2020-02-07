@@ -13,7 +13,6 @@
 
 import ApiClient from '../ApiClient';
 import CalculatedMetric from './CalculatedMetric';
-import Granularity from './Granularity';
 import MetricID from './MetricID';
 
 /**
@@ -29,7 +28,7 @@ class CalculatedMetrics {
      * @param metrics {Array.<module:model/MetricID>} Repeats `MetricsRequest.metrics`.
      * @param dateFrom {Date} Repeats `MetricsRequest.date_from`.
      * @param dateTo {Date} Repeats `MetricsRequest.date_to`.
-     * @param granularity {module:model/Granularity} 
+     * @param granularity {String} How often the metrics are reported. The value must satisfy the following regular expression: (^([1-9]\\d* )?(day|week|month|year)$
      */
     constructor(calculated, metrics, dateFrom, dateTo, granularity) { 
         
@@ -73,7 +72,7 @@ class CalculatedMetrics {
                 obj['date_to'] = ApiClient.convertToType(data['date_to'], 'Date');
             }
             if (data.hasOwnProperty('granularity')) {
-                obj['granularity'] = Granularity.constructFromObject(data['granularity']);
+                obj['granularity'] = ApiClient.convertToType(data['granularity'], 'String');
             }
         }
         return obj;
@@ -107,7 +106,8 @@ CalculatedMetrics.prototype['date_from'] = undefined;
 CalculatedMetrics.prototype['date_to'] = undefined;
 
 /**
- * @member {module:model/Granularity} granularity
+ * How often the metrics are reported. The value must satisfy the following regular expression: (^([1-9]\\d* )?(day|week|month|year)$
+ * @member {String} granularity
  */
 CalculatedMetrics.prototype['granularity'] = undefined;
 

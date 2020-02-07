@@ -13,7 +13,6 @@
 
 import ApiClient from '../ApiClient';
 import ForSet from './ForSet';
-import Granularity from './Granularity';
 import MetricID from './MetricID';
 
 /**
@@ -27,10 +26,10 @@ class MetricsRequest {
      * @alias module:model/MetricsRequest
      * @param _for {Array.<module:model/ForSet>} Sets of developers and repositories to calculate the metrics for.
      * @param metrics {Array.<module:model/MetricID>} Requested metric identifiers.
-     * @param dateFrom {Date} The date from when to start measuring the metrics.
-     * @param dateTo {Date} The date up to which to measure the metrics.
-     * @param granularity {module:model/Granularity} 
-     * @param account {Number} User's account ID.
+     * @param dateFrom {Date} Date from when to start measuring the metrics.
+     * @param dateTo {Date} Date up to which to measure the metrics.
+     * @param granularity {String} How often the metrics are reported. The value must satisfy the following regular expression: (^([1-9]\\d* )?(day|week|month|year)$
+     * @param account {Number} Session account ID.
      */
     constructor(_for, metrics, dateFrom, dateTo, granularity, account) { 
         
@@ -75,7 +74,7 @@ class MetricsRequest {
                 obj['date_to'] = ApiClient.convertToType(data['date_to'], 'Date');
             }
             if (data.hasOwnProperty('granularity')) {
-                obj['granularity'] = Granularity.constructFromObject(data['granularity']);
+                obj['granularity'] = ApiClient.convertToType(data['granularity'], 'String');
             }
             if (data.hasOwnProperty('account')) {
                 obj['account'] = ApiClient.convertToType(data['account'], 'Number');
@@ -100,24 +99,25 @@ MetricsRequest.prototype['for'] = undefined;
 MetricsRequest.prototype['metrics'] = undefined;
 
 /**
- * The date from when to start measuring the metrics.
+ * Date from when to start measuring the metrics.
  * @member {Date} date_from
  */
 MetricsRequest.prototype['date_from'] = undefined;
 
 /**
- * The date up to which to measure the metrics.
+ * Date up to which to measure the metrics.
  * @member {Date} date_to
  */
 MetricsRequest.prototype['date_to'] = undefined;
 
 /**
- * @member {module:model/Granularity} granularity
+ * How often the metrics are reported. The value must satisfy the following regular expression: (^([1-9]\\d* )?(day|week|month|year)$
+ * @member {String} granularity
  */
 MetricsRequest.prototype['granularity'] = undefined;
 
 /**
- * User's account ID.
+ * Session account ID.
  * @member {Number} account
  */
 MetricsRequest.prototype['account'] = undefined;
