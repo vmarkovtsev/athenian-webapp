@@ -16,6 +16,7 @@ import ApiClient from "../ApiClient";
 import Account from '../model/Account';
 import CalculatedMetrics from '../model/CalculatedMetrics';
 import CreatedIdentifier from '../model/CreatedIdentifier';
+import FilterItemsRequest from '../model/FilterItemsRequest';
 import GenericError from '../model/GenericError';
 import InvalidRequestError from '../model/InvalidRequestError';
 import InvitationCheckResult from '../model/InvitationCheckResult';
@@ -86,6 +87,51 @@ export default class DefaultApi {
      */
     acceptInvitation(body) {
       return this.acceptInvitationWithHttpInfo(body)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * \\\"God mode\\\" ability to turn into any user. The current user must be marked internally as a super admin.
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.id Numeric identifier of the user to turn into.
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/User} and HTTP response
+     */
+    becomeUserWithHttpInfo(opts) {
+      opts = opts || {};
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+        'id': opts['id']
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['bearerAuth'];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = User;
+      return this.apiClient.callApi(
+        '/become', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null
+      );
+    }
+
+    /**
+     * \\\"God mode\\\" ability to turn into any user. The current user must be marked internally as a super admin.
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.id Numeric identifier of the user to turn into.
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/User}
+     */
+    becomeUser(opts) {
+      return this.becomeUserWithHttpInfo(opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -266,6 +312,94 @@ export default class DefaultApi {
      */
     deleteReposet(id) {
       return this.deleteReposetWithHttpInfo(id)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * Find developers that made an action within the given timeframe.
+     * @param {Object} opts Optional parameters
+     * @param {module:model/FilterItemsRequest} opts.body 
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<String>} and HTTP response
+     */
+    filterContributorsWithHttpInfo(opts) {
+      opts = opts || {};
+      let postBody = opts['body'];
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['bearerAuth'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = ['String'];
+      return this.apiClient.callApi(
+        '/filter/contributors', 'POST',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null
+      );
+    }
+
+    /**
+     * Find developers that made an action within the given timeframe.
+     * @param {Object} opts Optional parameters
+     * @param {module:model/FilterItemsRequest} opts.body 
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<String>}
+     */
+    filterContributors(opts) {
+      return this.filterContributorsWithHttpInfo(opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * Find repositories that were updated within the given timeframe.
+     * @param {Object} opts Optional parameters
+     * @param {module:model/FilterItemsRequest} opts.body 
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<String>} and HTTP response
+     */
+    filterRepositoriesWithHttpInfo(opts) {
+      opts = opts || {};
+      let postBody = opts['body'];
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['bearerAuth'];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = ['String'];
+      return this.apiClient.callApi(
+        '/filter/repositories', 'POST',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null
+      );
+    }
+
+    /**
+     * Find repositories that were updated within the given timeframe.
+     * @param {Object} opts Optional parameters
+     * @param {module:model/FilterItemsRequest} opts.body 
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<String>}
+     */
+    filterRepositories(opts) {
+      return this.filterRepositoriesWithHttpInfo(opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });

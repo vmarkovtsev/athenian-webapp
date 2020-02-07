@@ -24,13 +24,14 @@ class User {
      * User details. \&quot;updated\&quot; and \&quot;accounts\&quot; are populated only for the current user.
      * @alias module:model/User
      * @param id {String} Auth0 user identifier.
+     * @param nativeId {String} Auth backend user identifier.
      * @param name {String} Full name of the user.
      * @param email {String} Email of the user.
      * @param picture {String} Avatar URL of the user.
      */
-    constructor(id, name, email, picture) { 
+    constructor(id, nativeId, name, email, picture) { 
         
-        User.initialize(this, id, name, email, picture);
+        User.initialize(this, id, nativeId, name, email, picture);
     }
 
     /**
@@ -38,8 +39,9 @@ class User {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, id, name, email, picture) { 
+    static initialize(obj, id, nativeId, name, email, picture) { 
         obj['id'] = id;
+        obj['native_id'] = nativeId;
         obj['name'] = name;
         obj['email'] = email;
         obj['picture'] = picture;
@@ -58,6 +60,9 @@ class User {
 
             if (data.hasOwnProperty('id')) {
                 obj['id'] = ApiClient.convertToType(data['id'], 'String');
+            }
+            if (data.hasOwnProperty('native_id')) {
+                obj['native_id'] = ApiClient.convertToType(data['native_id'], 'String');
             }
             if (data.hasOwnProperty('name')) {
                 obj['name'] = ApiClient.convertToType(data['name'], 'String');
@@ -86,6 +91,12 @@ class User {
  * @member {String} id
  */
 User.prototype['id'] = undefined;
+
+/**
+ * Auth backend user identifier.
+ * @member {String} native_id
+ */
+User.prototype['native_id'] = undefined;
 
 /**
  * Full name of the user.

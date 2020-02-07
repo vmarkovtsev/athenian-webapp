@@ -28,11 +28,10 @@ class NoSourceDataError {
      * @implements module:model/NoSourceDataErrorAllOf
      * @param type {String} URI reference that identifies the problem type (RFC 7807).
      * @param title {String} Short, human-readable summary of the problem type.
-     * @param repositories {Array.<String>} A set of repositories. An empty list results an empty response in contrary to DeveloperSet. Duplicates are automatically ignored.
      */
-    constructor(type, title, repositories) { 
-        GenericError.initialize(this, type, title);NoSourceDataErrorAllOf.initialize(this, repositories);
-        NoSourceDataError.initialize(this, type, title, repositories);
+    constructor(type, title) { 
+        GenericError.initialize(this, type, title);NoSourceDataErrorAllOf.initialize(this);
+        NoSourceDataError.initialize(this, type, title);
     }
 
     /**
@@ -40,10 +39,9 @@ class NoSourceDataError {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, type, title, repositories) { 
+    static initialize(obj, type, title) { 
         obj['type'] = type;
         obj['title'] = title;
-        obj['repositories'] = repositories;
     }
 
     /**

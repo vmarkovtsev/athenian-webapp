@@ -22,11 +22,10 @@ class NoSourceDataErrorAllOf {
     /**
      * Constructs a new <code>NoSourceDataErrorAllOf</code>.
      * @alias module:model/NoSourceDataErrorAllOf
-     * @param repositories {Array.<String>} A set of repositories. An empty list results an empty response in contrary to DeveloperSet. Duplicates are automatically ignored.
      */
-    constructor(repositories) { 
+    constructor() { 
         
-        NoSourceDataErrorAllOf.initialize(this, repositories);
+        NoSourceDataErrorAllOf.initialize(this);
     }
 
     /**
@@ -34,8 +33,7 @@ class NoSourceDataErrorAllOf {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, repositories) { 
-        obj['repositories'] = repositories;
+    static initialize(obj) { 
     }
 
     /**
