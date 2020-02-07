@@ -1,5 +1,4 @@
 import { DefaultApi, ApiClient, MetricsRequest } from 'js/services/api/openapi-client';
-import Granularity from 'js/services/api/openapi-client/model/Granularity';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import MetricID from 'js/services/api/openapi-client/model/MetricID';
 
@@ -156,7 +155,7 @@ const fetchApiMetricsLine = (api, metrics) => {
     'github.com/athenianco/metadata',
     'github.com/athenianco/metadata-retrieval'
   ])];
-  const granularity = (new Granularity())['week'];
+  const granularity = 'week';
   const dateFrom = new Date('2019-11-19');
   const dateTo = new Date('2020-02-11');
   const metricsIDs = metrics.map(metric => (new MetricID())[metric]);
