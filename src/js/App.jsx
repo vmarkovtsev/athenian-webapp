@@ -11,11 +11,8 @@ import Development from 'js/components/development';
 // A function that routes the user to the right place
 // after login
 const onRedirectCallback = appState => {
-  history.push(
-    appState && appState.targetUrl
-      ? appState.targetUrl
-      : window.location.pathname
-  );
+  let qp = new URLSearchParams(appState).toString();
+  history.push('/callback?' + qp);
 };
 
 ReactDOM.render(<>

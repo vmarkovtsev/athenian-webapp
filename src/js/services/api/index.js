@@ -165,12 +165,16 @@ const fetchApiMetricsLine = (api, metrics) => {
   return api.calcMetricsLine(body);
 };
 
-export const fetchApi = (token, apiCall, ...args) => {
+export const buildApi = (token) => {
   const client = new ApiClient();
   client.authentications.bearerAuth.accessToken = token;
   client.basePath = window.ENV.api.basePath;
 
-  const api = new DefaultApi(client);
+  return new DefaultApi(client);
+};
+
+export const fetchApi = (token, apiCall, ...args) => {
+  const api = buildApi(token);
   return apiCall(api, ...args);
 };
 
