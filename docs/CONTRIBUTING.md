@@ -37,15 +37,28 @@ The following commands auto generate different parts of the app:
 
 For locally testing the authentication, you need to configure Auth0 and GitHub to work together. Follow these steps or refer to Auth0 and GitHub docs.
 
-#### 1. Register Single-Page Applications in Auth0 ([docs](https://auth0.com/docs/dashboard/guides/applications/register-app-spa))
+You also need to run the [Athenian API](https://github.com/athenianco/athenian-api) and configure it in order to connect to your "Auth0 Management API"
 
-1. Create an Auth0 account,
-2. Create an application with "Application Type" set to "Single Page Application", using the following settings (eventually change the port with the one you plan to use):
-    - "Allowed Callback URLs": `http://localhost:3000/login/callback`
-    - "Allowed Web Origins": `http://localhost:3000`
-    - "Allowed Logout URLs": `http://localhost:3000`
+#### 1. Create a Single-Page Application in Auth0
+_See [SPA application docs](https://auth0.com/docs/dashboard/guides/applications/register-app-spa) at Auth0._
 
-#### 2. Connect your Auth0 app to a GitHub OAuth App ([docs](https://auth0.com/docs/connections/social/github))
+Create an Application with "Application Type" set to "Single Page Application", using the following settings (eventually change the port with the one you plan to use):
+- Token Endpoint Authentication Method: "none"
+- "Allowed Callback URLs": `http://localhost:3000/login/callback`
+- "Allowed Web Origins": `http://localhost:3000`
+- "Allowed Logout URLs": `http://localhost:3000`
+
+#### 2. Create a Machine-to-Machine Application in Auth0
+_See [M2M application docs](https://auth0.com/docs/dashboard/guides/applications/register-app-m2m) at Auth0._
+
+
+Create an Application with "Application Type" set to "Machine to Machine"
+- When asked for an API you want to authorize, choose "Auth0 Management API"
+- "Scopes": `read:users`
+- You don't need to configure any other value
+
+#### 3. Connect your Auth0 app to a GitHub OAuth App
+_See [social connection docs](https://auth0.com/docs/connections/social/github) at Auth0._
 
 1. Register a new OAuth App in GitHub,  with these settings:
     - "Homepage URL": `http://localhost:3000`
@@ -53,6 +66,15 @@ For locally testing the authentication, you need to configure Auth0 and GitHub t
 2. Enable the connection with GitHub from your Auth0 Dashboard providing the `Client ID` and `Client Secret` of the GitHub OAuth App from the previous step, and ask for these permissions:
     - `read:user`
 
-#### 3. Configure Athenian App
+#### 4. Configure Athenian WebApp
 
-Update the [`config.js`](https://github.com/athenianco/athenian-webapp/blob/master/public/config.js) file by setting both `auth.domain`, `auth.clientId`, `auth.redirectUri` and `auth.logoutRedirectUri` with the corresponding values of the Auth0 application.
+Update the [`config.js`](https://github.com/athenianco/athenian-webapp/blob/master/public/config.js) file:
+- `auth.domain`, `auth.clientId`, `auth.redirectUri` and `auth.logoutRedirectUri` with the corresponding values of your Auth0 Single Page Application created by [#1](#1-create-a-single-page-application-in-auth0).
+- `auth.audience` will be the one for your "Auth0 Management API" (e.g. https://your-tenant.eu.auth0.com/api/v2/).
+- `api.basePath` must be the url of your [Athenian API](https://github.com/athenianco/athenian-api)
+
+
+#### 5. Configure Athenian API
+Configure your [Athenian API](https://github.com/athenianco/athenian-api) (using the `.env` file if you're running it locally):
+- `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET` with the corresponding values of your Auth0 Machine to Machine Application created in [#2](#2-create-a-machine-to-machine-application-in-auth0).
+- `AUTH0_AUDIENCE` will be the one for your "Auth0 Management API" (e.g. https://your-tenant.eu.auth0.com/api/v2/).
