@@ -8,5 +8,8 @@ window.ENV = {
   },
   api: {
     "basePath": "http://localhost:8080/v1"
+  },
+  application: {
+    "githubAppUri": "https://github.com/apps/athenian-owl"
   }
 };
