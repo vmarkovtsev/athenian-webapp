@@ -7,22 +7,36 @@ import { dateTime } from 'js/services/format';
 const max = (a, b) => a > b ? a : b;
 const min = (a, b) => a < b ? a : b;
 
-export default ({ id, name, className }) => {
-    const today = Date.now();
-    const oneYearAgo = Date.now() - 365 * 24 * 60 * 60 * 1000;
+export default ({ id, name, className, dateIntervalLimits = { from: null, to: null }, onChange = () => { } }) => {
+    const fromMin = dateIntervalLimits.from || Date.now() - 365 * 24 * 60 * 60 * 1000;
+    const toMax = dateIntervalLimits.to || Date.now();
+    if (fromMin > toMax) {
+        throw new Error(`${id} date interval limits are wrong. ` +
+            `From:(${dateTime.ymd(fromMin)}) must be smaller than To:(${dateTime.ymd(toMax)})`);
+    }
 
-    const [fromState, setFromState] = useState(oneYearAgo);
-    const [toState, setToState] = useState(today);
+    const [fromMaxState, setFromMaxState] = useState(toMax);
+    const [toMinState, setToMinState] = useState(fromMin);
 
-    const fromMin = oneYearAgo;
-    const [fromMaxState, setFromMaxState] = useState(min(toState, today));
-    const [toMinState, setToMinState] = useState(max(fromState, oneYearAgo));
-    const toMax = today;
+    const [fromState, setFromState] = useState(fromMin);
+    const [toState, setToState] = useState(toMax);
 
     useEffect(() => {
-        setFromMaxState(min(toState, today));
-        setToMinState(max(fromState, oneYearAgo));
+        setFromMaxState(min(toState, toMax));
+        setToMinState(max(fromState, fromMin));
     }, [fromState, toState]);
+
+    const onFromChange = event => {
+        const newFromDateInterval = Date.parse(event.target.value) || fromMin;
+        setFromState(newFromDateInterval);
+        onChange({ from: newFromDateInterval, to: toState });
+    };
+
+    const onToChange = event => {
+        const newToDateInterval = Date.parse(event.target.value) || toMax;
+        setToState(newToDateInterval);
+        onChange({ from: fromState, to: newToDateInterval });
+    };
 
     return <>
         <AriaLabel id={`${id}FromLabel`} label={`${name} from filter`} />
@@ -32,7 +46,7 @@ export default ({ id, name, className }) => {
             min={dateTime.ymd(fromMin)}
             max={dateTime.ymd(fromMaxState)}
             value={dateTime.ymd(fromState)}
-            onChange={e => setFromState(Date.parse(e.target.value) || fromMin)}
+            onChange={onFromChange}
             aria-labelledby={`${id}FromLabel`}
         />
         <AriaLabel id={`${id}ToLabel`} label={`${name} to filter`} />
@@ -42,7 +56,7 @@ export default ({ id, name, className }) => {
             min={dateTime.ymd(toMinState)}
             max={dateTime.ymd(toMax)}
             value={dateTime.ymd(toState)}
-            onChange={e => setToState(Date.parse(e.target.value) || toMax)}
+            onChange={onToChange}
             aria-labelledby={`${id}ToLabel`}
         />
     </>;
