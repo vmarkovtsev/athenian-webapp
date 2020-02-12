@@ -1,25 +1,9 @@
 import { DefaultApi, ApiClient, MetricsRequest } from 'js/services/api/openapi-client';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import MetricID from 'js/services/api/openapi-client/model/MetricID';
+import { dateTime } from 'js/services/format';
 
 export const getPipelineDataInitial = () => getPipelineData([], () => []);
-
-const SECOND = 1;
-const MINUTE = 60 * SECOND;
-const HOUR = 60 * MINUTE;
-
-const getHours = secondsString => {
-  if (!secondsString) {
-    return 0;
-  };
-
-  const seconds = parseFloat(secondsString);
-  if (!seconds) {
-    return 0;
-  };
-
-  return seconds / HOUR;
-};
 
 export const getPRs = () => {
   const getRandItem = () => ({
@@ -103,7 +87,7 @@ export const getPipelineDataAPI = (api) => {
             thumbsData[metricNo] = [];
           }
 
-          thumbsData[metricNo].push({ x: new Date(day.date), y: getHours(value) });
+          thumbsData[metricNo].push({ x: new Date(day.date), y: dateTime.secondsToHours(value) });
         });
       });
 

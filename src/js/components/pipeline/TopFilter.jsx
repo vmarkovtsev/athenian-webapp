@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
-import { timeFormat } from 'd3-time-format';
 
 import { getRepos, getContributors } from 'js/services/api';
-import { getRepoName, getUserName } from 'js/services/github';
+import { github, dateTime } from 'js/services/format';
 import AriaLabel from 'js/components/ui/AriaLabel';
 
 export default () => {
@@ -42,7 +41,7 @@ export default () => {
                                 noDataMsg="There are no repositories for the time-frame filter"
                                 options={reposState}
                                 isReady={reposReadyState}
-                                labelFormat={getRepoName}
+                                labelFormat={repo => (github.repoName(repo) || 'UNKNOWN')}
                             />
                         </div>
                         <div className="col text-xs">
@@ -53,7 +52,7 @@ export default () => {
                                 noDataMsg="There are no contributors for the time-frame and repositories filters"
                                 options={contributorsState}
                                 isReady={contributorsReadyState}
-                                labelFormat={getUserName}
+                                labelFormat={repo => (github.userName(repo) || 'ANONYMOUS')}
                             />
                         </div>
                     </div>
@@ -100,7 +99,6 @@ const MultiSelect = ({ name, options, isReady, id, className, noDataMsg, labelFo
     </>;
 }
 
-const formatDate = timeFormat("%Y-%m-%d");
 const max = (a, b) => a > b ? a : b;
 const min = (a, b) => a < b ? a : b;
 
@@ -126,9 +124,9 @@ const TimeFrameFilter = ({ id, name, className }) => {
         <input
             type="date"
             className={className}
-            min={formatDate(fromMin)}
-            max={formatDate(fromMaxState)}
-            value={formatDate(fromState)}
+            min={dateTime.ymd(fromMin)}
+            max={dateTime.ymd(fromMaxState)}
+            value={dateTime.ymd(fromState)}
             onChange={e => setFromState(Date.parse(e.target.value) || fromMin)}
             aria-labelledby={`${id}FromLabel`}
         />
@@ -136,9 +134,9 @@ const TimeFrameFilter = ({ id, name, className }) => {
         <input
             type="date"
             className={className}
-            min={formatDate(toMinState)}
-            max={formatDate(toMax)}
-            value={formatDate(toState)}
+            min={dateTime.ymd(toMinState)}
+            max={dateTime.ymd(toMax)}
+            value={dateTime.ymd(toState)}
             onChange={e => setToState(Date.parse(e.target.value) || toMax)}
             aria-labelledby={`${id}ToLabel`}
         />
