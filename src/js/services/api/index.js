@@ -176,6 +176,12 @@ const fetchApiMetricsLine = (api, metrics) => {
   return api.calcMetricsLine(body);
 };
 
+export const getInvitation = async (token, accountID) => {
+  const api = buildApi(token);
+  const invitation = await api.genInvitation(accountID);
+  return invitation.url;
+};
+
 export const buildApi = (token) => {
   const client = new ApiClient();
   client.authentications.bearerAuth.accessToken = token;
