@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 
-import { useAuth0 } from 'js/services/react-auth0-spa';
+import { useAuth0 } from 'js/context/Auth0';
 import Simple from 'js/pages/templates/Simple';
 
 export default () => {

@@ -8,7 +8,7 @@ import MainMetrics from 'js/components/pipeline/MainMetrics';
 import Stages from 'js/components/pipeline/Stages';
 import Body from 'js/components/pipeline/Body';
 
-import { useAuth0 } from 'js/services/react-auth0-spa';
+import { useAuth0 } from 'js/context/Auth0';
 import { getPipelineDataInitial, getPipelineDataAPI, fetchApi } from 'js/services/api';
 
 export default () => {

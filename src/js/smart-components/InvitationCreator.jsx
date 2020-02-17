@@ -3,7 +3,7 @@ import classnames from 'classnames';
 
 import CopyButton from 'js/components/ui/CopyButton';
 
-import { useAuth0 } from 'js/services/react-auth0-spa';
+import { useAuth0 } from 'js/context/Auth0';
 import { getInvitation } from 'js/services/api';
 
 export default ({ user, className }) => {
