@@ -18,7 +18,7 @@ stages:
   - name: test
   - name: build
   - name: deploy
-    if: branch = master AND type != pull_request
+    if: branch IN (master, production) AND type != pull_request
 
 jobs:
   fast_finish: true
