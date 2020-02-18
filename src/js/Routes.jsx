@@ -21,6 +21,7 @@ import Logout from 'js/pages/auth/Logout';
 import Callback from 'js/pages/auth/Callback';
 import Waiting from 'js/pages/Waiting';
 import NotFound404 from 'js/pages/NotFound404';
+import Prototypes from 'js/pages/prototypes/Prototypes';
 
 export default () => {
 
@@ -65,6 +66,9 @@ export default () => {
               <Logout />
             </Route>
             <PrivateRoute path='/waiting' component={Waiting} />
+            <Route path='/prototypes'>
+              <Prototypes />
+            </Route>
             <Route path='*'>
               <NotFound404 />
             </Route>
