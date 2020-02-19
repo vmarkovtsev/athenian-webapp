@@ -38,18 +38,29 @@ export const getPRs = () => {
   return Array.from(Array(57)).map(() => getRandItem());
 }
 
-export const getUser = (api) => {
-  return api.getUser().then(data => {
-    if (!data.name) {
-      data.name = data.email;
+export const getUserWithAccountRepos = async token => {
+  const api = buildApi(token);
+  const user = await api.getUser();
+
+  const getAccountRepos = async (accountID, isAdmin) => {
+    let reposets;
+    try {
+      reposets = await api.listReposets(Number(accountID));
+    } catch (err) {
+      console.error(`Could not list reposets from account #${accountID}. Err#${err.body.status} ${err.body.type}. ${err.body.detail}`);
+      return { id: Number(accountID), isAdmin, repos: [] };
     }
 
-    return data;
-  }).catch(error => {
-    // TODO(dpordomingo): notify to an error handler which may rise a toast
-    console.error('ERROR calling endpoint', error);
-    throw error;
-  });
+    const reposetsContent = await Promise.all(reposets.map(async reposet => await api.getReposet(reposet.id)));
+
+    return { id: Number(accountID), repos: reposetsContent };
+  };
+
+  const accountRepos = await Promise.all(
+    Object.keys(user.accounts).map(accountID => getAccountRepos(accountID, user.accounts[accountID]))
+  );
+
+  return { ...user, accounts: accountRepos, defaultAccount: accountRepos[0] };
 };
 
 export const getRepos = () => {
@@ -163,6 +174,12 @@ const fetchApiMetricsLine = (api, metrics) => {
 
   const body = new MetricsRequest(forset, metricsIDs, dateFrom, dateTo, granularity, account);
   return api.calcMetricsLine(body);
+};
+
+export const getInvitation = async (token, accountID) => {
+  const api = buildApi(token);
+  const invitation = await api.genInvitation(accountID);
+  return invitation.url;
 };
 
 export const buildApi = (token) => {

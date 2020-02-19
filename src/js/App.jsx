@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import Routes from 'js/Routes';
 
 import * as serviceWorker from 'js/services/serviceWorker';
-import { Auth0Provider } from 'js/services/react-auth0-spa';
+import { Auth0Provider } from 'js/context/Auth0';
 import history from 'js/services/history';
 import Development from 'js/components/development';
 

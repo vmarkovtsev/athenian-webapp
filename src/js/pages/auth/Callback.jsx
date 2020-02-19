@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, Redirect } from 'react-router-dom';
 
-import { useAuth0 } from 'js/services/react-auth0-spa';
+import { useAuth0 } from 'js/context/Auth0';
 import Simple from 'js/pages/templates/Simple';
 
 import { buildApi } from 'js/services/api';

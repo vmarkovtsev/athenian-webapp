@@ -3,7 +3,7 @@ import { act } from 'react-dom/test-utils';
 import ReactDOM from 'react-dom';
 import Routes from 'js/Routes';
 
-import * as Auth0 from 'js/services/react-auth0-spa';
+import * as Auth0 from 'js/context/Auth0';
 
 it('renders without crashing', () => {
 

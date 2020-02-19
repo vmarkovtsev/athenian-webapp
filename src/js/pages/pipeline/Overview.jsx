@@ -6,7 +6,7 @@ import MainMetrics from 'js/components/pipeline/MainMetrics';
 import Stages from 'js/components/pipeline/Stages';
 import PullRequests from 'js/components/pipeline/PullRequests';
 
-import { useAuth0 } from 'js/services/react-auth0-spa';
+import { useAuth0 } from 'js/context/Auth0';
 import { getPipelineDataInitial, getPipelineDataAPI, getPRs, fetchApi } from 'js/services/api';
 
 export default () => {
