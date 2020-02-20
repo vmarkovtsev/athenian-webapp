@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom';
 
 import Page from 'js/pages/templates/Page';
 
-import TopFilter from 'js/components/pipeline/TopFilter';
+import Filters from 'js/pages/pipeline/Filters';
+
 import MainMetrics from 'js/components/pipeline/MainMetrics';
 import Stages from 'js/components/pipeline/Stages';
 
@@ -35,10 +36,11 @@ export default ({ children }) => {
 
     return (
         <Page>
-            <TopFilter />
-            <MainMetrics />
-            <Stages stages={pipelineState} activeCard={activeStageState} />
-            {children}
+            <Filters>
+                <MainMetrics />
+                <Stages stages={pipelineState} activeCard={activeStageState} />
+                {children}
+            </Filters>
         </Page>
     );
 };
