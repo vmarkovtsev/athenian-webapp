@@ -12,24 +12,26 @@
  */
 
 import ApiClient from '../ApiClient';
+import PullRequestPipelineStage from './PullRequestPipelineStage';
+import PullRequestWith from './PullRequestWith';
 
 /**
- * The FilterItemsRequest model module.
- * @module model/FilterItemsRequest
+ * The FilterPullRequestsRequest model module.
+ * @module model/FilterPullRequestsRequest
  * @version 1.0.0
  */
-class FilterItemsRequest {
+class FilterPullRequestsRequest {
     /**
-     * Constructs a new <code>FilterItemsRequest</code>.
-     * PR filters for /filter/contributors and /filter/repositories.
-     * @alias module:model/FilterItemsRequest
+     * Constructs a new <code>FilterPullRequestsRequest</code>.
+     * Filters for /filter/pull_requests.
+     * @alias module:model/FilterPullRequestsRequest
      * @param account {Number} Session account ID.
-     * @param dateFrom {Date} Updates must be later than or equal to this date. An update is any action that influences the stage assignment.
-     * @param dateTo {Date} Updates must be earlier than or equal to this date. An update is any action that influences the stage assignment.
+     * @param dateFrom {Date} PRs must be updated later than or equal to this date.
+     * @param dateTo {Date} PRs must be updated earlier than or equal to this date.
      */
     constructor(account, dateFrom, dateTo) { 
         
-        FilterItemsRequest.initialize(this, account, dateFrom, dateTo);
+        FilterPullRequestsRequest.initialize(this, account, dateFrom, dateTo);
     }
 
     /**
@@ -44,15 +46,15 @@ class FilterItemsRequest {
     }
 
     /**
-     * Constructs a <code>FilterItemsRequest</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>FilterPullRequestsRequest</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/FilterItemsRequest} obj Optional instance to populate.
-     * @return {module:model/FilterItemsRequest} The populated <code>FilterItemsRequest</code> instance.
+     * @param {module:model/FilterPullRequestsRequest} obj Optional instance to populate.
+     * @return {module:model/FilterPullRequestsRequest} The populated <code>FilterPullRequestsRequest</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new FilterItemsRequest();
+            obj = obj || new FilterPullRequestsRequest();
 
             if (data.hasOwnProperty('account')) {
                 obj['account'] = ApiClient.convertToType(data['account'], 'Number');
@@ -66,6 +68,12 @@ class FilterItemsRequest {
             if (data.hasOwnProperty('in')) {
                 obj['in'] = ApiClient.convertToType(data['in'], ['String']);
             }
+            if (data.hasOwnProperty('stages')) {
+                obj['stages'] = ApiClient.convertToType(data['stages'], [PullRequestPipelineStage]);
+            }
+            if (data.hasOwnProperty('with')) {
+                obj['with'] = PullRequestWith.constructFromObject(data['with']);
+            }
         }
         return obj;
     }
@@ -77,30 +85,40 @@ class FilterItemsRequest {
  * Session account ID.
  * @member {Number} account
  */
-FilterItemsRequest.prototype['account'] = undefined;
+FilterPullRequestsRequest.prototype['account'] = undefined;
 
 /**
- * Updates must be later than or equal to this date. An update is any action that influences the stage assignment.
+ * PRs must be updated later than or equal to this date.
  * @member {Date} date_from
  */
-FilterItemsRequest.prototype['date_from'] = undefined;
+FilterPullRequestsRequest.prototype['date_from'] = undefined;
 
 /**
- * Updates must be earlier than or equal to this date. An update is any action that influences the stage assignment.
+ * PRs must be updated earlier than or equal to this date.
  * @member {Date} date_to
  */
-FilterItemsRequest.prototype['date_to'] = undefined;
+FilterPullRequestsRequest.prototype['date_to'] = undefined;
 
 /**
  * A set of repositories. An empty list results an empty response in contrary to DeveloperSet. Duplicates are automatically ignored.
  * @member {Array.<String>} in
  */
-FilterItemsRequest.prototype['in'] = undefined;
+FilterPullRequestsRequest.prototype['in'] = undefined;
+
+/**
+ * @member {Array.<module:model/PullRequestPipelineStage>} stages
+ */
+FilterPullRequestsRequest.prototype['stages'] = undefined;
+
+/**
+ * @member {module:model/PullRequestWith} with
+ */
+FilterPullRequestsRequest.prototype['with'] = undefined;
 
 
 
 
 
 
-export default FilterItemsRequest;
+export default FilterPullRequestsRequest;
 
