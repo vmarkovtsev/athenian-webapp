@@ -1,5 +1,4 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 
-import Overview from 'js/pages/pipeline/Overview';
-
-export default () => <Overview />;
+export default () => <Redirect to="/stage/overview" />
