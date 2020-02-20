@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import Body from 'js/components/pipeline/Body';
+import StageMetrics from 'js/components/pipeline/StageMetrics';
 
 import { useAuth0 } from 'js/context/Auth0';
 import { useBreadcrumbsContext } from 'js/context/Breadcrumbs';
@@ -43,7 +43,7 @@ export default () => {
 
     return (
         activeStageState >= 0 ? (
-            <Body
+            <StageMetrics
                 title={pipelineState[activeStageState].tab.title}
                 metrics={pipelineState[activeStageState].body.charts}
             />

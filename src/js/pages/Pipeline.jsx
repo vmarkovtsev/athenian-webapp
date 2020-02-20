@@ -6,7 +6,7 @@ import Page from 'js/pages/templates/Page';
 import Filters from 'js/pages/pipeline/Filters';
 
 import MainMetrics from 'js/components/pipeline/MainMetrics';
-import Stages from 'js/components/pipeline/Stages';
+import Thumbnails from 'js/components/pipeline/Thumbnails';
 
 import { useAuth0 } from 'js/context/Auth0';
 
@@ -38,7 +38,7 @@ export default ({ children }) => {
         <Page>
             <Filters>
                 <MainMetrics />
-                <Stages stages={pipelineState} activeCard={activeStageState} />
+                <Thumbnails stages={pipelineState} activeCard={activeStageState} />
                 {children}
             </Filters>
         </Page>
