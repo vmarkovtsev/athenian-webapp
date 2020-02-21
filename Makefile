@@ -10,6 +10,8 @@ $(MAKEFILE):
 	git clone --quiet --depth 1 -b $(CI_BRANCH) $(CI_REPOSITORY) $(CI_PATH);
 -include $(MAKEFILE)
 
+-include .env
+
 # If CI flags is set, build will fail if there are any WARNING log, and tests will run and exit instead of watching for changes.
 # CI is set to '1' in travis by default
 CI ?=
@@ -25,6 +27,7 @@ OPENAPI_GENERATOR := node_modules/@openapitools/openapi-generator-cli/bin/openap
 .PHONY: api-generate
 api-generate: $(OPENAPI_GENERATOR) clean-openapi
 	node_modules/@openapitools/openapi-generator-cli/bin/openapi-generator generate \
+		--auth='Authorization:token%20$(GITHUB_TOKEN)' \
 		--input-spec=$(API_SPECS_URL) \
 		--output=$(API_CLIENT_CODE_PATH) \
 		--generator-name=javascript \
