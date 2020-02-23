@@ -38,7 +38,7 @@ export default ({ stages, activeCard }) => {
     );
 };
 
-const Stage = ({ title, text, badge, color, data, active, onClick }) => {
+const Stage = ({ title, text, hint, badge, color, data, active, onClick }) => {
     const cardStyle = {};
     if (active) {
         cardStyle.background = rgba(hexToRGBParts(color), .7);
@@ -51,12 +51,14 @@ const Stage = ({ title, text, badge, color, data, active, onClick }) => {
                 <div className="card-title d-flex justify-content-between align-items-center mb-3">
                     <span>
                         <SmallTitle content={title} />
-                        <Info content="Some pipeline description" />
+                        <Info content={hint} />
                     </span>
                     <Badge value={badge} />
                 </div>
                 <div className="row no-gutters card-text">
-                    <BigNumber content={text} />
+                    <div className="col-5">
+                        <BigNumber content={text} />
+                    </div>
                     <div className="col-7 pl-2" style={{ height: 40 }}>
                         <PipelineCardMiniChart data={data} color={color} active={active} />
                     </div>
