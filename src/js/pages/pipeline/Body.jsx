@@ -107,7 +107,7 @@ const withMainMetrics = (leadTimeData, prs, dateInterval) => {
     const contribCount = Object.keys(participants).length;
 
     const leadTimeAvg = leadTimeData.avg;
-    const leadTimeVariation = 20; //TODO(dpordomingo): variations to be calculated in another PR
+    const leadTimeVariation = leadTimeData.variation;
     const createdPRsVariation = -5; // TODO(dpordomingo): variations to be calculated in another PR
     const contribsVariation = 10; // TODO(dpordomingo): variations to be calculated in another PR
 

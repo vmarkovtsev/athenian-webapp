@@ -7,6 +7,7 @@ import { faAngleDown, faAngleUp, faEquals } from '@fortawesome/free-solid-svg-ic
 export default ({ value, trend, className }) => {
   const commonClasses = ['badge', 'font-weight-normal', 'align-middle', 'd-inline-block'];
   let customClasses, icon;
+  let suffix = '%';
   if (!trend) {
     customClasses = ['badge-pill', 'badge-secondary', 'py-1', 'px-2'];
   } else if (value < 0) {
@@ -18,14 +19,15 @@ export default ({ value, trend, className }) => {
   } else {
     customClasses = ['badge-secondary'];
     icon = faEquals;
+    suffix = '';
   }
 
   return (
     <span className={classnames('badge', className, ...commonClasses, ...customClasses)}>
       {trend ? (
         <>
-          <FontAwesomeIcon icon={icon} className="align-bottom mr-1" />
-          {value < 0 ? -value : value}%
+          <FontAwesomeIcon icon={icon} className="align-bottom" />
+          {value ? <span className="ml-1">{Math.abs(value)}{suffix}</span> : ''}
         </>
       ) : (
           <>{value}</>
