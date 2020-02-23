@@ -1,26 +1,59 @@
-import { DefaultApi, ApiClient, MetricsRequest, FilterItemsRequest } from 'js/services/api/openapi-client';
+import {
+  DefaultApi,
+  ApiClient,
+  MetricsRequest,
+  FilterItemsRequest,
+  FilterPullRequestsRequest
+} from 'js/services/api/openapi-client';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import MetricID from 'js/services/api/openapi-client/model/MetricID';
-import { dateTime } from 'js/services/format';
+import { dateTime, github } from 'js/services/format';
 
 export const getPipelineDataInitial = () => getPipelineThumbs([]);
 
-export const getPRs = () => {
-  const getRandItem = () => ({
-    organization: getRandElement('athenian', 'bblfsh'),
-    repo: getRandElement('webapp'),
-    title: getRandElement('Make the table responsive again', 'Lorem Ipsum', '[RFC] Responsive design'),
-    creator: getRandElement('dpordomingo'),
-    size: getRand(1, 1000),
-    lines: { add: getRand(20, 200), remove: getRand(1, 200) },
-    comments: getRand(0, 5),
-    participants: getRandElement(['marcos', 'lucas'], ['marcos', 'dpordomingo', 'vmarkotsev'], ['vmarkotsev']),
-    age: getRandElement('1 hour', '5 days', '2 weeks', '1 month'),
-    status: getRandElement('wip', 'merged', 'closed')
-  });
+export const getPRs = async (token, accountId, dateInterval, repos, contributors) => {
+  const api = buildApi(token);
+  const filter = new FilterPullRequestsRequest(accountId, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to));
+  filter.in = repos;
+  filter.stages = ['wip', 'review', 'merge', 'release'];
+  if (contributors.length) {
+    filter.with = {
+      author: contributors,
+      reviewer: contributors,
+      commit_author: contributors,
+      commit_committer: contributors,
+      commenter: contributors,
+      merger: contributors,
+    };
+  }
 
-  return Array.from(Array(57)).map(() => getRandItem());
-}
+  const prs = await api.filterPrs({ filterPullRequestsRequest: filter });
+
+  return {
+    prs: prs.data.map(pr => {
+      const users = pr.participants.reduce((acc, participant) => {
+        if (participant.status.indexOf('author') >= 0) {
+          acc.creators.push(participant.id);
+        } else {
+          acc.participants.push(participant.id);
+        }
+
+        return acc;
+      }, { creators: [], participants: [] });
+      return {
+        ...pr,
+        organization: github.repoOrg(pr.repository),
+        repo: github.repoName(pr.repository),
+        created: new Date(pr.created),
+        updated: new Date(pr.updated),
+        closed: new Date(pr.closed),
+        creators: users.creators,
+        participants: users.participants,
+      }
+    }),
+    users: prs.include && prs.include.users || {},
+  };
+};
 
 export const getUserWithAccountRepos = async token => {
   const api = buildApi(token);
