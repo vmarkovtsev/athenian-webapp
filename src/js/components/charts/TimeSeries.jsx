@@ -10,17 +10,11 @@ export default ({ data, color }) => (
   <div style={{ background: 'white' }}>
     <FlexibleWidthXYPlot
       height={300}
-      xDomain={[0, 10]}
-      yDomain={[0, 10]}
     >
       <VerticalGridLines />
       <HorizontalGridLines />
-      <XAxis
-        tickValues={[0, 2, 4, 6, 8]}
-      />
-      <YAxis
-        tickValues={[2, 4, 6, 8]}
-      />
+      <XAxis />
+      <YAxis />
       <LineSeries data={data} color={color} animation="stiff" />
       <MarkSeries
         className="mark-series-example"
