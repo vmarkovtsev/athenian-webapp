@@ -59,7 +59,7 @@ export default ({ data }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((v, i) =>
+                        {data.map && data.map((v, i) =>
                             <tr key={i} className="bg-white">
                                 <td>
                                     <div>{v.organization}/{v.repo}: <strong>{v.title}</strong></div>

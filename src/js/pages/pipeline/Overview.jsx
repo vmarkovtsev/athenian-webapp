@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useBreadcrumbsContext } from 'js/context/Breadcrumbs';
+import { usePRsContext } from 'js/context/PRs';
 
 import PullRequests from 'js/components/pipeline/PullRequests';
 
-import { getPRs } from 'js/services/api';
-
 export default () => {
-    const [prs] = useState(getPRs());
+    const prsContext = usePRsContext();
 
     useBreadcrumbsContext({ current: 'Overview' });
 
-    return <PullRequests data={prs} />;
+    return <PullRequests data={prsContext} />;
 };
