@@ -11,7 +11,7 @@ import Info from 'js/components/ui/Info'
 import { hexToRGBParts, rgba } from 'js/services/colors';
 import { dateTime } from 'js/services/format';
 
-export default ({ stages, activeCard }) => {
+export default ({ prs, stages, activeCard }) => {
     return (
         <div className="row mb-4 align-items-end">
             {
@@ -23,10 +23,10 @@ export default ({ stages, activeCard }) => {
                                     title={card.title}
                                     text={card.avg && dateTime.human(card.avg)}
                                     hint={card.hint}
-                                    badge={card.badge}
                                     color={card.color}
                                     data={card.data}
                                     active={activeCard === i}
+                                    badge={prs.filter(pr => pr.stage === card.stageName).length}
                                 >
                                 </Stage>
                             </Link>
@@ -53,7 +53,7 @@ const Stage = ({ title, text, hint, badge, color, data, active, onClick }) => {
                         <SmallTitle content={title} />
                         <Info content={hint} />
                     </span>
-                    <Badge value={badge} />
+                    {badge && <Badge value={badge} />}
                 </div>
                 <div className="row no-gutters card-text">
                     <div className="col-5">
