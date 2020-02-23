@@ -137,7 +137,7 @@ const fetchApiMetricsLine = (api, metrics, accountId, dateInterval = { from: nul
   const forset = new ForSet(repos);
   forset.developers = contributors;
 
-  const body = new MetricsRequest(metrics.map(() => forset), metricsIDs, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to), granularity, accountId);
+  const body = new MetricsRequest([forset], metricsIDs, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to), granularity, accountId);
   return api.calcMetricsLine(body);
 };
 
