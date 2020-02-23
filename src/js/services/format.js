@@ -66,4 +66,22 @@ export const github = {
     repoOrg: fullName => fullName.split('/')[1],
     repoName: fullName => fullName.split('/')[2],
     userName: fullName => fullName.split('/')[1],
+    prLink: (repoUrl, number) => `https://${repoUrl}/pull/${number}`,
+};
+
+const KILO = 1000;
+const MEGA = 1000 * KILO;
+
+export const number = {
+    si: n => {
+        if (n < KILO) {
+            return n;
+        } else if (n < MEGA) {
+            return (Math.round(n * 10 / KILO) / 10) + 'K';
+        } else if (n < 500 * MEGA) {
+            return (Math.round(n * 10 / MEGA) / 10) + 'M';
+        }
+
+        return '>500M';
+    }
 };
