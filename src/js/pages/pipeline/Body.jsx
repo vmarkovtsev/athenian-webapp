@@ -21,6 +21,10 @@ export const pipelineStagesConf = [
         stageName: 'wip',
         color: palette.stages.wip,
         hint: 'From the 1st commit of the Pull Request until the review is requested.',
+        event: {
+            before: 'First Commit',
+            after: 'Review Requested',
+        },
     }, {
         title: 'Review',
         slug: 'review',
@@ -28,6 +32,10 @@ export const pipelineStagesConf = [
         stageName: 'review',
         color: palette.stages.review,
         hint: 'From the moment the review is requested until the Pull Request is approved',
+        event: {
+            before: 'Review Requested',
+            after: 'Approved',
+        },
     }, {
         title: 'Merge',
         slug: 'merge',
@@ -35,6 +43,10 @@ export const pipelineStagesConf = [
         stageName: 'merge',
         color: palette.stages.merge,
         hint: 'From the moment the Pull Request is approved until it gets merged',
+        event: {
+            before: 'Approved',
+            after: 'Merged',
+        },
     }, {
         title: 'Release',
         slug: 'release',
@@ -42,6 +54,10 @@ export const pipelineStagesConf = [
         stageName: 'release',
         color: palette.stages.release,
         hint: 'From the moment the Pull Request gets merged until it is shipped into production',
+        event: {
+            before: 'Merged',
+            after: 'Released',
+        },
     },
 ];
 
