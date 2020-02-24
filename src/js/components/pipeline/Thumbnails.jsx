@@ -59,7 +59,7 @@ const Stage = ({ title, text, hint, badge, color, data, active, onClick }) => {
                     <div className="col-5">
                         <BigNumber content={text} />
                     </div>
-                    <div className="col-7 pl-2" style={{ height: 40 }}>
+                    <div className="col-7 pl-2" style={{ height: 55 }}>
                         <PipelineCardMiniChart data={data} color={color} active={active} />
                     </div>
                 </div>
@@ -79,12 +79,12 @@ const PipelineCardMiniChart = ({ color, active, data }) => {
             {
                 offset: "0%",
                 color,
-                opacity: .5
+                opacity: .8
             },
             {
                 offset: "100%",
                 color,
-                opacity: 0
+                opacity: .1
             }
         ]
     };
