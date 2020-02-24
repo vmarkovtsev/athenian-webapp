@@ -21,7 +21,7 @@ export default ({ value, trend, className }) => {
   }
 
   return (
-    <span className={classnames(className, ...commonClasses, ...customClasses)}>
+    <span className={classnames('badge', className, ...commonClasses, ...customClasses)}>
       {trend ? (
         <>
           <FontAwesomeIcon icon={icon} className="align-bottom mr-1" />

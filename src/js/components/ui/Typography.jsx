@@ -4,9 +4,9 @@ import classnames from 'classnames';
 export const nbsp = '\u00A0';
 
 export const BigNumber = ({ content }) => (
-    <span className="text-lg font-weight-bold d-inline-block align-middle text-gray-900">{content || nbsp}</span>
+    <span className="big-number text-lg font-weight-bold d-inline-block align-middle text-gray-900">{content || nbsp}</span>
 );
 
 export const SmallTitle = ({ content, isBlack }) => (
-    <span className={classnames('font-weight-bold text-xs text-uppercase', isBlack && 'text-gray-900')}>{content || nbsp}</span>
+    <span className={classnames('small-title font-weight-bold text-xs text-uppercase', isBlack && 'text-gray-900')}>{content || nbsp}</span>
 );

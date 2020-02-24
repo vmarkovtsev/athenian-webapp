@@ -41,7 +41,7 @@ export default ({ stages, activeCard }) => {
 const Stage = ({ title, text, hint, badge, color, data, active, onClick }) => {
     const cardStyle = {};
     if (active) {
-        cardStyle.background = rgba(hexToRGBParts(color), .7);
+        cardStyle.background = rgba(hexToRGBParts(color), .8);
         cardStyle.borderBottomColor = color;
     };
 
