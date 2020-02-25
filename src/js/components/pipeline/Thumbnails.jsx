@@ -13,11 +13,12 @@ import { dateTime } from 'js/services/format';
 
 export default ({ prs, stages, activeCard }) => {
     return (
-        <div className="row mb-4 align-items-end">
+        <div className="row mt-4 mb-4 align-items-end pipeline-thumbnails">
             {
                 stages.map(
                     (card, i) => (
-                        <div className="col-md-3" key={i}>
+                        <div className={classnames('col-md-3 pipeline-stage', card.stageName, activeCard === i && 'active')} key={i}>
+                            <span data-toggle="tooltip" data-placement="bottom" title={card.event.before} className="event-before" />
                             <Link to={'/stage/' + card.slug}>
                                 <Stage
                                     title={card.title}
@@ -30,6 +31,7 @@ export default ({ prs, stages, activeCard }) => {
                                 >
                                 </Stage>
                             </Link>
+                            <span data-toggle="tooltip" data-placement="bottom" title={card.event.after} className="event-after" />
                         </div>
                     )
                 )

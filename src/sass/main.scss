@@ -10,28 +10,87 @@
     height: 50px;
 }
 
-.pipeline-thumbnail {
-    &:hover {
-        background: transparent;
-    }
+.pipeline-thumbnails {
 
-    &.active {
-        color: white;
-        border-bottom-width: 4px;
-        border-bottom-style: solid;
-        padding-bottom: 10px;
+    .pipeline-stage {
+        position: relative;
+        border-top: 1px dashed $at-border-color;
+        padding-top: 10px;
 
-        &:hover {
-            cursor: default;
+        &.active {
+            z-index: 20;
+            border-top-style: solid;
+
+
+            &.wip,
+            &.wip .event-before,
+            &.wip .event-after {
+                border-color: $color-wip;
+                border-width: 2px;
+            }
+            &.review,
+            &.review .event-before,
+            &.review .event-after {
+                border-color: $color-review;
+                border-width: 2px;
+            }
+            &.merge,
+            &.merge .event-before,
+            &.merge .event-after {
+                border-color: $color-merge;
+                border-width: 2px;
+            }
+            &.release,
+            &.release .event-before,
+            &.release .event-after {
+                border-color: $color-release;
+                border-width: 2px;
+            }
         }
 
-        .big-number {
-            color: white !important;
+        $event-size: 14px;
+        .event-before,
+        .event-after {
+            display: inline-block;
+            width: $event-size;
+            height: $event-size;
+            border: 1px solid $at-border-color;
+            background: $at-main-bg;
+            border-radius: $event-size;
+            position: absolute;
+            top: -$event-size/2;
+            z-index: 10;
         }
 
-        .badge {
-            background: rgba(white, .3);
-            color: white;
+        .event-before {
+            left: -$event-size/2;
+        }
+
+        .event-after {
+            right: -$event-size/2;
+        }
+
+        .pipeline-thumbnail {
+            &:hover {
+                background: transparent;
+            }
+
+            &.active {
+                color: white;
+
+                &:hover {
+                    cursor: default;
+                }
+
+                .big-number {
+                    color: white !important;
+                }
+
+                .badge {
+                    background: rgba(white, .3);
+                    color: white;
+                }
+            }
         }
     }
 }
@@ -45,7 +104,7 @@
 }
 
 .pr-tab {
-    border-bottom-color: #FF7D3A !important;
+    border-bottom-color: $color-wip !important;
 }
 
 a {
