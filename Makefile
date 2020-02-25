@@ -16,19 +16,26 @@ $(MAKEFILE):
 # CI is set to '1' in travis by default
 CI ?=
 
-# TODO (dpordomingo): consider locking to fixed version once we start doing releases.
-API_SPECS_URL ?= https://raw.githubusercontent.com/athenianco/athenian-api/master/server/athenian/api/openapi/openapi.yaml
+API_VERSION ?= v0.0.39
 
 API_SERVICE_PATH := src/js/services/api
 API_CLIENT_CODE_PATH := $(API_SERVICE_PATH)/openapi-client
+API_SPEC_PATH ?= $(API_SERVICE_PATH)/openapi.$(API_VERSION).yaml
+API_CLONE_PATH ?= /tmp/athenian-api
 
 OPENAPI_GENERATOR := node_modules/@openapitools/openapi-generator-cli/bin/openapi-generator
 
+$(API_SPEC_PATH):
+	rm -rf $(API_CLONE_PATH)
+	git clone --single-branch --no-checkout https://github.com/athenianco/athenian-api $(API_CLONE_PATH)
+	git -C $(API_CLONE_PATH) checkout $(API_VERSION) -- server/athenian/api/openapi/openapi.yaml
+	mv $(API_CLONE_PATH)/server/athenian/api/openapi/openapi.yaml $(API_SPEC_PATH)
+	rm -rf $(API_CLONE_PATH)
+
 .PHONY: api-generate
-api-generate: $(OPENAPI_GENERATOR) clean-openapi
+api-generate: $(OPENAPI_GENERATOR) clean-openapi $(API_SPEC_PATH)
 	node_modules/@openapitools/openapi-generator-cli/bin/openapi-generator generate \
-		--auth='Authorization:token%20$(GITHUB_TOKEN)' \
-		--input-spec=$(API_SPECS_URL) \
+		--input-spec=$(API_SPEC_PATH) \
 		--output=$(API_CLIENT_CODE_PATH) \
 		--generator-name=javascript \
 		--ignore-file-override=$(API_SERVICE_PATH)/.openapi-generator-ignore \
