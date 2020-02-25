@@ -1,25 +1,9 @@
-import { DefaultApi, ApiClient, MetricsRequest } from 'js/services/api/openapi-client';
+import { DefaultApi, ApiClient, MetricsRequest, FilterItemsRequest } from 'js/services/api/openapi-client';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import MetricID from 'js/services/api/openapi-client/model/MetricID';
+import { dateTime } from 'js/services/format';
 
-export const getPipelineDataInitial = () => getPipelineData([], () => []);
-
-const SECOND = 1;
-const MINUTE = 60 * SECOND;
-const HOUR = 60 * MINUTE;
-
-const getHours = secondsString => {
-  if (!secondsString) {
-    return 0;
-  };
-
-  const seconds = parseFloat(secondsString);
-  if (!seconds) {
-    return 0;
-  };
-
-  return seconds / HOUR;
-};
+export const getPipelineDataInitial = () => getPipelineThumbs([]);
 
 export const getPRs = () => {
   const getRandItem = () => ({
@@ -48,52 +32,45 @@ export const getUserWithAccountRepos = async token => {
       reposets = await api.listReposets(Number(accountID));
     } catch (err) {
       console.error(`Could not list reposets from account #${accountID}. Err#${err.body.status} ${err.body.type}. ${err.body.detail}`);
-      return { id: Number(accountID), isAdmin, repos: [] };
+      return { id: Number(accountID), reposets: [] };
     }
 
-    const reposetsContent = await Promise.all(reposets.map(async reposet => await api.getReposet(reposet.id)));
+    const reposetsContent = await Promise.all(reposets.map(async reposet => ({
+      id: reposet.id,
+      repos: await api.getReposet(reposet.id),
+    })));
 
-    return { id: Number(accountID), repos: reposetsContent };
+    return { id: Number(accountID), isAdmin, reposets: reposetsContent };
   };
 
-  const accountRepos = await Promise.all(
+  const accounts = await Promise.all(
     Object.keys(user.accounts).map(accountID => getAccountRepos(accountID, user.accounts[accountID]))
   );
 
-  return { ...user, accounts: accountRepos, defaultAccount: accountRepos[0] };
+  const defaultAccount = accounts[0] || { reposets: [] };
+  const defaultReposet = defaultAccount && defaultAccount.reposets && defaultAccount.reposets[0] || { repos: [] }
+
+  return { ...user, accounts, defaultAccount, defaultReposet };
 };
 
-export const getRepos = () => {
-  return new Promise(resolve => window.setTimeout(() => {
-    resolve([
-      'github.com/athenianco/athenian-webapp',
-      'github.com/athenianco/athenian-api',
-      'github.com/athenianco/metadata',
-      'github.com/athenianco/metadata-retrieval',
-      'github.com/bblfsh/metadata-retrieval',
-    ]);
-  }, 1000));
+export const getRepos = (token, userAccount, from, to, repos) => {
+  const api = buildApi(token);
+  const filter = new FilterItemsRequest(userAccount, from, to);
+  filter.in = repos;
+  return api.filterRepositories({ body: filter }).then(repos => [...repos])
 };
 
-export const getContributors = () => {
-  return new Promise(resolve => window.setTimeout(() => {
-    resolve([
-      'github.com/dennwc',
-      'github.com/dpordomingo',
-      'github.com/eiso',
-      'github.com/lwsanty',
-      'github.com/marnovo',
-      'github.com/se7entyse7en',
-      'github.com/vmarkovtsev',
-      'github.com/warenlg',
-    ]);
-  }, 1500));
+export const getContributors = (token, userAccount, from, to, repos) => {
+  const api = buildApi(token);
+  const filter = new FilterItemsRequest(userAccount, from, to);
+  filter.in = repos;
+  return api.filterContributors({ body: filter })
 };
 
-export const getPipelineDataAPI = (api) => {
+export const getPipelineDataAPI = (api, accountId, dateInterval, repos, contributors) => {
   const metrics = ['wip-time', 'review-time', 'merging-time', 'release-time'];
 
-  return fetchApiMetricsLine(api, metrics).then(apiData => {
+  return fetchApiMetricsLine(api, metrics, accountId, dateInterval, repos, contributors).then(apiData => {
     const thumbsData = [];
 
     if (apiData.calculated) {
@@ -103,13 +80,13 @@ export const getPipelineDataAPI = (api) => {
             thumbsData[metricNo] = [];
           }
 
-          thumbsData[metricNo].push({ x: new Date(day.date), y: getHours(value) });
+          thumbsData[metricNo].push({ x: new Date(day.date), y: dateTime.secondsToHours(value) });
         });
       });
 
     }
 
-    return getPipelineData(thumbsData, getRandData);
+    return getPipelineThumbs(thumbsData);
   }).catch(error => {
     // TODO(dpordomingo): notify to an error handler which may rise a toast
     console.error('ERROR calling endpoint', error);
@@ -159,20 +136,14 @@ const pipeline = [
   },
 ];
 
-const fetchApiMetricsLine = (api, metrics) => {
-  const forset = [new ForSet([
-    'github.com/athenianco/athenian-webapp',
-    'github.com/athenianco/athenian-api',
-    'github.com/athenianco/metadata',
-    'github.com/athenianco/metadata-retrieval'
-  ])];
+const fetchApiMetricsLine = (api, metrics, accountId, dateInterval = { from: null, to: null }, repos = [], contributors = []) => {
   const granularity = 'week';
-  const dateFrom = new Date('2019-11-19');
-  const dateTo = new Date('2020-02-11');
   const metricsIDs = metrics.map(metric => (new MetricID())[metric]);
-  const account = 1;
 
-  const body = new MetricsRequest(forset, metricsIDs, dateFrom, dateTo, granularity, account);
+  const forset = new ForSet(repos);
+  forset.developers = contributors;
+
+  const body = new MetricsRequest(metrics.map(() => forset), metricsIDs, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to), granularity, accountId);
   return api.calcMetricsLine(body);
 };
 
@@ -182,7 +153,7 @@ export const getInvitation = async (token, accountID) => {
   return invitation.url;
 };
 
-export const buildApi = (token) => {
+export const buildApi = token => {
   const client = new ApiClient();
   client.authentications.bearerAuth.accessToken = token;
   client.basePath = window.ENV.api.basePath;
@@ -195,10 +166,14 @@ export const fetchApi = (token, apiCall, ...args) => {
   return apiCall(api, ...args);
 };
 
-const getPipelineData = (thumbData, randGenerator) => pipeline.map((stage, i) => ({
-  tab: { ...stage.tab, data: thumbData[i] },
+const getPipelineThumbs = thumbData => pipeline.map((stage, i) => ({
+  tab: { ...stage.tab, data: thumbData[i] }
+}));
+
+export const getPipelineMetrics = () => pipeline.map((stage, i) => ({
+  tab: { ...stage.tab },
   body: {
-    charts: stage.body.charts.map(c => ({ ...c, title: c.title + ' ' + i, data: randGenerator() }))
+    charts: stage.body.charts.map(c => ({ ...c, title: c.title + ' ' + i, data: getRandData() }))
   }
 }));
 

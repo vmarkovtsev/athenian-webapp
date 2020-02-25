@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import Body from 'js/components/pipeline/Body';
+import StageMetrics from 'js/components/pipeline/StageMetrics';
 
-import { useAuth0 } from 'js/context/Auth0';
 import { useBreadcrumbsContext } from 'js/context/Breadcrumbs';
+import { useFiltersContext } from 'js/context/Filters';
 
-import { getPipelineDataInitial, getPipelineDataAPI, fetchApi } from 'js/services/api';
+import { getPipelineMetrics } from 'js/services/api';
 
 export default () => {
-    const { loading, isAuthenticated, getTokenSilently } = useAuth0();
-
-    const [pipelineState, setPipelineData] = useState(getPipelineDataInitial());
+    const [pipelineState, setPipelineData] = useState(getPipelineMetrics());
 
     const { name } = useParams()
     const activeStageState = pipelineState.findIndex(stage => stage.tab.slug === name);
-
     const links = activeStageState >= 0 ? {
         current: pipelineState[activeStageState].tab.title,
         ancestors: [{ url: '/stage/overview', text: 'Overview' }],
@@ -25,25 +22,20 @@ export default () => {
 
     useBreadcrumbsContext(links);
 
-    useEffect(() => {
-        if (loading) {
-            return;
-        };
+    const { dateInterval, repositories, contributors } = useFiltersContext()
 
-        let pipelinePromise;
-        if (isAuthenticated) {
-            pipelinePromise = getTokenSilently()
-                .then(token => fetchApi(token, getPipelineDataAPI));
-        } else {
-            pipelinePromise = fetchApi('', getPipelineDataAPI);
+    useEffect(() => {
+        if (!repositories || !repositories.length) {
+            return;
         }
 
-        pipelinePromise.then(setPipelineData);
-    }, [loading, isAuthenticated, getTokenSilently]);
+        const data = getPipelineMetrics();
+        setPipelineData(data);
+    }, [dateInterval, repositories, contributors]);
 
     return (
         activeStageState >= 0 ? (
-            <Body
+            <StageMetrics
                 title={pipelineState[activeStageState].tab.title}
                 metrics={pipelineState[activeStageState].body.charts}
             />

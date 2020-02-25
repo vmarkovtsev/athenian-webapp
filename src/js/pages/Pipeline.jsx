@@ -1,44 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React from 'react';
 
 import Page from 'js/pages/templates/Page';
 
-import TopFilter from 'js/components/pipeline/TopFilter';
-import MainMetrics from 'js/components/pipeline/MainMetrics';
-import Stages from 'js/components/pipeline/Stages';
-
-import { useAuth0 } from 'js/context/Auth0';
-
-import { getPipelineDataInitial, getPipelineDataAPI, fetchApi } from 'js/services/api';
+import Body from 'js/pages/pipeline/Body';
+import Filters from 'js/pages/pipeline/Filters';
 
 export default ({ children }) => {
-    const { loading, isAuthenticated, getTokenSilently } = useAuth0();
-    const [pipelineState, setPipelineData] = useState(getPipelineDataInitial());
-    const { name } = useParams()
-    const activeStageState = pipelineState.findIndex(stage => stage.tab.slug === name);
-
-    useEffect(() => {
-        if (loading) {
-            return;
-        };
-
-        let pipelinePromise;
-        if (isAuthenticated) {
-            pipelinePromise = getTokenSilently()
-                .then(token => fetchApi(token, getPipelineDataAPI));
-        } else {
-            pipelinePromise = fetchApi('', getPipelineDataAPI);
-        }
-
-        pipelinePromise.then(setPipelineData);
-    }, [loading, isAuthenticated, getTokenSilently]);
-
     return (
         <Page>
-            <TopFilter />
-            <MainMetrics />
-            <Stages stages={pipelineState} activeCard={activeStageState} />
-            {children}
+            <Filters>
+                <Body>{children}</Body>
+            </Filters>
         </Page>
     );
 };
