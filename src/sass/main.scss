@@ -24,6 +24,15 @@
         &:hover {
             cursor: default;
         }
+
+        .big-number {
+            color: white !important;
+        }
+
+        .badge {
+            background: rgba(white, .3);
+            color: white;
+        }
     }
 }
 

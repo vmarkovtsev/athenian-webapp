@@ -4,6 +4,8 @@ import { FlexibleXYPlot, AreaSeries, LineSeries, GradientDefs } from 'react-vis'
 
 import { hexToRGBA } from 'js/services/colors';
 
+import { extent } from 'd3-array';
+
 export default ({ fill, stroke, data }) => {
 
   const key = () => Math.random().toString(36).substring(2, 15);
@@ -27,8 +29,11 @@ export default ({ fill, stroke, data }) => {
     strokeColor = stroke;
   }
 
+  const [yMin, yMax] = extent(data, d => d.y);
+  const newYMin = (yMin || 0) - ((yMax || 0) - (yMin || 0)) * .2
+
   return (
-    <FlexibleXYPlot margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
+    <FlexibleXYPlot yDomain={[newYMin, yMax]} margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
       <GradientDefs>
         {gradients}
       </GradientDefs>
