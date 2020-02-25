@@ -18,12 +18,15 @@ import Stage from 'js/pages/pipeline/Stage';
 import Overview from 'js/pages/pipeline/Overview';
 import Login from 'js/pages/auth/Login';
 import Logout from 'js/pages/auth/Logout';
+import Development from 'js/components/development';
 import Callback from 'js/pages/auth/Callback';
 import Waiting from 'js/pages/Waiting';
 import NotFound404 from 'js/pages/NotFound404';
 import Prototypes from 'js/pages/prototypes/Prototypes';
 
 export default () => {
+
+  const devmode = process.env.NODE_ENV === 'development';
 
   return (
     <React.StrictMode>
@@ -65,6 +68,7 @@ export default () => {
             <Route path='/logout'>
               <Logout />
             </Route>
+            {devmode && <Route path='/bearer'><Development.Bearer /></Route>}
             <PrivateRoute path='/waiting' component={Waiting} />
             <Route path='/prototypes'>
               <Prototypes />

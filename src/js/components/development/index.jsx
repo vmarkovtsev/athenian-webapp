@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
+import { useAuth0 } from 'js/context/Auth0';
+import Simple from 'js/pages/templates/Simple';
 import 'js/components/development/index.scss';
 
 export default {
@@ -32,5 +34,26 @@ export default {
                 </div>
             </div>
         </div>
-    )
+    ),
+    
+    Bearer: () => {
+      const { loading, isAuthenticated, getTokenSilently } = useAuth0();
+      const [token, setToken] = useState("");
+
+      if (loading) {
+        return <Simple>Loading...</Simple>;
+      }
+
+      if (!isAuthenticated) {
+        return (
+          <Simple>
+            Not authenticated!
+          </Simple>
+        );
+      }
+
+      (async () => setToken(await getTokenSilently()))();
+
+      return <Simple><pre className="bearer-token">{token}</pre></Simple>;
+    }
 };
