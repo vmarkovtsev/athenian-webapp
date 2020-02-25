@@ -1,26 +1,57 @@
-import { DefaultApi, ApiClient, MetricsRequest, FilterItemsRequest } from 'js/services/api/openapi-client';
+import {
+  DefaultApi,
+  ApiClient,
+  MetricsRequest,
+  FilterItemsRequest,
+  FilterPullRequestsRequest
+} from 'js/services/api/openapi-client';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import MetricID from 'js/services/api/openapi-client/model/MetricID';
-import { dateTime } from 'js/services/format';
+import { dateTime, github } from 'js/services/format';
 
-export const getPipelineDataInitial = () => getPipelineThumbs([]);
+export const getPRs = async (token, accountId, dateInterval, repos, contributors) => {
+  const api = buildApi(token);
+  const filter = new FilterPullRequestsRequest(accountId, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to));
+  filter.in = repos;
+  filter.stages = ['wip', 'review', 'merge', 'release'];
+  if (contributors.length) {
+    filter.with = {
+      author: contributors,
+      reviewer: contributors,
+      commit_author: contributors,
+      commit_committer: contributors,
+      commenter: contributors,
+      merger: contributors,
+    };
+  }
 
-export const getPRs = () => {
-  const getRandItem = () => ({
-    organization: getRandElement('athenian', 'bblfsh'),
-    repo: getRandElement('webapp'),
-    title: getRandElement('Make the table responsive again', 'Lorem Ipsum', '[RFC] Responsive design'),
-    creator: getRandElement('dpordomingo'),
-    size: getRand(1, 1000),
-    lines: { add: getRand(20, 200), remove: getRand(1, 200) },
-    comments: getRand(0, 5),
-    participants: getRandElement(['marcos', 'lucas'], ['marcos', 'dpordomingo', 'vmarkotsev'], ['vmarkotsev']),
-    age: getRandElement('1 hour', '5 days', '2 weeks', '1 month'),
-    status: getRandElement('wip', 'merged', 'closed')
-  });
+  const prs = await api.filterPrs({ filterPullRequestsRequest: filter });
 
-  return Array.from(Array(57)).map(() => getRandItem());
-}
+  return {
+    prs: prs.data.map(pr => {
+      const users = pr.participants.reduce((acc, participant) => {
+        if (participant.status.indexOf('author') >= 0) {
+          acc.creators.push(participant.id);
+        } else {
+          acc.participants.push(participant.id);
+        }
+
+        return acc;
+      }, { creators: [], participants: [] });
+      return {
+        ...pr,
+        organization: github.repoOrg(pr.repository),
+        repo: github.repoName(pr.repository),
+        created: new Date(pr.created),
+        updated: new Date(pr.updated),
+        closed: new Date(pr.closed),
+        creators: users.creators,
+        participants: users.participants,
+      }
+    }),
+    users: prs.include && prs.include.users || {},
+  };
+};
 
 export const getUserWithAccountRepos = async token => {
   const api = buildApi(token);
@@ -67,74 +98,37 @@ export const getContributors = (token, userAccount, from, to, repos) => {
   return api.filterContributors({ body: filter })
 };
 
-export const getPipelineDataAPI = (api, accountId, dateInterval, repos, contributors) => {
-  const metrics = ['wip-time', 'review-time', 'merging-time', 'release-time'];
+export const getMetrics = (api, accountId, dateInterval, repos, contributors) => {
+  const metrics = ['lead-time', 'wip-time', 'review-time', 'merging-time', 'release-time'];
+  const data = metrics.reduce((acc, metric) => {
+    acc[metric] = { data: [], avg: 0, sum: 0 };
+    return acc;
+  }, {});
 
   return fetchApiMetricsLine(api, metrics, accountId, dateInterval, repos, contributors).then(apiData => {
-    const thumbsData = [];
-
-    if (apiData.calculated) {
-      apiData.calculated[0].values.forEach(day => {
-        day.values.forEach((value, metricNo) => {
-          if (!thumbsData[metricNo]) {
-            thumbsData[metricNo] = [];
-          }
-
-          thumbsData[metricNo].push({ x: new Date(day.date), y: dateTime.secondsToHours(value) });
-        });
-      });
-
+    if (!apiData.calculated || !apiData.calculated[0]) {
+      throw new Error('API returned no calculated data');
     }
 
-    return getPipelineThumbs(thumbsData);
+    // This will unfold values, to have separate data per different metric, instead of all metrics under the same day.
+    apiData.calculated[0].values.forEach(step => {
+      step.values.forEach((value, metricNo) => {
+        data[metrics[metricNo]].data.push({ x: new Date(step.date), y: dateTime.milliseconds(value) });
+        data[metrics[metricNo]].sum += dateTime.milliseconds(value);
+      });
+    });
+
+    Object.keys(data).forEach(metricName => {
+      data[metricName].avg = data[metricName].sum / data[metricName].data.length;
+      delete (data[metricName].sum);
+    });
+    return data;
   }).catch(error => {
     // TODO(dpordomingo): notify to an error handler which may rise a toast
     console.error('ERROR calling endpoint', error);
     throw error;
   });
 };
-
-const sampleCharts = [
-  {
-    title: 'Time to Commit in Base Branch',
-    color: '#62C2DF',
-    insights: [
-      { title: { text: "insight 1", bold: true }, subtitle: { text: "subtitle 1" }, value: 15 },
-      { title: { text: "insight 2", bold: false }, value: -20 }
-    ]
-  },
-  {
-    title: 'Time to Release',
-    color: '#FA1D62',
-    insights: [
-      { title: { text: "insight 3" }, value: 5 }
-    ]
-  },
-  {
-    title: 'Merged Pull Request',
-    color: '#FF7D3A',
-    insights: []
-  },
-];
-
-const pipeline = [
-  {
-    tab: { title: 'Work in progress', slug: 'work-in-progress', color: '#FF7D3A', text: '5 weeks', badge: 235, metric: 'pr-wip-time' },
-    body: { charts: sampleCharts }
-  },
-  {
-    tab: { title: 'Review', slug: 'review', color: '#FECD33', text: '10 months', badge: 5, metric: 'pr-review-time' },
-    body: { charts: sampleCharts }
-  },
-  {
-    tab: { title: 'Merge', slug: 'merge', color: '#9460DA', text: '5 weeks', badge: 33, metric: 'pr-merging-time' },
-    body: { charts: sampleCharts }
-  },
-  {
-    tab: { title: 'Release', slug: 'release', color: '#37CB70', text: '3 days', badge: 12, metric: 'pr-release-time' },
-    body: { charts: sampleCharts }
-  },
-];
 
 const fetchApiMetricsLine = (api, metrics, accountId, dateInterval = { from: null, to: null }, repos = [], contributors = []) => {
   const granularity = 'week';
@@ -166,29 +160,33 @@ export const fetchApi = (token, apiCall, ...args) => {
   return apiCall(api, ...args);
 };
 
-const getPipelineThumbs = thumbData => pipeline.map((stage, i) => ({
-  tab: { ...stage.tab, data: thumbData[i] }
-}));
-
-export const getPipelineMetrics = () => pipeline.map((stage, i) => ({
-  tab: { ...stage.tab },
-  body: {
-    charts: stage.body.charts.map(c => ({ ...c, title: c.title + ' ' + i, data: getRandData() }))
-  }
-}));
-
-const getRandData = () => [
-  { x: 0, y: 10 * Math.random() },
-  { x: 1, y: 10 * Math.random() },
-  { x: 2, y: 10 * Math.random() },
-  { x: 3, y: 10 * Math.random() },
-  { x: 4, y: 10 * Math.random() },
-  { x: 5, y: 10 * Math.random() },
-  { x: 6, y: 10 * Math.random() },
-  { x: 7, y: 10 * Math.random() },
-  { x: 8, y: 10 * Math.random() },
-  { x: 9, y: 10 * Math.random() }
-];
-
+const getRandData = () => Array.from(Array(10)).map((_, i) => ({ x: i, y: getRand(1, 20) }));
 const getRand = (min, max) => Math.round(min + (Math.random() * (max - min)));
-const getRandElement = (...args) => args[getRand(0, args.length - 1)];
+
+export const getSampleCharts = stage => {
+  const chartsSampleData = [
+    {
+      title: `${stage} :: Time to Commit in Base Branch`,
+      color: '#62C2DF',
+      data: getRandData(),
+      insights: [
+        { title: { text: "insight 1", bold: true }, subtitle: { text: "subtitle 1" }, value: 15 },
+        { title: { text: "insight 2", bold: false }, value: -20 },
+      ],
+    }, {
+      title: `${stage} :: Time to Release`,
+      color: '#FA1D62',
+      data: getRandData(),
+      insights: [
+        { title: { text: "insight 3" }, value: 5 },
+      ],
+    }, {
+      title: `${stage} :: Merged Pull Request`,
+      color: '#FF7D3A',
+      data: getRandData(),
+      insights: [],
+    },
+  ];
+
+  return new Promise(resolve => window.setTimeout(resolve(chartsSampleData), getRand(100, 1000)));
+};

@@ -8,17 +8,54 @@ import { useFiltersContext } from 'js/context/Filters';
 import MainMetrics from 'js/components/pipeline/MainMetrics';
 import Thumbnails from 'js/components/pipeline/Thumbnails';
 
-import { getPipelineDataInitial, getPipelineDataAPI, fetchApi } from 'js/services/api';
+import { getMetrics, fetchApi } from 'js/services/api';
+import { usePRsContext } from 'js/context/PRs';
+
+import { palette } from 'js/res/palette';
+
+export const pipelineStagesConf = [
+    {
+        title: 'Work in progress',
+        slug: 'work-in-progress',
+        metric: 'wip-time',
+        color: palette.stages.wip,
+        hint: 'From the 1st commit of the Pull Request until the review is requested.',
+        badge: 22, //TODO(dpordomingo): This should show some stage metric
+    }, {
+        title: 'Review',
+        slug: 'review',
+        metric: 'review-time',
+        color: palette.stages.review,
+        hint: 'From the moment the review is requested until the Pull Request is approved',
+        badge: 0, //TODO(dpordomingo): This should show some stage metric
+    }, {
+        title: 'Merge',
+        slug: 'merge',
+        metric: 'merging-time',
+        color: palette.stages.merge,
+        hint: 'From the moment the Pull Request is approved until it gets merged',
+        badge: 33, //TODO(dpordomingo): This should show some stage metric
+    }, {
+        title: 'Release',
+        slug: 'release',
+        metric: 'release-time',
+        color: palette.stages.release,
+        hint: 'From the moment the Pull Request gets merged until it is shipped into production',
+        badge: 201, //TODO(dpordomingo): This should show some stage metric
+    },
+];
 
 export default ({ children }) => {
     const { getTokenSilently } = useAuth0();
     const userContext = useUserContext();
 
-    const [pipelineState, setPipelineData] = useState(getPipelineDataInitial());
+    const [pipelineState, setPipelineState] = useState([]);
+    const [leadTimeState, setLeadTimeState] = useState({});
     const { name } = useParams()
-    const activeStageState = pipelineState.findIndex(stage => stage.tab.slug === name);
+    const activeStageState = pipelineStagesConf.findIndex(metric => metric.slug === name);
 
     const { dateInterval, repositories, contributors } = useFiltersContext();
+    const { prs } = usePRsContext();
 
     useEffect(() => {
         if (!userContext || !repositories.length) {
@@ -26,15 +63,43 @@ export default ({ children }) => {
         };
 
         getTokenSilently()
-            .then(token => fetchApi(token, getPipelineDataAPI, userContext.defaultAccount.id, dateInterval, repositories, contributors))
-            .then(setPipelineData);
+            .then(token => fetchApi(token, getMetrics, userContext.defaultAccount.id, dateInterval, repositories, contributors))
+            .then(data => {
+                setPipelineState(pipelineStagesConf.map(stageConf => ({ ...stageConf, ...data[stageConf.metric] })));
+                setLeadTimeState(data['lead-time']);
+            });
     }, [userContext, dateInterval, repositories, contributors]);
 
     return (
         <>
-            <MainMetrics />
+            {withMainMetrics(leadTimeState, prs, dateInterval)}
             <Thumbnails stages={pipelineState} activeCard={activeStageState} />
             {children}
         </>
+    );
+};
+
+const withMainMetrics = (leadTimeData, prs, dateInterval) => {
+    const prCount = prs.filter(pr => (pr.created >= dateInterval.from && pr.created <= dateInterval.to)).length;
+    const participants = prs.reduce((acc, pr) => {
+        return [...pr.participants, ...pr.creators].reduce((dict, user) => {
+            dict[user] = true;
+            return dict;
+        }, acc);
+    }, {})
+
+    const contribCount = Object.keys(participants).length;
+
+    const leadTimeAvg = leadTimeData.avg;
+    const leadTimeVariation = 20; //TODO(dpordomingo): variations to be calculated in another PR
+    const createdPRsVariation = -5; // TODO(dpordomingo): variations to be calculated in another PR
+    const contribsVariation = 10; // TODO(dpordomingo): variations to be calculated in another PR
+
+    return (
+        <MainMetrics
+            leadTimeAvg={leadTimeAvg} leadTimeVariation={leadTimeVariation}
+            createdPRsAvg={prCount} createdPRsVariation={createdPRsVariation}
+            contribsAvg={contribCount} contribsVariation={contribsVariation}
+        />
     );
 };

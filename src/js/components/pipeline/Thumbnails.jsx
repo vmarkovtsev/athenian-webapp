@@ -9,6 +9,7 @@ import { BigNumber, SmallTitle } from 'js/components/ui/Typography';
 import Info from 'js/components/ui/Info'
 
 import { hexToRGBParts, rgba } from 'js/services/colors';
+import { dateTime } from 'js/services/format';
 
 export default ({ stages, activeCard }) => {
     return (
@@ -17,13 +18,14 @@ export default ({ stages, activeCard }) => {
                 stages.map(
                     (card, i) => (
                         <div className="col-md-3" key={i}>
-                            <Link to={'/stage/' + card.tab.slug}>
+                            <Link to={'/stage/' + card.slug}>
                                 <Stage
-                                    title={card.tab.title}
-                                    text={card.tab.text}
-                                    badge={card.tab.badge}
-                                    color={card.tab.color}
-                                    data={card.tab.data}
+                                    title={card.title}
+                                    text={card.avg && dateTime.human(card.avg)}
+                                    hint={card.hint}
+                                    badge={card.badge}
+                                    color={card.color}
+                                    data={card.data}
                                     active={activeCard === i}
                                 >
                                 </Stage>

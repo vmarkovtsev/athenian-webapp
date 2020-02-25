@@ -2,30 +2,49 @@ import React from 'react';
 
 import Badge from 'js/components/ui/Badge';
 import { BigNumber } from 'js/components/ui/Typography';
+import Info from 'js/components/ui/Info';
 
-export default () => (
-    <div className="row mb-3">
-        <div className="col-md-4">
-            <MainMetric title="Lead time" value="11 days" variation={-5} />
-        </div>
-        <div className="col-md-4">
-            <MainMetric title="Pull requests in progress" value="46" variation={20} />
-        </div>
-        <div className="col-md-4">
-            <MainMetric title="Contributors" value="9" variation={10} />
-        </div>
-    </div >
-);
+import { dateTime } from 'js/services/format';
 
-const MainMetric = ({ title, value, variation }) => (
+export default ({
+    leadTimeAvg, leadTimeVariation,
+    createdPRsAvg, createdPRsVariation,
+    contribsAvg, contribsVariation,
+}) => {
+    return (
+        <div className="row mb-3">
+            <div className="col-md-4">
+                <MainMetric title="Lead time" value={leadTimeAvg && dateTime.human(leadTimeAvg)} variation={leadTimeVariation}
+                    hint="Average of time elapsed between the creation of the 1st commit in the Pull Requests within the active filters, and the code being used in production"
+                />
+            </div>
+            <div className="col-md-4">
+                <MainMetric
+                    title="Pull requests in progress" value={createdPRsAvg} variation={createdPRsVariation}
+                    hint="Number of Pull Requests that hav been created within the active filters"
+                />
+            </div>
+            <div className="col-md-4">
+                <MainMetric title="Contributors" value={contribsAvg} variation={contribsVariation}
+                    hint="Number of people participating in the PRs within the active filters"
+                />
+            </div>
+        </div >
+    );
+};
+
+const MainMetric = ({ title, hint, value, variation }) => (
     <div className="card">
         <div className="card-body">
             <div className="card-title mb-0">
                 <div className="d-flex justify-content-between align-items-center">
-                    <div className="font-weight-bold text-uppercase text-xs">{title}</div>
+                    <div className="font-weight-bold text-uppercase text-xs">
+                        {title}
+                        {hint && <Info content={hint} />}
+                    </div>
                     <div className="d-flex align-items-center">
                         <BigNumber content={value} />
-                        <Badge value={variation} trend className="ml-4" />
+                        {value ? <Badge value={variation} trend className="ml-4" /> : ''}
                     </div>
                 </div>
             </div>

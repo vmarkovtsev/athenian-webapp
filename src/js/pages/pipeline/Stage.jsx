@@ -3,18 +3,20 @@ import { useParams } from 'react-router-dom';
 
 import StageMetrics from 'js/components/pipeline/StageMetrics';
 
+import { pipelineStagesConf } from 'js/pages/pipeline/Body';
+
 import { useBreadcrumbsContext } from 'js/context/Breadcrumbs';
 import { useFiltersContext } from 'js/context/Filters';
 
-import { getPipelineMetrics } from 'js/services/api';
+import { getSampleCharts } from 'js/services/api';
 
 export default () => {
-    const [pipelineState, setPipelineData] = useState(getPipelineMetrics());
+    const [stageChartsState, setStageChartsState] = useState([]);
 
     const { name } = useParams()
-    const activeStageState = pipelineState.findIndex(stage => stage.tab.slug === name);
+    const activeStageState = pipelineStagesConf.findIndex(metric => metric.slug === name);
     const links = activeStageState >= 0 ? {
-        current: pipelineState[activeStageState].tab.title,
+        current: pipelineStagesConf[activeStageState].title,
         ancestors: [{ url: '/stage/overview', text: 'Overview' }],
     } : {
             current: 'Overview',
@@ -29,15 +31,15 @@ export default () => {
             return;
         }
 
-        const data = getPipelineMetrics();
-        setPipelineData(data);
-    }, [dateInterval, repositories, contributors]);
+        getSampleCharts(name)
+            .then(setStageChartsState);
+    }, [name, dateInterval, repositories, contributors]);
 
     return (
         activeStageState >= 0 ? (
             <StageMetrics
-                title={pipelineState[activeStageState].tab.title}
-                metrics={pipelineState[activeStageState].body.charts}
+                title={links.current}
+                metrics={stageChartsState}
             />
         ) : (
                 <p>{name} is not a valid pipeline stage.</p>
