@@ -96,7 +96,7 @@ export default ({ children }) => {
 };
 
 const withMainMetrics = (leadTimeData, prs, dateInterval) => {
-    const prCount = prs.filter(pr => (pr.created >= dateInterval.from && pr.created <= dateInterval.to)).length;
+    const prCount = prs.length;
     const participants = prs.reduce((acc, pr) => {
         return [...pr.participants, ...pr.creators].reduce((dict, user) => {
             dict[user] = true;
