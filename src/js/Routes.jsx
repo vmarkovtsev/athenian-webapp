@@ -18,6 +18,7 @@ import Stage from 'js/pages/pipeline/Stage';
 import Overview from 'js/pages/pipeline/Overview';
 import Login from 'js/pages/auth/Login';
 import Logout from 'js/pages/auth/Logout';
+import Bearer from 'js/pages/auth/Bearer';
 import Callback from 'js/pages/auth/Callback';
 import Waiting from 'js/pages/Waiting';
 import NotFound404 from 'js/pages/NotFound404';
@@ -64,6 +65,9 @@ export default () => {
             </Route>
             <Route path='/logout'>
               <Logout />
+            </Route>
+            <Route path='/bearer'>
+              <Bearer />
             </Route>
             <PrivateRoute path='/waiting' component={Waiting} />
             <Route path='/prototypes'>
