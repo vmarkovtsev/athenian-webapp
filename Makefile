@@ -20,7 +20,7 @@ API_VERSION ?= v0.0.39
 
 API_SERVICE_PATH := src/js/services/api
 API_CLIENT_CODE_PATH := $(API_SERVICE_PATH)/openapi-client
-API_SPEC_PATH := $(API_SERVICE_PATH)/openapi.$(API_VERSION).yaml
+API_SPEC_PATH ?= $(API_SERVICE_PATH)/openapi.$(API_VERSION).yaml
 API_CLONE_PATH ?= /tmp/athenian-api
 
 OPENAPI_GENERATOR := node_modules/@openapitools/openapi-generator-cli/bin/openapi-generator

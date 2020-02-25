@@ -32,9 +32,9 @@ class ApiClient {
         /**
          * The base URL against which to resolve every API call's (relative) path.
          * @type {String}
-         * @default https://api.athenian.co/v1
+         * @default http://}/v1
          */
-        this.basePath = 'https://api.athenian.co/v1'.replace(/\/+$/, '');
+        this.basePath = 'http://}/v1'.replace(/\/+$/, '');
 
         /**
          * The authentication methods to be included for all API calls.
@@ -554,8 +554,8 @@ class ApiClient {
     hostSettings() {
         return [
             {
-              'url': "https://api.athenian.co/v1",
-              'description': "No description provided",
+              'url': "{{ server_url }}/v1",
+              'description': "{{ server_description }} - {{ server_url }}",
             }
       ];
     }
