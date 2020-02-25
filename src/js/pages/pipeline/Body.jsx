@@ -18,30 +18,30 @@ export const pipelineStagesConf = [
         title: 'Work in progress',
         slug: 'work-in-progress',
         metric: 'wip-time',
+        stageName: 'wip',
         color: palette.stages.wip,
         hint: 'From the 1st commit of the Pull Request until the review is requested.',
-        badge: 22, //TODO(dpordomingo): This should show some stage metric
     }, {
         title: 'Review',
         slug: 'review',
         metric: 'review-time',
+        stageName: 'review',
         color: palette.stages.review,
         hint: 'From the moment the review is requested until the Pull Request is approved',
-        badge: 0, //TODO(dpordomingo): This should show some stage metric
     }, {
         title: 'Merge',
         slug: 'merge',
         metric: 'merging-time',
+        stageName: 'merge',
         color: palette.stages.merge,
         hint: 'From the moment the Pull Request is approved until it gets merged',
-        badge: 33, //TODO(dpordomingo): This should show some stage metric
     }, {
         title: 'Release',
         slug: 'release',
         metric: 'release-time',
+        stageName: 'release',
         color: palette.stages.release,
         hint: 'From the moment the Pull Request gets merged until it is shipped into production',
-        badge: 201, //TODO(dpordomingo): This should show some stage metric
     },
 ];
 
@@ -73,7 +73,7 @@ export default ({ children }) => {
     return (
         <>
             {withMainMetrics(leadTimeState, prs, dateInterval)}
-            <Thumbnails stages={pipelineState} activeCard={activeStageState} />
+            <Thumbnails prs={prs} stages={pipelineState} activeCard={activeStageState} />
             {children}
         </>
     );
