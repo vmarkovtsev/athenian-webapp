@@ -8,6 +8,8 @@ export const palette = {
         mergeAlt: '#CCB9EC',
         release: '#35CB70',
         releaseAlt: '#BCE6CE',
+        done: 'red', // TODO (dpordomingo): 'done' stage is defined in the API, but not in the Product designs
+        doneAlt: 'red', // TODO (dpordomingo): 'done' stage is defined in the API, but not in the Product designs
     },
     charts: {
         primary: '#000080',
