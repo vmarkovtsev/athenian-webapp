@@ -32,3 +32,15 @@ $container-max-widths: (
 
 $body-bg: $at-main-bg;
 $secondary: #E7E6EB;
+
+
+////////////// Override Typography Settings //////////////
+
+// Override Font family
+$font-family-sans-serif: 'Cerebri', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";;
+
+// Override Font sizes
+
+$font-size-base:              .875rem !default; // Assumes the browser default, typically `16px`
+$font-size-lg:                $font-size-base * 1.25 !default;
+$font-size-sm:                $font-size-base * .75 !default;

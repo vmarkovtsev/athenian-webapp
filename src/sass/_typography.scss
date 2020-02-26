@@ -1,8 +1,18 @@
-@import url('https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&display=swap');
-
 @import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @import "~@fortawesome/fontawesome-free/scss/solid.scss";
 @import "~@fortawesome/fontawesome-free/scss/regular.scss";
+
+@font-face {
+    font-family: 'Cerebri';
+    src: url(../fonts/cerebrisans-book.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Cerebri';
+    src: url(../fonts/cerebrisans-medium.woff);
+    font-weight: 700;
+}
 
 .text-merge {
     color: $color-merge;
