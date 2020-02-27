@@ -44,3 +44,29 @@ $font-family-sans-serif: 'Cerebri', -apple-system, BlinkMacSystemFont, "Segoe UI
 $font-size-base:              .875rem !default; // Assumes the browser default, typically `16px`
 $font-size-lg:                $font-size-base * 1.25 !default;
 $font-size-sm:                $font-size-base * .75 !default;
+
+
+////////////// Override Colors //////////////
+
+// Color variables
+
+$theme-colors: (
+        "primary": #FF7427,
+        "secondary": #8889A1,
+        "success": #2FCC71,
+        "danger": #EF3837,
+        "warning": #FFC508,
+        "info": #147EEC,
+        "light": #FAFAFB,
+        "dark": #121343
+);
+
+$colors: (
+        "blue": #147EEC,
+        "purple": #9260E2,
+        "pink": #FC1763,
+        "red": #EF3837,
+        "orange": #FF7427,
+        "yellow": #FFC508,
+        "green": #2FCC71
+) !default;
