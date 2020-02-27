@@ -24,6 +24,7 @@ export default ({ prs, stages, activeCard }) => {
                                     title={card.title}
                                     text={card.avg && dateTime.human(card.avg)}
                                     hint={card.hint}
+                                    variation={card.variation}
                                     color={card.color}
                                     data={card.data}
                                     active={activeCard === i}
@@ -40,7 +41,7 @@ export default ({ prs, stages, activeCard }) => {
     );
 };
 
-const Stage = ({ title, text, hint, badge, color, data, active, onClick }) => {
+const Stage = ({ title, text, hint, badge, variation, color, data, active, onClick }) => {
     const cardStyle = {};
     if (active) {
         cardStyle.background = rgba(hexToRGBParts(color), .8);
@@ -59,7 +60,8 @@ const Stage = ({ title, text, hint, badge, color, data, active, onClick }) => {
                 </div>
                 <div className="row no-gutters card-text">
                     <div className="col-5">
-                        <BigNumber content={text} />
+                        <BigNumber content={text} /><br />
+                        {text ? <Badge trend value={variation} /> : ''}
                     </div>
                     <div className="col-7 pl-2" style={{ height: 55 }}>
                         <PipelineCardMiniChart data={data} color={color} active={active} />

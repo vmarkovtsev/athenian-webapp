@@ -100,29 +100,68 @@ export const getContributors = (token, userAccount, from, to, repos) => {
 
 export const getMetrics = (api, accountId, dateInterval, repos, contributors) => {
   const metrics = ['lead-time', 'wip-time', 'review-time', 'merging-time', 'release-time'];
-  const data = metrics.reduce((acc, metric) => {
-    acc[metric] = { data: [], avg: 0, sum: 0 };
-    return acc;
-  }, {});
+  const result = {};
+  metrics.forEach(metric => {
+    result[metric] = {
+      data: [],
+      avg: 0,
+      variation: 0,
+      aux: {
+        prevInterval: { sum: 0, count: 0 },
+        mainInterval: { sum: 0, count: 0 },
+      }
+    };
+  });
 
-  return fetchApiMetricsLine(api, metrics, accountId, dateInterval, repos, contributors).then(apiData => {
+  const doubleDateInterval = {
+    from: dateInterval.from - (dateInterval.to - dateInterval.from),
+    to: dateInterval.to
+  };
+
+  return fetchApiMetricsLine(api, metrics, accountId, doubleDateInterval, repos, contributors).then(apiData => {
     if (!apiData.calculated || !apiData.calculated[0]) {
       throw new Error('API returned no calculated data');
     }
 
     // This will unfold values, to have separate data per different metric, instead of all metrics under the same day.
     apiData.calculated[0].values.forEach(step => {
-      step.values.forEach((value, metricNo) => {
-        data[metrics[metricNo]].data.push({ x: new Date(step.date), y: dateTime.milliseconds(value) });
-        data[metrics[metricNo]].sum += dateTime.milliseconds(value);
-      });
+      const stepDate = new Date(step.date);
+      if (stepDate >= dateInterval.from) {
+        step.values.forEach((value, metricNo) => {
+          result[metrics[metricNo]].data.push({ x: stepDate, y: dateTime.milliseconds(value) });
+          result[metrics[metricNo]].aux.mainInterval.sum += dateTime.milliseconds(value);
+          result[metrics[metricNo]].aux.mainInterval.count++;
+        });
+      } else {
+        step.values.forEach((value, metricNo) => {
+          result[metrics[metricNo]].aux.prevInterval.sum += dateTime.milliseconds(value);
+          result[metrics[metricNo]].aux.prevInterval.count++;
+        });
+      }
     });
 
-    Object.keys(data).forEach(metricName => {
-      data[metricName].avg = data[metricName].sum / data[metricName].data.length;
-      delete (data[metricName].sum);
+    Object.keys(result).forEach(metricName => {
+      let [prevAvg, mainAvg, variation] = [0, 0, 'inf'];
+      if (result[metricName].aux.mainInterval.count) {
+        mainAvg = result[metricName].aux.mainInterval.sum / result[metricName].aux.mainInterval.count;
+      }
+
+      if (result[metricName].aux.prevInterval.count) {
+        prevAvg = result[metricName].aux.prevInterval.sum / result[metricName].aux.prevInterval.count;
+      }
+
+      if (prevAvg) {
+        variation = Math.round((mainAvg - prevAvg) * 100 / prevAvg);
+      } else if (!mainAvg) {
+        variation = 0;
+      }
+
+      result[metricName].avg = mainAvg;
+      result[metricName].variation = variation;
+      delete (result[metricName].aux);
     });
-    return data;
+
+    return result;
   }).catch(error => {
     // TODO(dpordomingo): notify to an error handler which may rise a toast
     console.error('ERROR calling endpoint', error);
