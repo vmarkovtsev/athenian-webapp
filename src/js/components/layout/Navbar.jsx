@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom';
 
-import logo from 'images/logos/logo-transparent.png';
+import logo from 'images/logos/logo-transparent.svg';
 import defaultImage from 'images/default-user-image.png';
 
 import InvitationCreator from 'js/smart-components/InvitationCreator';
