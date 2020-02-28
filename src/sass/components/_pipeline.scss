@@ -1,0 +1,111 @@
+.pipeline-thumbnails {
+
+    .card {
+        border-radius: .35rem .35rem 0 0;
+    }
+
+    .pipeline-stage {
+        position: relative;
+        border-top: 1px dashed $at-border-color;
+        padding-top: 10px;
+
+        &.active {
+            z-index: 20;
+            border-top-style: solid;
+
+            a .pipeline-thumbnail.active .text-secondary {
+                color: $white !important;
+            }
+
+            &.wip,
+            &.wip .event-before,
+            &.wip .event-after {
+                border-color: $color-wip;
+                border-width: 2px;
+
+                a .pipeline-thumbnail.active {
+                    background-color: $color-wip;
+                    border-color: $color-wip;
+                }
+            }
+            &.review,
+            &.review .event-before,
+            &.review .event-after {
+                border-color: $color-review;
+                border-width: 2px;
+
+                a .pipeline-thumbnail.active {
+                    background-color: $color-review;
+                    border-color: $color-review;
+                }
+            }
+            &.merge,
+            &.merge .event-before,
+            &.merge .event-after {
+                border-color: $color-merge;
+                border-width: 2px;
+
+                a .pipeline-thumbnail.active {
+                    background-color: $color-merge;
+                    border-color: $color-merge;
+                }
+            }
+            &.release,
+            &.release .event-before,
+            &.release .event-after {
+                border-color: $color-release;
+                border-width: 2px;
+
+                a .pipeline-thumbnail.active {
+                    background-color: $color-release;
+                    border-color: $color-release;
+                }
+            }
+        }
+
+        $event-size: 14px;
+        .event-before,
+        .event-after {
+            display: inline-block;
+            width: $event-size;
+            height: $event-size;
+            border: 1px solid $at-border-color;
+            background: $at-main-bg;
+            border-radius: $event-size;
+            position: absolute;
+            top: -$event-size/2;
+            z-index: 10;
+        }
+
+        .event-before {
+            left: -$event-size/2;
+        }
+
+        .event-after {
+            right: -$event-size/2;
+        }
+
+        .pipeline-thumbnail {
+            &:hover {
+                background: transparent;
+            }
+
+            &.active {
+                color: white;
+
+                &:hover {
+                    cursor: default;
+                }
+
+                .big-number {
+                    color: white !important;
+                }
+
+                .badge {
+                    background: rgba(white, .3);
+                    color: white;
+                }
+            }
+        }
+    }
+}

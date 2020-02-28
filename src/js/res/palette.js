@@ -1,6 +1,6 @@
 export const palette = {
     stages: {
-        wip: '#FF7427',
+        wip: '#FF732B',
         review: '#FFC508',
         merge: '#9260E2',
         release: '#2FCC71',

@@ -1,0 +1,37 @@
+.navbar-nav .dropdown .dropdown-menu {
+    $menuWidth: 19rem;
+    $menuImageWidth: 4rem;
+    $menuHorizontalPadding: map-get($spacers, 3);
+    $menuUserLeftMargin: map-get($spacers, 2);
+
+    width: $menuWidth !important;
+    padding: 0;
+
+    .img-profile {
+        height: $menuImageWidth;
+    }
+
+    .userData {
+        width: $menuWidth - $menuImageWidth - 2 * $menuHorizontalPadding - $menuUserLeftMargin;
+        margin-left: $menuUserLeftMargin;
+    }
+
+    .menuItem {
+        padding-left: $menuHorizontalPadding;
+        padding-right: $menuHorizontalPadding;
+    }
+
+    .invitationCreator {
+        $copyButtonWidth: 5.5rem;
+
+        .desc {
+            $invitationDescMargin: map-get($spacers, 3);
+            width: $menuWidth - $copyButtonWidth - 2 * $menuHorizontalPadding - $invitationDescMargin;
+            margin-right: $invitationDescMargin;
+        }
+
+        button {
+            width: $copyButtonWidth;
+        }
+    }
+}
