@@ -6,9 +6,25 @@
 
 @import 'typography.scss';
 
+// Topbar
+
 .app-logo {
-    height: 50px;
+    height: 24px;
 }
+
+.topbar.navbar {
+    height: 48px;
+}
+
+#mainBreadcrumbs {
+    display: block;
+
+    li {
+        display: inline-block;
+    }
+}
+
+// Pipeline
 
 .pipeline-thumbnails {
 
@@ -92,14 +108,6 @@
                 }
             }
         }
-    }
-}
-
-#mainBreadcrumbs {
-    display: block;
-
-    li {
-        display: inline-block;
     }
 }
 
