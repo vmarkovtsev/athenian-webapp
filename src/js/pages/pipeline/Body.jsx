@@ -1,101 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams } from "react-router-dom";
 
-import { useAuth0 } from 'js/context/Auth0';
-import { useUserContext } from 'js/context/User';
-import { useFiltersContext } from 'js/context/Filters';
+import { usePipelineContext } from 'js/context/Pipeline';
+import { usePRsContext } from 'js/context/PRs';
 
 import MainMetrics from 'js/components/pipeline/MainMetrics';
 import Thumbnails from 'js/components/pipeline/Thumbnails';
 
-import { getMetrics, fetchApi } from 'js/services/api';
-import { usePRsContext } from 'js/context/PRs';
-
-import { palette } from 'js/res/palette';
-
-export const pipelineStagesConf = [
-    {
-        title: 'Work in progress',
-        slug: 'work-in-progress',
-        metric: 'wip-time',
-        stageName: 'wip',
-        color: palette.stages.wip,
-        hint: 'From the 1st commit of the Pull Request until the review is requested.',
-        event: {
-            before: 'First Commit',
-            after: 'Review Requested',
-        },
-    }, {
-        title: 'Review',
-        slug: 'review',
-        metric: 'review-time',
-        stageName: 'review',
-        color: palette.stages.review,
-        hint: 'From the moment the review is requested until the Pull Request is approved',
-        event: {
-            before: 'Review Requested',
-            after: 'Approved',
-        },
-    }, {
-        title: 'Merge',
-        slug: 'merge',
-        metric: 'merging-time',
-        stageName: 'merge',
-        color: palette.stages.merge,
-        hint: 'From the moment the Pull Request is approved until it gets merged',
-        event: {
-            before: 'Approved',
-            after: 'Merged',
-        },
-    }, {
-        title: 'Release',
-        slug: 'release',
-        metric: 'release-time',
-        stageName: 'release',
-        color: palette.stages.release,
-        hint: 'From the moment the Pull Request gets merged until it is shipped into production',
-        event: {
-            before: 'Merged',
-            after: 'Released',
-        },
-    },
-];
+import { pipelineStagesConf, getStage } from 'js/pages/pipeline/Pipeline';
 
 export default ({ children }) => {
-    const { getTokenSilently } = useAuth0();
-    const userContext = useUserContext();
-
-    const [pipelineState, setPipelineState] = useState([]);
-    const [leadTimeState, setLeadTimeState] = useState({});
-    const { name } = useParams()
-    const activeStageState = pipelineStagesConf.findIndex(metric => metric.slug === name);
-
-    const { dateInterval, repositories, contributors } = useFiltersContext();
-    const { prs } = usePRsContext();
-
-    useEffect(() => {
-        if (!userContext || !repositories.length) {
-            return;
-        };
-
-        getTokenSilently()
-            .then(token => fetchApi(token, getMetrics, userContext.defaultAccount.id, dateInterval, repositories, contributors))
-            .then(data => {
-                setPipelineState(pipelineStagesConf.map(stageConf => ({ ...stageConf, ...data[stageConf.metric] })));
-                setLeadTimeState(data['lead-time']);
-            });
-    }, [userContext, dateInterval, repositories, contributors]);
+    const { prs: prsContext } = usePRsContext();
+    const { leadtime: leadtimeContext, stages: stagesContext } = usePipelineContext();
+    const { name: stageSlug } = useParams();
+    const activeConf = getStage(pipelineStagesConf, stageSlug);
 
     return (
         <>
-            {withMainMetrics(leadTimeState, prs, dateInterval)}
-            <Thumbnails prs={prs} stages={pipelineState} activeCard={activeStageState} />
+            {withMainMetrics(leadtimeContext, prsContext)}
+            <Thumbnails prs={prsContext} stages={stagesContext} activeCard={activeConf && activeConf.slug} />
             {children}
         </>
     );
 };
 
-const withMainMetrics = (leadTimeData, prs, dateInterval) => {
+const withMainMetrics = (leadTimeData = {}, prs) => {
     const prCount = prs.length;
     const participants = prs.reduce((acc, pr) => {
         return pr.participants.reduce((dict, user) => {

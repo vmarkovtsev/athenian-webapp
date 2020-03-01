@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import StageMetrics from 'js/components/pipeline/StageMetrics';
+import StageMetrics, { StageSummaryKPI } from 'js/components/pipeline/StageMetrics';
 
-import { pipelineStagesConf } from 'js/pages/pipeline/Body';
+import { pipelineStagesConf, getStage } from 'js/pages/pipeline/Pipeline';
 
 import { useBreadcrumbsContext } from 'js/context/Breadcrumbs';
 import { useFiltersContext } from 'js/context/Filters';
+import { usePipelineContext } from 'js/context/Pipeline';
+import { usePRsContext } from 'js/context/PRs';
 
 import { getSampleCharts } from 'js/services/api';
 
 export default () => {
     const [stageChartsState, setStageChartsState] = useState([]);
 
-    const { name } = useParams()
-    const activeStageState = pipelineStagesConf.findIndex(metric => metric.slug === name);
-    const links = activeStageState >= 0 ? {
-        current: pipelineStagesConf[activeStageState].title,
+    const { stages: stagesContext } = usePipelineContext();
+    const { prs: prsContext } = usePRsContext();
+    const { name: stageSlug } = useParams();
+    const activeConf = getStage(pipelineStagesConf, stageSlug);
+    const activeStage = getStage(stagesContext, stageSlug);
+
+    const links = activeConf ? {
+        current: activeConf.title,
         ancestors: [{ url: '/stage/overview', text: 'Overview' }],
     } : {
             current: 'Overview',
@@ -31,18 +37,22 @@ export default () => {
             return;
         }
 
-        getSampleCharts(name)
+        getSampleCharts(stageSlug)
             .then(setStageChartsState);
-    }, [name, dateInterval, repositories, contributors]);
+    }, [stageSlug, dateInterval, repositories, contributors]);
+
+    if (!activeConf) {
+        return <p>{stageSlug} is not a valid pipeline stage.</p>;
+    }
 
     return (
-        activeStageState >= 0 ? (
+        activeStage ? (
             <StageMetrics
-                title={links.current}
                 metrics={stageChartsState}
-            />
-        ) : (
-                <p>{name} is not a valid pipeline stage.</p>
-            )
+                conf={activeStage}
+            >
+                <StageSummaryKPI data={activeStage.summary(activeStage, prsContext, dateInterval)} />
+            </StageMetrics>
+        ) : null
     );
 };

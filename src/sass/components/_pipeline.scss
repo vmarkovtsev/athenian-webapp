@@ -120,3 +120,50 @@
         }
     }
 }
+
+.summary-metric {
+    &.wip {
+        border-color: $color-wip;
+
+        header {
+            color: $color-wip;
+        }
+    }
+    &.review {
+        border-color: $color-review;
+
+        header {
+            color: $color-review;
+        }
+    }
+    &.merge {
+        border-color: $color-merge;
+
+        header {
+            color: $color-merge;
+        }
+    }
+    &.release {
+        border-color: $color-release;
+
+        header {
+            color: $color-release;
+        }
+    }
+}
+
+.leadtime-proportion {
+    height: 5px;
+    &.wip {
+        background: $color-wip;
+    }
+    &.review {
+        background: $color-review;
+    }
+    &.merge {
+        background: $color-merge;
+    }
+    &.release {
+        background: $color-release;
+    }
+}
