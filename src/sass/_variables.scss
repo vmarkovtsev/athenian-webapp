@@ -4,7 +4,14 @@
 $at-main-bg: #FAFAFB;
 $at-border-color: #E7E7EC;
 
+/*
+ * The colors used in the charts are defined by "src/js/res/palette.js"
+ */
+
+// The following stage colors must be in sync with the ones in "src/js/res/palette.js"
+$color-leadtime: #4DC7EE;
 $color-wip: #FF732B;
 $color-review: #FFC508;
 $color-merge: #9260E2;
 $color-release: #2FCC71;
+$color-done: red; // TODO (dpordomingo): 'done' stage is defined in the API, but not in the Product designs

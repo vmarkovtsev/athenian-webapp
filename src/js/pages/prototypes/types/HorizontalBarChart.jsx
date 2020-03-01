@@ -9,6 +9,7 @@ import {
     DiscreteColorLegend,
     ChartLabel,
 } from 'react-vis';
+
 import { palette } from 'js/res/palette';
 
 const dataA = {
@@ -41,8 +42,8 @@ export default () => (
 
 const HorizontalBarChart = ({ data }) => {
     // TODO: handle bar -> color (if more than available colors)
-    const availableColor = Object.keys(palette.charts);
-    const legend = data.map((bar, i) => ({ title: bar.title, color: palette.charts[availableColor[i]] }));
+    const availableColor = palette.schemes.duoSimilar;
+    const legend = data.map((bar, i) => ({ title: bar.title, color: availableColor[i] }));
 
     return (
         <FlexibleWidthXYPlot height={250} margin={{ left: 50 }} yType="ordinal">
@@ -68,7 +69,7 @@ const HorizontalBarChart = ({ data }) => {
                     textAnchor: 'end'
                 }}
             />
-            {data.map((barData, i) => <HorizontalBarSeries data={barData.data} color={palette.charts[availableColor[i]]} key={i} />)}
+            {data.map((barData, i) => <HorizontalBarSeries data={barData.data} color={availableColor[i]} key={i} />)}
         </FlexibleWidthXYPlot>
     );
 }
