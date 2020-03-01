@@ -18,6 +18,10 @@
     color: $color-merge;
 }
 
+.big-number.text-xl {
+    font-size: 1.7rem;
+}
+
 .fa {
     @extend %fa-icon;
 

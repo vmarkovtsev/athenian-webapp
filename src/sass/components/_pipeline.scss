@@ -1,4 +1,6 @@
 .pipeline-thumbnails {
+    position: relative;
+    z-index: 5;
 
     .card {
         border-radius: .35rem .35rem 0 0;

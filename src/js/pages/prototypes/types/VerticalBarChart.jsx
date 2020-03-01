@@ -10,6 +10,7 @@ import {
     DiscreteColorLegend,
     ChartLabel,
 } from 'react-vis';
+
 import { palette } from 'js/res/palette';
 
 const dataA = {
@@ -52,8 +53,8 @@ export default () => (
 
 const VerticalBarChart = ({ data }) => {
     // TODO: handle bar -> color (if more than available colors)
-    const availableColor = Object.keys(palette.charts);
-    const legend = data.map((bar, i) => ({ title: bar.title, color: palette.charts[availableColor[i]] }));
+    const availableColor = palette.schemes.duoSimilar;
+    const legend = data.map((bar, i) => ({ title: bar.title, color: availableColor[i] }));
 
     return (
         <FlexibleWidthXYPlot height={250} xType="ordinal" xDistance={100} margin={{ bottom: 100, left: 50 }}>
@@ -75,7 +76,7 @@ const VerticalBarChart = ({ data }) => {
                     textAnchor: 'end'
                 }}
             />
-            {data.map((barData, i) => <VerticalBarSeries data={barData.data} color={palette.charts[availableColor[i]]} key={i} />)}
+            {data.map((barData, i) => <VerticalBarSeries data={barData.data} color={availableColor[i]} key={i} />)}
         </FlexibleWidthXYPlot>
     );
 }
