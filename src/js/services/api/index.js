@@ -133,7 +133,14 @@ export const getMetrics = (api, accountId, dateInterval, repos, contributors) =>
 
     // This will unfold values, to have separate data per different metric, instead of all metrics under the same day.
     apiData.calculated[0].values.forEach(step => {
+
+      { // TODO(dpordomingo): remove leadtime mocking below, once the API is sending proper leadtime
+        step.values[4] = step.values[1];
+        step.values[0] = parseInt(step.values[1] || 0) + parseInt(step.values[2] || 0) + parseInt(step.values[3] || 0) + parseInt(step.values[4] || 0);
+      }
+
       const stepDate = new Date(step.date);
+
       if (stepDate >= dateInterval.from) {
         step.values.forEach((value, metricNo) => {
           result[metrics[metricNo]].data.push({ x: stepDate, y: dateTime.milliseconds(value) });
