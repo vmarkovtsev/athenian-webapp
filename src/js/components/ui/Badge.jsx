@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faAngleUp, faEquals } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown, faCaretUp, faEquals } from '@fortawesome/free-solid-svg-icons';
 
 export default ({ value, trend, className }) => {
   const commonClasses = ['badge', 'font-weight-normal', 'align-middle', 'd-inline-block'];
@@ -12,10 +12,10 @@ export default ({ value, trend, className }) => {
     customClasses = ['badge-pill', 'badge-secondary', 'py-1', 'px-2'];
   } else if (value < 0) {
     customClasses = ['badge-danger'];
-    icon = faAngleDown;
+    icon = faCaretDown;
   } else if (value > 0) {
     customClasses = ['badge-success'];
-    icon = faAngleUp;
+    icon = faCaretUp;
   } else {
     customClasses = ['badge-secondary'];
     icon = faEquals;

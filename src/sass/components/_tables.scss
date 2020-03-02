@@ -3,12 +3,12 @@
     border: 0 !important;
 
     thead {
-        background-color: $secondary !important;
+        background-color: rgba($at-border-color, 0.5) !important;
+        color: $secondary;
 
         th {
             @extend .text-xs;
             @extend .text-uppercase;
-            @extend .font-weight-bold;
             transform: translateY(2px);
             border: 0;
         }
