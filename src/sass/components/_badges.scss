@@ -23,4 +23,67 @@
         background: $at-border-color;
         color: $secondary;
     }
+
+    // Setting Outlined Badges
+
+    &.badge-outlined {
+        background: transparent;
+        border: 1px solid;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        font-weight: 400;
+        padding: .4rem 1rem !important;
+        min-width: 100px;
+        line-height: 1rem;
+
+        &.badge-primary {
+            border-color: $primary;
+            color: $secondary;
+        }
+
+        &.badge-secondary {
+            border-color: $secondary;
+            color: $secondary;
+        }
+
+        &.badge-success {
+            border-color: $green;
+            color: $green;
+        }
+
+        &.badge-warning {
+            border-color: $warning;
+            color: $warning;
+        }
+
+        &.badge-info {
+            border-color: $info;
+            color: $info;
+        }
+
+        &.badge-danger {
+            border-color: $danger;
+            color: $danger;
+        }
+
+        &.badge-wip {
+            border-color: $color-wip;
+            color: $color-wip;
+        }
+
+        &.badge-review {
+            border-color: $color-review;
+            color: $color-review;
+        }
+
+        &.badge-merge {
+            border-color: $color-merge;
+            color: $color-merge;
+        }
+
+        &.badge-release {
+            border-color: $color-release;
+            color: $color-release;
+        }
+    }
 }
