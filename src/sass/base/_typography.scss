@@ -4,8 +4,14 @@
 
 @font-face {
     font-family: 'Cerebri';
+    src: url('../../../src/fonts/cerebrisans-light.woff');
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'Cerebri';
     src: url('../../../src/fonts/cerebrisans-book.woff');
-    font-weight: 400;
+    font-weight: 500;
 }
 
 @font-face {

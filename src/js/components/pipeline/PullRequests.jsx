@@ -12,11 +12,6 @@ import { palette } from 'js/res/palette';
 
 export default ({ data }) => {
 
-    const stageStyle = stage => `
-        border-color: ${palette.stages[stage]} !important;
-        color: ${palette.stages[stage]} !important;
-    `;
-
     const userImage = user => {
         if (users[user] && users[user].avatar) {
             return `<img src="${users[user].avatar}" title="${github.userName(user)}" alt="${github.userName(user)}" class="pr-user-avatar" /><span class="pr-user-avatar pr-user-unknown" title="${github.userName(user)}" class="pr-user-unknown">?</span>`;
@@ -80,38 +75,20 @@ export default ({ data }) => {
                         switch (type) {
                             case 'display':
                                 return `
-                                    <div>
-                                        ${github.repoOrg(row.repository)}/${github.repoName(row.repository)}:
-                                        <strong><a href=${github.prLink(row.repository, row.number)} target="_blank">${row.title}</a></strong>
+                                    <div class="table-title">
+                                        <span class="text-secondary">${github.repoOrg(row.repository)}/${github.repoName(row.repository)}:</span>
+                                        <a class="text-dark font-weight-bold" href=${github.prLink(row.repository, row.number)} target="_blank">${row.title}</a>
                                     </div>
-                                    <div>
+                                    <div class="table-creators">
                                         ${row.creators.map(userImage).join(' ')}
-                                        <span class="pr-created-by">created by <strong>${row.creators.map(github.userName).join(' ')}</strong></span>
-                                        ${dateTime.ago(row.created)} ago
+                                        <div class="pr-created-by"><span>Created by</span> <span class="text-dark">${row.creators.map(github.userName).join(' ')}</span>
+                                        <span>${dateTime.ago(row.created)} ago</span></div>
                                     </div>
                                 `;
                             case 'sort':
                                 return row.number;
                             default:
                                 return row.title;
-                        }
-                    },
-                }, {
-                    title: 'Age',
-                    searchable: false,
-                    className: 'pr-age',
-                    render: (_, type, row) => {
-                        switch (type) {
-                            case 'display':
-                                if (row.stage === 'release' || row.stage === 'done') {
-                                    return row.closed ? dateTime.interval(row.created, row.closed) : '';
-                                }
-                                return '';
-                            default:
-                                if (row.stage === 'release' || row.stage === 'done') {
-                                    return row.closed ? row.closed - row.created : Number.MAX_VALUE;
-                                }
-                                return Number.MAX_VALUE;
                         }
                     },
                 }, {
@@ -133,6 +110,7 @@ export default ({ data }) => {
                     },
                 }, {
                     title: 'Comments',
+                    className: 'pr-comments',
                     searchable: false,
                     render: (_, type, row) => {
                         switch (type) {
@@ -156,12 +134,30 @@ export default ({ data }) => {
                         }
                     },
                 }, {
+                    title: 'Age',
+                    searchable: false,
+                    className: 'pr-age',
+                    render: (_, type, row) => {
+                        switch (type) {
+                            case 'display':
+                                if (row.stage === 'release' || row.stage === 'done') {
+                                    return row.closed ? dateTime.interval(row.created, row.closed) : '';
+                                }
+                                return '';
+                            default:
+                                if (row.stage === 'release' || row.stage === 'done') {
+                                    return row.closed ? row.closed - row.created : Number.MAX_VALUE;
+                                }
+                                return Number.MAX_VALUE;
+                        }
+                    },
+                }, {
                     title: 'Stage',
                     className: 'align-middle text-center',
                     render: (_, type, row) => {
                         switch (type) {
                             case 'display':
-                                return `<div class="border rounded px-3 py-1" style="${stageStyle(row.stage)}">${row.stage}</div>`;
+                                return `<div class="badge badge-outlined badge-${row.stage}"">${row.stage}</div>`;
                             default:
                                 return row.stage;
                         }
