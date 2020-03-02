@@ -2,14 +2,22 @@
     position: relative;
     z-index: 5;
 
+    &:after {
+        content: "";
+        display: block;
+        border-bottom: 1px solid $at-border-color;
+        margin: -1px 15px 0;
+        width: 100%;
+    }
+
     .card {
         border-radius: .35rem .35rem 0 0;
     }
 
     .pipeline-stage {
         position: relative;
-        border-top: 1px dashed $at-border-color;
-        padding-top: 10px;
+        border-top: 2px dashed $at-border-color;
+        padding-top: 14px;
 
         &.active {
             z-index: 20;
@@ -65,17 +73,17 @@
             }
         }
 
-        $event-size: 14px;
+        $event-size: 12px;
         .event-before,
         .event-after {
             display: inline-block;
             width: $event-size;
             height: $event-size;
-            border: 1px solid $at-border-color;
-            background: $at-main-bg;
+            border: 2px solid $at-border-color;
+            background: $white;
             border-radius: $event-size;
             position: absolute;
-            top: -$event-size/2;
+            top: -1 -$event-size/2;
             z-index: 10;
         }
 
@@ -89,7 +97,7 @@
 
         .pipeline-thumbnail {
             &:hover {
-                background: transparent;
+                background: rgba($white, .5);
             }
 
             &.active {

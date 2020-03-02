@@ -45,7 +45,7 @@ const Stage = ({ title, text, hint, badge, variation, color, data, active, onCli
 
     return (
         <div className={classnames('card pipeline-thumbnail', active && 'active')} onClick={onClick}>
-            <div className="card-body">
+            <div className="card-body p-3">
                 <div className="card-title d-flex justify-content-between align-items-center mb-3">
                     <span>
                         <SmallTitle content={title} />
@@ -55,7 +55,7 @@ const Stage = ({ title, text, hint, badge, variation, color, data, active, onCli
                 </div>
                 <div className="row no-gutters card-text">
                     <div className="col-5">
-                        <BigNumber content={text} /><br />
+                        <BigNumber content={text} className="mb-1 w-100" />
                         {text ? <Badge trend value={variation} /> : ''}
                     </div>
                     <div className="col-7 pl-2" style={{ height: 55 }}>
