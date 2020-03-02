@@ -157,7 +157,7 @@ export default ({ data }) => {
                     render: (_, type, row) => {
                         switch (type) {
                             case 'display':
-                                return `<div class="badge badge-outlined badge-${row.stage}"">${row.stage}</div>`;
+                                return `<div class="badge badge-outlined badge-${row.stage}">${row.stage}</div>`;
                             default:
                                 return row.stage;
                         }
