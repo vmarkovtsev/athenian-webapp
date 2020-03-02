@@ -12,6 +12,7 @@ import { hexToRGBParts, rgba } from 'js/services/colors';
 import { dateTime } from 'js/services/format';
 
 export default ({ prs, stages, activeCard }) => {
+    //TODO(dpordomingo): stage.badge should count the stage-complete PRs, not the stage-pending ones. It should be obtained from the API
     return (
         <div className="row mt-4 mb-4 align-items-end pipeline-thumbnails">
             {
