@@ -156,7 +156,7 @@ export const getMetrics = (api, accountId, dateInterval, repos, contributors) =>
         variation = 0;
       }
 
-      result[metricName].avg = mainAvg;
+      result[metricName].avg = mainAvg; // TODO(dpordomingo): Average should consider stage-complete PRs, not the stage-pending ones. It should be obtained from the API
       result[metricName].variation = variation;
       delete (result[metricName].aux);
     });

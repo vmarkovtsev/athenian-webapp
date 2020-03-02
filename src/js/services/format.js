@@ -24,17 +24,17 @@ const human = seconds => {
 
     if (seconds < MINUTE) {
         return '<1 min';
-    } else if (seconds <= 1.5 * MINUTE) {
+    } else if (seconds <= 1.75 * MINUTE) {
         return '~1 min';
-    } else if (seconds <= 1.5 * HOUR) {
+    } else if (seconds <= 1.75 * HOUR) {
         return Math.round(seconds / MINUTE) + ' mins';
     } else if (seconds <= 1.75 * DAY) {
         return Math.round(seconds / HOUR) + ' hours';
-    } else if (seconds <= 10 * DAY) {
+    } else if (seconds <= 12 * DAY) {
         return Math.round(seconds / DAY) + ' days';
     } else if (seconds <= 8 * WEEK) {
         return Math.round(seconds / WEEK) + ' weeks';
-    } else if (seconds <= 18 * MONTH) {
+    } else if (seconds <= 24 * MONTH) {
         return Math.round(seconds / MONTH) + ' months';
     } else if (seconds <= 5 * YEAR) {
         return Math.round(seconds / YEAR) + ' years';
@@ -50,7 +50,7 @@ export const dateTime = {
             return 0;
         };
 
-        const seconds = parseFloat(secondsString);
+        const seconds = parseInt(secondsString);
         if (!seconds) {
             return 0;
         };
