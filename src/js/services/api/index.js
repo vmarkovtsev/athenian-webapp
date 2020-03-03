@@ -1,8 +1,8 @@
 import {
   DefaultApi,
   ApiClient,
-  MetricsRequest,
-  FilterItemsRequest,
+  PullRequestMetricsRequest,
+  FilterContribsOrReposRequest,
   FilterPullRequestsRequest
 } from 'js/services/api/openapi-client';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
@@ -86,14 +86,14 @@ export const getUserWithAccountRepos = async token => {
 
 export const getRepos = (token, userAccount, from, to, repos) => {
   const api = buildApi(token);
-  const filter = new FilterItemsRequest(userAccount, from, to);
+  const filter = new FilterContribsOrReposRequest(userAccount, from, to);
   filter.in = repos;
   return api.filterRepositories({ body: filter }).then(repos => [...repos])
 };
 
 export const getContributors = (token, userAccount, from, to, repos) => {
   const api = buildApi(token);
-  const filter = new FilterItemsRequest(userAccount, from, to);
+  const filter = new FilterContribsOrReposRequest(userAccount, from, to);
   filter.in = repos;
   return api.filterContributors({ body: filter })
 };
@@ -176,8 +176,8 @@ const fetchApiMetricsLine = (api, metrics, accountId, dateInterval = { from: nul
   const forset = new ForSet(repos);
   forset.developers = contributors;
 
-  const body = new MetricsRequest([forset], metricsIDs, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to), granularity, accountId);
-  return api.calcMetricsLine(body);
+  const body = new PullRequestMetricsRequest([forset], metricsIDs, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to), granularity, accountId);
+  return api.calcMetricsPrLinear(body);
 };
 
 export const getInvitation = async (token, accountID) => {
