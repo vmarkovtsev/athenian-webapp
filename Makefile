@@ -16,7 +16,7 @@ $(MAKEFILE):
 # CI is set to '1' in travis by default
 CI ?=
 
-API_VERSION ?= v0.0.39
+API_VERSION ?= v0.0.50
 
 API_SERVICE_PATH := src/js/services/api
 API_CLIENT_CODE_PATH := $(API_SERVICE_PATH)/openapi-client
