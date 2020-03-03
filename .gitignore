@@ -34,3 +34,7 @@ yarn-error.log*
 # caches
 .npm
 .eslintcache
+
+# openapi client autogeneration
+src/js/services/api/openapi-client/.openapi-generator-ignore
+src/js/services/api/openapi-client/.openapi-generator/VERSION
