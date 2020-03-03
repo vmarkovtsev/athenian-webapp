@@ -1,0 +1,63 @@
+.page-link {
+    padding: 0.8rem 0.85rem 0.7rem !important;
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+    width: 30px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 1.2rem;
+    font-weight: 300;
+
+    &:focus {
+        box-shadow: none !important;
+    }
+
+    .page-item.active & {
+        background-color: $white !important;
+        border: 1px solid $at-border-color !important;
+        color: $dark !important;
+        font-weight: 700;
+    }
+}
+
+.page-item {
+
+    &.previous,
+    &.next {
+
+        .page-link {
+            background-color: $white !important;
+            border: 1px solid $at-border-color !important;
+            border-radius: 0 !important;
+            font-size: 1.2rem;
+            height: 3.2rem;
+            line-height: 1rem;
+
+            .fas {
+                font-size: 1.4rem;
+            }
+        }
+    }
+
+    &.previous {
+        margin-right: 1rem;
+    }
+
+    &.next {
+        margin-left: 1rem;
+    }
+
+    &.disabled {
+        opacity: 0.5;
+    }
+}
+
+.pr-pagination {
+
+    label,
+    .dataTables_info {
+        line-height: 3rem;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
