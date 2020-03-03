@@ -23,6 +23,8 @@ API_CLIENT_CODE_PATH := $(API_SERVICE_PATH)/openapi-client
 API_SPEC_PATH ?= $(API_SERVICE_PATH)/openapi.$(API_VERSION).yaml
 API_CLONE_PATH ?= /tmp/athenian-api
 
+OLD_API_SPEC := $(shell ls $(API_SERVICE_PATH)/openapi.*.yaml)
+
 OPENAPI_GENERATOR := node_modules/@openapitools/openapi-generator-cli/bin/openapi-generator
 
 $(API_SPEC_PATH):
@@ -33,7 +35,10 @@ $(API_SPEC_PATH):
 	rm -rf $(API_CLONE_PATH)
 
 .PHONY: api-generate
-api-generate: $(OPENAPI_GENERATOR) clean-openapi $(API_SPEC_PATH)
+api-generate: $(API_CLIENT_CODE_PATH)/index.js
+
+$(API_CLIENT_CODE_PATH)/index.js: $(OPENAPI_GENERATOR) $(API_SPEC_PATH)
+	$(MAKE) clean-openapi
 	node_modules/@openapitools/openapi-generator-cli/bin/openapi-generator generate \
 		--input-spec=$(API_SPEC_PATH) \
 		--output=$(API_CLIENT_CODE_PATH) \
@@ -41,6 +46,8 @@ api-generate: $(OPENAPI_GENERATOR) clean-openapi $(API_SPEC_PATH)
 		--ignore-file-override=$(API_SERVICE_PATH)/.openapi-generator-ignore \
 		--config=$(API_SERVICE_PATH)/.openapi-config.yml \
 		-DmodelTests=false,modelDocs=false,apiTests=false,apiDocs=false;
+	[ "$(OLD_API_SPEC)" != "$(API_SPEC_PATH)" ] && rm -f $(OLD_API_SPEC) || echo;
+	echo "Using API specs $(API_VERSION). See a copy at $(API_SPEC_PATH)";
 
 .PHONY: clean
 clean: clean-openapi
