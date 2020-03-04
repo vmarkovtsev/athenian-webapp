@@ -38,9 +38,9 @@ export default ({ user, className }) => {
             </div>
         ) : (
                 urlState && (
-                    <div className={classnames('invitationCreator d-flex flex-row d-flex justify-content-between align-items-center text-xs', className)}>
+                    <div className={classnames('invitationCreator d-flex flex-row d-flex justify-content-between align-items-center font-weight-light text-s', className)}>
                         <div className="desc">
-                            <p className="my-0 text-truncate font-weight-bold text-gray-900">Invite</p>
+                            <p className="my-0 text-truncate text-dark">Invite</p>
                             <p className="my-0 text-truncate">{urlState}</p>
                         </div>
 

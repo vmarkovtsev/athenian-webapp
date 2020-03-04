@@ -20,6 +20,7 @@
     .menuItem {
         padding-left: $menuHorizontalPadding;
         padding-right: $menuHorizontalPadding;
+        min-height: 4.3rem;
     }
 
     .invitationCreator {
@@ -32,7 +33,11 @@
         }
 
         button {
-            width: $copyButtonWidth;
+            width: 7.5rem;
+
+            &:hover .text-secondary {
+                color: $white !important;
+            }
         }
     }
 }
