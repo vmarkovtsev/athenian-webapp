@@ -60,7 +60,7 @@
             &.sorting_asc,
             &.sorting_desc {
                 color: $dark;
-                padding-left: 24px;
+                padding-left: 24px !important;
             }
         }
     }
