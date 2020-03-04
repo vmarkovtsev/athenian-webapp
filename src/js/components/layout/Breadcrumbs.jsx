@@ -7,7 +7,7 @@ export default ({ breadcrumbs }) => breadcrumbs && (
             <ol id="mainBreadcrumbs" className="breadcrumb bg-white mb-0 py-0 p-0" aria-label="breadcrumb">
                 {breadcrumbs.ancestors && breadcrumbs.ancestors.map((link, i) => (
                     <li key={i} className="breadcrumb-item text-xs">
-                        <Link to={link.url} className="text-secondary">{link.text}</Link>
+                        <Link to={link.url} className="text-bright">{link.text}</Link>
                     </li>
                 ))}
                 <li className="breadcrumb-item active" aria-current="page">{breadcrumbs.current}</li>

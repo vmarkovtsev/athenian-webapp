@@ -31,8 +31,8 @@ const User = ({ user }) => {
           <header className="menuItem d-flex flex-row align-items-center bg-light py-2 border-bottom">
             <img className="img-profile rounded-circle" alt="" src={user.picture || defaultImage} />
             <div className="userData">
-              <p className="mb-1 text-truncate font-weight-bold text-gray-900">{user.name}</p>
-              <p className="mb-0 text-truncate">{user.email}</p>
+              <p className="mb-0 text-truncate font-weight-bold text-gray-900">{user.name}</p>
+              <p className="mb-0 text-truncate text-xs">{user.email}</p>
             </div>
           </header>
           <InvitationCreator user={user} className="menuItem py-3" />

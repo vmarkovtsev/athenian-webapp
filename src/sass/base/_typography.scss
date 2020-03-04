@@ -20,6 +20,10 @@
     font-weight: 700;
 }
 
+html {
+    font-size: 62.5%;
+}
+
 .text-merge {
     color: $color-merge;
 }
@@ -56,4 +60,12 @@
         margin-right: 0;
         transform: rotate(180deg);
     }
+}
+
+.text-xs {
+    font-size: 1.1rem !important;
+}
+
+.text-lg {
+    font-size: 2.1rem !important;
 }

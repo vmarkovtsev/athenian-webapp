@@ -1,5 +1,10 @@
 .table {
     color: $secondary;
+
+    th,
+    td {
+        padding: 1rem !important;
+    }
 }
 
 #dataTable {
@@ -80,7 +85,7 @@
     }
 
     td.pr-age {
-        font-size: .65rem;
+        font-size: 1.1rem;
     }
 
     td.pr-participants,
@@ -141,7 +146,7 @@
     }
 
     .table-title {
-        font-size: .9rem;
+        font-size: 1.4rem;
         font-weight: 400;
         max-width: 500px;
         text-overflow: ellipsis;
@@ -150,7 +155,7 @@
     }
 
     .table-creators {
-        font-size: .65rem;
+        font-size: 1rem;
 
         * {
             display: inline-block;

@@ -1,6 +1,6 @@
 .navbar-nav .dropdown .dropdown-menu {
-    $menuWidth: 19rem;
-    $menuImageWidth: 4rem;
+    $menuWidth: 30rem;
+    $menuImageWidth: 6rem;
     $menuHorizontalPadding: map-get($spacers, 3);
     $menuUserLeftMargin: map-get($spacers, 2);
 
@@ -14,6 +14,7 @@
     .userData {
         width: $menuWidth - $menuImageWidth - 2 * $menuHorizontalPadding - $menuUserLeftMargin;
         margin-left: $menuUserLeftMargin;
+        font-size: 1.5rem;
     }
 
     .menuItem {
@@ -34,4 +35,9 @@
             width: $copyButtonWidth;
         }
     }
+}
+
+.topbar .nav-item .nav-link .img-profile {
+    height: 3rem !important;
+    width: 3rem !important;
 }

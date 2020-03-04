@@ -2,8 +2,9 @@
     height: 24px;
 }
 
-.topbar.navbar {
-    height: 48px;
+.navbar {
+    height: 42px;
+    padding: 0;
 }
 
 #mainBreadcrumbs {
@@ -11,5 +12,9 @@
 
     li {
         display: inline-block;
+
+        &.active {
+            font-size: 1.5rem;
+        }
     }
 }
