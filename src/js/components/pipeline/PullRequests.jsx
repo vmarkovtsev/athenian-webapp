@@ -190,7 +190,7 @@ export default ({ data }) => {
         <>
             <div className="row mb-4">
                 <div className="col-12">
-                    <div className="d-flex border-bottom">
+                    <div className="d-flex justify-content-center border-bottom">
                         <div className="pr-tab card mr-2 p-0 border-0 border-bottom-primary rounded-top rounded-0 rounded-top bg-transparent">
                             <div className="card-body px-0 py-3">
                                 <SmallTitle content="Pull Requests" isBlack />
