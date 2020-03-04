@@ -37,10 +37,24 @@ export default ({ data }) => {
             dom: `
                 <'row'<'col-12'f>>
                 <'row'<'col-12'tr>>
-                <'row'<'d-flex align-items-center col-sm-12 col-md-5'<'pt-3'l><'pb-2 ml-3'i>><'col-sm-12 col-md-7'p>>
+                <'row mt-3 pr-pagination'<'d-flex align-items-center col-sm-12 col-md-5'<'pt-0'l><'pb-0 ml-3'i>><'col-sm-12 col-md-7'p>>
             `,
             searching: true,
             ordering: true,
+            language: {
+                paginate: {
+                    next: "<i class='fas fa-angle-right'></i>",
+                    previous: "<i class='fas fa-angle-left'></i>"
+                },
+                lengthMenu: "Show rows: <select class='form-control'>"+
+                    "<option value='10'>10</option>"+
+                    "<option value='20'>20</option>"+
+                    "<option value='30'>30</option>"+
+                    "<option value='40'>40</option>"+
+                    "<option value='50'>50</option>"+
+                    "<option value='-1'>All</option>"+
+                    "</select>"
+                },
             fixedHeader: true,
             data: prs,
             columns: [
