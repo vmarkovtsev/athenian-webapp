@@ -16,8 +16,9 @@ $(MAKEFILE):
 # CI is set to '1' in travis by default
 CI ?=
 
-API_VERSION ?= v0.0.39
+API_VERSION ?= 1.0.5
 
+API_VERSION_TAG_NAME := spec-$(API_VERSION)
 API_SERVICE_PATH := src/js/services/api
 API_CLIENT_CODE_PATH := $(API_SERVICE_PATH)/openapi-client
 API_SPEC_PATH ?= $(API_SERVICE_PATH)/openapi.$(API_VERSION).yaml
@@ -30,7 +31,7 @@ OPENAPI_GENERATOR := node_modules/@openapitools/openapi-generator-cli/bin/openap
 $(API_SPEC_PATH):
 	rm -rf $(API_CLONE_PATH)
 	git clone --single-branch --no-checkout https://github.com/athenianco/athenian-api $(API_CLONE_PATH)
-	git -C $(API_CLONE_PATH) checkout $(API_VERSION) -- server/athenian/api/openapi/openapi.yaml
+	git -C $(API_CLONE_PATH) checkout $(API_VERSION_TAG_NAME) -- server/athenian/api/openapi/openapi.yaml
 	mv $(API_CLONE_PATH)/server/athenian/api/openapi/openapi.yaml $(API_SPEC_PATH)
 	rm -rf $(API_CLONE_PATH)
 
