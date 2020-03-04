@@ -33,10 +33,10 @@ export default () => {
 
 const Metric = ({ title, chart: Chart, color }) => (
     <div className="card mb-4">
-        <div className="card-header bg-white font-weight-bold">
-            <span className="text-gray-900"><span className="mr-3" style={{ display: 'inline-block', width: '20px', height: '20px', background: color }}></span>{title}</span>
+        <div className="card-header p-4 bg-white font-weight-bold text-dark p-4">
+            <span class="text-m"><span className="mr-3" style={{ display: 'inline-block', width: '20px', height: '20px', background: color }}></span>{title}</span>
         </div>
-        <div className="card-body">
+        <div className="card-body py-5 px-4">
             <div className="row">
                 <div className="col-7">
                     <Chart />
