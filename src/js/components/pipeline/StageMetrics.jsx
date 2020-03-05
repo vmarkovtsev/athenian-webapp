@@ -32,11 +32,11 @@ export default ({ title, metrics }) => {
 
 const Metric = ({ insights, title, chart }) => (
   <div className="card mb-4">
-    <div className="card-header bg-white font-weight-bold">
-      <span className="text-gray-900">{title}</span>
+    <div className="card-header bg-white font-weight-bold text-dark p-4">
+      <span class="text-m">{title}</span>
       <Info content="Some chart description" />
     </div>
-    <div className="card-body">
+    <div className="card-body py-5 px-4">
       {
         insights.length > 0 ?
           (
@@ -75,7 +75,7 @@ const Metric = ({ insights, title, chart }) => (
 
 const MetricKPI = ({ title, subtitle, children }) => (
   <div className="card mb-4 bg-light border-0">
-    <div className="card-body">
+    <div className="card-body p-4">
       {title && <h5 className={classnames('card-title text-xs text-uppercase', title.bold && 'font-weight-bold')}>{title.text}</h5>}
       {subtitle && <h6 className={classnames('card-subtitle mb-2 text-xs text-uppercase', subtitle.bold && 'font-weight-bold')}>{subtitle.text}</h6>}
       <div className="card-text">
