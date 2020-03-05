@@ -20,10 +20,11 @@
     .menuItem {
         padding-left: $menuHorizontalPadding;
         padding-right: $menuHorizontalPadding;
+        min-height: 4.3rem;
     }
 
     .invitationCreator {
-        $copyButtonWidth: 5.5rem;
+        $copyButtonWidth: 7.5rem;
 
         .desc {
             $invitationDescMargin: map-get($spacers, 3);
@@ -33,6 +34,10 @@
 
         button {
             width: $copyButtonWidth;
+
+            &:hover .text-secondary {
+                color: $white !important;
+            }
         }
     }
 }

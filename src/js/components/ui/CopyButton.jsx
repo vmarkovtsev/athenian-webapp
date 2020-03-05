@@ -14,11 +14,11 @@ export default ({ content }) => {
             <button type="button" className="py-1 btn btn-outline-secondary">
                 {!copiedState ? (
                     <>
-                        <FontAwesomeIcon icon={faClone} className="mr-2 text-secondary text-gray-400" />
-                        copy
+                        <FontAwesomeIcon icon={faClone} className="mr-1 text-secondary" />
+                        <span className="d-inline-block">Copy</span>
                     </>
                 ) : (
-                        'copied'
+                        'Copied'
                     )}
             </button>
         </CopyToClipboard>
