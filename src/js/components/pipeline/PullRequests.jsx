@@ -53,8 +53,10 @@ export default ({ data }) => {
                     "<option value='40'>40</option>"+
                     "<option value='50'>50</option>"+
                     "<option value='-1'>All</option>"+
-                    "</select>"
-                },
+                    "</select>",
+                searchPlaceholder: "Search...",
+                search: "<i class='field-icon fas fa-search' aria-hidden='true'></i>"
+            },
             fixedHeader: true,
             data: prs,
             columns: [
