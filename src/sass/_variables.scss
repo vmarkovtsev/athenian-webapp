@@ -8,10 +8,30 @@ $at-border-color: #E7E7EC;
  * The colors used in the charts are defined by "src/js/res/palette.js"
  */
 
+$color-blue: #147EEC;
+$color-purple: #9260E2;
+$color-pink: #FC1763;
+$color-red: #EF3837;
+$color-orange: #FF7427;
+$color-light-orange: #FFA008;
+$color-yellow: #FFC508;
+$color-green: #2FCC71;
+$color-turquoise: #24C7CC;
+
+$color-primary: $color-light-orange;
+$color-secondary: #8889A1;
+$color-success: $color-green;
+$color-danger: $color-red;
+$color-warning: $color-yellow;
+$color-info: $color-blue;
+$color-light: #FAFAFB;
+$color-bright: rgba($color-secondary, .5);
+$color-dark: #121343;
+
 // The following stage colors must be in sync with the ones in "src/js/res/palette.js"
-$color-leadtime: #4DC7EE;
-$color-wip: #FF732B;
-$color-review: #FFC508;
-$color-merge: #9260E2;
-$color-release: #2FCC71;
-$color-done: red; // TODO (dpordomingo): 'done' stage is defined in the API, but not in the Product designs
+$color-leadtime: $color-blue;
+$color-wip: $color-orange;
+$color-review: $color-yellow;
+$color-merge: $color-purple;
+$color-release: $color-green;
+$color-done: $color-turquoise;

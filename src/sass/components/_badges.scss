@@ -84,5 +84,10 @@
             border-color: $color-release;
             color: $color-release;
         }
+
+        &.badge-done {
+            border-color: $color-done;
+            color: $color-done;
+        }
     }
 }
