@@ -14,7 +14,7 @@ export const palette = {
         review: '#FFC508',
         merge: '#9260E2',
         release: '#2FCC71',
-        done: 'red', // TODO (dpordomingo): 'done' stage is defined in the API, but not in the Product designs
+        done: '#24C7CC',
     },
     schemes: {
         primary: primary,
