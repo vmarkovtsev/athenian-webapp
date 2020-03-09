@@ -8,7 +8,6 @@ import { SmallTitle } from 'js/components/ui/Typography';
 import Badge from 'js/components/ui/Badge';
 
 import { dateTime, github, number } from 'js/services/format';
-import { palette } from 'js/res/palette';
 
 export default ({ data }) => {
 
@@ -46,13 +45,13 @@ export default ({ data }) => {
                     next: "<i class='fas fa-angle-right'></i>",
                     previous: "<i class='fas fa-angle-left'></i>"
                 },
-                lengthMenu: "Show rows: <select class='form-control'>"+
-                    "<option value='10'>10</option>"+
-                    "<option value='20'>20</option>"+
-                    "<option value='30'>30</option>"+
-                    "<option value='40'>40</option>"+
-                    "<option value='50'>50</option>"+
-                    "<option value='-1'>All</option>"+
+                lengthMenu: "Show rows: <select class='form-control'>" +
+                    "<option value='10'>10</option>" +
+                    "<option value='20'>20</option>" +
+                    "<option value='30'>30</option>" +
+                    "<option value='40'>40</option>" +
+                    "<option value='50'>50</option>" +
+                    "<option value='-1'>All</option>" +
                     "</select>",
                 searchPlaceholder: "Search...",
                 search: "<i class='field-icon fas fa-search' aria-hidden='true'></i>"
