@@ -23,6 +23,7 @@ import Callback from 'js/pages/auth/Callback';
 import Waiting from 'js/pages/Waiting';
 import NotFound404 from 'js/pages/NotFound404';
 import Prototypes from 'js/pages/prototypes/Prototypes';
+import InsightLayouts from 'js/pages/insights/InsightLayouts';
 
 export default () => {
 
@@ -72,6 +73,9 @@ export default () => {
             <PrivateRoute path='/waiting' component={Waiting} />
             <Route path='/prototypes'>
               <Prototypes />
+            </Route>
+            <Route path='/insights'>
+              <InsightLayouts />
             </Route>
             <Route path='*'>
               <NotFound404 />
