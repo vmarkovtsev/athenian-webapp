@@ -18,6 +18,9 @@ stages:
   - name: deploy
     if: (branch = master OR tag IS present) AND type != pull_request
 
+before_insall:
+  - curl -sL https://sentry.io/get-cli/ | bash
+
 jobs:
   fast_finish: true
   include:
