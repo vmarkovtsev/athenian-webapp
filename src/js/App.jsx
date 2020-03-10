@@ -1,3 +1,4 @@
+/* global process */
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -5,12 +6,32 @@ import {
     Router,
 } from 'react-router-dom';
 
+import * as Sentry from '@sentry/browser';
+
 import Routes from 'js/Routes';
 
 import * as serviceWorker from 'js/services/serviceWorker';
 import { Auth0Provider } from 'js/context/Auth0';
 import history from 'js/services/history';
 import Development from 'js/components/development';
+
+if (window.ENV.sentry.dsn) {
+    const sentryConf = {
+        dsn: window.ENV.sentry.dsn,
+        environment: window.ENV.environment,
+    };
+
+    const isDev = (
+        window.ENV.environment !== 'development' ||
+            process.env.NODE_ENV === 'development'
+    );
+
+    if (!isDev && window.META.release !== '') {
+        sentryConf.release = window.META.release;
+    }
+
+    Sentry.init(sentryConf);
+}
 
 // A function that routes the user to the right place
 // after login
