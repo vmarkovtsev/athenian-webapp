@@ -10,6 +10,8 @@ import { number } from 'js/services/format';
 
 import { palette } from 'js/res/palette';
 
+const distinct = (collection, extractor) => Array.from(new Set(collection.flatMap(extractor)));
+
 export const pipelineStagesConf = [
     {
         title: 'Lead Time',
@@ -33,12 +35,15 @@ export const pipelineStagesConf = [
             before: 'First Commit',
             after: 'Review Requested',
         },
-        summary: () => {
+        summary: (stage, prs, dateInterval) => {
+            const createdPrs = prs.filter(pr => dateInterval.from < pr.created && pr.created < dateInterval.to);
+            const authors = distinct(createdPrs, pr => pr.authors);
+            const repos = distinct(createdPrs, pr => pr.repository);
             return [
-                ['proportion of the lead time', number.percentage(30)],
-                ['pull requests created', 10],
-                ['contributors', 5],
-                ['repositories', 2],
+                ['proportion of the lead time', number.percentage(stage.leadTimePercentage)],
+                ['pull requests created', createdPrs.length],
+                ['contributors', authors.length],
+                ['repositories', repos.length],
             ];
         },
     }, {
@@ -52,12 +57,16 @@ export const pipelineStagesConf = [
             before: 'Review Requested',
             after: 'Approved',
         },
-        summary: () => {
+        summary: (stage, prs) => {
+            const reviewAndReviewCompletePRs = prs.filter(pr => pr.stage != 'wip');
+            const reviewed = reviewAndReviewCompletePRs.filter(pr => pr.comments || pr.review_comments)
+            const reviewers = distinct(reviewAndReviewCompletePRs, pr => pr.commentersReviewers);
+            const repos = distinct(reviewAndReviewCompletePRs, pr => pr.repository);
             return [
-                ['proportion of the lead time', number.percentage(20)],
-                ['pull requests reviewed', 54],
-                ['reviewers', 12],
-                ['repositories', 4],
+                ['proportion of the lead time', number.percentage(stage.leadTimePercentage)],
+                ['pull requests reviewed', reviewed.length],
+                ['reviewers', reviewers.length],
+                ['repositories', repos.length],
             ];
         },
     }, {
@@ -71,12 +80,15 @@ export const pipelineStagesConf = [
             before: 'Approved',
             after: 'Merged',
         },
-        summary: () => {
+        summary: (stage, prs) => {
+            const mergedPRs = prs.filter(pr => pr.merged);
+            const mergerers = distinct(mergedPRs, pr => pr.mergers);
+            const repos = distinct(mergedPRs, pr => pr.repository);
             return [
-                ['proportion of the lead time', number.percentage(45)],
-                ['pull requests merged', 2],
-                ['contributors', 12],
-                ['repositories', 8],
+                ['proportion of the lead time', number.percentage(stage.leadTimePercentage)],
+                ['pull requests merged', mergedPRs.length],
+                ['contributors', mergerers.length],
+                ['repositories', repos.length],
             ];
         },
     }, {
@@ -90,12 +102,14 @@ export const pipelineStagesConf = [
             before: 'Merged',
             after: 'Released',
         },
-        summary: () => {
+        summary: (stage, prs) => {
+            const releasedPRs = prs.filter(pr => pr.stage === 'done' && pr.merged);
+            const repos = distinct(releasedPRs, pr => pr.repository);
             return [
-                ['proportion of the lead time', number.percentage(5)],
-                ['pull requests released', 1],
-                ['releases', 2],
-                ['repositories', 1],
+                ['proportion of the lead time', number.percentage(stage.leadTimePercentage)],
+                ['pull requests released', releasedPRs.length],
+                ['releases', 'TODO'], // TODO(dpordomingo): NOT-POSSIBLE; Should come from upcoming `/releases` endpoint
+                ['repositories', repos.length],
             ];
         },
     },
