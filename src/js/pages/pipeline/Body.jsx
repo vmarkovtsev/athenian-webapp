@@ -98,8 +98,8 @@ export default ({ children }) => {
 const withMainMetrics = (leadTimeData, prs, dateInterval) => {
     const prCount = prs.length;
     const participants = prs.reduce((acc, pr) => {
-        return [...pr.participants, ...pr.creators].reduce((dict, user) => {
-            dict[user] = true;
+        return pr.participants.reduce((dict, user) => {
+            dict[user.id] = true;
             return dict;
         }, acc);
     }, {})

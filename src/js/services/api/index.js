@@ -31,13 +31,20 @@ export const getPRs = async (token, accountId, dateInterval, repos, contributors
     prs: prs.data.map(pr => {
       const users = pr.participants.reduce((acc, participant) => {
         if (participant.status.indexOf('author') >= 0) {
-          acc.creators.push(participant.id);
-        } else {
-          acc.participants.push(participant.id);
+          acc.authors.push(participant.id);
+          return acc;
+        }
+
+        if (participant.status.indexOf('merger') >= 0) {
+          acc.mergers.push(participant.id);
+        }
+
+        if (participant.status.indexOf('reviewer') >= 0 || participant.status.indexOf('commenter') >= 0) {
+          acc.commentersReviewers.push(participant.id);
         }
 
         return acc;
-      }, { creators: [], participants: [] });
+      }, { authors: [], commentersReviewers: [], mergers: [] });
       return {
         ...pr,
         organization: github.repoOrg(pr.repository),
@@ -45,8 +52,9 @@ export const getPRs = async (token, accountId, dateInterval, repos, contributors
         created: new Date(pr.created),
         updated: new Date(pr.updated),
         closed: new Date(pr.closed),
-        creators: users.creators,
-        participants: users.participants,
+        authors: users.authors,
+        mergers: users.mergers,
+        commentersReviewers: users.commentersReviewers
       }
     }),
     users: prs.include && prs.include.users || {},
@@ -125,7 +133,14 @@ export const getMetrics = (api, accountId, dateInterval, repos, contributors) =>
 
     // This will unfold values, to have separate data per different metric, instead of all metrics under the same day.
     apiData.calculated[0].values.forEach(step => {
+
+      { // TODO(dpordomingo): remove leadtime mocking below, once the API is sending proper leadtime
+        step.values[4] = step.values[1];
+        step.values[0] = parseInt(step.values[1] || 0) + parseInt(step.values[2] || 0) + parseInt(step.values[3] || 0) + parseInt(step.values[4] || 0);
+      }
+
       const stepDate = new Date(step.date);
+
       if (stepDate >= dateInterval.from) {
         step.values.forEach((value, metricNo) => {
           result[metrics[metricNo]].data.push({ x: stepDate, y: dateTime.milliseconds(value) });
@@ -151,7 +166,7 @@ export const getMetrics = (api, accountId, dateInterval, repos, contributors) =>
       }
 
       if (prevAvg) {
-        variation = Math.round((mainAvg - prevAvg) * 100 / prevAvg);
+        variation = (mainAvg - prevAvg) * 100 / prevAvg;
       } else if (!mainAvg) {
         variation = 0;
       }

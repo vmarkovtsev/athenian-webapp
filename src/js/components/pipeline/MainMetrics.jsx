@@ -4,7 +4,7 @@ import Badge from 'js/components/ui/Badge';
 import { BigNumber } from 'js/components/ui/Typography';
 import Info from 'js/components/ui/Info';
 
-import { dateTime } from 'js/services/format';
+import { dateTime, number } from 'js/services/format';
 
 export default ({
     leadTimeAvg, leadTimeVariation,
@@ -44,7 +44,7 @@ const MainMetric = ({ title, hint, value, variation }) => (
                     </div>
                     <div className="d-flex align-items-center">
                         <BigNumber content={value} />
-                        {value ? <Badge value={variation} trend className="ml-4" /> : ''}
+                        {value ? <Badge value={number.round(variation)} trend className="ml-4" /> : ''}
                     </div>
                 </div>
             </div>

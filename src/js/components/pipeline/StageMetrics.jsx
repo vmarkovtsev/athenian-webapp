@@ -6,6 +6,8 @@ import Badge from 'js/components/ui/Badge';
 import { BigNumber } from 'js/components/ui/Typography';
 import Info from 'js/components/ui/Info'
 
+import { number } from 'js/services/format';
+
 export default ({ title, metrics }) => {
   return (
     <div>
@@ -53,7 +55,7 @@ const Metric = ({ insights, title, chart }) => (
                     >
                       <div className="font-weight-bold">
                         <BigNumber content="11 hours" />
-                        <Badge value={ins.value} trend className="ml-2" />
+                        <Badge value={number.round(ins.value)} trend className="ml-2" />
                       </div>
                     </MetricKPI>
                     )}

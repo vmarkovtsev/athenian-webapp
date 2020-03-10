@@ -8,7 +8,16 @@ import { SmallTitle } from 'js/components/ui/Typography';
 import Badge from 'js/components/ui/Badge';
 
 import { dateTime, github, number } from 'js/services/format';
-import { palette } from 'js/res/palette';
+
+const mergeDistinct = (arr, ...arr2) => {
+    const candidate = arr.concat(...arr2);
+    return Object.keys(
+        candidate.reduce((acc, item) => {
+            acc[item] = true;
+            return acc;
+        }, {})
+    );
+};
 
 export default ({ data }) => {
 
@@ -46,13 +55,13 @@ export default ({ data }) => {
                     next: "<i class='fas fa-angle-right'></i>",
                     previous: "<i class='fas fa-angle-left'></i>"
                 },
-                lengthMenu: "Show rows: <select class='form-control'>"+
-                    "<option value='10'>10</option>"+
-                    "<option value='20'>20</option>"+
-                    "<option value='30'>30</option>"+
-                    "<option value='40'>40</option>"+
-                    "<option value='50'>50</option>"+
-                    "<option value='-1'>All</option>"+
+                lengthMenu: "Show rows: <select class='form-control'>" +
+                    "<option value='10'>10</option>" +
+                    "<option value='20'>20</option>" +
+                    "<option value='30'>30</option>" +
+                    "<option value='40'>40</option>" +
+                    "<option value='50'>50</option>" +
+                    "<option value='-1'>All</option>" +
                     "</select>",
                 searchPlaceholder: "Search...",
                 search: "<i class='field-icon fas fa-search' aria-hidden='true'></i>"
@@ -96,15 +105,15 @@ export default ({ data }) => {
                                         <a class="text-dark font-weight-bold" href=${github.prLink(row.repository, row.number)} target="_blank">${row.title}</a>
                                     </div>
                                     <div class="table-creators">
-                                        ${row.creators.map(userImage).join(' ')}
-                                        <div class="pr-created-by"><span>Created by</span> <span class="text-dark">${row.creators.map(github.userName).join(' ')}</span>
+                                        ${row.authors.map(userImage).join(' ')}
+                                        <div class="pr-created-by"><span>Created by</span> <span class="text-dark">${row.authors.map(github.userName).join(' ')}</span>
                                         <span>${dateTime.ago(row.created)} ago</span></div>
                                     </div>
                                 `;
                             case 'sort':
                                 return row.number;
                             default:
-                                return row.title;
+                                return row.title + ' ' + (row.authors.map(github.userName).join(' '));
                         }
                     },
                 }, {
@@ -142,11 +151,11 @@ export default ({ data }) => {
                     render: (_, type, row) => {
                         switch (type) {
                             case 'display':
-                                return row.participants.map(userImage).join(' ');
+                                return row.commentersReviewers.map(userImage).join(' ');
                             case 'sort':
-                                return row.participants.length;
+                                return row.commentersReviewers.length;
                             default:
-                                return row.participants.map(github.userName).join(' ') + row.creators.map(github.userName).join(' ');
+                                return row.commentersReviewers.map(userImage).join(' ');
                         }
                     },
                 }, {
