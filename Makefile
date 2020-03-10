@@ -67,8 +67,7 @@ build:
 	CI=false yarn build
 
 .PHONY: serve
-serve:
-	yarn install
+serve: app-dependencies
 	yarn start
 
 .PHONY: test
@@ -83,6 +82,6 @@ dependencies: app-dependencies
 
 .PHONY: app-dependencies
 app-dependencies:
-	yarn install
+	yarn install --frozen-lockfile
 
 $(OPENAPI_GENERATOR): app-dependencies
