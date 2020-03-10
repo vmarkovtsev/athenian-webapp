@@ -10,7 +10,8 @@ cache:
 env:
   global:
     - GOOGLE_DOCKER_IMAGE=gcr.io/athenian-1/web-app
-    - IMAGE_BRANCH_COMMIT=${GOOGLE_DOCKER_IMAGE}:${TRAVIS_BRANCH}-${TRAVIS_COMMIT:0:7}
+    - VERSION=${TRAVIS_BRANCH}-${TRAVIS_COMMIT:0:7}
+    - IMAGE_BRANCH_COMMIT=${GOOGLE_DOCKER_IMAGE}:${VERSION}
 
 stages:
   - name: test-and-build
@@ -34,6 +35,7 @@ jobs:
             IMAGE=${GOOGLE_DOCKER_IMAGE}:${TRAVIS_TAG} make docker-build gcloud-login docker-push
             exit 0
           fi
-        - IMAGE=${IMAGE_BRANCH_COMMIT} make deploy
+        - IMAGE=${IMAGE_BRANCH_COMMIT} DOCKER_EXTRA_BUILD_FLAGS="--build-arg release=${VERSION}" make deploy
+        - docker run -e SENTRY_RELEASE=${VERSION} ${IMAGE_BRANCH_COMMIT} make sentry-release
         - docker tag ${IMAGE_BRANCH_COMMIT} ${GOOGLE_DOCKER_IMAGE}:latest
         - IMAGE=${GOOGLE_DOCKER_IMAGE}:latest make docker-push
