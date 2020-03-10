@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
@@ -8,8 +7,7 @@ import Badge from 'js/components/ui/Badge';
 import { BigNumber, SmallTitle } from 'js/components/ui/Typography';
 import Info from 'js/components/ui/Info'
 
-import { hexToRGBParts, rgba } from 'js/services/colors';
-import { dateTime } from 'js/services/format';
+import { dateTime, number } from 'js/services/format';
 
 export default ({ prs, stages, activeCard }) => {
     //TODO(dpordomingo): stage.badge should count the stage-complete PRs, not the stage-pending ones. It should be obtained from the API
@@ -57,7 +55,7 @@ const Stage = ({ title, text, hint, badge, variation, color, data, active, onCli
                 <div className="row no-gutters card-text">
                     <div className="col-5">
                         <BigNumber content={text} className="mb-1 w-100" />
-                        {text ? <Badge trend value={variation} /> : ''}
+                        {text ? <Badge trend value={number.round(variation)} /> : ''}
                     </div>
                     <div className="col-7 pl-2" style={{ height: 55 }}>
                         <PipelineCardMiniChart data={data} color={color} active={active} />

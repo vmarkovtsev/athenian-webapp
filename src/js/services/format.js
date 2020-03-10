@@ -72,6 +72,10 @@ export const github = {
 const KILO = 1000;
 const MEGA = 1000 * KILO;
 
+const round = (n, decimals = 0) => {
+    return Math.round(n * Math.pow(10, decimals)) / Math.pow(10, decimals);
+};
+
 export const number = {
     si: n => {
         if (n < KILO) {
@@ -83,5 +87,9 @@ export const number = {
         }
 
         return '>500M';
-    }
+    },
+    round,
+    percentage: (n, decimals = 0) => {
+        return round(n, decimals) + '%';
+    },
 };
