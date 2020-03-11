@@ -24,6 +24,7 @@ import Waiting from 'js/pages/Waiting';
 import NotFound404 from 'js/pages/NotFound404';
 import Prototypes from 'js/pages/prototypes/Prototypes';
 import InsightLayouts from 'js/pages/insights/InsightLayouts';
+import DateFilter from 'js/pages/datefilter/DateFilter';
 
 export default () => {
 
@@ -76,6 +77,9 @@ export default () => {
             </Route>
             <Route path='/insights'>
               <InsightLayouts />
+            </Route>
+            <Route path='/datefilter'>
+              <DateFilter />
             </Route>
             <Route path='*'>
               <NotFound404 />
