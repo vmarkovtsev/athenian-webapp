@@ -1,4 +1,4 @@
-language: node_js
+language: install
 node_js:
   - node
 
@@ -23,13 +23,10 @@ stages:
 jobs:
   fast_finish: true
   include:
-    - stage: test
-      name: 'Frontend Tests'
-      script:
-        - make test
     - stage: build
       name: 'Frontend Build'
       script:
+        - make dependencies
         - make build
     - stage: deploy
       name: 'Deploy App'
