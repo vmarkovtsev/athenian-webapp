@@ -11,5 +11,6 @@ window.ENV = {
   },
   application: {
     "githubAppUri": "https://github.com/apps/athenian-owl"
-  }
+  },
+  environment: "development"
 };

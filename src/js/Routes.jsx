@@ -30,7 +30,10 @@ import DateFilter from 'js/pages/prototypes/DateFilter';
 
 export default () => {
 
-  const devmode = process.env.NODE_ENV === 'development';
+  const devmode = (
+    process.env.NODE_ENV === 'development' ||
+      ['development', 'staging'].includes(window.ENV.environment)
+  );
 
   return (
     <React.StrictMode>
