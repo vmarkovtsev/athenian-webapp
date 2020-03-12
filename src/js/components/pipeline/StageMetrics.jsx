@@ -35,7 +35,7 @@ export default ({ title, metrics }) => {
 const Metric = ({ insights, title, chart }) => (
   <div className="card mb-4">
     <div className="card-header bg-white font-weight-bold text-dark p-4">
-      <span class="text-m">{title}</span>
+      <span className="text-m">{title}</span>
       <Info content="Some chart description" />
     </div>
     <div className="card-body py-5 px-4">
