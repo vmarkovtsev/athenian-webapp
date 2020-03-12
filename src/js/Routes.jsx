@@ -22,9 +22,11 @@ import Development from 'js/components/development';
 import Callback from 'js/pages/auth/Callback';
 import Waiting from 'js/pages/Waiting';
 import NotFound404 from 'js/pages/NotFound404';
-import Prototypes from 'js/pages/prototypes/Prototypes';
 import InsightLayouts from 'js/pages/insights/InsightLayouts';
-import DateFilter from 'js/pages/datefilter/DateFilter';
+
+import Prototypes from 'js/pages/prototypes';
+import Charts from 'js/pages/prototypes/Charts';
+import DateFilter from 'js/pages/prototypes/DateFilter';
 
 export default () => {
 
@@ -72,14 +74,14 @@ export default () => {
             </Route>
             {devmode && <Route path='/bearer'><Development.Bearer /></Route>}
             <PrivateRoute path='/waiting' component={Waiting} />
-            <Route path='/prototypes'>
-              <Prototypes />
+            <Route path='/prototypes/:name?'>
+              <Prototypes prototypes={{
+                charts: <Charts />,
+                datefilter: <DateFilter />,
+              }} />
             </Route>
             <Route path='/insights'>
               <InsightLayouts />
-            </Route>
-            <Route path='/datefilter'>
-              <DateFilter />
             </Route>
             <Route path='*'>
               <NotFound404 />
