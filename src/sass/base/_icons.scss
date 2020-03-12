@@ -1,0 +1,45 @@
+@font-face {
+    font-family: 'athenicon';
+    src:  url('../../../src/icons/athenicon.eot');
+    src:  url('../../../src/icons/athenicon.eot#iefix') format('embedded-opentype'),
+    url('../../../src/icons/athenicon.ttf') format('truetype'),
+    url('../../../src/icons/athenicon.woff') format('woff'),
+    url('../../../src/icons/athenicon.svg#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'athenicon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-users:before {
+    content: "\e905";
+}
+.icon-release:before {
+    content: "\e900";
+}
+.icon-commit:before {
+    content: "\e901";
+}
+.icon-pull-request:before {
+    content: "\e902";
+}
+.icon-file-code:before {
+    content: "\e903";
+}
+.icon-info:before {
+    content: "\e904";
+}

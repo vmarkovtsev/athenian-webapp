@@ -78,10 +78,10 @@ export default ({ data }) => {
                             pic = '<i title="merged" class="fa fas fa-code-branch text-merge fa-rotate-180"></i>';
                             status = 'merged';
                         } else if (row.stage == 'wip' || row.stage == 'review' || row.stage == 'merge') {
-                            pic = '<i title="opened" class="fa fas fa-code-branch text-success"></i>';
+                            pic = '<i title="opened" class="icon-pull-request text-success"></i>';
                             status = 'opened';
                         } else {
-                            pic = '<i title="closed" class="fa fas fa-code-branch text-danger"></i>';
+                            pic = '<i title="closed" class="icon-pull-request text-danger"></i>';
                             status = 'closed';
                         }
 
@@ -124,10 +124,10 @@ export default ({ data }) => {
                         switch (type) {
                             case 'display':
                                 return `
-                                    <i class="fa far fa-file-alt"></i>
-                                    <span class="mr-3">${number.si(row.files_changed)}</span>
-                                    <span class="text-success mr-1">+${number.si(row.size_added)}</span>
-                                    <span class="text-danger">-${number.si(row.size_removed)}</span>
+                                    <i class="align-middle icon-file-code"></i>
+                                    <span class="align-middle mr-3">${number.si(row.files_changed)}</span>
+                                    <span class="align-middle text-success mr-1">+${number.si(row.size_added)}</span>
+                                    <span class="align-middle text-danger">-${number.si(row.size_removed)}</span>
                                 `;
                             default:
                                 return row['files_changed'];

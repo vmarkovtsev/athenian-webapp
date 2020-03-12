@@ -39,7 +39,7 @@ const MainMetric = ({ title, hint, value, variation }) => (
             <div className="card-title mb-0">
                 <div className="d-flex justify-content-between align-items-center">
                     <div className="font-weight-bold text-uppercase text-xs">
-                        {title}
+                        <span className="align-middle">{title}</span>
                         {hint && <Info content={hint} />}
                     </div>
                     <div className="d-flex align-items-center">
