@@ -1,12 +1,10 @@
 import React from 'react';
 
-import Page from 'js/pages/templates/Page';
-
-import VerticalBarChart from 'js/pages/prototypes/types/VerticalBarChart'
-import HorizontalBarChart from 'js/pages/prototypes/types/HorizontalBarChart'
-import ScatterPlot from 'js/pages/prototypes/types/ScatterPlot'
-import BubbleChart from 'js/pages/prototypes/types/BubbleChart'
-import PositiveNegativeBarChart from 'js/pages/prototypes/types/PositiveNegativeBarChart'
+import VerticalBarChart from 'js/pages/prototypes/charts/VerticalBarChart'
+import HorizontalBarChart from 'js/pages/prototypes/charts/HorizontalBarChart'
+import ScatterPlot from 'js/pages/prototypes/charts/ScatterPlot'
+import BubbleChart from 'js/pages/prototypes/charts/BubbleChart'
+import PositiveNegativeBarChart from 'js/pages/prototypes/charts/PositiveNegativeBarChart'
 
 export default () => {
     const metrics = [
@@ -18,23 +16,16 @@ export default () => {
     ];
 
     return (
-        <Page>
-            <div>
-                <div className="row">
-                    <div className="col-12">
-                        <p className="text-centerleft font-weight-bold text-lg">Prototypes</p>
-                    </div>
-                </div>
-                {metrics.map((metric, key) => <Metric title={metric.title} color={metric.color} chart={metric.chart} key={key} />)}
-            </div>
-        </Page>
+        <div>
+            {metrics.map((metric, key) => <Metric title={metric.title} color={metric.color} chart={metric.chart} key={key} />)}
+        </div>
     );
 };
 
 const Metric = ({ title, chart: Chart, color }) => (
     <div className="card mb-4">
         <div className="card-header p-4 bg-white font-weight-bold text-dark p-4">
-            <span class="text-m"><span className="mr-3" style={{ display: 'inline-block', width: '20px', height: '20px', background: color }}></span>{title}</span>
+            <span className="text-m"><span className="mr-3" style={{ display: 'inline-block', width: '20px', height: '20px', background: color }}></span>{title}</span>
         </div>
         <div className="card-body py-5 px-4">
             <div className="row">
