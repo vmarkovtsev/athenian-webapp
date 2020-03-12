@@ -44,7 +44,9 @@ const human = seconds => {
 };
 
 export const dateTime = {
+    formater: timeFormat,
     ymd: ymdFormat,
+
     milliseconds: secondsString => {
         if (!secondsString) {
             return 0;

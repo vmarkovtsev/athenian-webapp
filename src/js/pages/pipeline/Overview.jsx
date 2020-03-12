@@ -1,14 +1,52 @@
 import React from 'react';
+import classnames from 'classnames';
 
 import { useBreadcrumbsContext } from 'js/context/Breadcrumbs';
 import { usePRsContext } from 'js/context/PRs';
+import { usePipelineContext } from 'js/context/Pipeline';
 
 import PullRequests from 'js/components/pipeline/PullRequests';
+import StageMetrics from 'js/components/pipeline/StageMetrics';
+import { SmallTitle } from 'js/components/ui/Typography';
+
+import { dateTime } from 'js/services/format';
 
 export default () => {
     const prsContext = usePRsContext();
-
+    const { leadtime: leadtimeContext, stages: stagesContext } = usePipelineContext()
     useBreadcrumbsContext({ current: 'Overview' });
 
-    return <PullRequests data={prsContext} />;
+    let slowerStage = 0;
+    if (leadtimeContext.avg) {
+        stagesContext.forEach(stage => {
+            if (stage.leadTimePercentage > slowerStage) {
+                slowerStage = stage.leadTimePercentage;
+            }
+        });
+    }
+
+    return <>
+        {leadtimeContext.avg ? (
+            <StageMetrics
+                conf={leadtimeContext}
+                metrics={[]}
+            >
+                {stagesContext.map((stage, i) => stage.leadTimePercentage ? (
+                    <div key={i}>
+                        <div><SmallTitle content={stage.title} /></div>
+                        <span
+                            className={classnames('leadtime-proportion d-block mb-2', stage.stageName)}
+                            style={{ width: `${100 * stage.leadTimePercentage / slowerStage}%` }}
+                            alt={`${stage.leadTimePercentage}%`}
+                            data-toggle="tooltip"
+                            data-placement="right"
+                            title={dateTime.human(stage.avg)}
+                        />
+                    </div>
+                ) : null)}
+            </StageMetrics>
+        ) : null
+        }
+        <PullRequests data={prsContext} />;
+    </>
 };

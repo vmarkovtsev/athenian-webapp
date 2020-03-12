@@ -16,7 +16,7 @@ export default ({ prs, stages, activeCard }) => {
             {
                 stages.map(
                     (card, i) => (
-                        <div className={classnames('col-md-3 pipeline-stage', card.stageName, activeCard === i && 'active')} key={i}>
+                        <div className={classnames('col-md-3 pipeline-stage', card.stageName, activeCard === card.slug && 'active')} key={i}>
                             <span data-toggle="tooltip" data-placement="bottom" title={card.event.before} className="event-before" />
                             <Link to={'/stage/' + card.slug}>
                                 <Stage
@@ -26,7 +26,7 @@ export default ({ prs, stages, activeCard }) => {
                                     variation={card.variation}
                                     color={card.color}
                                     data={card.data}
-                                    active={activeCard === i}
+                                    active={activeCard === card.slug}
                                     badge={prs.filter(pr => pr.stage === card.stageName).length}
                                 >
                                 </Stage>
@@ -58,7 +58,7 @@ const Stage = ({ title, text, hint, badge, variation, color, data, active, onCli
                         {text ? <Badge trend value={number.round(variation)} /> : ''}
                     </div>
                     <div className="col-7 pl-2" style={{ height: 55 }}>
-                        <PipelineCardMiniChart data={data} color={color} active={active} />
+                        {data && <PipelineCardMiniChart data={data} color={color} active={active} />}
                     </div>
                 </div>
             </div>

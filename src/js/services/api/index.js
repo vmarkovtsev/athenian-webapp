@@ -13,7 +13,7 @@ export const getPRs = async (token, accountId, dateInterval, repos, contributors
   const api = buildApi(token);
   const filter = new FilterPullRequestsRequest(accountId, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to));
   filter.in = repos;
-  filter.stages = ['wip', 'review', 'merge', 'release'];
+  filter.stages = ['wip', 'review', 'merge', 'release', 'done'];
   if (contributors.length) {
     filter.with = {
       author: contributors,
