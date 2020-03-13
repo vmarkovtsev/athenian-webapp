@@ -13,7 +13,7 @@ import { palette } from 'js/res/palette';
 
 import FilledAreaChart from 'js/components/charts/FilledAreaChart';
 
-export default ({ conf, metrics, children }) => {
+export default ({ conf, children }) => {
   return (
     <div>
       <SummaryMetric
@@ -32,21 +32,24 @@ export default ({ conf, metrics, children }) => {
       >
         {children}
       </SummaryMetric>
-      {
-        metrics.map((chart, i) => {
-          return <Metric key={i}
-            title={chart.title}
-            chart={
-              <TimeSeries data={chart.data}
-                color={chart.color} />
-            }
-            insights={chart.insights}>
-          </Metric>;
-        })
-      }
     </div>
   );
 }
+
+export const Insights = ({metrics}) => (
+    <>{
+        metrics.map((chart, i) => (
+            <Metric key={i}
+                    title={chart.title}
+                    chart={
+                        <TimeSeries data={chart.data}
+                                    color={chart.color} />
+                    }
+                    insights={chart.insights}>
+            </Metric>
+        ))
+    }</>
+);
 
 const SummaryMetric = ({ data, chart, children }) => {
   return (

@@ -29,7 +29,6 @@ export default () => {
         {leadtimeContext.avg ? (
             <StageMetrics
                 conf={leadtimeContext}
-                metrics={[]}
             >
                 {stagesContext.map((stage, i) => stage.leadTimePercentage ? (
                     <div key={i}>
