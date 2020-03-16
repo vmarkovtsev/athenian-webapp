@@ -1,0 +1,8 @@
+.ath-tabs .tab {
+    cursor: pointer;
+
+    &.active {
+        @extend .border-bottom-primary;
+        cursor: default;
+    }
+}

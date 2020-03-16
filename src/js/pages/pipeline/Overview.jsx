@@ -6,14 +6,16 @@ import { usePRsContext } from 'js/context/PRs';
 import { usePipelineContext } from 'js/context/Pipeline';
 
 import PullRequests from 'js/components/pipeline/PullRequests';
-import StageMetrics from 'js/components/pipeline/StageMetrics';
+import { SummaryMetrics } from 'js/components/pipeline/StageMetrics';
 import { SmallTitle } from 'js/components/ui/Typography';
+import Badge from 'js/components/ui/Badge';
+import Tabs from 'js/components/layout/Tabs';
 
 import { dateTime } from 'js/services/format';
 
 export default () => {
     const prsContext = usePRsContext();
-    const { leadtime: leadtimeContext, stages: stagesContext } = usePipelineContext()
+    const { leadtime: leadtimeContext, stages: stagesContext } = usePipelineContext();
     useBreadcrumbsContext({ current: 'Overview' });
 
     let slowerStage = 0;
@@ -27,9 +29,7 @@ export default () => {
 
     return <>
         {leadtimeContext.avg ? (
-            <StageMetrics
-                conf={leadtimeContext}
-            >
+            <SummaryMetrics conf={leadtimeContext} >
                 {stagesContext.map((stage, i) => stage.leadTimePercentage ? (
                     <div key={i}>
                         <div><SmallTitle content={stage.title} /></div>
@@ -43,9 +43,16 @@ export default () => {
                         />
                     </div>
                 ) : null)}
-            </StageMetrics>
+            </SummaryMetrics>
         ) : null
         }
-        <PullRequests data={prsContext} />;
+
+        <Tabs tabs={[
+            {
+                title: 'Pull Requests',
+                badge: prsContext.prs.length,
+                content: <PullRequests data={prsContext} />
+            }
+        ]} />
     </>
 };
