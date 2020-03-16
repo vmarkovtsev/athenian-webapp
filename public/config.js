@@ -1,16 +1,16 @@
 window.ENV = {
   auth: {
-    "domain": "yourtenant.auth0.com",
-    "clientId": "your-cliend-id",
+    "domain": "athenian-development.auth0.com",
+    "clientId": "oodpoYJUvWPyjjsrXjEsSgwE7PROni2r",
     "redirectUri": "http://localhost:3000/login/callback",
     "logoutRedirectUri": "http://localhost:3000",
-    "audience": "https://yourtenant.auth0.com/api/v2/"
+    "audience": "http://localhost:8080"
   },
   api: {
     "basePath": "http://localhost:8080/v1"
   },
   application: {
-    "githubAppUri": "https://github.com/apps/athenian-owl"
+    "githubAppUri": "https://github.com/apps/development-athenian-owl"
   },
   environment: "development"
 };
