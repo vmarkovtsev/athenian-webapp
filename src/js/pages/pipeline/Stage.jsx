@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import StageMetrics, { StageSummaryKPI, Insights } from 'js/components/pipeline/StageMetrics';
+import { SummaryMetrics, StageSummaryKPI, Insights } from 'js/components/pipeline/StageMetrics';
+import Tabs from 'js/components/layout/Tabs';
+import PullRequests from 'js/components/pipeline/PullRequests';
 
 import { pipelineStagesConf, getStage } from 'js/pages/pipeline/Pipeline';
+
 import { useBreadcrumbsContext } from 'js/context/Breadcrumbs';
 import { useFiltersContext } from 'js/context/Filters';
 import { usePipelineContext } from 'js/context/Pipeline';
@@ -15,7 +18,7 @@ export default () => {
     const [stageChartsState, setStageChartsState] = useState([]);
 
     const { stages: stagesContext } = usePipelineContext();
-    const { prs: prsContext } = usePRsContext();
+    const prsContext = usePRsContext();
     const { name: stageSlug } = useParams();
     const activeConf = getStage(pipelineStagesConf, stageSlug);
     const activeStage = getStage(stagesContext, stageSlug);
@@ -48,12 +51,26 @@ export default () => {
         return null;
     }
 
-    return (
-        <>
-          <StageMetrics conf={activeStage}>
-            <StageSummaryKPI data={activeStage.summary(activeStage, prsContext, dateInterval)} />
-          </StageMetrics>
-          <Insights metrics={stageChartsState}/>
-        </>
-    );
+    const filteredPRs = {
+        prs: activeStage.prs(prsContext.prs),
+        users: prsContext.users,
+    };
+
+    return <>
+        <SummaryMetrics conf={activeStage}>
+            <StageSummaryKPI data={activeStage.summary(activeStage, prsContext.prs, dateInterval)} />
+        </SummaryMetrics>
+
+        <Tabs tabs={[
+            {
+                title: 'Insights',
+                content: <Insights metrics={stageChartsState} />,
+            },
+            {
+                title: 'Pull Requests',
+                badge: filteredPRs.prs.length,
+                content: <PullRequests data={filteredPRs} />
+            }
+        ]} />
+    </>;
 };

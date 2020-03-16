@@ -35,6 +35,7 @@ export const pipelineStagesConf = [
             before: 'First Commit',
             after: 'Review Requested',
         },
+        prs: prs => prs.filter(pr => pr.stage === 'wip'),
         summary: (stage, prs, dateInterval) => {
             const createdPrs = prs.filter(pr => dateInterval.from < pr.created && pr.created < dateInterval.to);
             const authors = distinct(createdPrs, pr => pr.authors);
@@ -57,6 +58,7 @@ export const pipelineStagesConf = [
             before: 'Review Requested',
             after: 'Approved',
         },
+        prs: prs => prs.filter(pr => pr.stage === 'review'),
         summary: (stage, prs) => {
             const reviewAndReviewCompletePRs = prs.filter(pr => pr.stage != 'wip');
             const reviewed = reviewAndReviewCompletePRs.filter(pr => pr.comments || pr.review_comments)
@@ -80,6 +82,7 @@ export const pipelineStagesConf = [
             before: 'Approved',
             after: 'Merged',
         },
+        prs: prs => prs.filter(pr => pr.stage === 'merge'),
         summary: (stage, prs) => {
             const mergedPRs = prs.filter(pr => pr.merged);
             const mergerers = distinct(mergedPRs, pr => pr.mergers);
@@ -102,6 +105,7 @@ export const pipelineStagesConf = [
             before: 'Merged',
             after: 'Released',
         },
+        prs: prs => prs.filter(pr => pr.stage === 'release' || pr.stage === 'done'),
         summary: (stage, prs) => {
             const releasedPRs = prs.filter(pr => pr.stage === 'done' && pr.merged);
             const repos = distinct(releasedPRs, pr => pr.repository);

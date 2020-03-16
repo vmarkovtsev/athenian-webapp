@@ -13,55 +13,32 @@ import { palette } from 'js/res/palette';
 
 import FilledAreaChart from 'js/components/charts/FilledAreaChart';
 
-export default ({ conf, children }) => {
-  return (
-    <div>
-      <SummaryMetric
-        chart={conf && conf.data && <FilledAreaChart
-          data={conf.data}
-          height={280}
-          color={palette.stages[conf.stageName]}
-          average={conf.avg}
-        />}
-        data={{
-          metric: conf.stageName,
-          title: conf.title,
-          average: conf.avg,
-          variation: conf.variation,
-        }}
-      >
-        {children}
-      </SummaryMetric>
-    </div>
-  );
-}
-
-export const Insights = ({metrics}) => (
-    <>{
-        metrics.map((chart, i) => (
-            <Metric key={i}
-                    title={chart.title}
-                    chart={
-                        <TimeSeries data={chart.data}
-                                    color={chart.color} />
-                    }
-                    insights={chart.insights}>
-            </Metric>
-        ))
-    }</>
+export const Insights = ({ metrics }) => (
+  <>{
+    metrics.map((chart, i) => (
+      <Metric key={i}
+        title={chart.title}
+        chart={
+          <TimeSeries data={chart.data}
+            color={chart.color} />
+        }
+        insights={chart.insights}>
+      </Metric>
+    ))
+  }</>
 );
 
-const SummaryMetric = ({ data, chart, children }) => {
+export const SummaryMetrics = ({ conf, children }) => {
   return (
-    <div className={classnames('summary-metric card mb-4 px-2', data.metric)}>
+    <div className={classnames('summary-metric card mb-4 px-2', conf.stageName)}>
       <div className="card-body">
         <div className="row">
           <div className="col-4">
-            <header className="font-weight-bold text-lg mt-2">{data.title}</header>
+            <header className="font-weight-bold text-lg mt-2">{conf.title}</header>
             <div className="pl-2">
               <div className="font-weight-bold mt-4 mb-3 pb-2 border-bottom">
-                <BigNumber content={dateTime.human(data.average)} isXL />
-                <Badge value={number.round(data.variation)} className="ml-2" trend />
+                <BigNumber content={dateTime.human(conf.avg)} isXL />
+                <Badge value={number.round(conf.variation)} className="ml-2" trend />
               </div>
               <div>
                 {children}
@@ -69,7 +46,12 @@ const SummaryMetric = ({ data, chart, children }) => {
             </div>
           </div>
           <div className="col-8 align-self-center">
-            {chart}
+            {conf && conf.data && <FilledAreaChart
+              data={conf.data}
+              height={280}
+              color={palette.stages[conf.stageName]}
+              average={conf.avg}
+            />}
           </div>
         </div>
       </div>

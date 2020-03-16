@@ -4,20 +4,7 @@ import 'datatables.net';
 import 'datatables.net-bs4';
 import 'datatables.net-bs4/css/dataTables.bootstrap4.css';
 
-import { SmallTitle } from 'js/components/ui/Typography';
-import Badge from 'js/components/ui/Badge';
-
 import { dateTime, github, number } from 'js/services/format';
-
-const mergeDistinct = (arr, ...arr2) => {
-    const candidate = arr.concat(...arr2);
-    return Object.keys(
-        candidate.reduce((acc, item) => {
-            acc[item] = true;
-            return acc;
-        }, {})
-    );
-};
 
 export default ({ data }) => {
 
@@ -37,9 +24,7 @@ export default ({ data }) => {
         }
 
         if ($.fn.DataTable.isDataTable('#dataTable')) {
-            console.log('Table already exists. Clearing.', $('#dataTable').DataTable().data().length);
-            $('#dataTable').DataTable().clear();//.draw();
-            return;
+            $('#dataTable').DataTable().clear();
         }
 
         $('#dataTable').DataTable({
@@ -192,29 +177,17 @@ export default ({ data }) => {
         });
 
         return () => {
-            console.log('Unmounting table. Clearing.');
-            $('#dataTable').DataTable().destroy(true);
+            $('#dataTable').DataTable().destroy();
         }
     }, [prs])
 
-    return prs.length ? (
-        <>
-            <div className="row mb-4">
-                <div className="col-12">
-                    <div className="d-flex justify-content-center border-bottom">
-                        <div className="pr-tab card mr-2 p-0 border-0 border-bottom-primary rounded-top rounded-0 rounded-top bg-transparent">
-                            <div className="card-body px-0 py-3">
-                                <SmallTitle content="Pull Requests" isBlack />
-                                <Badge value={prs.length} className="ml-3" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    if (prs.length === 0) {
+        return null;
+    }
 
-            <div className="table-responsive mb-4">
-                <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0" />
-            </div>
-        </>
-    ) : ('')
+    return (
+        <div className="table-responsive mb-4">
+            <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0" />
+        </div>
+    );
 }
