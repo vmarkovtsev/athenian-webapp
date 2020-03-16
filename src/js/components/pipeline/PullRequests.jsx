@@ -9,16 +9,6 @@ import Badge from 'js/components/ui/Badge';
 
 import { dateTime, github, number } from 'js/services/format';
 
-const mergeDistinct = (arr, ...arr2) => {
-    const candidate = arr.concat(...arr2);
-    return Object.keys(
-        candidate.reduce((acc, item) => {
-            acc[item] = true;
-            return acc;
-        }, {})
-    );
-};
-
 export default ({ data }) => {
 
     const userImage = user => {
@@ -37,9 +27,7 @@ export default ({ data }) => {
         }
 
         if ($.fn.DataTable.isDataTable('#dataTable')) {
-            console.log('Table already exists. Clearing.', $('#dataTable').DataTable().data().length);
-            $('#dataTable').DataTable().clear();//.draw();
-            return;
+            $('#dataTable').DataTable().clear();
         }
 
         $('#dataTable').DataTable({
@@ -192,8 +180,7 @@ export default ({ data }) => {
         });
 
         return () => {
-            console.log('Unmounting table. Clearing.');
-            $('#dataTable').DataTable().destroy(true);
+            $('#dataTable').DataTable().destroy();
         }
     }, [prs])
 
