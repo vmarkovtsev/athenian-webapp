@@ -80,7 +80,7 @@ export default ({ children }) => {
                 userContext.defaultReposet.repos
             )).then(repos => {
                 setAllReposState(repos);
-                setFilteredReposState(repos.length === 0 ? userContext.defaultAccount.repos : repos);
+                setFilteredReposState(repos.length === 0 ? userContext.defaultReposet : repos);
                 return onReposChange(repos, dateInterval);
             }).finally(() => {
                 setReposReadyState(true);
