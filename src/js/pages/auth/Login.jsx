@@ -26,7 +26,7 @@ export default () => {
   }
 
   const appState = {
-    targetUrl: '/waiting',
+    targetUrl: '/',
   };
 
   if (location.state && location.state.inviteLink) {
