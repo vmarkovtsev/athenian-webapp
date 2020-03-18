@@ -68,7 +68,7 @@ export default ({ children }) => {
     }, [userContext, getTokenSilently]);
 
     const onDateIntervalChange = async dateInterval => {
-        console.info('DateInterval changed', dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.from));
+        console.info('DateInterval changed', dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to));
         setReposReadyState(false);
         setContribsReadyState(false);
 

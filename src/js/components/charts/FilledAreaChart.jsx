@@ -11,8 +11,6 @@ import { palette } from 'js/res/palette';
 import { dateTime } from 'js/services/format';
 import { hexToRGBA } from 'js/services/colors';
 
-const dateFormat = dateTime.formater('%b %d')
-
 export default ({ data, average, color = palette.schemes.primary, height = 300 }) => {
   const fillColor = hexToRGBA(color, .2);
   return (
@@ -22,7 +20,7 @@ export default ({ data, average, color = palette.schemes.primary, height = 300 }
         margin={{ left: 100 }}
       >
         <XAxis tickTotal={6}
-          tickFormat={dateFormat}
+          tickFormat={dateTime.monthDay}
         />
         <YAxis tickTotal={3} tickFormat={dateTime.human} />
         <HorizontalGridLines tickTotal={3} />

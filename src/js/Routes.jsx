@@ -25,7 +25,6 @@ import NotFound404 from 'js/pages/NotFound404';
 
 import Prototypes from 'js/pages/prototypes';
 import Charts from 'js/pages/prototypes/Charts';
-import DateFilter from 'js/pages/prototypes/DateFilter';
 import MetricGroups from 'js/pages/prototypes/MetricGroups';
 
 export default () => {
@@ -81,7 +80,6 @@ export default () => {
               <Prototypes prototypes={{
                 'charts': <Charts />,
                 'metrics-groups': <MetricGroups />,
-                'datefilter': <DateFilter />,
               }} />
             </Route>
             <Route path='*'>
