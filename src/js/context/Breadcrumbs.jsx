@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 const BreadcrumbsContext = React.createContext(() => { });
 
 export const useBreadcrumbsContext = breadcrumbs => {
     const setBreadcrumbsFn = useContext(BreadcrumbsContext);
-    setBreadcrumbsFn(breadcrumbs);
+    useEffect(() => setBreadcrumbsFn(breadcrumbs), [breadcrumbs, setBreadcrumbsFn]);
 };
 
 export default ({ setBreadcrumbsFn, children }) => {
