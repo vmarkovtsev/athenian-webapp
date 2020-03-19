@@ -8,7 +8,12 @@ import { dateTime, github, number } from 'js/services/format';
 
 const userImage = users => user => {
     if (users[user] && users[user].avatar) {
-        return `<img src="${users[user].avatar}" title="${github.userName(user)}" alt="${github.userName(user)}" class="pr-user-avatar" /><span class="pr-user-avatar pr-user-unknown" title="${github.userName(user)}" class="pr-user-unknown">?</span>`;
+        return `<img
+            src="${users[user].avatar}"
+            title="${github.userName(user)}"
+            alt="${github.userName(user)}"
+            class="pr-user-avatar"
+        />`;
     }
 
     return `<span title="${github.userName(user)}" class="pr-user-avatar pr-user-unknown">?</span>`;
