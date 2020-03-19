@@ -57,7 +57,7 @@ export const getPRs = async (token, accountId, dateInterval, repos, contributors
         commentersReviewers: users.commentersReviewers
       }
     }),
-    users: prs.include && prs.include.users || {},
+    users: (prs.include && prs.include.users) || {},
   };
 };
 
@@ -87,7 +87,7 @@ export const getUserWithAccountRepos = async token => {
   );
 
   const defaultAccount = accounts[0] || { reposets: [] };
-  const defaultReposet = defaultAccount && defaultAccount.reposets && defaultAccount.reposets[0] || { repos: [] }
+  const defaultReposet = (defaultAccount && defaultAccount.reposets && defaultAccount.reposets[0]) || { repos: [] }
 
   return { ...user, accounts, defaultAccount, defaultReposet };
 };
