@@ -179,7 +179,7 @@ export default ({ data }) => {
         return () => {
             $('#dataTable').DataTable().destroy();
         }
-    }, [prs])
+    }, [prs, users])
 
     if (prs.length === 0) {
         return null;

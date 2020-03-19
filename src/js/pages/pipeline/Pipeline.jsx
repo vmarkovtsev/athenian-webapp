@@ -156,7 +156,7 @@ export default ({ children }) => {
                 setPipelineState({ leadtime, stages });
             })
             .catch(err => console.error('Could not get pipeline metrics', err));
-    }, [userContext, dateInterval, repositories, contributors]);
+    }, [userContext, dateInterval, repositories, contributors, getTokenSilently]);
 
     return (
         <PipelineContext metrics={pipelineState}>
