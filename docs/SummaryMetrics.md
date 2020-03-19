@@ -56,14 +56,13 @@ Design doc at https://docs.google.com/document/d/1DXLVz4L1Ag9sOUMAKdRRgVh1fk6peU
 ## Release
 - Released PRs: Pull Requests Released (PRs part of releases that happened during the time period selected)
   ```
-  prs.filter(pr.stage=done&&pr.merged).count
+  prs.filter(pr.release_url)
   ```
 - Releases:
   ```
-  NOT-POSSIBLE; Should come from upcoming /releases endpoint
+  prs.filter(pr.release_url).release_url.distinct.count
   ```
 - Repos: Where a release happened
   ```
-  prs.filter(pr.stage=done&&pr.merged).repos.distinct.count
+  prs.filter(pr.release_url).repos.distinct.count
   ```
-
