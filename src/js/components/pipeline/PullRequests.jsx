@@ -62,7 +62,7 @@ export default ({ data }) => {
                         if (row.merged) {
                             pic = '<i title="merged" class="fa fas fa-code-branch text-merge fa-rotate-180"></i>';
                             status = 'merged';
-                        } else if (row.stage == 'wip' || row.stage == 'review' || row.stage == 'merge') {
+                        } else if (row.stage === 'wip' || row.stage === 'review' || row.stage === 'merge') {
                             pic = '<i title="opened" class="icon-pull-request text-success"></i>';
                             status = 'opened';
                         } else {

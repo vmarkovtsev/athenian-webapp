@@ -60,7 +60,7 @@ export const pipelineStagesConf = [
         },
         prs: prs => prs.filter(pr => pr.stage === 'review'),
         summary: (stage, prs) => {
-            const reviewAndReviewCompletePRs = prs.filter(pr => pr.stage != 'wip');
+            const reviewAndReviewCompletePRs = prs.filter(pr => pr.stage !== 'wip');
             const reviewed = reviewAndReviewCompletePRs.filter(pr => pr.comments || pr.review_comments)
             const reviewers = distinct(reviewAndReviewCompletePRs, pr => pr.commentersReviewers);
             const repos = distinct(reviewAndReviewCompletePRs, pr => pr.repository);
