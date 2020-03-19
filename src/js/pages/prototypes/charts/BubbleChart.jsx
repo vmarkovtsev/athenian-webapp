@@ -8,7 +8,6 @@ import {
     VerticalGridLines,
     HorizontalGridLines,
     MarkSeries,
-    LabelSeries,
 } from 'react-vis';
 
 

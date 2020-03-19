@@ -6,7 +6,6 @@ import {
     YAxis,
     VerticalGridLines,
     HorizontalGridLines,
-    LabelSeries,
     CustomSVGSeries,
 } from 'react-vis';
 

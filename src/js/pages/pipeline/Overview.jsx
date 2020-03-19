@@ -8,7 +8,6 @@ import { usePipelineContext } from 'js/context/Pipeline';
 import PullRequests from 'js/components/pipeline/PullRequests';
 import { SummaryMetrics } from 'js/components/pipeline/StageMetrics';
 import { SmallTitle } from 'js/components/ui/Typography';
-import Badge from 'js/components/ui/Badge';
 import Tabs from 'js/components/layout/Tabs';
 
 import { dateTime } from 'js/services/format';
