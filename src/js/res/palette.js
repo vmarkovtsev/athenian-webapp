@@ -2,7 +2,6 @@ const primary = '#FF732B';
 const secondary = '#147EEC';
 const third = '#4DC7EE';
 const fourth = '#2FCC71';
-const fifth = '#000080';
 const alert = '#F37373';
 const alertStrong = '#EF3837';
 
