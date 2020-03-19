@@ -7,13 +7,13 @@ import FiltersContext from 'js/context/Filters';
 import TopFilter from 'js/components/pipeline/TopFilter';
 
 import MultiSelect from 'js/components/ui/filters/MultiSelect';
-import DateInterval from 'js/components/ui/filters/DateInterval';
+import DateInterval, { EOD, YEAR_AGO, TWO_WEEKS_AGO } from 'js/components/ui/filters/DateInterval';
 
 import { getRepos, getContributors } from 'js/services/api';
 import { dateTime, github } from 'js/services/format';
 
-const historyMaxDaysInterval = 365
-const historyMaxDateInterval = historyMaxDaysInterval * 24 * 60 * 60 * 1000;
+const allowedDateInterval = { from: YEAR_AGO, to: EOD };
+const defaultDateInterval = { from: TWO_WEEKS_AGO, to: EOD };
 
 export default ({ children }) => {
     const { getTokenSilently } = useAuth0();
@@ -27,8 +27,7 @@ export default ({ children }) => {
     const [contribsReadyState, setContribsReadyState] = useState(false);
     const [filteredContribsState, setFilteredContribsState] = useState([]);
 
-    const allowedDateInterval = { from: Date.now() - historyMaxDateInterval, to: Date.now() };
-    const [filteredDateIntervalState, setFilteredDateIntervalState] = useState(allowedDateInterval);
+    const [filteredDateIntervalState, setFilteredDateIntervalState] = useState(defaultDateInterval);
 
     useEffect(() => {
         if (!userContext) {
@@ -43,7 +42,7 @@ export default ({ children }) => {
             getReposForFilter(
                 token,
                 userContext.defaultAccount.id,
-                allowedDateInterval,
+                defaultDateInterval,
                 userContext.defaultReposet.repos
             ).then(
                 repos => {
@@ -56,7 +55,7 @@ export default ({ children }) => {
             getContribsForFilter(
                 token,
                 userContext.defaultAccount.id,
-                allowedDateInterval,
+                defaultDateInterval,
                 userContext.defaultReposet.repos
             ).then(
                 contribs => {
@@ -147,10 +146,10 @@ export default ({ children }) => {
                 }
                 dateIntervalFilter={
                     <DateInterval
-                        id="dateInterval"
-                        name="Date interval"
-                        className="datepicker form-control text-xs text-gray-900"
-                        dateIntervalLimits={allowedDateInterval}
+                        minDate={allowedDateInterval.from}
+                        maxDate={allowedDateInterval.to}
+                        initialFrom={defaultDateInterval.from}
+                        initialTo={defaultDateInterval.to}
                         onChange={onDateIntervalChange}
                     />
                 }
