@@ -6,15 +6,20 @@ import 'datatables.net-bs4/css/dataTables.bootstrap4.css';
 
 import { dateTime, github, number } from 'js/services/format';
 
-export default ({ data }) => {
-
-    const userImage = user => {
-        if (users[user] && users[user].avatar) {
-            return `<img src="${users[user].avatar}" title="${github.userName(user)}" alt="${github.userName(user)}" class="pr-user-avatar" /><span class="pr-user-avatar pr-user-unknown" title="${github.userName(user)}" class="pr-user-unknown">?</span>`;
-        }
-
-        return `<span title="${github.userName(user)}" class="pr-user-avatar pr-user-unknown">?</span>`;
+const userImage = users => user => {
+    if (users[user] && users[user].avatar) {
+        return `<img
+            src="${users[user].avatar}"
+            title="${github.userName(user)}"
+            alt="${github.userName(user)}"
+            class="pr-user-avatar"
+        />`;
     }
+
+    return `<span title="${github.userName(user)}" class="pr-user-avatar pr-user-unknown">?</span>`;
+};
+
+export default ({ data }) => {
 
     const { prs, users } = data;
 
@@ -62,7 +67,7 @@ export default ({ data }) => {
                         if (row.merged) {
                             pic = '<i title="merged" class="fa fas fa-code-branch text-merge fa-rotate-180"></i>';
                             status = 'merged';
-                        } else if (row.stage == 'wip' || row.stage == 'review' || row.stage == 'merge') {
+                        } else if (row.stage === 'wip' || row.stage === 'review' || row.stage === 'merge') {
                             pic = '<i title="opened" class="icon-pull-request text-success"></i>';
                             status = 'opened';
                         } else {
@@ -90,7 +95,7 @@ export default ({ data }) => {
                                         <a class="text-dark font-weight-bold" href=${github.prLink(row.repository, row.number)} target="_blank">${row.title}</a>
                                     </div>
                                     <div class="table-creators">
-                                        ${row.authors.map(userImage).join(' ')}
+                                        ${row.authors.map(userImage(users)).join(' ')}
                                         <div class="pr-created-by"><span>Created by</span> <span class="text-dark">${row.authors.map(github.userName).join(' ')}</span>
                                         <span>${dateTime.ago(row.created)} ago</span></div>
                                     </div>
@@ -136,11 +141,11 @@ export default ({ data }) => {
                     render: (_, type, row) => {
                         switch (type) {
                             case 'display':
-                                return row.commentersReviewers.map(userImage).join(' ');
+                                return row.commentersReviewers.map(userImage(users)).join(' ');
                             case 'sort':
                                 return row.commentersReviewers.length;
                             default:
-                                return row.commentersReviewers.map(userImage).join(' ');
+                                return row.commentersReviewers.map(userImage(users)).join(' ');
                         }
                     },
                 }, {
@@ -179,7 +184,7 @@ export default ({ data }) => {
         return () => {
             $('#dataTable').DataTable().destroy();
         }
-    }, [prs])
+    }, [prs, users])
 
     if (prs.length === 0) {
         return null;

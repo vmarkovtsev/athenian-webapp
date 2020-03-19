@@ -60,7 +60,7 @@ export const pipelineStagesConf = [
         },
         prs: prs => prs.filter(pr => pr.stage === 'review'),
         summary: (stage, prs) => {
-            const reviewAndReviewCompletePRs = prs.filter(pr => pr.stage != 'wip');
+            const reviewAndReviewCompletePRs = prs.filter(pr => pr.stage !== 'wip');
             const reviewed = reviewAndReviewCompletePRs.filter(pr => pr.comments || pr.review_comments)
             const reviewers = distinct(reviewAndReviewCompletePRs, pr => pr.commentersReviewers);
             const repos = distinct(reviewAndReviewCompletePRs, pr => pr.repository);
@@ -156,7 +156,7 @@ export default ({ children }) => {
                 setPipelineState({ leadtime, stages });
             })
             .catch(err => console.error('Could not get pipeline metrics', err));
-    }, [userContext, dateInterval, repositories, contributors]);
+    }, [userContext, dateInterval, repositories, contributors, getTokenSilently]);
 
     return (
         <PipelineContext metrics={pipelineState}>

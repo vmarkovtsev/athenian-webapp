@@ -69,7 +69,7 @@ export default () => {
 
         setRedirectTo(query.get('targetUrl'));
       });
-  }, [loading, isAuthenticated]);;
+  }, [loading, isAuthenticated, getTokenSilently, logout, query]);
 
   if (redirectTo) {
     return <Redirect to={redirectTo} />;

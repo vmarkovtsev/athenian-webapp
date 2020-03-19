@@ -10,7 +10,7 @@ const deepCopy = obj => JSON.parse(JSON.stringify(obj));
 
 export default ({ name, options, isReady, id, className, noDataMsg, labelFormat, onChange }) => {
     const [selectedState, setSelectedState] = useState([]);
-    const howMany = selectedState.length === options.length || selectedState.length == 0 ? 'all' : selectedState.length;
+    const howMany = selectedState.length === options.length || selectedState.length === 0 ? 'all' : selectedState.length;
     useEffect(() => setSelectedState([]), [options]);
 
     const [previousSelectionState, setPreviousSelectionState] = useState(deepCopy(options).sort());

@@ -8,7 +8,6 @@ import {
     VerticalGridLines,
     HorizontalGridLines,
     MarkSeries,
-    LabelSeries,
 } from 'react-vis';
 
 
@@ -58,4 +57,3 @@ const BubbleChart = ({ data }) => {
 }
 
 const logScale = scaleLog().base(10);
-const logEScale = scaleLog().base(5);

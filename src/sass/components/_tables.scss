@@ -126,7 +126,6 @@
         cursor: default;
 
         &.pr-user-unknown {
-            display: none;
             line-height: $mainAvatarSize - 4;
             background: $at-border-color;
             text-align: center;
