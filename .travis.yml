@@ -18,7 +18,7 @@ stages:
   - name: test
   - name: build
   - name: deploy
-    if: branch = master AND type != pull_request
+    if: (branch = master OR tag IS present) AND type != pull_request
 
 jobs:
   fast_finish: true
@@ -34,6 +34,11 @@ jobs:
     - stage: deploy
       name: 'Deploy App'
       script:
+        - |
+          if [ ! -z "$TRAVIS_TAG" ]; then
+            IMAGE=${GOOGLE_DOCKER_IMAGE}:${TRAVIS_TAG} make docker-build gcloud-login docker-push
+            exit 0
+          fi
         - IMAGE=${IMAGE_BRANCH_COMMIT} make deploy
         - docker tag ${IMAGE_BRANCH_COMMIT} ${GOOGLE_DOCKER_IMAGE}:latest
         - IMAGE=${GOOGLE_DOCKER_IMAGE}:latest make docker-push
