@@ -107,12 +107,13 @@ export const pipelineStagesConf = [
         },
         prs: prs => prs.filter(pr => pr.stage === 'release' || pr.stage === 'done'),
         summary: (stage, prs) => {
-            const releasedPRs = prs.filter(pr => pr.stage === 'done' && pr.merged);
+            const releasedPRs = prs.filter(pr => pr.release_url);
+            const releases = distinct(releasedPRs, pr => pr.release_url);
             const repos = distinct(releasedPRs, pr => pr.repository);
             return [
                 ['proportion of the lead time', number.percentage(stage.leadTimePercentage)],
                 ['pull requests released', releasedPRs.length],
-                ['releases', 'TODO'], // TODO(dpordomingo): NOT-POSSIBLE; Should come from upcoming `/releases` endpoint
+                ['releases', releases.length],
                 ['repositories', repos.length],
             ];
         },
