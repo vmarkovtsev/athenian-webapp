@@ -1,5 +1,16 @@
 @import '~react-dates/lib/css/_datepicker.css';
 
+.DayPicker__horizontal,
+.DayPicker,
+.CalendarMonth,
+.CalendarMonthGrid,
+.CalendarDay__default,
+.CalendarDay__blocked_out_of_range,
+.CalendarDay__blocked_out_of_range:active,
+.CalendarDay__blocked_out_of_range:hover {
+    background-color: $color-light;
+}
+
 .CalendarDay__default {
     font-size: 1rem;
     border: none;

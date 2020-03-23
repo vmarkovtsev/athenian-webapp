@@ -4,8 +4,6 @@ import 'react-dates/initialize';
 import moment from 'moment';
 import { DateRangePicker } from 'react-dates';
 import { START_DATE, END_DATE } from 'react-dates/constants';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 
 const isInRange = (candidate, lower, upper) => lower.isBefore(candidate) && upper.isAfter(candidate);
 
@@ -83,6 +81,13 @@ export default ({
         });
     }, [dateIntervalState, prevDateIntervalState, validateOrFix, focusedInputState, onChange]);
 
+    const CustomInfoPanel = () => (
+        <div className="bg-white border-top px-4 py-3 text-right">
+            <button className="btn btn-link text-secondary px-3">Cancel</button>
+            <button className="btn btn-orange px-3">Apply</button>
+        </div>
+    );
+
     return (
         <div style={{ float: 'right' }}>
             <DateRangePicker
@@ -106,6 +111,7 @@ export default ({
                 customArrowIcon="-"
                 small={true}
                 daySize={30}
+                renderCalendarInfo={CustomInfoPanel}
                 //Internals
                 onDatesChange={setDateIntervalState}
                 onFocusChange={setFocusedInputState}

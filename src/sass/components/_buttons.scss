@@ -1,0 +1,17 @@
+.btn {
+
+    &:hover {
+        opacity: 0.7;
+    }
+
+    &.btn-orange {
+        background: $color-orange;
+        color: $white;
+
+        &:hover,
+        &:active,
+        &:focus {
+            color: $white;
+        }
+    }
+}
