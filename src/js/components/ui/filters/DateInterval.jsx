@@ -4,16 +4,18 @@ import 'react-dates/initialize';
 import moment from 'moment';
 import { DateRangePicker } from 'react-dates';
 import { START_DATE, END_DATE } from 'react-dates/constants';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 
 const isInRange = (candidate, lower, upper) => lower.isBefore(candidate) && upper.isAfter(candidate);
 
 /**
- * validateOrFixFn returns a function that calls resetFn if the passed dateInterval is empty, 
+ * validateOrFixFn returns a function that calls resetFn if the passed dateInterval is empty,
  * or it will run fixFn over the field that could be missing in dateInterval; in both cases
  * it will also return false; otherwise it will return true.
  * @param {()=>{}} resetFn Function to be called in case the passed dateInterval is empty.
  * @param {(string)=>{}} fixFn Function to be called in case the passed dateInterval lacks of any field.
- * @returns {(<moment>)=>bolean} 
+ * @returns {(<moment>)=>bolean}
  */
 const validateOrFixFn = (resetFn, fixFn) => dateInterval => {
     if (!dateInterval.startDate && !dateInterval.endDate) {
@@ -102,6 +104,7 @@ export default ({
                 showDefaultInputIcon={true}
                 customArrowIcon="-"
                 small={true}
+                daySize={30}
                 //Internals
                 onDatesChange={setDateIntervalState}
                 onFocusChange={setFocusedInputState}
