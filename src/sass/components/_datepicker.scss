@@ -1,15 +1,103 @@
 @import '~react-dates/lib/css/_datepicker.css';
 
+.DayPicker__horizontal,
+.DayPicker,
+.CalendarMonth,
+.CalendarMonthGrid,
+.CalendarDay__default,
+.CalendarDay__blocked_out_of_range,
+.CalendarDay__blocked_out_of_range:active,
+.CalendarDay__blocked_out_of_range:hover {
+    background-color: $color-light;
+}
+
 .CalendarDay__default {
-    @extend .text-xs;
+    font-size: 1rem;
     border: none;
+    font-weight: 300;
 }
 
 .CalendarMonth_caption {
-    @extend .text-m;
+    color: $color-dark;
+    font-size: 1.2rem;
+    font-weight: 300;
 }
 
 .DateInput_input__small {
-    @extend .text-xs;
-    @extend .text-gray-900;
+    color: $color-dark;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 7px 4px 5px;
+}
+
+.DateInput_input__focused {
+    border-bottom: 2px solid $color-light-orange;
+}
+
+.DateInput_fang {
+    top: 39px !important;
+}
+
+.DateRangePickerInput_arrow {
+    margin-right: 1rem;
+}
+
+.DateRangePickerInput_calendarIcon {
+    margin-left: 0;
+}
+
+.CalendarDay__selected_span {
+    background: $color-light-orange;
+    color: $white;
+    border: 1px solid $white;
+}
+
+.CalendarDay__selected,
+.CalendarDay__selected:active,
+.CalendarDay__selected:hover {
+    background: $color-orange;
+    border: 1px solid $white;
+    color: white;
+}
+
+.CalendarDay__selected:hover,
+.CalendarDay__selected_span:active,
+.CalendarDay__selected_span:hover {
+    background: $color-light-orange;
+    border-color: $white;
+    color: white;
+}
+
+.CalendarDay__selected:hover,
+.CalendarDay__selected_span:hover {
+    opacity: 0.7;
+}
+
+.CalendarDay__hovered_span:hover,
+.CalendarDay__hovered_span {
+    background: $color-orange;
+    color: $white;
+    border: 1px solid $white;
+}
+
+.CalendarDay__today {
+    font-weight: 700;
+}
+
+.DayPicker_weekHeader_li {
+    width: 3rem !important;
+}
+
+.DayPicker_weekHeader_li small {
+    color: $color-secondary;
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+.CalendarMonth_table {
+    margin-top: 1rem;
+}
+
+.DayPickerKeyboardShortcuts_show__bottomRight::before {
+    border-right: 33px solid $color-light-orange;
 }

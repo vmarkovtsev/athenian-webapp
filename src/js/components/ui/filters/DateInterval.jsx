@@ -8,12 +8,12 @@ import { START_DATE, END_DATE } from 'react-dates/constants';
 const isInRange = (candidate, lower, upper) => lower.isBefore(candidate) && upper.isAfter(candidate);
 
 /**
- * validateOrFixFn returns a function that calls resetFn if the passed dateInterval is empty, 
+ * validateOrFixFn returns a function that calls resetFn if the passed dateInterval is empty,
  * or it will run fixFn over the field that could be missing in dateInterval; in both cases
  * it will also return false; otherwise it will return true.
  * @param {()=>{}} resetFn Function to be called in case the passed dateInterval is empty.
  * @param {(string)=>{}} fixFn Function to be called in case the passed dateInterval lacks of any field.
- * @returns {(<moment>)=>bolean} 
+ * @returns {(<moment>)=>bolean}
  */
 const validateOrFixFn = (resetFn, fixFn) => dateInterval => {
     if (!dateInterval.startDate && !dateInterval.endDate) {
@@ -81,6 +81,13 @@ export default ({
         });
     }, [dateIntervalState, prevDateIntervalState, validateOrFix, focusedInputState, onChange]);
 
+    const CustomInfoPanel = () => (
+        <div className="bg-white border-top px-4 py-3 text-right">
+            <button className="btn btn-link text-secondary px-3">Cancel</button>
+            <button className="btn btn-orange px-3">Apply</button>
+        </div>
+    );
+
     return (
         <div style={{ float: 'right' }}>
             <DateRangePicker
@@ -100,8 +107,11 @@ export default ({
                 endDatePlaceholderText="End Date"
                 startDatePlaceholderText="Start Date"
                 showDefaultInputIcon={true}
+                hideKeyboardShortcutsPanel={true}
                 customArrowIcon="-"
                 small={true}
+                daySize={30}
+                renderCalendarInfo={CustomInfoPanel}
                 //Internals
                 onDatesChange={setDateIntervalState}
                 onFocusChange={setFocusedInputState}
