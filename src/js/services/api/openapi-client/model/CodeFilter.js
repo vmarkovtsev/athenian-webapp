@@ -12,30 +12,30 @@
  */
 
 import ApiClient from '../ApiClient';
+import CodeFilterAllOf from './CodeFilterAllOf';
 import CommitFilter from './CommitFilter';
-import FilterCommitsRequestAllOf from './FilterCommitsRequestAllOf';
 
 /**
- * The FilterCommitsRequest model module.
- * @module model/FilterCommitsRequest
+ * The CodeFilter model module.
+ * @module model/CodeFilter
  * @version 1.0.11
  */
-class FilterCommitsRequest {
+class CodeFilter {
     /**
-     * Constructs a new <code>FilterCommitsRequest</code>.
-     * Filter for listing commits.
-     * @alias module:model/FilterCommitsRequest
+     * Constructs a new <code>CodeFilter</code>.
+     * Filter for revealing code bypassing PRs.
+     * @alias module:model/CodeFilter
      * @implements module:model/CommitFilter
-     * @implements module:model/FilterCommitsRequestAllOf
+     * @implements module:model/CodeFilterAllOf
      * @param account {Number} Session account ID.
      * @param dateFrom {Date} Commits must be made later than or equal to this date.
      * @param dateTo {Date} Commits must be made earlier than or equal to this date.
      * @param _in {Array.<String>} A set of repositories. An empty list results an empty response in contrary to DeveloperSet. Duplicates are automatically ignored.
-     * @param property {module:model/FilterCommitsRequest.PropertyEnum} Main trait of the commits - the core of the filter.
+     * @param granularity {String} How often the metrics are reported. The value must satisfy the following regular expression: (^([1-9]\\d* )?(day|week|month|year)$
      */
-    constructor(account, dateFrom, dateTo, _in, property) { 
-        CommitFilter.initialize(this, account, dateFrom, dateTo, _in);FilterCommitsRequestAllOf.initialize(this, property);
-        FilterCommitsRequest.initialize(this, account, dateFrom, dateTo, _in, property);
+    constructor(account, dateFrom, dateTo, _in, granularity) { 
+        CommitFilter.initialize(this, account, dateFrom, dateTo, _in);CodeFilterAllOf.initialize(this, granularity);
+        CodeFilter.initialize(this, account, dateFrom, dateTo, _in, granularity);
     }
 
     /**
@@ -43,26 +43,26 @@ class FilterCommitsRequest {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, account, dateFrom, dateTo, _in, property) { 
+    static initialize(obj, account, dateFrom, dateTo, _in, granularity) { 
         obj['account'] = account;
         obj['date_from'] = dateFrom;
         obj['date_to'] = dateTo;
         obj['in'] = _in;
-        obj['property'] = property;
+        obj['granularity'] = granularity;
     }
 
     /**
-     * Constructs a <code>FilterCommitsRequest</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>CodeFilter</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/FilterCommitsRequest} obj Optional instance to populate.
-     * @return {module:model/FilterCommitsRequest} The populated <code>FilterCommitsRequest</code> instance.
+     * @param {module:model/CodeFilter} obj Optional instance to populate.
+     * @return {module:model/CodeFilter} The populated <code>CodeFilter</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new FilterCommitsRequest();
+            obj = obj || new CodeFilter();
             CommitFilter.constructFromObject(data, obj);
-            FilterCommitsRequestAllOf.constructFromObject(data, obj);
+            CodeFilterAllOf.constructFromObject(data, obj);
 
             if (data.hasOwnProperty('account')) {
                 obj['account'] = ApiClient.convertToType(data['account'], 'Number');
@@ -82,8 +82,8 @@ class FilterCommitsRequest {
             if (data.hasOwnProperty('with_committer')) {
                 obj['with_committer'] = ApiClient.convertToType(data['with_committer'], ['String']);
             }
-            if (data.hasOwnProperty('property')) {
-                obj['property'] = ApiClient.convertToType(data['property'], 'String');
+            if (data.hasOwnProperty('granularity')) {
+                obj['granularity'] = ApiClient.convertToType(data['granularity'], 'String');
             }
         }
         return obj;
@@ -96,43 +96,43 @@ class FilterCommitsRequest {
  * Session account ID.
  * @member {Number} account
  */
-FilterCommitsRequest.prototype['account'] = undefined;
+CodeFilter.prototype['account'] = undefined;
 
 /**
  * Commits must be made later than or equal to this date.
  * @member {Date} date_from
  */
-FilterCommitsRequest.prototype['date_from'] = undefined;
+CodeFilter.prototype['date_from'] = undefined;
 
 /**
  * Commits must be made earlier than or equal to this date.
  * @member {Date} date_to
  */
-FilterCommitsRequest.prototype['date_to'] = undefined;
+CodeFilter.prototype['date_to'] = undefined;
 
 /**
  * A set of repositories. An empty list results an empty response in contrary to DeveloperSet. Duplicates are automatically ignored.
  * @member {Array.<String>} in
  */
-FilterCommitsRequest.prototype['in'] = undefined;
+CodeFilter.prototype['in'] = undefined;
 
 /**
  * A set of developers. An empty list disables the filter and includes everybody. Duplicates are automatically ignored.
  * @member {Array.<String>} with_author
  */
-FilterCommitsRequest.prototype['with_author'] = undefined;
+CodeFilter.prototype['with_author'] = undefined;
 
 /**
  * A set of developers. An empty list disables the filter and includes everybody. Duplicates are automatically ignored.
  * @member {Array.<String>} with_committer
  */
-FilterCommitsRequest.prototype['with_committer'] = undefined;
+CodeFilter.prototype['with_committer'] = undefined;
 
 /**
- * Main trait of the commits - the core of the filter.
- * @member {module:model/FilterCommitsRequest.PropertyEnum} property
+ * How often the metrics are reported. The value must satisfy the following regular expression: (^([1-9]\\d* )?(day|week|month|year)$
+ * @member {String} granularity
  */
-FilterCommitsRequest.prototype['property'] = undefined;
+CodeFilter.prototype['granularity'] = undefined;
 
 
 // Implement CommitFilter interface:
@@ -166,30 +166,15 @@ CommitFilter.prototype['with_author'] = undefined;
  * @member {Array.<String>} with_committer
  */
 CommitFilter.prototype['with_committer'] = undefined;
-// Implement FilterCommitsRequestAllOf interface:
+// Implement CodeFilterAllOf interface:
 /**
- * Main trait of the commits - the core of the filter.
- * @member {module:model/FilterCommitsRequestAllOf.PropertyEnum} property
+ * How often the metrics are reported. The value must satisfy the following regular expression: (^([1-9]\\d* )?(day|week|month|year)$
+ * @member {String} granularity
  */
-FilterCommitsRequestAllOf.prototype['property'] = undefined;
+CodeFilterAllOf.prototype['granularity'] = undefined;
 
 
 
-/**
- * Allowed values for the <code>property</code> property.
- * @enum {String}
- * @readonly
- */
-FilterCommitsRequest['PropertyEnum'] = {
 
-    /**
-     * value: "bypassing_prs"
-     * @const
-     */
-    "bypassing_prs": "bypassing_prs"
-};
-
-
-
-export default FilterCommitsRequest;
+export default CodeFilter;
 
