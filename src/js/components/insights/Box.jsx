@@ -83,7 +83,7 @@ const WithKPIBoxBodyRow = ({chart, kpis}) => (
           <div className="col-8">{
               kpis.map((kpi, i) => (
                   <BoxKPI key={i} title={kpi.title} subtitle={kpi.subtitle}>
-                    <kpi.component key={i} {...kpi.data} />
+                    <kpi.component key={i} params={kpi.params} />
                   </BoxKPI>
               ))
           }</div>
