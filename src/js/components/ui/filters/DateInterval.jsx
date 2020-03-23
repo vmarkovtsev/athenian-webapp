@@ -1,63 +1,115 @@
-import React, { useEffect, useState } from 'react';
 
-import AriaLabel from 'js/components/ui/AriaLabel';
+import React, { useState, useEffect } from 'react';
+import 'react-dates/initialize';
+import moment from 'moment';
+import { DateRangePicker } from 'react-dates';
+import { START_DATE, END_DATE } from 'react-dates/constants';
 
-import { dateTime } from 'js/services/format';
+const isInRange = (candidate, lower, upper) => lower.isBefore(candidate) && upper.isAfter(candidate);
 
-const max = (a, b) => a > b ? a : b;
-const min = (a, b) => a < b ? a : b;
-
-export default ({ id, name, className, dateIntervalLimits = { from: null, to: null }, onChange = () => { } }) => {
-    const fromMin = dateIntervalLimits.from || Date.now() - 365 * 24 * 60 * 60 * 1000;
-    const toMax = dateIntervalLimits.to || Date.now();
-    if (fromMin > toMax) {
-        throw new Error(`${id} date interval limits are wrong. ` +
-            `From:(${dateTime.ymd(fromMin)}) must be smaller than To:(${dateTime.ymd(toMax)})`);
+/**
+ * validateOrFixFn returns a function that calls resetFn if the passed dateInterval is empty, 
+ * or it will run fixFn over the field that could be missing in dateInterval; in both cases
+ * it will also return false; otherwise it will return true.
+ * @param {()=>{}} resetFn Function to be called in case the passed dateInterval is empty.
+ * @param {(string)=>{}} fixFn Function to be called in case the passed dateInterval lacks of any field.
+ * @returns {(<moment>)=>bolean} 
+ */
+const validateOrFixFn = (resetFn, fixFn) => dateInterval => {
+    if (!dateInterval.startDate && !dateInterval.endDate) {
+        resetFn();
+        return false;
     }
 
-    const [fromMaxState, setFromMaxState] = useState(toMax);
-    const [toMinState, setToMinState] = useState(fromMin);
+    if (!dateInterval.startDate) {
+        fixFn(START_DATE);
+        return false;
+    } else if (!dateInterval.endDate) {
+        fixFn(END_DATE);
+        return false;
+    }
 
-    const [fromState, setFromState] = useState(fromMin);
-    const [toState, setToState] = useState(toMax);
+    return true;
+};
 
+const isSameDateInterval = (momentA, momentB) => {
+    return momentA.startDate.isSame(momentB.startDate) && momentA.endDate.isSame(momentB.endDate);
+};
+
+export const EOD = moment().valueOf();
+export const YEAR_AGO = moment().subtract(1, 'year').valueOf();
+export const TWO_WEEKS_AGO = moment().subtract(2, 'weeks').valueOf();
+
+export default ({
+    minDate = YEAR_AGO,
+    maxDate = EOD,
+    initialFrom = TWO_WEEKS_AGO,
+    initialTo = EOD,
+    onChange = dateInteval => console.log('APPLY', dateInteval)
+}) => {
+    minDate = moment(minDate);
+    maxDate = moment(maxDate);
+    initialFrom = moment(initialFrom);
+    initialTo = moment(initialTo);
+
+    const initialDateInterval = {
+        startDate: initialFrom,
+        endDate: initialTo,
+    };
+
+    const [dateIntervalState, setDateIntervalState] = useState(initialDateInterval);
+    const [prevDateIntervalState, setPrevDateIntervalState] = useState(initialDateInterval);
+
+    const [focusedInputState, setFocusedInputState] = useState(null);
+
+    const validateOrFix = validateOrFixFn(() => setDateIntervalState(initialDateInterval), setFocusedInputState);
+
+    // It will only call the passed onChange callback if the process of changing it is finished
+    // (the calendar is not opened, and the date interval is valid) and if the date interval changed.
     useEffect(() => {
-        setFromMaxState(min(toState, toMax));
-        setToMinState(max(fromState, fromMin));
-    }, [fromState, toState]);
+        if (focusedInputState || // the calendar is opened (the changing process didn't finished)
+            !validateOrFix(dateIntervalState) || // the date interval lacks of any field (e.g. the calendar is closed after choosing start and end dates)
+            isSameDateInterval(dateIntervalState, prevDateIntervalState) // when the date interval is not changed
+        ) {
+            return;
+        };
 
-    const onFromChange = event => {
-        const newFromDateInterval = Date.parse(event.target.value) || fromMin;
-        setFromState(newFromDateInterval);
-        onChange({ from: newFromDateInterval, to: toState });
-    };
+        setPrevDateIntervalState(dateIntervalState);
+        onChange({
+            from: dateIntervalState.startDate.valueOf(),
+            to: dateIntervalState.endDate.valueOf(),
+        });
+    }, [dateIntervalState, prevDateIntervalState, validateOrFix, focusedInputState, onChange]);
 
-    const onToChange = event => {
-        const newToDateInterval = Date.parse(event.target.value) || toMax;
-        setToState(newToDateInterval);
-        onChange({ from: fromState, to: newToDateInterval });
-    };
-
-    return <>
-        <AriaLabel id={`${id}FromLabel`} label={`${name} from filter`} />
-        <input
-            type="date"
-            className={className}
-            min={dateTime.ymd(fromMin)}
-            max={dateTime.ymd(fromMaxState)}
-            value={dateTime.ymd(fromState)}
-            onChange={onFromChange}
-            aria-labelledby={`${id}FromLabel`}
-        />
-        <AriaLabel id={`${id}ToLabel`} label={`${name} to filter`} />
-        <input
-            type="date"
-            className={className}
-            min={dateTime.ymd(toMinState)}
-            max={dateTime.ymd(toMax)}
-            value={dateTime.ymd(toState)}
-            onChange={onToChange}
-            aria-labelledby={`${id}ToLabel`}
-        />
-    </>;
+    return (
+        <div style={{ float: 'right' }}>
+            <DateRangePicker
+                startDate={dateIntervalState.startDate}
+                endDate={dateIntervalState.endDate}
+                minDate={minDate}
+                maxDate={maxDate}
+                //behavior
+                minimumNights={0}
+                keepOpenOnDateSelect={true}
+                reopenPickerOnClearDates={false}
+                showClearDates={true}
+                //Look and feel
+                firstDayOfWeek={0}
+                anchorDirection="right"
+                displayFormat="MMM Do, YYYY"
+                endDatePlaceholderText="End Date"
+                startDatePlaceholderText="Start Date"
+                showDefaultInputIcon={true}
+                customArrowIcon="-"
+                small={true}
+                //Internals
+                onDatesChange={setDateIntervalState}
+                onFocusChange={setFocusedInputState}
+                focusedInput={focusedInputState}
+                startDateId="dateIntervalFrom"
+                endDateId="dateIntervalTo"
+                isOutsideRange={day => !isInRange(day, minDate, maxDate)}
+            />
+        </div>
+    );
 };

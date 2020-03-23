@@ -1,135 +1,15 @@
-.daterangepicker {
-    background-color: $color-light;
-    border-radius: 0;
-    border: 1px solid $at-border-color;
-    box-shadow: 2px 2px 2px rgba(0,0,0,0.05);
-    font-family: $font-family-sans-serif;
-    font-size: 1rem;
-    font-weight: 300;
+@import '~react-dates/lib/css/_datepicker.css';
+
+.CalendarDay__default {
+    @extend .text-xs;
+    border: none;
 }
 
-.daterangepicker:before {
-    border-bottom: 7px solid $at-border-color;
+.CalendarMonth_caption {
+    @extend .text-m;
 }
 
-.daterangepicker:after {
-    border-bottom: 6px solid $at-main-bg;
-}
-
-.daterangepicker .drp-calendar {
-    max-width: 210px;
-}
-
-.daterangepicker .drp-calendar.left {
-    padding: 10px 15px 10px 10px;
-}
-
-.daterangepicker .drp-calendar:first-child {
-    padding-left: 50px !important;
-}
-
-.daterangepicker .drp-calendar:nth-child(2) {
-    padding-right: 50px !important;
-}
-
-.daterangepicker .calendar-table th,
-.daterangepicker .calendar-table td {
-    min-width: 22px;
-    width: 22px;
-    height: 18px;
-    line-height: 1.8rem;
-    font-size: unset;
-    font-weight: 300;
-}
-
-.daterangepicker .calendar-table th {
-    color: $secondary;
-}
-
-.daterangepicker .calendar-table td {
-    color: $color-dark;
-}
-
-.daterangepicker .calendar-table th.prev,
-.daterangepicker .calendar-table th.next {
-    background-color: $white;
-    border: 1px solid $at-border-color;
-    border-radius: 0;
-    height: 3rem;
-    line-height: 3rem;
-    position: absolute;
-    width: 3rem;
-}
-
-.daterangepicker .calendar-table th.prev {
-    left: 1rem;
-
-    span {
-        margin-right: -1px;
-    }
-}
-
-.daterangepicker .calendar-table th.next {
-    right: 1rem;
-
-    span {
-        margin-left: -4px;
-    }
-}
-
-.daterangepicker .calendar-table {
-    border: unset;
-    background-color: unset;
-}
-
-.daterangepicker td.available:hover,
-.daterangepicker th.available:hover {
-    background-color: rgba($secondary,0.2);
-}
-
-.daterangepicker td.week,
-.daterangepicker th.week {
-    display: none;
-}
-
-.daterangepicker td.off,
-.daterangepicker td.off.available,
-.daterangepicker td.off.in-range,
-.daterangepicker td.off.start-date,
-.daterangepicker td.off.end-date {
-    background-color: unset;
-    color: rgba($color-dark,0.2);
-}
-
-.daterangepicker td.in-range {
-    background-color: rgba($color-light-orange, 0.1) !important;
-    color: $color-dark;
-}
-
-.daterangepicker td.active,
-.daterangepicker td.active:hover {
-    background-color: $color-orange !important;
-    border-color: $white;
-    color: $white;
-}
-
-.daterangepicker th.month {
-    color: $color-dark;
-    font-size: 1.2rem;
-    font-weight: 500;
-}
-
-.daterangepicker .drp-buttons {
-    background: $white;
-}
-
-.daterangepicker .drp-selected {
-    display: none;
-}
-
-// Large screens
-@media (min-width: 564px) {
-    .daterangepicker {
-        width: 430px;
-    }
+.DateInput_input__small {
+    @extend .text-xs;
+    @extend .text-gray-900;
 }
