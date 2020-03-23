@@ -102,6 +102,7 @@ export default ({
                 endDatePlaceholderText="End Date"
                 startDatePlaceholderText="Start Date"
                 showDefaultInputIcon={true}
+                hideKeyboardShortcutsPanel={true}
                 customArrowIcon="-"
                 small={true}
                 daySize={30}
