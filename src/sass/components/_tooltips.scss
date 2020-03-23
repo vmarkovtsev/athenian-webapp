@@ -15,3 +15,48 @@
         text-align: left;
     }
 }
+
+.tooltip-light {
+
+    .tooltip-inner {
+        background: $white;
+        box-shadow: 0 0 2px rgba(0,0,0,0.02);
+        color: $dark;
+        font-weight: 500;
+    }
+
+    &.tooltip.bs-tooltip-right .arrow:before {
+        border-right-color: $white !important;
+    }
+    &.tooltip.bs-tooltip-left .arrow:before {
+        border-left-color: $white !important;
+    }
+    &.tooltip.bs-tooltip-bottom .arrow:before {
+        border-bottom-color: $white !important;
+    }
+    &.tooltip.bs-tooltip-top .arrow:before {
+        border-top-color: $white !important;
+    }
+
+    .card {
+        border: none;
+    }
+}
+
+// User tooltip
+
+.user-avatar {
+    box-shadow: 0 0 4px rgba(0,0,0,0.1);
+    border-radius: 2rem;
+    border: 2px solid white;
+    vertical-align: middle;
+    cursor: default;
+}
+
+.user-info {
+    font-size: 1.5rem;
+}
+
+.tooltip-demo {
+    display: inline-block;
+}
