@@ -3,6 +3,9 @@
   "homepage": "/",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "12.*"
+  },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.6.3",
     "@dpordomingo/startbootstrap-sb-admin-2": "^4.0.8",
