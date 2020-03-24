@@ -4,11 +4,17 @@ import BubbleChart from 'js/components/insights/charts/library/BubbleChart';
 import moment from 'moment';
 import _ from 'lodash';
 
-export const getInsights = (data) => [
+// TODO: Passing data should be removed in favor of letting each chart
+// retrieving its own data using the api.
+export const getInsights = (api, context, data) => [
     pullRequestSize
-].map(def => def.factory(def.calculator(data)));
+].map(def => def.factory(def.calculator(def.fetcher(api, context, data))));
 
 const pullRequestSize = {
+    fetcher: (api, context, data) => {
+        // TODO: call the api to avoid receiving data from outside
+        return data;
+    },
     calculator: (data) => ({
         chartData: _(data.prs)
             .map(pr => {

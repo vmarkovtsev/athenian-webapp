@@ -3,7 +3,9 @@ import { getInsights as getInsightsReview } from 'js/components/insights/stages/
 
 import _ from 'lodash';
 
-export const getInsights = (stage, data) => {
+// TODO: Passing data should be removed in favor of letting each chart
+// retrieving its own data using the api.
+export const getInsights = (stage, api, context, data) => {
     const fn = {
         'work-in-progress': getInsightsWorkInProgress,
         'review': getInsightsReview
@@ -13,5 +15,5 @@ export const getInsights = (stage, data) => {
         return [];
     }
 
-    return fn(data);
+    return fn(api, context, data);
 };
