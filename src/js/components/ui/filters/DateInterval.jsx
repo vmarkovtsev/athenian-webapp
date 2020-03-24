@@ -4,6 +4,7 @@ import 'react-dates/initialize';
 import moment from 'moment';
 import { DateRangePicker } from 'react-dates';
 import { START_DATE, END_DATE } from 'react-dates/constants';
+import classnames from 'classnames';
 
 const isInRange = (candidate, lower, upper) => lower.isBefore(candidate) && upper.isAfter(candidate);
 
@@ -31,6 +32,8 @@ const validateOrFixFn = (resetFn, fixFn) => dateInterval => {
 
     return true;
 };
+
+const isValidInterval = ({ startDate, endDate }) => startDate && endDate;
 
 const isSameDateInterval = (momentA, momentB) => {
     return momentA.startDate.isSame(momentB.startDate) && momentA.endDate.isSame(momentB.endDate);
@@ -61,15 +64,20 @@ export default ({
     const [prevDateIntervalState, setPrevDateIntervalState] = useState(initialDateInterval);
 
     const [focusedInputState, setFocusedInputState] = useState(null);
+    const [validState, setValidState] = useState(true);
 
     const validateOrFix = validateOrFixFn(() => setDateIntervalState(initialDateInterval), setFocusedInputState);
 
     // It will only call the passed onChange callback if the process of changing it is finished
     // (the calendar is not opened, and the date interval is valid) and if the date interval changed.
     useEffect(() => {
-        if (focusedInputState || // the calendar is opened (the changing process didn't finished)
-            !validateOrFix(dateIntervalState) || // the date interval lacks of any field (e.g. the calendar is closed after choosing start and end dates)
-            isSameDateInterval(dateIntervalState, prevDateIntervalState) // when the date interval is not changed
+        if (focusedInputState) { // the calendar is opened (the changing process didn't finished)
+            setValidState(isValidInterval(dateIntervalState));
+            return;
+        }
+
+        if (!validateOrFix(dateIntervalState) || // the date interval lacks of any field (e.g. the calendar is closed after choosing start and end dates)
+            isSameDateInterval(dateIntervalState, prevDateIntervalState) // when the date interval has not changed
         ) {
             return;
         };
@@ -81,12 +89,10 @@ export default ({
         });
     }, [dateIntervalState, prevDateIntervalState, validateOrFix, focusedInputState, onChange]);
 
-    const CustomInfoPanel = () => (
-        <div className="bg-white border-top px-4 py-3 text-right">
-            <button className="btn btn-link text-secondary px-3">Cancel</button>
-            <button className="btn btn-orange px-3">Apply</button>
-        </div>
-    );
+    const cancel = () => {
+        setDateIntervalState(prevDateIntervalState);
+        setFocusedInputState(null);
+    };
 
     return (
         <div style={{ float: 'right' }}>
@@ -100,6 +106,13 @@ export default ({
                 keepOpenOnDateSelect={true}
                 reopenPickerOnClearDates={false}
                 showClearDates={true}
+                renderCalendarInfo={() => (
+                    <CustomInfoPanel
+                        onCancel={cancel}
+                        onAccept={() => setFocusedInputState(null)}
+                        isAcceptable={validState}
+                    />
+                )}
                 //Look and feel
                 firstDayOfWeek={0}
                 anchorDirection="right"
@@ -111,7 +124,6 @@ export default ({
                 customArrowIcon="-"
                 small={true}
                 daySize={30}
-                renderCalendarInfo={CustomInfoPanel}
                 //Internals
                 onDatesChange={setDateIntervalState}
                 onFocusChange={setFocusedInputState}
@@ -123,3 +135,16 @@ export default ({
         </div>
     );
 };
+
+const CustomInfoPanel = ({ onCancel, onAccept, isAcceptable }) => (
+    <div className="bg-white border-top px-4 py-3 text-right">
+        <button onClick={onCancel} className="btn btn-link text-secondary px-3">Cancel</button>
+        <button
+            disabled={!isAcceptable}
+            onClick={onAccept}
+            className={classnames('btn btn-orange px-3', !isAcceptable && 'btn-disabled')}
+        >
+            Apply
+        </button>
+    </div>
+);
