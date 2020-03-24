@@ -13,5 +13,10 @@
         &:focus {
             color: $white;
         }
+
+        &.btn-disabled {
+            @extend .btn-dark;
+            opacity: .2;
+        }
     }
 }
