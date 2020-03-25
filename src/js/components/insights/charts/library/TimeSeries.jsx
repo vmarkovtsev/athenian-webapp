@@ -64,6 +64,18 @@ const TimeSeries = ({ title, data, extra }) => {
           .map(v => v.x.getTime())
           .value();
 
+    const referenceData = [];
+    if (extra.reference) {
+        referenceData.push({
+            x: formattedData[0].x,
+            y: extra.reference.value
+        });
+        referenceData.push({
+            x: formattedData[formattedData.length - 1].x,
+            y: extra.reference.value
+        });
+    }
+
     return (
         <FlexibleWidthXYPlot height={300} margin={{ left: 100, right: 30 }}>
           <VerticalGridLines tickValues={tickValues} />
@@ -82,6 +94,19 @@ const TimeSeries = ({ title, data, extra }) => {
             data={formattedData}
             animation="stiff"
           />
+
+          {referenceData.length > 0 &&
+           <LineSeries data={referenceData} color={extra.reference.color}
+                       strokeStyle="dashed" animation="stiff" />}
+          {referenceData.length > 0 &&
+           <MarkSeries
+             sizeRange={[5, 15]}
+             stroke={extra.reference.color}
+             fill="white"
+             strokeWidth={3}
+             data={referenceData}
+             animation="stiff"
+           />}
         </FlexibleWidthXYPlot>
     );
 };
