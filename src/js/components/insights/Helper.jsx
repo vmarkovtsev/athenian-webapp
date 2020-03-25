@@ -6,10 +6,15 @@ import _ from 'lodash';
 // TODO: Passing data should be removed in favor of letting each chart
 // retrieving its own data using the api.
 export const getInsights = async (stage, api, context, data) => {
-    const charts = {
+    const chartsGetterFn = {
         'work-in-progress': getWipCharts,
         'review': getReviewCharts
-    }[stage]();
+    }[stage];
+
+    let charts = [];
+    if (chartsGetterFn) {
+        charts = chartsGetterFn();
+    }
 
     return Promise.all(
         charts.map(
