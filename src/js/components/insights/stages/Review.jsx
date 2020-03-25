@@ -125,6 +125,9 @@ const waitTimeFirstReview = {
                         params: {
                             data: computed.chartData,
                             extra: {
+                                labels: {
+                                    y: 'Wait Time, hours'
+                                },
                                 axisKeys: computed.axisKeys,
                                 axisLabels: {
                                     y: 'Wait Time, hours'
