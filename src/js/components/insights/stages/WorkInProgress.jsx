@@ -57,7 +57,7 @@ const mostActiveDevs = {
                     {
                         title: {text: 'Number of Active Developers', bold: true},
                         component: SimpleKPI,
-                        data: {
+                        params: {
                             value: computed.activeDevs.length
                         }
                     },
@@ -65,7 +65,7 @@ const mostActiveDevs = {
                         title: {text: 'Average Number of Pull Requests', bold: true},
                         subtitle: {text: 'Created by Developer'},
                         component: SimpleKPI,
-                        data: {
+                        params: {
                             value: computed.activeDevs.length > 0 ?
                                 (computed.totalPRs / computed.activeDevs.length).toFixed(2) : 0,
                         }

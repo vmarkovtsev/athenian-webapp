@@ -53,7 +53,7 @@ const BoxHeader = ({meta}) => (
 const BoxBody = ({content}) =>  (
     <>{
         content.map((row, i) => (
-            <div className="card-body py-5 px-4">{
+            <div key={i} className="card-body py-5 px-4">{
                 row.kpis.length > 0 ? (
                     <WithKPIBoxBodyRow chart={row.chart} kpis={row.kpis} />
                 ) : (
@@ -82,8 +82,8 @@ const WithKPIBoxBodyRow = ({chart, kpis}) => (
         <div className="row justify-content-center">
           <div className="col-8">{
               kpis.map((kpi, i) => (
-                  <BoxKPI title={kpi.title} subtitle={kpi.subtitle}>
-                    <kpi.component key={i} {...kpi.data} />
+                  <BoxKPI key={i} title={kpi.title} subtitle={kpi.subtitle}>
+                    <kpi.component key={i} params={kpi.params} />
                   </BoxKPI>
               ))
           }</div>

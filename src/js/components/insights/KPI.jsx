@@ -8,7 +8,7 @@ import { number } from 'js/services/format';
 /*
   Component that shows a simple KPI content insidea BoxKPI.
 
-  - data: object{
+  - params: object{
         value: number (required)
         variation: number (optional)
         unit: string | object{
@@ -21,7 +21,7 @@ import { number } from 'js/services/format';
 
   const title = "a title";
   const subtitle = "a subtitle";
-  const data = {
+  const params = {
       value: 10,
       variation: -2,
       unit: {
@@ -31,22 +31,35 @@ import { number } from 'js/services/format';
   };
 
   <BoxKPI title={title} subtitle={subtitle}>
-    <SimpleKPI {...data}></SimpleKPI>
+    <SimpleKPI {...params}></SimpleKPI>
   </BoxKPI>
 
  */
-export const SimpleKPI = ({ unit, value, variation }) => {
-    let appliedUnit = '';
-    if (typeof unit === 'string') {
-        appliedUnit = ` ${unit}`;
-    } else if (unit && unit.singular && unit.plural) {
-        appliedUnit = ` ${value > 1 ? unit.plural : unit.singular}`;
+export const SimpleKPI = ({params}) => (
+    <div className="font-weight-bold">
+      <BigNumber content={buildContent(params.value, getUnit(params.value, params.unit))} />
+      {params.variation && <Badge value={number.round(params.variation)} trend className="ml-2" />}
+    </div>
+);
+
+export const MultiKPI = ({params}) => (
+    <div className="font-weight-bold">
+      {params.map((v, i) => (
+          <BigNumber key={i} content={buildContent(v.value, getUnit(v.value, v.unit))}
+                     className={i === params.length - 1 ? "" : "mr-3"} />
+      ))}
+    </div>
+);
+
+const buildContent = (value, unit) => value + (unit ? ` ${unit}` : "");
+
+const getUnit = (value, unitConf) => {
+    let unit = '';
+    if (typeof unitConf === 'string') {
+        unit = unitConf;
+    } else if (unitConf && unitConf.singular && unitConf.plural) {
+        unit = value > 1 ? unitConf.plural : unitConf.singular;
     }
 
-    return (
-        <div className="font-weight-bold">
-            <BigNumber content={value + appliedUnit} />
-            {variation && <Badge value={number.round(variation)} trend className="ml-2" />}
-        </div>
-    );
+    return unit;
 };
