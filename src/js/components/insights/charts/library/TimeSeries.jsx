@@ -48,6 +48,21 @@ const buildChartLabel = (text, which) => {
     return <ChartLabel text={text} {...labelParams} />;
 };
 
+const computeTickValues = (formattedData, maxNumberOfTicks) => {
+    const tickValues = _(formattedData)
+          .map(v => v.x.getTime())
+          .value();
+
+    if (maxNumberOfTicks && maxNumberOfTicks > 0) {
+        const everyEach = Math.ceil(tickValues.length / maxNumberOfTicks);
+        return _(tickValues)
+            .at(_.range(0, formattedData.length, everyEach))
+            .value();
+    } else {
+        return tickValues;
+    }
+};
+
 const TimeSeries = ({ title, data, extra }) => {
     if (data.length === 0) {
         return <></>;
@@ -60,9 +75,7 @@ const TimeSeries = ({ title, data, extra }) => {
           }))
           .value();
 
-    const tickValues = _(formattedData)
-          .map(v => v.x.getTime())
-          .value();
+    const tickValues = computeTickValues(formattedData, extra.maxNumberOfTicks);
 
     const referenceData = [];
     if (extra.reference) {
@@ -78,10 +91,10 @@ const TimeSeries = ({ title, data, extra }) => {
 
     return (
         <FlexibleWidthXYPlot height={300} margin={{ left: 100, right: 30 }}>
+
           <VerticalGridLines tickValues={tickValues} />
+          <XAxis tickValues={tickValues} tickFormat={dateTime.monthDay} />
           <HorizontalGridLines />
-          <XAxis tickValues={tickValues}
-                 tickFormat={v => dateTime.monthDay(new Date(v))} />
           <YAxis />
           {extra.axisLabels && extra.axisLabels.y && buildChartLabel(extra.axisLabels.y, 'y')}
 
