@@ -153,6 +153,10 @@
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
+
+        a:hover {
+            text-decoration: underline !important;
+        }
     }
 
     .table-creators {
