@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { SummaryMetrics, StageSummaryKPI, Insights } from 'js/components/pipeline/StageMetrics';
+import { SummaryMetrics, StageSummaryKPI } from 'js/components/pipeline/StageMetrics';
+import Insights from 'js/components/insights/Insights';
 import Tabs from 'js/components/layout/Tabs';
 import PullRequests from 'js/components/pipeline/PullRequests';
+import { getInsights } from 'js/components/insights/Helper';
 
 import { pipelineStagesConf, getStage } from 'js/pages/pipeline/Pipeline';
 
@@ -39,9 +41,8 @@ export default () => {
             return;
         }
 
-        getSampleCharts(stageSlug)
-            .then(setStageChartsState);
-    }, [stageSlug, dateInterval, repositories, contributors]);
+        setStageChartsState(getInsights(stageSlug, prsContext));
+    }, [stageSlug, dateInterval, repositories, contributors, prsContext]);
 
     if (!activeConf) {
         return <p>{stageSlug} is not a valid pipeline stage.</p>;
@@ -64,7 +65,7 @@ export default () => {
         <Tabs tabs={[
             {
                 title: 'Insights',
-                content: <Insights metrics={stageChartsState} />,
+                content: <Insights insights={stageChartsState} />,
             },
             {
                 title: 'Pull Requests',
