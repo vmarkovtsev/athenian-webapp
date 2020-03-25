@@ -85,14 +85,14 @@ const pullRequestSize = {
                             title: {text: 'Total Number of Files', bold: true},
                             subtitle: {text: 'Waiting for Review'},
                             component: SimpleKPI,
-                            data: {
+                            params: {
                                 value: computed.totalFiles
                             }
                         },
                         {
                             title: {text: 'Average Pull Request Size', bold: true},
                             component: MultiKPI,
-                            data: [
+                            params: [
                                 {
                                     value: computed.totalPRs > 0 ?
                                         Math.round(computed.totalFiles / computed.totalPRs) : 0,
