@@ -31,7 +31,7 @@ import { number } from 'js/services/format';
   };
 
   <BoxKPI title={title} subtitle={subtitle}>
-    <SimpleKPI data={data}></SimpleKPI>
+    <SimpleKPI {...data}></SimpleKPI>
   </BoxKPI>
 
  */
