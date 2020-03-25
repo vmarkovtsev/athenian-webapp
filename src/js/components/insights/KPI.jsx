@@ -10,11 +10,11 @@ import { number } from 'js/services/format';
 
   - data: object{
         value: number (required)
-        variation: number (required)
-        unit: object{
+        variation: number (optional)
+        unit: string | object{
             singular: string
             plural: string
-        }
+        } (optional)
     }
 
   E.g:
@@ -35,20 +35,18 @@ import { number } from 'js/services/format';
   </BoxKPI>
 
  */
-export const SimpleKPI = ({data}) => {
-    let unit;
-    if (data.unit) {
-        if (data.value > 1) {
-            unit = data.unit.plural;
-        } else {
-            unit = data.unit.singular;
-        }
+export const SimpleKPI = ({ unit, value, variation }) => {
+    let appliedUnit = '';
+    if (typeof unit === 'string') {
+        appliedUnit = ` ${unit}`;
+    } else if (unit && unit.singular && unit.plural) {
+        appliedUnit = ` ${value > 1 ? unit.plural : unit.singular}`;
     }
 
     return (
         <div className="font-weight-bold">
-          <BigNumber content={data.value + (unit ? " " + unit : "")} />
-          {data.variation && <Badge value={number.round(data.variation)} trend className="ml-2" />}
+            <BigNumber content={value + appliedUnit} />
+            {variation && <Badge value={number.round(variation)} trend className="ml-2" />}
         </div>
     );
 };

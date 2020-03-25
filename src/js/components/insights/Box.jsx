@@ -12,8 +12,11 @@ import Info from 'js/components/ui/Info';
   - content: array[
         object{
             chart: object{
-                component: string (required)
-                data: anything (required)
+                component: React component function (required)
+                params: {
+                    title: string (required)
+                    data: anything (required)
+                } (required)
             } (required)
             kpis: array[
                 object{
@@ -25,7 +28,7 @@ import Info from 'js/components/ui/Info';
                         text: string (required)
                         bold: boolean
                     }
-                    component: React component (required)
+                    component: React component function (required)
                     data: anything (required)
                 }
             ] (required)

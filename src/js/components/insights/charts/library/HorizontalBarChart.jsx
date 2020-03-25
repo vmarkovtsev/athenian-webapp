@@ -21,7 +21,7 @@ const HorizontalBarChart = ({ title, data, extra }) => {
     }
 
     const color = "#FFA008";
-    const legend = [{title: title, color: color}];
+    const legend = [{ title, color }];
     return (
         <FlexibleWidthXYPlot height={data.length * 40} margin={{ left: 50 }} yType="ordinal">
           <DiscreteColorLegend
@@ -38,7 +38,7 @@ const HorizontalBarChart = ({ title, data, extra }) => {
             </defs>
           </svg>
 
-          {extra.yAxis.imageMapping ?
+          {extra && extra.yAxis && extra.yAxis.imageMapping ?
            <YAxis tickFormat={
                (value) => <image
                             href={extra.yAxis.imageMapping[value]}
