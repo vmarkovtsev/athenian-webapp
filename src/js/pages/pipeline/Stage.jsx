@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-
+import { useAuth0 } from 'js/context/Auth0';
+import { useUserContext } from 'js/context/User';
 import { SummaryMetrics, StageSummaryKPI } from 'js/components/pipeline/StageMetrics';
 import Insights from 'js/components/insights/Insights';
 import Tabs from 'js/components/layout/Tabs';
@@ -14,9 +15,11 @@ import { useFiltersContext } from 'js/context/Filters';
 import { usePipelineContext } from 'js/context/Pipeline';
 import { usePRsContext } from 'js/context/PRs';
 
-import { getSampleCharts } from 'js/services/api';
+import { getSampleCharts, buildApi } from 'js/services/api';
 
 export default () => {
+    const userContext = useUserContext();
+    const { getTokenSilently } = useAuth0();
     const [stageChartsState, setStageChartsState] = useState([]);
 
     const { stages: stagesContext } = usePipelineContext();
@@ -41,7 +44,24 @@ export default () => {
             return;
         }
 
-        setStageChartsState(getInsights(stageSlug, prsContext));
+        getTokenSilently()
+            .then(buildApi)
+            .then(api => {
+                const context = {
+                    account: userContext.defaultAccount.id,
+                    interval: dateInterval,
+                    repositories: repositories,
+                    contributors: contributors
+                };
+
+                // TODO: Don't pass `prsContext`. Each chart should calculate its own
+                // data using the provided api.
+                // So far we user `prsContext` as it's already queried calculated.
+                // Making the chart call the api means querying the api again. We can
+                // remove this once we implement some caching logic on the client
+                // when querying.
+                setStageChartsState(getInsights(stageSlug, api, context, prsContext));
+            });
     }, [stageSlug, dateInterval, repositories, contributors, prsContext]);
 
     if (!activeConf) {
