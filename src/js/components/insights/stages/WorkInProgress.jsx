@@ -2,12 +2,7 @@ import { SimpleKPI } from 'js/components/insights/KPI';
 import TimeSeries from 'js/components/insights/charts/library/TimeSeries';
 import HorizontalBarChart from 'js/components/insights/charts/library/HorizontalBarChart';
 
-import { PullRequestMetricsRequest } from 'js/services/api/openapi-client';
-
-import ForSet from 'js/services/api/openapi-client/model/ForSet';
-import PullRequestMetricID from 'js/services/api/openapi-client/model/PullRequestMetricID';
-
-import { dateTime, github } from 'js/services/format';
+import { fetchPRsMetrics } from 'js/services/api/index';
 
 import moment from 'moment';
 import _ from 'lodash';
@@ -18,44 +13,13 @@ export default () => [
 ];
 
 const prRatioFlow = {
-    fetcher: async (api, context, data) => {
-        const metricIDs = new PullRequestMetricID();
-        const forset = ForSet.constructFromObject({
-            repositories: context.repositories,
-            developers: context.contributors
-        });
-
-        const fetchChartsData = async () => {
-            const granularity = 'day';
-            const metrics = [
-                'flow-ratio',
-                'opened',
-                'closed',
-            ].map(metric => metricIDs[metric]);
-
-            const body = new PullRequestMetricsRequest(
-                [forset], metrics,
-                dateTime.ymd(context.interval.from),
-                dateTime.ymd(context.interval.to),
-                granularity, context.account
-            );
-
-            return api.calcMetricsPrLinear(body);
-        };
-
-        const fetchKPIsData = async () => {
-        };
-
-        const chartData = await fetchChartsData();
-        const KPIsData = await fetchKPIsData();
-
-        return Promise.resolve({
-            chartData: chartData,
-            KPIsData: KPIsData
-        });
-    },
+    fetcher: async (api, context) => fetchPRsMetrics(
+        api, context.account, 'day', context.interval,
+        ['flow-ratio', 'opened', 'closed'],
+        { repositories: context.repositories, developers: context.contributors}
+    ),
     calculator: (fetched) => ({
-        chartData: _(fetched.chartData.calculated[0].values)
+        chartData: _(fetched.calculated[0].values)
             .map(v => ({
                 day: v.date,
                 value: (v.values[1] || 1) / (v.values[2] || 1)
@@ -63,11 +27,11 @@ const prRatioFlow = {
             .value(),
         KPIsData: {
             avgRatioFlow: {
-                value: _(fetched.chartData.calculated[0].values)
+                value: _(fetched.calculated[0].values)
                     .map(v => (v.values[1] || 1) / (v.values[2] || 1))
                     .meanBy()
             },
-            highestDay: _(fetched.chartData.calculated[0].values)
+            highestDay: _(fetched.calculated[0].values)
                 .map(v => ({
                     day: moment(v.date).format('dddd'),
                     value: (v.values[1] || 1) / (v.values[2] || 1)

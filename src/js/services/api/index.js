@@ -179,15 +179,12 @@ export const getMetrics = (api, accountId, dateInterval, repos, contributors) =>
   });
 };
 
+// DEPRECATED: use `fetchPRsMetrics` instead
 const fetchApiMetricsLine = (api, metrics, accountId, dateInterval = { from: null, to: null }, repos = [], contributors = []) => {
-  const granularity = 'week';
-  const metricsIDs = metrics.map(metric => (new PullRequestMetricID())[metric]);
-
-  const forset = new ForSet(repos);
-  forset.developers = contributors;
-
-  const body = new PullRequestMetricsRequest([forset], metricsIDs, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to), granularity, accountId);
-  return api.calcMetricsPrLinear(body);
+    return fetchPRsMetrics(api, accountId, 'week', dateInterval, metrics, {
+        repositories: repos,
+        developers: contributors
+    });
 };
 
 export const getInvitation = async (token, accountID) => {
