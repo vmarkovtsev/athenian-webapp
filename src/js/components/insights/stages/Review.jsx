@@ -128,6 +128,7 @@ const waitTimeFirstReview = {
                                 labels: {
                                     y: 'Wait Time, hours'
                                 },
+                                maxNumberOfTicks: 10,
                                 axisKeys: computed.axisKeys,
                                 axisLabels: {
                                     y: 'Wait Time, hours'
