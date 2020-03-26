@@ -3,7 +3,7 @@ import HorizontalBarChart from 'js/components/insights/charts/library/Horizontal
 
 import _ from 'lodash';
 
-export const getCharts = () => [
+export default () => [
     mostActiveDevs
 ];
 

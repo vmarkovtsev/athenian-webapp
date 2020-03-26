@@ -1,5 +1,5 @@
-import { getCharts as getWipCharts } from 'js/components/insights/stages/WorkInProgress';
-import { getCharts as getReviewCharts } from 'js/components/insights/stages/Review';
+import getWipCharts from 'js/components/insights/stages/WorkInProgress';
+import getReviewCharts from 'js/components/insights/stages/Review';
 
 import _ from 'lodash';
 
@@ -11,10 +11,7 @@ export const getInsights = async (stage, api, context, data) => {
         'review': getReviewCharts
     }[stage];
 
-    let charts = [];
-    if (chartsGetterFn) {
-        charts = chartsGetterFn();
-    }
+    const charts = chartsGetterFn ? chartsGetterFn() : [];
 
     return Promise.all(
         charts.map(

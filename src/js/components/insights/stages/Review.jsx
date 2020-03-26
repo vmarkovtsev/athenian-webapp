@@ -12,7 +12,7 @@ import { dateTime, github } from 'js/services/format';
 import moment from 'moment';
 import _ from 'lodash';
 
-export const getCharts = () => [
+export default () => [
     waitTimeFirstReview,
     pullRequestSize
 ];
