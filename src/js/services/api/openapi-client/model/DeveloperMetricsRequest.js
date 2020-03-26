@@ -12,29 +12,28 @@
  */
 
 import ApiClient from '../ApiClient';
+import DeveloperMetricID from './DeveloperMetricID';
 import ForSet from './ForSet';
-import PullRequestMetricID from './PullRequestMetricID';
 
 /**
- * The PullRequestMetricsRequest model module.
- * @module model/PullRequestMetricsRequest
+ * The DeveloperMetricsRequest model module.
+ * @module model/DeveloperMetricsRequest
  * @version 1.0.16
  */
-class PullRequestMetricsRequest {
+class DeveloperMetricsRequest {
     /**
-     * Constructs a new <code>PullRequestMetricsRequest</code>.
-     * Request for calculating metrics on top of pull requests data.
-     * @alias module:model/PullRequestMetricsRequest
+     * Constructs a new <code>DeveloperMetricsRequest</code>.
+     * Request for calculating metrics on top of developer activities.
+     * @alias module:model/DeveloperMetricsRequest
      * @param _for {Array.<module:model/ForSet>} Sets of developers and repositories to calculate the metrics for.
-     * @param metrics {Array.<module:model/PullRequestMetricID>} Requested metric identifiers.
+     * @param metrics {Array.<module:model/DeveloperMetricID>} Requested metric identifiers.
      * @param dateFrom {Date} Date from when to start measuring the metrics.
      * @param dateTo {Date} Date up to which to measure the metrics.
-     * @param granularity {String} How often the metrics are reported. The value must satisfy the following regular expression: /^(([1-9]\\d* )?(day|week|month|year)|all)$/. \"all\" produces a single interval [`date_from`, `date_to`].
      * @param account {Number} Session account ID.
      */
-    constructor(_for, metrics, dateFrom, dateTo, granularity, account) { 
+    constructor(_for, metrics, dateFrom, dateTo, account) { 
         
-        PullRequestMetricsRequest.initialize(this, _for, metrics, dateFrom, dateTo, granularity, account);
+        DeveloperMetricsRequest.initialize(this, _for, metrics, dateFrom, dateTo, account);
     }
 
     /**
@@ -42,40 +41,36 @@ class PullRequestMetricsRequest {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, _for, metrics, dateFrom, dateTo, granularity, account) { 
+    static initialize(obj, _for, metrics, dateFrom, dateTo, account) { 
         obj['for'] = _for;
         obj['metrics'] = metrics;
         obj['date_from'] = dateFrom;
         obj['date_to'] = dateTo;
-        obj['granularity'] = granularity;
         obj['account'] = account;
     }
 
     /**
-     * Constructs a <code>PullRequestMetricsRequest</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>DeveloperMetricsRequest</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/PullRequestMetricsRequest} obj Optional instance to populate.
-     * @return {module:model/PullRequestMetricsRequest} The populated <code>PullRequestMetricsRequest</code> instance.
+     * @param {module:model/DeveloperMetricsRequest} obj Optional instance to populate.
+     * @return {module:model/DeveloperMetricsRequest} The populated <code>DeveloperMetricsRequest</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new PullRequestMetricsRequest();
+            obj = obj || new DeveloperMetricsRequest();
 
             if (data.hasOwnProperty('for')) {
                 obj['for'] = ApiClient.convertToType(data['for'], [ForSet]);
             }
             if (data.hasOwnProperty('metrics')) {
-                obj['metrics'] = ApiClient.convertToType(data['metrics'], [PullRequestMetricID]);
+                obj['metrics'] = ApiClient.convertToType(data['metrics'], [DeveloperMetricID]);
             }
             if (data.hasOwnProperty('date_from')) {
                 obj['date_from'] = ApiClient.convertToType(data['date_from'], 'Date');
             }
             if (data.hasOwnProperty('date_to')) {
                 obj['date_to'] = ApiClient.convertToType(data['date_to'], 'Date');
-            }
-            if (data.hasOwnProperty('granularity')) {
-                obj['granularity'] = ApiClient.convertToType(data['granularity'], 'String');
             }
             if (data.hasOwnProperty('account')) {
                 obj['account'] = ApiClient.convertToType(data['account'], 'Number');
@@ -91,42 +86,36 @@ class PullRequestMetricsRequest {
  * Sets of developers and repositories to calculate the metrics for.
  * @member {Array.<module:model/ForSet>} for
  */
-PullRequestMetricsRequest.prototype['for'] = undefined;
+DeveloperMetricsRequest.prototype['for'] = undefined;
 
 /**
  * Requested metric identifiers.
- * @member {Array.<module:model/PullRequestMetricID>} metrics
+ * @member {Array.<module:model/DeveloperMetricID>} metrics
  */
-PullRequestMetricsRequest.prototype['metrics'] = undefined;
+DeveloperMetricsRequest.prototype['metrics'] = undefined;
 
 /**
  * Date from when to start measuring the metrics.
  * @member {Date} date_from
  */
-PullRequestMetricsRequest.prototype['date_from'] = undefined;
+DeveloperMetricsRequest.prototype['date_from'] = undefined;
 
 /**
  * Date up to which to measure the metrics.
  * @member {Date} date_to
  */
-PullRequestMetricsRequest.prototype['date_to'] = undefined;
-
-/**
- * How often the metrics are reported. The value must satisfy the following regular expression: /^(([1-9]\\d* )?(day|week|month|year)|all)$/. \"all\" produces a single interval [`date_from`, `date_to`].
- * @member {String} granularity
- */
-PullRequestMetricsRequest.prototype['granularity'] = undefined;
+DeveloperMetricsRequest.prototype['date_to'] = undefined;
 
 /**
  * Session account ID.
  * @member {Number} account
  */
-PullRequestMetricsRequest.prototype['account'] = undefined;
+DeveloperMetricsRequest.prototype['account'] = undefined;
 
 
 
 
 
 
-export default PullRequestMetricsRequest;
+export default DeveloperMetricsRequest;
 

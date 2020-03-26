@@ -5,7 +5,7 @@ import BubbleChart from 'js/components/insights/charts/library/BubbleChart';
 import { PullRequestMetricsRequest } from 'js/services/api/openapi-client';
 
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
-import MetricID from 'js/services/api/openapi-client/model/MetricID';
+import PullRequestMetricID from 'js/services/api/openapi-client/model/PullRequestMetricID';
 
 import { dateTime, github } from 'js/services/format';
 
@@ -19,7 +19,7 @@ export default () => [
 
 const waitTimeFirstReview = {
     fetcher: async (api, context, data) => {
-        const metricIDs = new MetricID();
+        const metricIDs = new PullRequestMetricID();
         const forset = ForSet.constructFromObject({
             repositories: context.repositories,
             developers: context.contributors

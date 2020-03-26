@@ -6,7 +6,7 @@ import {
   FilterPullRequestsRequest
 } from 'js/services/api/openapi-client';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
-import MetricID from 'js/services/api/openapi-client/model/MetricID';
+import PullRequestMetricID from 'js/services/api/openapi-client/model/PullRequestMetricID';
 import { dateTime, github } from 'js/services/format';
 
 export const getPRs = async (token, accountId, dateInterval, repos, contributors) => {
@@ -104,6 +104,7 @@ export const getContributors = (token, userAccount, from, to, repos) => {
   const filter = new FilterContribsOrReposRequest(userAccount, from, to);
   filter.in = repos;
   return api.filterContributors({ body: filter })
+        .then(contribs => contribs.map(c => c.login));
 };
 
 export const getMetrics = (api, accountId, dateInterval, repos, contributors) => {
@@ -180,7 +181,7 @@ export const getMetrics = (api, accountId, dateInterval, repos, contributors) =>
 
 const fetchApiMetricsLine = (api, metrics, accountId, dateInterval = { from: null, to: null }, repos = [], contributors = []) => {
   const granularity = 'week';
-  const metricsIDs = metrics.map(metric => (new MetricID())[metric]);
+  const metricsIDs = metrics.map(metric => (new PullRequestMetricID())[metric]);
 
   const forset = new ForSet(repos);
   forset.developers = contributors;
