@@ -3,16 +3,14 @@ import HorizontalBarChart from 'js/components/insights/charts/library/Horizontal
 
 import _ from 'lodash';
 
-// TODO: Passing data should be removed in favor of letting each chart
-// retrieving its own data using the api.
-export const getInsights = (api, context, data) => [
+export default () => [
     mostActiveDevs
-].map(def => def.factory(def.calculator(def.fetcher(api, context, data))));
+];
 
 const mostActiveDevs = {
-    fetcher: (api, context, data) => {
+    fetcher: async (api, context, data) => {
         // TODO: call the api to avoid receiving data from outside
-        return data;
+        return Promise.resolve(data);
     },
     calculator: (data) => ({
         chartData: _(data.prs)
