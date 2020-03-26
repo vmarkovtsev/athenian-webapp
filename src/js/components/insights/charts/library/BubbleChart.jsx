@@ -18,9 +18,9 @@ import {
 
 export default ({title, data, extra}) => (
     <div style={{ background: 'white' }}>
-    {extra.isLogScale ?
-     <BubbleChartLogScale title={title} data={data} extra={extra} /> :
-     <BubbleChart title={title} data={data} extra={extra} />}
+      {extra.isLogScale ?
+       <BubbleChartLogScale title={title} data={data} extra={extra} /> :
+       <BubbleChart title={title} data={data} extra={extra} />}
     </div >
 );
 
@@ -31,8 +31,8 @@ const BubbleChartLogScale = ({ title, data, extra }) => {
         return <></>;
     }
 
-    const formattedData = _(data).
-          map(v => {
+    const formattedData = _(data)
+          .map(v => {
               const d = {
                   x: v[extra.axisKeys.x],
                   y: v[extra.axisKeys.y],
@@ -103,14 +103,11 @@ const BubbleChartLogScale = ({ title, data, extra }) => {
 
 const calculateLogScaleTickValues = (maxValue) => {
     const tickValuesSets = [1];
-    let exp = 1;
-    while (true) {
+    for (let exp = 1; ; exp++) {
         tickValuesSets.push(_.range(2, 11).map(v => v * 10**(exp - 1)));
         if (maxValue < 10**exp) {
             break;
         }
-
-        exp += 1;
     }
 
     return _.flatten(tickValuesSets).map(logScale);
@@ -146,14 +143,14 @@ const buildAxis = (which, tickValues) => {
     const params = {
         tickValues: tickValues,
         tickFormat: v => {
-              const exp = Math.round(Math.pow(10, v));
-              const expStr = exp.toString();
-              const firstChar = expStr.charAt(0);
-              const remaining = expStr.slice(1);
-              return firstChar === '1' && parseInt(remaining) === 0 ? '' : firstChar;
+            const exp = Math.round(Math.pow(10, v));
+            const expStr = exp.toString();
+            const firstChar = expStr.charAt(0);
+            const remaining = expStr.slice(1);
+            return firstChar === '1' && parseInt(remaining) === 0 ? '' : firstChar;
         },
         style: {
-              text: {fontWeight: 200, fontSize: '6px'}
+            text: {fontWeight: 200, fontSize: '6px'}
         }
     };
 

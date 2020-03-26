@@ -68,8 +68,8 @@ const TimeSeries = ({ title, data, extra }) => {
         return <></>;
     }
 
-    const formattedData = _(data).
-          map(v => ({
+    const formattedData = _(data)
+          .map(v => ({
               x: v[extra.axisKeys.x],
               y: v[extra.axisKeys.y]
           }))
