@@ -30,13 +30,11 @@ const HorizontalBarChart = ({ title, data, extra }) => {
           <VerticalGridLines />
           <XAxis />
 
-          <svg>
-            <defs>
-              <clipPath id="circle-mask" fill="black">
-                <circle cx="15" cy="15" r="15" />
-              </clipPath>
-            </defs>
-          </svg>
+          {extra && extra.yAxis && extra.yAxis.imageMapping ?
+           <CircleMask id={`${extra.yAxis.imageMask}-mask`} maskProperties={{
+               cx: 15, cy: 15, r: 15
+           }}/> : null
+          }
 
           {extra && extra.yAxis && extra.yAxis.imageMapping ?
            <YAxis tickFormat={
@@ -52,3 +50,14 @@ const HorizontalBarChart = ({ title, data, extra }) => {
         </FlexibleWidthXYPlot>
     );
 };
+
+
+const CircleMask = ({id, maskProperties}) => (
+    <defs>
+      <clipPath id={id} fill="black">
+        <circle {...maskProperties} />
+      </clipPath>
+    </defs>
+);
+
+CircleMask.requiresSVG = true;
