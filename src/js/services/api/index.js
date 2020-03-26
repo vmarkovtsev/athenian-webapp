@@ -239,3 +239,24 @@ export const getSampleCharts = stage => {
 
   return new Promise(resolve => window.setTimeout(resolve(chartsSampleData), getRand(100, 1000)));
 };
+
+
+export const fetchPRsMetrics = async (
+    api, accountID,
+    granularity,
+    dateInterval,
+    metrics = [],
+    filter = { repositories: [], developers: [] }
+) => {
+    const metricIDs = new PullRequestMetricID();
+    const forset = ForSet.constructFromObject(filter);
+
+    const body = new PullRequestMetricsRequest(
+        [forset], metrics.map(m => metricIDs[m]),
+        dateTime.ymd(dateInterval.from),
+        dateTime.ymd(dateInterval.to),
+        granularity, accountID
+    );
+
+    return api.calcMetricsPrLinear(body);
+};
