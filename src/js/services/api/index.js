@@ -179,15 +179,12 @@ export const getMetrics = (api, accountId, dateInterval, repos, contributors) =>
   });
 };
 
+// DEPRECATED: use `fetchPRsMetrics` instead
 const fetchApiMetricsLine = (api, metrics, accountId, dateInterval = { from: null, to: null }, repos = [], contributors = []) => {
-  const granularity = 'week';
-  const metricsIDs = metrics.map(metric => (new PullRequestMetricID())[metric]);
-
-  const forset = new ForSet(repos);
-  forset.developers = contributors;
-
-  const body = new PullRequestMetricsRequest([forset], metricsIDs, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to), granularity, accountId);
-  return api.calcMetricsPrLinear(body);
+    return fetchPRsMetrics(api, accountId, 'week', dateInterval, metrics, {
+        repositories: repos,
+        developers: contributors
+    });
 };
 
 export const getInvitation = async (token, accountID) => {
@@ -209,33 +206,22 @@ export const fetchApi = (token, apiCall, ...args) => {
   return apiCall(api, ...args);
 };
 
-const getRandData = () => Array.from(Array(10)).map((_, i) => ({ x: i, y: getRand(1, 20) }));
-const getRand = (min, max) => Math.round(min + (Math.random() * (max - min)));
+export const fetchPRsMetrics = async (
+    api, accountID,
+    granularity,
+    dateInterval,
+    metrics = [],
+    filter = { repositories: [], developers: [] }
+) => {
+    const metricIDs = new PullRequestMetricID();
+    const forset = ForSet.constructFromObject(filter);
 
-export const getSampleCharts = stage => {
-  const chartsSampleData = [
-    {
-      title: `${stage} :: Time to Commit in Base Branch`,
-      color: '#62C2DF',
-      data: getRandData(),
-      insights: [
-        { title: { text: "insight 1", bold: true }, subtitle: { text: "subtitle 1" }, value: 15 },
-        { title: { text: "insight 2", bold: false }, value: -20 },
-      ],
-    }, {
-      title: `${stage} :: Time to Release`,
-      color: '#FA1D62',
-      data: getRandData(),
-      insights: [
-        { title: { text: "insight 3" }, value: 5 },
-      ],
-    }, {
-      title: `${stage} :: Merged Pull Request`,
-      color: '#FF7D3A',
-      data: getRandData(),
-      insights: [],
-    },
-  ];
+    const body = new PullRequestMetricsRequest(
+        [forset], metrics.map(m => metricIDs[m]),
+        dateTime.ymd(dateInterval.from),
+        dateTime.ymd(dateInterval.to),
+        granularity, accountID
+    );
 
-  return new Promise(resolve => window.setTimeout(resolve(chartsSampleData), getRand(100, 1000)));
+    return api.calcMetricsPrLinear(body);
 };

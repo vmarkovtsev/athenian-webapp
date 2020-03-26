@@ -15,7 +15,7 @@ import { useFiltersContext } from 'js/context/Filters';
 import { usePipelineContext } from 'js/context/Pipeline';
 import { usePRsContext } from 'js/context/PRs';
 
-import { getSampleCharts, buildApi } from 'js/services/api';
+import { buildApi } from 'js/services/api';
 
 export default () => {
     const userContext = useUserContext();

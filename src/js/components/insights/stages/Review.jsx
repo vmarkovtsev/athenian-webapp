@@ -2,12 +2,7 @@ import { SimpleKPI, MultiKPI } from 'js/components/insights/KPI';
 import TimeSeries from 'js/components/insights/charts/library/TimeSeries';
 import BubbleChart from 'js/components/insights/charts/library/BubbleChart';
 
-import { PullRequestMetricsRequest } from 'js/services/api/openapi-client';
-
-import ForSet from 'js/services/api/openapi-client/model/ForSet';
-import PullRequestMetricID from 'js/services/api/openapi-client/model/PullRequestMetricID';
-
-import { dateTime, github } from 'js/services/format';
+import { fetchPRsMetrics } from 'js/services/api/index';
 
 import moment from 'moment';
 import _ from 'lodash';
@@ -18,52 +13,27 @@ export default () => [
 ];
 
 const waitTimeFirstReview = {
-    fetcher: async (api, context, data) => {
-        const metricIDs = new PullRequestMetricID();
-        const forset = ForSet.constructFromObject({
-            repositories: context.repositories,
-            developers: context.contributors
-        });
-
-        const fetchChartsData = async () => {
-            const granularity = 'day';
-            const metrics = [
-                'wait-first-review',
-            ].map(metric => metricIDs[metric]);
-
-            const body = new PullRequestMetricsRequest(
-                [forset], metrics,
-                dateTime.ymd(context.interval.from),
-                dateTime.ymd(context.interval.to),
-                granularity, context.account
-            );
-
-            return api.calcMetricsPrLinear(body);
-        };
-
+    fetcher: async (api, context) => {
         const fetchKPIsData = async () => {
             const daysDiff = moment(context.interval.to).diff(context.interval.from, 'days');
             const granularity = `${daysDiff} day`;
-            const metrics = [
-                'lead-time',
-                'wait-first-review',
-            ].map(metric => metricIDs[metric]);
+            const metrics = ['lead-time', 'wait-first-review'];
 
-            const bodyCurrent = new PullRequestMetricsRequest(
-                [forset], metrics,
-                dateTime.ymd(context.interval.from),
-                dateTime.ymd(context.interval.to),
-                granularity, context.account
+            const current = await fetchPRsMetrics(
+                api, context.account, granularity, context.interval,
+                metrics,
+                { repositories: context.repositories, developers: context.contributors}
             );
-            const current = await api.calcMetricsPrLinear(bodyCurrent);
 
-            const bodyPrevious = new PullRequestMetricsRequest(
-                [forset], metrics,
-                dateTime.ymd(moment(context.interval.from).subtract(daysDiff, 'days')),
-                dateTime.ymd(context.interval.from),
-                granularity, context.account
+            const previous = await fetchPRsMetrics(
+                api, context.account, granularity,
+                {
+                    from: moment(context.interval.from).subtract(daysDiff, 'days').toDate(),
+                    to: context.interval.from
+                },
+                metrics,
+                { repositories: context.repositories, developers: context.contributors}
             );
-            const previous = await api.calcMetricsPrLinear(bodyPrevious);
 
             return Promise.resolve({
                 previous: previous,
@@ -71,7 +41,11 @@ const waitTimeFirstReview = {
             });
         };
 
-        const chartData = await fetchChartsData();
+        const chartData = await fetchPRsMetrics(
+            api, context.account, 'day', context.interval,
+            ['wait-first-review'],
+            { repositories: context.repositories, developers: context.contributors}
+        );
         const KPIsData = await fetchKPIsData();
 
         return Promise.resolve({
