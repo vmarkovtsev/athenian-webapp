@@ -2,11 +2,13 @@ import {
   DefaultApi,
   ApiClient,
   PullRequestMetricsRequest,
+  DeveloperMetricsRequest,
   FilterContribsOrReposRequest,
   FilterPullRequestsRequest
 } from 'js/services/api/openapi-client';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import PullRequestMetricID from 'js/services/api/openapi-client/model/PullRequestMetricID';
+import DeveloperMetricID from 'js/services/api/openapi-client/model/DeveloperMetricID';
 import { dateTime, github } from 'js/services/format';
 
 export const getPRs = async (token, accountId, dateInterval, repos, contributors) => {
@@ -224,4 +226,23 @@ export const fetchPRsMetrics = async (
     );
 
     return api.calcMetricsPrLinear(body);
+};
+
+export const fetchDevsMetrics = async (
+    api, accountID,
+    dateInterval,
+    metrics = [],
+    filter = { repositories: [], developers: [] }
+) => {
+    const metricIDs = new DeveloperMetricID();
+    const forset = ForSet.constructFromObject(filter);
+
+    const body = new DeveloperMetricsRequest(
+        [forset], metrics.map(m => metricIDs[m]),
+        dateTime.ymd(dateInterval.from),
+        dateTime.ymd(dateInterval.to),
+        accountID
+    );
+
+    return api.calcMetricsDeveloper(body);
 };
