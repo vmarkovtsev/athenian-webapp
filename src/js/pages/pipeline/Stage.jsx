@@ -60,7 +60,10 @@ export default () => {
                 // Making the chart call the api means querying the api again. We can
                 // remove this once we implement some caching logic on the client
                 // when querying.
-                getInsights(stageSlug, api, context, prsContext).then(setStageChartsState);
+                getInsights(stageSlug, api, context, prsContext)
+                    .then(setStageChartsState)
+                    .catch(err => console.log(err));
+                ;
             });
     }, [stageSlug, dateInterval, repositories, contributors, prsContext]);
 
