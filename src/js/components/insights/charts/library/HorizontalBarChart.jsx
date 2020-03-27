@@ -44,7 +44,7 @@ const HorizontalBarChart = ({ title, data, extra }) => {
         .value();
 
     return (
-        <FlexibleWidthXYPlot height={data.length * 40} margin={{ left: 50 }} yType="ordinal">
+        <FlexibleWidthXYPlot height={data.length * 40 * Object.keys(extra.series).length} margin={{ left: 50 }} yType="ordinal">
           <DiscreteColorLegend
             items={legend} orientation="horizontal"
             style={{ position: 'absolute', top: '-30px', right: '50%', transform: 'translateX(50%)' }} />
