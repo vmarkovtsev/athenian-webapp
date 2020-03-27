@@ -25,14 +25,13 @@ const HorizontalBarChart = ({ title, data, extra }) => {
     const series = _(data)
           .reduce((acc, v) => {
               _(extra.axisKeys.x)
-                  .map(ax => {
+                  .each(ax => {
                       acc[ax] = acc[ax] || [];
                       acc[ax].push({
                           x: v[ax],
                           y: v[extra.axisKeys.y]
                       });
-                  })
-                  .value();
+                  });
               return acc;
           }, {});
 
