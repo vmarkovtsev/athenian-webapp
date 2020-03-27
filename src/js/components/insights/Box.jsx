@@ -68,7 +68,7 @@ const BoxBody = ({content}) =>  (
 const SimpleBoxBodyRow = ({chart}) => (
     <div className="row">
       <div className="col-12">
-        <chart.component params={chart.params} />
+        <chart.component {...chart.params} />
       </div>
     </div>
 );
