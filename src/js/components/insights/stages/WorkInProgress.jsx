@@ -145,7 +145,18 @@ const mostActiveDevs = {
                             yAxis: {
                                 imageMapping: computed.avatarMapping,
                                 imageMask: 'circle'
+                            },
+                            axisKeys: {
+                                x: 'x',
+                                y: 'y'
+                            },
+                            series: {
+                                x: {
+                                    name: 'Number of Pull Requests created',
+                                    color: "#FFA008",
+                                },
                             }
+
                         }
                     }
                 },
