@@ -118,10 +118,14 @@ const reviewActivity = {
                     },
                     {
                         title: {text: 'Proportion of Reviews Made By', bold: true},
-                        subtitle: {text: computed.secondBox.KPIsData.topReviewer.developer},
+                        subtitle: {
+                            text: computed.secondBox.KPIsData.topReviewer ?
+                                computed.secondBox.KPIsData.topReviewer.developer : ''
+                        },
                         component: SimpleKPI,
                         params: {
-                            value: computed.secondBox.KPIsData.topReviewer.reviewsPerc.toFixed(2),
+                            value: computed.secondBox.KPIsData.topReviewer ?
+                                computed.secondBox.KPIsData.topReviewer.reviewsPerc.toFixed(2) : '',
                             unit: '%'
                         }
                     },
