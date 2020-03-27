@@ -9,6 +9,8 @@ import {
     DiscreteColorLegend,
 } from 'react-vis';
 
+import _ from 'lodash';
+
 export default ({title, data, extra}) => (
     <div style={{ background: 'white' }}>
       <HorizontalBarChart title={title} data={data} extra={extra} />
@@ -20,10 +22,29 @@ const HorizontalBarChart = ({ title, data, extra }) => {
         return <></>;
     }
 
-    const color = "#FFA008";
-    const legend = [{ title, color }];
+    const series = _(data)
+          .reduce((acc, v) => {
+              _(extra.axisKeys.x)
+                  .map(ax => {
+                      acc[ax] = acc[ax] || [];
+                      acc[ax].push({
+                          x: v[ax],
+                          y: v[extra.axisKeys.y]
+                      });
+                  })
+                  .value();
+              return acc;
+          }, {});
+
+    const legend = _(series)
+        .map((s, k) => ({
+            title: extra.series[k].name,
+            color: extra.series[k].color,
+        }))
+        .value();
+
     return (
-        <FlexibleWidthXYPlot height={data.length * 40} margin={{ left: 50 }} yType="ordinal">
+        <FlexibleWidthXYPlot height={data.length * 40 * Object.keys(extra.series).length} margin={{ left: 50 }} yType="ordinal">
           <DiscreteColorLegend
             items={legend} orientation="horizontal"
             style={{ position: 'absolute', top: '-30px', right: '50%', transform: 'translateX(50%)' }} />
@@ -38,15 +59,24 @@ const HorizontalBarChart = ({ title, data, extra }) => {
 
           {extra && extra.yAxis && extra.yAxis.imageMapping ?
            <YAxis tickFormat={
-               (value) => <image
-                            href={extra.yAxis.imageMapping[value]}
-                            clipPath={extra.yAxis.imageMask ? `url(#${extra.yAxis.imageMask}-mask)` : ""}
-                            width="30" height="30"
-                            transform="translate(-40,-15)" />
+               (value) => (
+                   extra.yAxis.imageMapping[value] ?
+                       <image
+                         href={extra.yAxis.imageMapping[value]}
+                         clipPath={extra.yAxis.imageMask ? `url(#${extra.yAxis.imageMask}-mask)` : ""}
+                         width="30" height="30"
+                         transform="translate(-40,-15)"
+                       /> :
+                   value
+               )
            } /> :
            <YAxis />}
 
-          <HorizontalBarSeries data={data.reverse()} color={color} barWidth={0.5} />
+          {_(series).map((s, k) => <HorizontalBarSeries
+                                     data={s.reverse()}
+                                     color={extra.series[k].color}
+                                     key={k}
+                                     barWidth={extra.barWidth || 0.5}/>).value()}
         </FlexibleWidthXYPlot>
     );
 };

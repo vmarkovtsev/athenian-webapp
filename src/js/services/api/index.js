@@ -2,12 +2,16 @@ import {
   DefaultApi,
   ApiClient,
   PullRequestMetricsRequest,
+  DeveloperMetricsRequest,
   FilterContribsOrReposRequest,
   FilterPullRequestsRequest
 } from 'js/services/api/openapi-client';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import PullRequestMetricID from 'js/services/api/openapi-client/model/PullRequestMetricID';
+import DeveloperMetricID from 'js/services/api/openapi-client/model/DeveloperMetricID';
 import { dateTime, github } from 'js/services/format';
+
+import _ from 'lodash';
 
 export const getPRs = async (token, accountId, dateInterval, repos, contributors) => {
   const api = buildApi(token);
@@ -211,17 +215,54 @@ export const fetchPRsMetrics = async (
     granularity,
     dateInterval,
     metrics = [],
-    filter = { repositories: [], developers: [] }
+    filter = { repositories: [], developers: [] },
+    groupBy
 ) => {
     const metricIDs = new PullRequestMetricID();
-    const forset = ForSet.constructFromObject(filter);
-
+    const forSet = buildForSet(filter, groupBy);
     const body = new PullRequestMetricsRequest(
-        [forset], metrics.map(m => metricIDs[m]),
+        forSet, metrics.map(m => metricIDs[m]),
         dateTime.ymd(dateInterval.from),
         dateTime.ymd(dateInterval.to),
         granularity, accountID
     );
 
     return api.calcMetricsPrLinear(body);
+};
+
+export const fetchDevsMetrics = async (
+    api, accountID,
+    dateInterval,
+    metrics = [],
+    filter = { repositories: [], developers: [] },
+    groupBy
+) => {
+    const metricIDs = new DeveloperMetricID();
+    const forSet = buildForSet(filter, groupBy);
+    const body = new DeveloperMetricsRequest(
+        forSet, metrics.map(m => metricIDs[m]),
+        dateTime.ymd(dateInterval.from),
+        dateTime.ymd(dateInterval.to),
+        accountID
+    );
+
+    return api.calcMetricsDeveloper(body);
+};
+
+
+const buildForSet = (filter, groupBy) => {
+    const forSet = [];
+    if (!groupBy) {
+        forSet.push(ForSet.constructFromObject(filter));
+    } else if (!['repositories', 'developers'].includes(groupBy)) {
+        throw "Invalid groupby";
+    } else {
+        for (const g of filter[groupBy]) {
+            const f = _.clone(filter);
+            f[groupBy] = [g];
+            forSet.push(ForSet.constructFromObject(f));
+        }
+    }
+
+    return forSet;
 };
