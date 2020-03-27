@@ -76,7 +76,7 @@ const HorizontalBarChart = ({ title, data, extra }) => {
                                      data={s.reverse()}
                                      color={extra.series[k].color}
                                      key={k}
-                                     barWidth={0.5}/>).value()}
+                                     barWidth={extra.barWidth || 0.5}/>).value()}
         </FlexibleWidthXYPlot>
     );
 };
