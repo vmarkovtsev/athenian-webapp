@@ -64,24 +64,30 @@ export default ({ data }) => {
                     title: '',
                     className: 'pr-merged',
                     render: (_, type, row) => {
-                        let pic;
+                        let pic, sort;
                         switch (row.status) {
                             case prStatus.MERGED:
                                 pic = '<i title="merged" class="fa fas fa-code-branch text-merge fa-rotate-180"></i>';
+                                sort = 2;
                                 break;
                             case prStatus.CLOSED:
                                 pic = '<i title="closed" class="icon-pull-request text-danger"></i>';
+                                sort = 3;
                                 break;
                             case prStatus.OPENED:
                                 pic = '<i title="opened" class="icon-pull-request text-success"></i>';
+                                sort = 1;
                                 break;
                         }
 
                         switch (type) {
                             case 'display':
                                 return pic;
-                            default:
-                                return status;
+                            case 'filter':
+                                return `status:${row.status}`;
+                            case 'type':
+                            case 'sort':
+                                return sort;
                         }
                     },
                 },
@@ -102,10 +108,11 @@ export default ({ data }) => {
                                         <span>${dateTime.ago(row.created)} ago</span></div>
                                     </div>
                                 `;
+                            case 'filter':
+                                return row.title + ` number:${row.number} ` + (row.authors.map(user => `author:${github.userName(user)}`).join(' '));
+                            case 'type':
                             case 'sort':
                                 return row.number;
-                            default:
-                                return row.title + ' ' + (row.authors.map(github.userName).join(' '));
                         }
                     },
                 }, {
@@ -121,8 +128,11 @@ export default ({ data }) => {
                                     <span class="align-middle text-success mr-1">+${number.si(row.size_added)}</span>
                                     <span class="align-middle text-danger">-${number.si(row.size_removed)}</span>
                                 `;
-                            default:
-                                return row['files_changed'];
+                            case 'filter':
+                                return '';
+                            case 'type':
+                            case 'sort':
+                                return row.size_added + row.size_removed;
                         }
                     },
                 }, {
@@ -133,7 +143,10 @@ export default ({ data }) => {
                         switch (type) {
                             case 'display':
                                 return `<i class="fa far fa-comment-alt"></i>${row.comments + row.review_comments}`;
-                            default:
+                            case 'filter':
+                                return '';
+                            case 'type':
+                            case 'sort':
                                 return row['comments'] + row['review_comments'];
                         }
                     },
@@ -144,10 +157,11 @@ export default ({ data }) => {
                         switch (type) {
                             case 'display':
                                 return row.commentersReviewers.map(userImage(users)).join(' ');
+                            case 'filter':
+                                return row.commentersReviewers.map(user => `participant:${github.userName(user)}`).join(' ');
+                            case 'type':
                             case 'sort':
                                 return row.commentersReviewers.length;
-                            default:
-                                return row.commentersReviewers.map(userImage(users)).join(' ');
                         }
                     },
                 }, {
@@ -161,7 +175,10 @@ export default ({ data }) => {
                                     return row.closed ? dateTime.interval(row.created, row.closed) : '';
                                 }
                                 return '';
-                            default:
+                            case 'filter':
+                                return '';
+                            case 'type':
+                            case 'sort':
                                 if (row.stage === 'release' || row.stage === 'done') {
                                     return row.closed ? row.closed - row.created : Number.MAX_VALUE;
                                 }
