@@ -59,6 +59,16 @@ export default ({ data }) => {
             },
             fixedHeader: true,
             data: prs,
+            columnDefs: [
+                { "width": "50px", "targets": 0 },  //status
+                { "width": "130px", "targets": 2 }, //changes
+                { "width": "65px", "targets": 3 },  //comments
+                { "width": "130px", "targets": 4 }, //participants
+                { "width": "70px", "targets": 5 },  //age
+                { "width": "80px", "targets": 6 },  //stage
+                { "width": "100px", "targets": 7 }, //events
+                { "width": "80px", "targets": 8 },  //completed
+            ],
             columns: [
                 {
                     title: '',
@@ -190,6 +200,18 @@ export default ({ data }) => {
                                 return row.stage;
                         }
                     },
+                }, {
+                    title: 'Events',
+                    className: 'pr-events align-middle text-center',
+                    render: (_, __, row) => {
+                        return row.events.map(stage => stage.replace('_happened', '')).join(', ');
+                    },
+                }, {
+                    title: 'Completed',
+                    className: 'pr-completed align-middle text-center',
+                    render: (_, __, row) => {
+                        return row.completedStages.map(stage => stage.replace('-complete', '')).join(', ');
+                    },
                 },
             ],
         });
@@ -205,7 +227,7 @@ export default ({ data }) => {
 
     return (
         <div className="table-responsive mb-4">
-            <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0" />
+            <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0" style={{ tableLayout: 'fixed' }} />
         </div>
     );
 }
