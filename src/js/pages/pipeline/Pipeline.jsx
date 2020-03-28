@@ -6,9 +6,12 @@ import { useUserContext } from 'js/context/User';
 import { useFiltersContext } from 'js/context/Filters';
 
 import { getMetrics, fetchApi } from 'js/services/api';
+import { PR_STAGE as prStage } from 'js/services/prHelpers';
 import { number } from 'js/services/format';
 
 import { palette } from 'js/res/palette';
+
+const prStageComplete = prStage.COMPLETE;
 
 const distinct = (collection, extractor) => Array.from(new Set(collection.flatMap(extractor)));
 
@@ -35,7 +38,7 @@ export const pipelineStagesConf = [
             before: 'First Commit',
             after: 'Review Requested',
         },
-        prs: prs => prs.filter(pr => pr.stage === 'wip'),
+        prs: prs => prs.filter(pr => pr.stage === prStage.WIP || pr.completedStages.indexOf(prStageComplete.WIP) >= 0),
         summary: (stage, prs, dateInterval) => {
             const createdPrs = prs.filter(pr => dateInterval.from < pr.created && pr.created < dateInterval.to);
             const authors = distinct(createdPrs, pr => pr.authors);
@@ -58,7 +61,7 @@ export const pipelineStagesConf = [
             before: 'Review Requested',
             after: 'Approved',
         },
-        prs: prs => prs.filter(pr => pr.stage === 'review'),
+        prs: prs => prs.filter(pr => pr.stage === prStage.REVIEW || pr.completedStages.indexOf(prStageComplete.REVIEW) >= 0),
         summary: (stage, prs) => {
             const reviewAndReviewCompletePRs = prs.filter(pr => pr.stage !== 'wip');
             const reviewed = reviewAndReviewCompletePRs.filter(pr => pr.comments || pr.review_comments)
@@ -82,7 +85,7 @@ export const pipelineStagesConf = [
             before: 'Approved',
             after: 'Merged',
         },
-        prs: prs => prs.filter(pr => pr.stage === 'merge'),
+        prs: prs => prs.filter(pr => pr.stage === prStage.MERGE || pr.completedStages.indexOf(prStageComplete.MERGE) >= 0),
         summary: (stage, prs) => {
             const mergedPRs = prs.filter(pr => pr.merged);
             const mergerers = distinct(mergedPRs, pr => pr.mergers);
@@ -105,7 +108,7 @@ export const pipelineStagesConf = [
             before: 'Merged',
             after: 'Released',
         },
-        prs: prs => prs.filter(pr => pr.stage === 'release' || pr.stage === 'done'),
+        prs: prs => prs.filter(pr => pr.stage === prStage.RELEASE || pr.completedStages.indexOf(prStageComplete.RELEASE) >= 0),
         summary: (stage, prs) => {
             const releasedPRs = prs.filter(pr => pr.release_url);
             const releases = distinct(releasedPRs, pr => pr.release_url);

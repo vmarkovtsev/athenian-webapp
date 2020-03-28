@@ -5,6 +5,7 @@ import 'datatables.net-bs4';
 import 'datatables.net-bs4/css/dataTables.bootstrap4.css';
 
 import { dateTime, github, number } from 'js/services/format';
+import { PR_STATUS as prStatus } from 'js/services/prHelpers'
 
 const userImage = users => user => {
     if (users[user] && users[user].avatar) {
@@ -58,28 +59,45 @@ export default ({ data }) => {
             },
             fixedHeader: true,
             data: prs,
+            columnDefs: [
+                { "width": "50px", "targets": 0 },  //status
+                { "width": "130px", "targets": 2 }, //changes
+                { "width": "65px", "targets": 3 },  //comments
+                { "width": "130px", "targets": 4 }, //participants
+                { "width": "70px", "targets": 5 },  //age
+                { "width": "80px", "targets": 6 },  //stage
+                { "width": "100px", "targets": 7 }, //events
+                { "width": "80px", "targets": 8 },  //completed
+            ],
             columns: [
                 {
                     title: '',
                     className: 'pr-merged',
                     render: (_, type, row) => {
-                        let pic, status;
-                        if (row.merged) {
-                            pic = '<i title="merged" class="fa fas fa-code-branch text-merge fa-rotate-180"></i>';
-                            status = 'merged';
-                        } else if (row.stage === 'wip' || row.stage === 'review' || row.stage === 'merge') {
-                            pic = '<i title="opened" class="icon-pull-request text-success"></i>';
-                            status = 'opened';
-                        } else {
-                            pic = '<i title="closed" class="icon-pull-request text-danger"></i>';
-                            status = 'closed';
+                        let pic, sort;
+                        switch (row.status) {
+                            case prStatus.MERGED:
+                                pic = '<i title="merged" class="fa fas fa-code-branch text-merge fa-rotate-180"></i>';
+                                sort = 2;
+                                break;
+                            case prStatus.CLOSED:
+                                pic = '<i title="closed" class="icon-pull-request text-danger"></i>';
+                                sort = 3;
+                                break;
+                            case prStatus.OPENED:
+                                pic = '<i title="opened" class="icon-pull-request text-success"></i>';
+                                sort = 1;
+                                break;
                         }
 
                         switch (type) {
                             case 'display':
                                 return pic;
-                            default:
-                                return status;
+                            case 'filter':
+                                return `status:${row.status}`;
+                            case 'type':
+                            case 'sort':
+                                return sort;
                         }
                     },
                 },
@@ -100,10 +118,11 @@ export default ({ data }) => {
                                         <span>${dateTime.ago(row.created)} ago</span></div>
                                     </div>
                                 `;
+                            case 'filter':
+                                return row.title + ` number:${row.number} ` + (row.authors.map(user => `author:${github.userName(user)}`).join(' '));
+                            case 'type':
                             case 'sort':
                                 return row.number;
-                            default:
-                                return row.title + ' ' + (row.authors.map(github.userName).join(' '));
                         }
                     },
                 }, {
@@ -119,8 +138,11 @@ export default ({ data }) => {
                                     <span class="align-middle text-success mr-1">+${number.si(row.size_added)}</span>
                                     <span class="align-middle text-danger">-${number.si(row.size_removed)}</span>
                                 `;
-                            default:
-                                return row['files_changed'];
+                            case 'filter':
+                                return '';
+                            case 'type':
+                            case 'sort':
+                                return row.size_added + row.size_removed;
                         }
                     },
                 }, {
@@ -131,7 +153,10 @@ export default ({ data }) => {
                         switch (type) {
                             case 'display':
                                 return `<i class="fa far fa-comment-alt"></i>${row.comments + row.review_comments}`;
-                            default:
+                            case 'filter':
+                                return '';
+                            case 'type':
+                            case 'sort':
                                 return row['comments'] + row['review_comments'];
                         }
                     },
@@ -142,10 +167,11 @@ export default ({ data }) => {
                         switch (type) {
                             case 'display':
                                 return row.commentersReviewers.map(userImage(users)).join(' ');
+                            case 'filter':
+                                return row.commentersReviewers.map(user => `participant:${github.userName(user)}`).join(' ');
+                            case 'type':
                             case 'sort':
                                 return row.commentersReviewers.length;
-                            default:
-                                return row.commentersReviewers.map(userImage(users)).join(' ');
                         }
                     },
                 }, {
@@ -155,15 +181,12 @@ export default ({ data }) => {
                     render: (_, type, row) => {
                         switch (type) {
                             case 'display':
-                                if (row.stage === 'release' || row.stage === 'done') {
-                                    return row.closed ? dateTime.interval(row.created, row.closed) : '';
-                                }
+                                return dateTime.interval(row.created, row.closed || new Date());
+                            case 'filter':
                                 return '';
-                            default:
-                                if (row.stage === 'release' || row.stage === 'done') {
-                                    return row.closed ? row.closed - row.created : Number.MAX_VALUE;
-                                }
-                                return Number.MAX_VALUE;
+                            case 'type':
+                            case 'sort':
+                                return (row.closed || new Date()) - row.created;
                         }
                     },
                 }, {
@@ -176,6 +199,18 @@ export default ({ data }) => {
                             default:
                                 return row.stage;
                         }
+                    },
+                }, {
+                    title: 'Events',
+                    className: 'pr-events align-middle text-center',
+                    render: (_, __, row) => {
+                        return row.events.map(stage => stage.replace('_happened', '')).join(', ');
+                    },
+                }, {
+                    title: 'Completed',
+                    className: 'pr-completed align-middle text-center',
+                    render: (_, __, row) => {
+                        return row.completedStages.map(stage => stage.replace('-complete', '')).join(', ');
                     },
                 },
             ],
@@ -192,7 +227,7 @@ export default ({ data }) => {
 
     return (
         <div className="table-responsive mb-4">
-            <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0" />
+            <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0" style={{ tableLayout: 'fixed' }} />
         </div>
     );
 }

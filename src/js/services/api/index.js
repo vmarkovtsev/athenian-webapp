@@ -9,7 +9,8 @@ import {
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import PullRequestMetricID from 'js/services/api/openapi-client/model/PullRequestMetricID';
 import DeveloperMetricID from 'js/services/api/openapi-client/model/DeveloperMetricID';
-import { dateTime, github } from 'js/services/format';
+import { dateTime } from 'js/services/format';
+import processPR from 'js/services/prHelpers';
 
 import _ from 'lodash';
 
@@ -32,35 +33,7 @@ export const getPRs = async (token, accountId, dateInterval, repos, contributors
   const prs = await api.filterPrs({ filterPullRequestsRequest: filter });
 
   return {
-    prs: prs.data.map(pr => {
-      const users = pr.participants.reduce((acc, participant) => {
-        if (participant.status.indexOf('author') >= 0) {
-          acc.authors.push(participant.id);
-          return acc;
-        }
-
-        if (participant.status.indexOf('merger') >= 0) {
-          acc.mergers.push(participant.id);
-        }
-
-        if (participant.status.indexOf('reviewer') >= 0 || participant.status.indexOf('commenter') >= 0) {
-          acc.commentersReviewers.push(participant.id);
-        }
-
-        return acc;
-      }, { authors: [], commentersReviewers: [], mergers: [] });
-      return {
-        ...pr,
-        organization: github.repoOrg(pr.repository),
-        repo: github.repoName(pr.repository),
-        created: new Date(pr.created),
-        updated: new Date(pr.updated),
-        closed: new Date(pr.closed),
-        authors: users.authors,
-        mergers: users.mergers,
-        commentersReviewers: users.commentersReviewers
-      }
-    }),
+    prs: prs.data.map(processPR),
     users: (prs.include && prs.include.users) || {},
   };
 };
@@ -108,7 +81,7 @@ export const getContributors = (token, userAccount, from, to, repos) => {
   const filter = new FilterContribsOrReposRequest(userAccount, from, to);
   filter.in = repos;
   return api.filterContributors({ body: filter })
-        .then(contribs => contribs.map(c => c.login));
+    .then(contribs => contribs.map(c => c.login));
 };
 
 export const getMetrics = (api, accountId, dateInterval, repos, contributors) => {
@@ -185,10 +158,10 @@ export const getMetrics = (api, accountId, dateInterval, repos, contributors) =>
 
 // DEPRECATED: use `fetchPRsMetrics` instead
 const fetchApiMetricsLine = (api, metrics, accountId, dateInterval = { from: null, to: null }, repos = [], contributors = []) => {
-    return fetchPRsMetrics(api, accountId, 'week', dateInterval, metrics, {
-        repositories: repos,
-        developers: contributors
-    });
+  return fetchPRsMetrics(api, accountId, 'week', dateInterval, metrics, {
+    repositories: repos,
+    developers: contributors
+  });
 };
 
 export const getInvitation = async (token, accountID) => {
@@ -211,58 +184,58 @@ export const fetchApi = (token, apiCall, ...args) => {
 };
 
 export const fetchPRsMetrics = async (
-    api, accountID,
-    granularity,
-    dateInterval,
-    metrics = [],
-    filter = { repositories: [], developers: [] },
-    groupBy
+  api, accountID,
+  granularity,
+  dateInterval,
+  metrics = [],
+  filter = { repositories: [], developers: [] },
+  groupBy
 ) => {
-    const metricIDs = new PullRequestMetricID();
-    const forSet = buildForSet(filter, groupBy);
-    const body = new PullRequestMetricsRequest(
-        forSet, metrics.map(m => metricIDs[m]),
-        dateTime.ymd(dateInterval.from),
-        dateTime.ymd(dateInterval.to),
-        granularity, accountID
-    );
+  const metricIDs = new PullRequestMetricID();
+  const forSet = buildForSet(filter, groupBy);
+  const body = new PullRequestMetricsRequest(
+    forSet, metrics.map(m => metricIDs[m]),
+    dateTime.ymd(dateInterval.from),
+    dateTime.ymd(dateInterval.to),
+    granularity, accountID
+  );
 
-    return api.calcMetricsPrLinear(body);
+  return api.calcMetricsPrLinear(body);
 };
 
 export const fetchDevsMetrics = async (
-    api, accountID,
-    dateInterval,
-    metrics = [],
-    filter = { repositories: [], developers: [] },
-    groupBy
+  api, accountID,
+  dateInterval,
+  metrics = [],
+  filter = { repositories: [], developers: [] },
+  groupBy
 ) => {
-    const metricIDs = new DeveloperMetricID();
-    const forSet = buildForSet(filter, groupBy);
-    const body = new DeveloperMetricsRequest(
-        forSet, metrics.map(m => metricIDs[m]),
-        dateTime.ymd(dateInterval.from),
-        dateTime.ymd(dateInterval.to),
-        accountID
-    );
+  const metricIDs = new DeveloperMetricID();
+  const forSet = buildForSet(filter, groupBy);
+  const body = new DeveloperMetricsRequest(
+    forSet, metrics.map(m => metricIDs[m]),
+    dateTime.ymd(dateInterval.from),
+    dateTime.ymd(dateInterval.to),
+    accountID
+  );
 
-    return api.calcMetricsDeveloper(body);
+  return api.calcMetricsDeveloper(body);
 };
 
 
 const buildForSet = (filter, groupBy) => {
-    const forSet = [];
-    if (!groupBy) {
-        forSet.push(ForSet.constructFromObject(filter));
-    } else if (!['repositories', 'developers'].includes(groupBy)) {
-        throw "Invalid groupby";
-    } else {
-        for (const g of filter[groupBy]) {
-            const f = _.clone(filter);
-            f[groupBy] = [g];
-            forSet.push(ForSet.constructFromObject(f));
-        }
+  const forSet = [];
+  if (!groupBy) {
+    forSet.push(ForSet.constructFromObject(filter));
+  } else if (!['repositories', 'developers'].includes(groupBy)) {
+    throw "Invalid groupby";
+  } else {
+    for (const g of filter[groupBy]) {
+      const f = _.clone(filter);
+      f[groupBy] = [g];
+      forSet.push(ForSet.constructFromObject(f));
     }
+  }
 
-    return forSet;
+  return forSet;
 };
