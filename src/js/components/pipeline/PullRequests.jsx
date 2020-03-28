@@ -171,18 +171,12 @@ export default ({ data }) => {
                     render: (_, type, row) => {
                         switch (type) {
                             case 'display':
-                                if (row.stage === 'release' || row.stage === 'done') {
-                                    return row.closed ? dateTime.interval(row.created, row.closed) : '';
-                                }
-                                return '';
+                                return dateTime.interval(row.created, row.closed || new Date());
                             case 'filter':
                                 return '';
                             case 'type':
                             case 'sort':
-                                if (row.stage === 'release' || row.stage === 'done') {
-                                    return row.closed ? row.closed - row.created : Number.MAX_VALUE;
-                                }
-                                return Number.MAX_VALUE;
+                                return (row.closed || new Date()) - row.created;
                         }
                     },
                 }, {

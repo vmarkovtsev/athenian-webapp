@@ -22,7 +22,9 @@ export default pr => {
     repo: github.repoName(pr.repository),
     created: new Date(pr.created),
     updated: new Date(pr.updated),
-    closed: new Date(pr.closed),
+    closed: pr.closed && new Date(pr.closed),
+    merged: pr.merged && new Date(pr.merged),
+    released: pr.released && new Date(pr.released),
   }
 };
 
