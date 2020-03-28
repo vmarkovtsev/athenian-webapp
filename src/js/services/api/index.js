@@ -9,7 +9,8 @@ import {
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import PullRequestMetricID from 'js/services/api/openapi-client/model/PullRequestMetricID';
 import DeveloperMetricID from 'js/services/api/openapi-client/model/DeveloperMetricID';
-import { dateTime, github } from 'js/services/format';
+import { dateTime } from 'js/services/format';
+import processPR from 'js/services/prHelpers';
 
 import _ from 'lodash';
 
@@ -32,35 +33,7 @@ export const getPRs = async (token, accountId, dateInterval, repos, contributors
   const prs = await api.filterPrs({ filterPullRequestsRequest: filter });
 
   return {
-    prs: prs.data.map(pr => {
-      const users = pr.participants.reduce((acc, participant) => {
-        if (participant.status.indexOf('author') >= 0) {
-          acc.authors.push(participant.id);
-          return acc;
-        }
-
-        if (participant.status.indexOf('merger') >= 0) {
-          acc.mergers.push(participant.id);
-        }
-
-        if (participant.status.indexOf('reviewer') >= 0 || participant.status.indexOf('commenter') >= 0) {
-          acc.commentersReviewers.push(participant.id);
-        }
-
-        return acc;
-      }, { authors: [], commentersReviewers: [], mergers: [] });
-      return {
-        ...pr,
-        organization: github.repoOrg(pr.repository),
-        repo: github.repoName(pr.repository),
-        created: new Date(pr.created),
-        updated: new Date(pr.updated),
-        closed: new Date(pr.closed),
-        authors: users.authors,
-        mergers: users.mergers,
-        commentersReviewers: users.commentersReviewers
-      }
-    }),
+    prs: prs.data.map(processPR),
     users: (prs.include && prs.include.users) || {},
   };
 };

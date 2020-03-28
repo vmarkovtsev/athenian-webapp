@@ -5,6 +5,7 @@ import 'datatables.net-bs4';
 import 'datatables.net-bs4/css/dataTables.bootstrap4.css';
 
 import { dateTime, github, number } from 'js/services/format';
+import { PR_STATUS as prStatus } from 'js/services/prHelpers'
 
 const userImage = users => user => {
     if (users[user] && users[user].avatar) {
@@ -63,16 +64,17 @@ export default ({ data }) => {
                     title: '',
                     className: 'pr-merged',
                     render: (_, type, row) => {
-                        let pic, status;
-                        if (row.merged) {
-                            pic = '<i title="merged" class="fa fas fa-code-branch text-merge fa-rotate-180"></i>';
-                            status = 'merged';
-                        } else if (row.stage === 'wip' || row.stage === 'review' || row.stage === 'merge') {
-                            pic = '<i title="opened" class="icon-pull-request text-success"></i>';
-                            status = 'opened';
-                        } else {
-                            pic = '<i title="closed" class="icon-pull-request text-danger"></i>';
-                            status = 'closed';
+                        let pic;
+                        switch (row.status) {
+                            case prStatus.MERGED:
+                                pic = '<i title="merged" class="fa fas fa-code-branch text-merge fa-rotate-180"></i>';
+                                break;
+                            case prStatus.CLOSED:
+                                pic = '<i title="closed" class="icon-pull-request text-danger"></i>';
+                                break;
+                            case prStatus.OPENED:
+                                pic = '<i title="opened" class="icon-pull-request text-success"></i>';
+                                break;
                         }
 
                         switch (type) {
