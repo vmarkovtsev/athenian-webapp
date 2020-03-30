@@ -65,7 +65,7 @@ export default () => {
                     .catch(err => console.log(err));
                 ;
             });
-    }, [stageSlug, dateInterval, repositories, contributors, prsContext]);
+    }, [stageSlug, dateInterval, repositories, contributors, prsContext, getTokenSilently, userContext.defaultAccount.id]);
 
     if (!activeConf) {
         return <p>{stageSlug} is not a valid pipeline stage.</p>;
