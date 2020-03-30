@@ -97,6 +97,7 @@
         }
 
         .pipeline-thumbnail {
+
             &:hover {
                 background: rgba($white, .5);
             }
@@ -118,6 +119,26 @@
                 }
             }
         }
+    }
+}
+
+.pipeline-thumbnail:hover {
+    transition: border-color 0.3s;
+
+    .wip & {
+        border-color: $color-wip;
+    }
+
+    .review & {
+        border-color: $color-review;
+    }
+
+    .merge & {
+        border-color: $color-merge;
+    }
+
+    .release & {
+        border-color: $color-release;
     }
 }
 
