@@ -1,6 +1,6 @@
 // From https://auth0.com/docs/quickstart/spa/react#install-the-auth0-react-wrapper
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import createAuth0Client from '@auth0/auth0-spa-js';
 
 const DEFAULT_REDIRECT_CALLBACK = () =>
@@ -75,11 +75,11 @@ export const Auth0Provider = ({
         popupOpen,
         loginWithPopup,
         handleRedirectCallback,
-        getIdTokenClaims: (...p) => auth0Client.getIdTokenClaims(...p),
-        loginWithRedirect: (...p) => auth0Client.loginWithRedirect(...p),
-        getTokenSilently: (...p) => auth0Client.getTokenSilently(...p),
-        getTokenWithPopup: (...p) => auth0Client.getTokenWithPopup(...p),
-        logout: (...p) => auth0Client.logout(...p)
+        getIdTokenClaims: useCallback((...p) => auth0Client.getIdTokenClaims(...p), [auth0Client]),
+        loginWithRedirect: useCallback((...p) => auth0Client.loginWithRedirect(...p), [auth0Client]),
+        getTokenSilently: useCallback((...p) => auth0Client.getTokenSilently(...p), [auth0Client]),
+        getTokenWithPopup: useCallback((...p) => auth0Client.getTokenWithPopup(...p), [auth0Client]),
+        logout: useCallback((...p) => auth0Client.logout(...p), [auth0Client])
       }}
     >
       {children}

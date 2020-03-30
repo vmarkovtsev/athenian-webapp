@@ -10,16 +10,11 @@ const UserContext = React.createContext(null);
 export const useUserContext = () => useContext(UserContext);
 
 export default ({ children }) => {
-    const { logout, loading, isAuthenticated, getTokenSilently } = useAuth0();
+    const { logout, isAuthenticated, getTokenSilently } = useAuth0();
     const [userState, setUserState] = useState(null);
 
     useEffect(() => {
-        if (loading) {
-            return;
-        };
-
         if (!isAuthenticated) {
-            setUserState(null);
             return;
         };
 
@@ -28,12 +23,16 @@ export default ({ children }) => {
             .then(setUserState)
             .catch(err => console.error('Could not get user with repos', err));
 
-    }, [loading, isAuthenticated, getTokenSilently]);
+    }, [isAuthenticated, getTokenSilently]);
+
+    if (!userState) {
+        return null;
+    }
 
     return (
         <UserContext.Provider value={userState}>
             {
-                userState && !userState.defaultAccount ? (
+                !userState.defaultAccount ? (
                     <Simple>
                         <p>Your user was not invited to any account. You should accept an invitation first.</p>
                         <button onClick={() => logout({ returnTo: window.ENV.auth.logoutRedirectUri })}>logout</button>
