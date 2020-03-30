@@ -48,7 +48,7 @@ export default () => {
             {
                 title: 'Pull Requests',
                 badge: prsContext.prs.length,
-                content: <PullRequests data={prsContext} />
+                content: <PullRequests data={prsContext} stage="overview" />
             }
         ]} />
     </>

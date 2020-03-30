@@ -84,7 +84,7 @@ export default () => {
             {
                 title: 'Pull Requests',
                 badge: filteredPRs.prs.length,
-                content: <PullRequests data={filteredPRs} />
+                content: <PullRequests data={filteredPRs} stage={activeStage.stageName} />
             }
         ]} />
     </>;
