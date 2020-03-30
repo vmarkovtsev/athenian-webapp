@@ -5,17 +5,15 @@ import { useParams } from 'react-router-dom';
 import { getStageTitle } from 'js/pages/pipeline/Pipeline';
 
 
-const BreadcrumbsContext = React.createContext(() => ({
-    breadcrumb: {
-        current: {
-            slug: 'overview',
-            title: 'Overview',
-        }
+const BreadcrumbsContext = React.createContext({
+    current: {
+        slug: 'overview',
+        title: 'Overview',
     },
-    setBreadcrumb: (b) => {}
-}));
+    ancestors: []
+});
 
-export const useBreadcrumbsContext = breadcrumbs => useContext(BreadcrumbsContext);
+export const useBreadcrumbsContext = () => useContext(BreadcrumbsContext);
 
 export default ({ children }) => {
     const { name: stageSlug } = useParams();
@@ -29,13 +27,12 @@ export default ({ children }) => {
 };
 
 const buildBreadcrumb = (stageSlug) => {
-    const current = stageSlug ? {
+    const current = {
         slug: stageSlug,
         title: getStageTitle(stageSlug),
-    } : {
-        slug: 'overview',
-        title: 'Overview',
     };
-    const ancestors = stageSlug ? [{ url: '/stage/overview', text: 'Overview' }] : [];
+    const ancestors = stageSlug !== 'overview' ?
+          [{ url: '/stage/overview', text: 'Overview' }] :
+          [];
     return { current, ancestors };
 };
