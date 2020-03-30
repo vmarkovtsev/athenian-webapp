@@ -44,7 +44,8 @@ const reviewActivity = {
                   reviewsPerc: v.values[0][0] * 100 / totalReviews,
                   prsCommentsPerc: v.values[0][1] * 100 / totalPRsComments
               }))
-              .orderBy(['prsCommentsPerc'], ['desc'])
+              .filter(v => v.reviewsPerc > 0 || v.prsCommentsPerc > 0)
+              .orderBy(['prsCommentsPerc', 'reviewsPerc'], ['desc', 'desc'])
               .take(10)
               .value();
         const topReviewer = _(fetched.secondBox.calculated)
