@@ -11,7 +11,7 @@ export default ({ children }) => {
     const userContext = useUserContext();
     const breadcrumbs = useBreadcrumbsContext();
 
-    return (
+    return userContext ? (
         <>
           <Navbar user={userContext} />
           <Breadcrumbs breadcrumbs={breadcrumbs} />
@@ -22,5 +22,5 @@ export default ({ children }) => {
 
           <Footer />
         </>
-    );
+    ) : <Navbar user={userContext} /> ;
 };
