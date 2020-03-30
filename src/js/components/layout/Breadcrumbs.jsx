@@ -10,7 +10,7 @@ export default ({ breadcrumbs }) => breadcrumbs && (
                         <Link to={link.url} className="text-bright">{link.text}</Link>
                     </li>
                 ))}
-                <li className="breadcrumb-item active" aria-current="page">{breadcrumbs.current}</li>
+                <li className="breadcrumb-item active" aria-current="page">{breadcrumbs.current.title}</li>
             </ol>
         </div>
     </div>
