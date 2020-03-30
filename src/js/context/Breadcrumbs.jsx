@@ -1,16 +1,41 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 
-const BreadcrumbsContext = React.createContext(() => { });
+import { useParams } from 'react-router-dom';
 
-export const useBreadcrumbsContext = breadcrumbs => {
-    const setBreadcrumbsFn = useContext(BreadcrumbsContext);
-    useEffect(() => setBreadcrumbsFn(breadcrumbs), [breadcrumbs, setBreadcrumbsFn]);
-};
+import { getStageTitle } from 'js/pages/pipeline/Pipeline';
 
-export default ({ setBreadcrumbsFn, children }) => {
+
+const BreadcrumbsContext = React.createContext(() => ({
+    breadcrumb: {
+        current: {
+            slug: 'overview',
+            title: 'Overview',
+        }
+    },
+    setBreadcrumb: (b) => {}
+}));
+
+export const useBreadcrumbsContext = breadcrumbs => useContext(BreadcrumbsContext);
+
+export default ({ children }) => {
+    const { name: stageSlug } = useParams();
+    const breadcrumb = buildBreadcrumb(stageSlug);
+
     return (
-        <BreadcrumbsContext.Provider value={setBreadcrumbsFn}>
+        <BreadcrumbsContext.Provider value={breadcrumb}>
             {children}
         </BreadcrumbsContext.Provider>
     );
+};
+
+const buildBreadcrumb = (stageSlug) => {
+    const current = stageSlug ? {
+        slug: stageSlug,
+        title: getStageTitle(stageSlug),
+    } : {
+        slug: 'overview',
+        title: 'Overview',
+    };
+    const ancestors = stageSlug ? [{ url: '/stage/overview', text: 'Overview' }] : [];
+    return { current, ancestors };
 };

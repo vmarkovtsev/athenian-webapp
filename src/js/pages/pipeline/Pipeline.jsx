@@ -126,6 +126,10 @@ export const pipelineStagesConf = [
 const mainStagesNames = ['wip', 'review', 'merge', 'release'];
 
 export const getStage = (stages, slug) => stages.find(conf => conf.slug === slug);
+export const getStageTitle = (slug) => {
+    const conf = getStage(pipelineStagesConf, slug);
+    return conf ? conf.title : null;
+};
 
 export default ({ children }) => {
     const { getTokenSilently } = useAuth0();

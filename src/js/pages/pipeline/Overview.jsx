@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { useBreadcrumbsContext } from 'js/context/Breadcrumbs';
 import { usePRsContext } from 'js/context/PRs';
 import { usePipelineContext } from 'js/context/Pipeline';
 
@@ -15,7 +14,6 @@ import { dateTime } from 'js/services/format';
 export default () => {
     const prsContext = usePRsContext();
     const { leadtime: leadtimeContext, stages: stagesContext } = usePipelineContext();
-    useBreadcrumbsContext({ current: 'Overview' });
 
     let slowerStage = 0;
     if (leadtimeContext.avg) {
