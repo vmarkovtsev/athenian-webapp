@@ -10,7 +10,6 @@ import { getInsights } from 'js/components/insights/Helper';
 
 import { pipelineStagesConf, getStage } from 'js/pages/pipeline/Pipeline';
 
-import { useBreadcrumbsContext } from 'js/context/Breadcrumbs';
 import { useFiltersContext } from 'js/context/Filters';
 import { usePipelineContext } from 'js/context/Pipeline';
 import { usePRsContext } from 'js/context/PRs';
@@ -24,18 +23,10 @@ export default () => {
 
     const { stages: stagesContext } = usePipelineContext();
     const prsContext = usePRsContext();
+
     const { name: stageSlug } = useParams();
     const activeConf = getStage(pipelineStagesConf, stageSlug);
     const activeStage = getStage(stagesContext, stageSlug);
-
-    const links = activeConf ? {
-        current: activeConf.title,
-        ancestors: [{ url: '/stage/overview', text: 'Overview' }],
-    } : {
-            current: 'Overview',
-        };
-
-    useBreadcrumbsContext(links);
 
     const { dateInterval, repositories, contributors } = useFiltersContext();
 
