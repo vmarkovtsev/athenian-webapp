@@ -228,7 +228,7 @@ const buildForSet = (filter, groupBy) => {
   if (!groupBy) {
     forSet.push(ForSet.constructFromObject(filter));
   } else if (!['repositories', 'developers'].includes(groupBy)) {
-    throw "Invalid groupby";
+    throw new Error('Invalid groupby');
   } else {
     for (const g of filter[groupBy]) {
       const f = _.clone(filter);

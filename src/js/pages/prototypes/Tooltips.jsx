@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import $ from 'jquery';
 
 import TooltipInfo from 'js/pages/prototypes/tooltip-info/TooltipInfo';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default ({ content }) => {
     useEffect(() => {

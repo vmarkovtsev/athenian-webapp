@@ -85,9 +85,9 @@ export default ({ data }) => {
                                 sort = 3;
                                 break;
                             case prStatus.OPENED:
+                            default:
                                 pic = '<i title="opened" class="icon-pull-request text-success"></i>';
                                 sort = 1;
-                                break;
                         }
 
                         switch (type) {
@@ -97,6 +97,7 @@ export default ({ data }) => {
                                 return `status:${row.status}`;
                             case 'type':
                             case 'sort':
+                            default:
                                 return sort;
                         }
                     },
@@ -122,6 +123,7 @@ export default ({ data }) => {
                                 return row.title + ` number:${row.number} ` + (row.authors.map(user => `author:${github.userName(user)}`).join(' '));
                             case 'type':
                             case 'sort':
+                            default:
                                 return row.number;
                         }
                     },
@@ -142,6 +144,7 @@ export default ({ data }) => {
                                 return '';
                             case 'type':
                             case 'sort':
+                            default:
                                 return row.size_added + row.size_removed;
                         }
                     },
@@ -157,6 +160,7 @@ export default ({ data }) => {
                                 return '';
                             case 'type':
                             case 'sort':
+                            default:
                                 return row['comments'] + row['review_comments'];
                         }
                     },
@@ -171,6 +175,7 @@ export default ({ data }) => {
                                 return row.commentersReviewers.map(user => `participant:${github.userName(user)}`).join(' ');
                             case 'type':
                             case 'sort':
+                            default:
                                 return row.commentersReviewers.length;
                         }
                     },
@@ -186,6 +191,7 @@ export default ({ data }) => {
                                 return '';
                             case 'type':
                             case 'sort':
+                            default:
                                 return (row.closed || new Date()) - row.created;
                         }
                     },
