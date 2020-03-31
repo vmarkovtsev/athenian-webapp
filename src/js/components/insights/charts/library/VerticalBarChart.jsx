@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import _ from 'lodash';
 
@@ -11,6 +11,8 @@ import {
     ChartLabel,
 } from 'react-vis';
 
+import Tooltip, { onValueChange, onValueReset } from 'js/components/charts/Tooltip';
+
 export default ({title, data, extra}) => (
     <div style={{ background: 'white' }}>
       <VerticalBarChart title={title} data={data} extra={extra} />
@@ -18,6 +20,8 @@ export default ({title, data, extra}) => (
 );
 
 const VerticalBarChart = ({ title, data, extra }) => {
+    const [currentHover, setCurrentHover] = useState(null);
+
     if (data.length === 0) {
         return <></>;
     }
@@ -39,8 +43,15 @@ const VerticalBarChart = ({ title, data, extra }) => {
           <YAxis />
           {extra.axisLabels && extra.axisLabels.y && buildChartLabel(extra.axisLabels.y, 'y')}
 
-          <VerticalBarSeries data={formattedData} color={color} barWidth={0.5} />
+          <VerticalBarSeries
+            data={formattedData}
+            color={color}
+            barWidth={0.5}
+            onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
+            onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
+          />
 
+          {currentHover && <Tooltip value={currentHover} />}
         </FlexibleWidthXYPlot>
     );
 };

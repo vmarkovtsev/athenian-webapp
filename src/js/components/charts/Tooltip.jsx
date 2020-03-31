@@ -26,16 +26,16 @@ export default ({value, ...props}) => {
     );
 };
 
-export const onValueChange = (datapoint, eventType, current, setCurrent) => {
+export const onValueChange = (datapoint, eventType, current, setCurrent, blacklist) => {
     console.log(`START: ${eventType}`);
 
-    if (!current ||
-        (current && (datapoint.x.toString() !== current.x.toString() ||
-                          datapoint.y !== current.y))) {
-        console.log('setting datapoint');
-        setCurrent(datapoint);
+    if (current && sameObjects(datapoint, current, blacklist)) {
+        console.log(`END: ${eventType}`);
+        return;
     }
 
+    console.log('setting datapoint');
+    setCurrent(getFilteredObject(datapoint, blacklist));
     console.log(`END: ${eventType}`);
 };
 
@@ -44,3 +44,12 @@ export const onValueReset = (datapoint, eventType, current, setCurrent) => {
     setCurrent(null);
     console.log(`END: ${eventType}`);
 };
+
+const sameObjects = (previous, current, blacklist) => {
+    const filteredPrev = getFilteredObject(previous, blacklist);
+    const filteredCurr = getFilteredObject(current, blacklist);
+
+    return _.isEqual(filteredPrev, filteredCurr);
+};
+
+const getFilteredObject = (obj, blacklist) => _(obj).omit(blacklist).value();
