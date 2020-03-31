@@ -165,14 +165,14 @@ export default ({ stage, data }) => {
                         }
                     },
                 }, {
-                    title: 'Participants',
-                    className: 'pr-participants',
+                    title: 'Reviewers',
+                    className: 'pr-reviewers',
                     render: (_, type, row) => {
                         switch (type) {
                             case 'display':
                                 return row.commentersReviewers.map(userImage(users)).join(' ');
                             case 'filter':
-                                return row.commentersReviewers.map(user => `participant:${github.userName(user)}`).join(' ');
+                                return row.commentersReviewers.map(user => `reviewer:${github.userName(user)}`).join(' ');
                             case 'type':
                             case 'sort':
                             default:
