@@ -30,13 +30,29 @@ export const PR_STATUS = {
   CLOSED: 'closed',
 };
 
+// These are the PR labels that will appear in PR tables depending on pr status/stage/events
+// and depending from which stage the PR is analyzed (see: https://athenianco.atlassian.net/browse/ENG-325)
+export const PR_LABELS = {
+  WIP: 'Work in Progress',
+  WIP_DONE: 'Work Submitted',
+  REVIEW_PENDING: 'Review Required',
+  REVIEW_SUBMITTED: 'Review Submitted',
+  REVIEW_REJECTED: 'Changes Requested',
+  REVIEW_APPROVAL: 'Review Approved',
+  MERGE_PENDING: 'Waiting for Merge',
+  MERGE_COMPLETED: 'Merged',
+  RELEASE_PENDING: 'Waiting for Release',
+  RELEASE_COMPLETED: 'Released',
+  CLOSED: 'Closed',
+};
+
 const realEvents = Object.keys(PR_EVENT).map(eventKey => PR_EVENT[eventKey]);
 
 export default pr => {
   // TODO(dpordomingo): This won't be needed once 'pr.properties' are split into 'pr.stage' and 'pr.events'
   const events = extractEvents(pr);
 
-  const completedStages = extractCompletedStages(events);
+  const completedStages = extractCompletedStages(pr);
   const status = extractStatus(pr);
 
   const { authors, mergers, commentersReviewers } = extractParticipantsByKind(pr);
@@ -95,26 +111,26 @@ const extractStatus = pr => {
   }
 };
 
-const extractCompletedStages = events => {
-  if (events.indexOf(PR_EVENT.RELEASE) >= 0) {
+const extractCompletedStages = pr => {
+  if (pr.merged && pr.stage === PR_STAGE.DONE) {
     return [
       PR_STAGE.COMPLETE.WIP,
       PR_STAGE.COMPLETE.REVIEW,
       PR_STAGE.COMPLETE.MERGE,
       PR_STAGE.COMPLETE.RELEASE
     ];
-  } else if (events.indexOf(PR_EVENT.MERGE) >= 0) {
+  } else if (pr.stage === PR_STAGE.RELEASE) {
     return [
       PR_STAGE.COMPLETE.WIP,
       PR_STAGE.COMPLETE.REVIEW,
       PR_STAGE.COMPLETE.MERGE,
     ];
-  } else if (events.indexOf(PR_EVENT.APPROVE) >= 0) {
+  } else if (pr.stage === PR_STAGE.MERGE || pr.properties.indexOf(PR_EVENT.APPROVE) >= 0) {
     return [
       PR_STAGE.COMPLETE.WIP,
       PR_STAGE.COMPLETE.REVIEW,
     ];
-  } else if (events.indexOf(PR_EVENT.REVIEW_REQUEST) >= 0) {
+  } else if (pr.stage === PR_STAGE.REVIEW || pr.properties.indexOf(PR_EVENT.REVIEW_REQUEST) >= 0) {
     return [
       PR_STAGE.COMPLETE.WIP,
     ];
@@ -122,3 +138,52 @@ const extractCompletedStages = events => {
 
   return [];
 }
+
+export const prLabel = stage => pr => {
+  if (pr.status === PR_STATUS.CLOSED) {
+    return PR_LABELS.CLOSED;
+  }
+
+  switch (stage) {
+    case PR_STAGE.WIP:
+      if (pr.completedStages.includes(PR_STAGE.COMPLETE.WIP)) {
+        return PR_LABELS.WIP_DONE;
+      }
+      return PR_LABELS.WIP;
+    case PR_STAGE.REVIEW:
+      if (pr.completedStages.includes(PR_STAGE.COMPLETE.REVIEW)) {
+        return PR_LABELS.REVIEW_APPROVAL;
+      } else if (pr.events.includes(PR_EVENT.REVIEW)) {
+        return PR_LABELS.REVIEW_REJECTED;
+      }
+      return PR_LABELS.REVIEW_PENDING;
+    case PR_STAGE.MERGE:
+      if (pr.completedStages.includes(PR_STAGE.COMPLETE.MERGE)) {
+        return PR_LABELS.MERGE_COMPLETED;
+      }
+      return PR_LABELS.MERGE_PENDING;
+    case PR_STAGE.RELEASE:
+      if (pr.completedStages.includes(PR_STAGE.COMPLETE.RELEASE)) {
+        return PR_LABELS.RELEASE_COMPLETED;
+      }
+      return PR_LABELS.RELEASE_PENDING;
+    case PR_STAGE.DONE:
+      if (pr.completedStages.includes(PR_STAGE.COMPLETE.RELEASE)) {
+        return PR_LABELS.RELEASE_COMPLETED;
+      }
+      return PR_LABELS.CLOSED;
+    default:
+      if (pr.completedStages.includes(PR_STAGE.COMPLETE.RELEASE)) {
+        return PR_LABELS.RELEASE_COMPLETED;
+      } else if (pr.completedStages.includes(PR_STAGE.COMPLETE.MERGE)) {
+        return PR_LABELS.RELEASE_PENDING;
+      } else if (pr.completedStages.includes(PR_STAGE.COMPLETE.REVIEW)) {
+        return PR_LABELS.MERGE_PENDING;
+      } else if (pr.events.includes(PR_EVENT.REVIEW)) {
+        return PR_LABELS.REVIEW_REJECTED;
+      } else if (pr.completedStages.includes(PR_STAGE.COMPLETE.WIP)) {
+        return PR_LABELS.REVIEW_PENDING;
+      }
+      return PR_LABELS.WIP;
+  }
+};

@@ -5,7 +5,7 @@ import 'datatables.net-bs4';
 import 'datatables.net-bs4/css/dataTables.bootstrap4.css';
 
 import { dateTime, github, number } from 'js/services/format';
-import { PR_STATUS as prStatus } from 'js/services/prHelpers'
+import { PR_STATUS as prStatus, prLabel } from 'js/services/prHelpers'
 
 const userImage = users => user => {
     if (users[user] && users[user].avatar) {
@@ -20,20 +20,22 @@ const userImage = users => user => {
     return `<span title="${github.userName(user)}" class="pr-user-avatar pr-user-unknown">?</span>`;
 };
 
-export default ({ data }) => {
+const tableContainerId = '#dataTable';
 
+export default ({ stage, data }) => {
+    const prLabelStage = prLabel(stage);
     const { prs, users } = data;
 
     useEffect(() => {
-        if (!prs.length || !$('#dataTable').DataTable) {
+        if (!prs.length || !$(tableContainerId).DataTable) {
             return;
         }
 
-        if ($.fn.DataTable.isDataTable('#dataTable')) {
-            $('#dataTable').DataTable().clear();
+        if ($.fn.DataTable.isDataTable(tableContainerId)) {
+            $(tableContainerId).DataTable().clear();
         }
 
-        $('#dataTable').DataTable({
+        $(tableContainerId).DataTable({
             dom: `
                 <'row'<'col-12'f>>
                 <'row'<'col-12'tr>>
@@ -65,9 +67,7 @@ export default ({ data }) => {
                 { "width": "65px", "targets": 3 },  //comments
                 { "width": "130px", "targets": 4 }, //participants
                 { "width": "70px", "targets": 5 },  //age
-                { "width": "80px", "targets": 6 },  //stage
-                { "width": "100px", "targets": 7 }, //events
-                { "width": "80px", "targets": 8 },  //completed
+                { "width": "150px", "targets": 6 }, //stage
             ],
             columns: [
                 {
@@ -201,31 +201,34 @@ export default ({ data }) => {
                     render: (_, type, row) => {
                         switch (type) {
                             case 'display':
-                                return `<div class="badge badge-outlined badge-${row.stage}">${row.stage}</div>`;
+                                const hint = '' +
+                                    `stage:${row.stage},\n` +
+                                    `events:[${row.events.map(stage => stage.replace('_happened', '')).join(', ')}],\n` +
+                                    `stage-completes:[${row.completedStages.map(stage => stage.replace('-complete', '')).join(', ')}]`;
+                                return (
+                                    `<div class="badge badge-outlined badge-${row.stage}">
+                                        <span
+                                            title="${hint}"
+                                            data-toggle="tooltip"
+                                            data-placement="bottom"
+                                            className="ml-2"
+                                        >
+                                            ${prLabelStage(row)}
+                                        </span>
+                                    </div>`
+                                );
                             default:
                                 return row.stage;
                         }
-                    },
-                }, {
-                    title: 'Events',
-                    className: 'pr-events align-middle text-center',
-                    render: (_, __, row) => {
-                        return row.events.map(stage => stage.replace('_happened', '')).join(', ');
-                    },
-                }, {
-                    title: 'Completed',
-                    className: 'pr-completed align-middle text-center',
-                    render: (_, __, row) => {
-                        return row.completedStages.map(stage => stage.replace('-complete', '')).join(', ');
                     },
                 },
             ],
         });
 
         return () => {
-            $('#dataTable').DataTable().destroy();
+            $(tableContainerId).DataTable().destroy();
         }
-    }, [prs, users])
+    }, [prs, users, prLabelStage])
 
     if (prs.length === 0) {
         return null;
