@@ -3,13 +3,15 @@ import React, { useState } from 'react';
 import {
   FlexibleWidthXYPlot, LineMarkSeries, AreaSeries,
   VerticalGridLines, HorizontalGridLines,
-  XAxis, YAxis, Hint
+  XAxis, YAxis
 } from 'react-vis';
 
 import { palette } from 'js/res/palette';
 
 import { dateTime } from 'js/services/format';
 import { hexToRGBA } from 'js/services/colors';
+
+import Tooltip, { onValueChange, onValueReset } from 'js/components/charts/Tooltip';
 
 export default ({ data, average, color = palette.schemes.primary, height = 300 }) => {
   const fillColor = hexToRGBA(color, .2);
@@ -33,23 +35,8 @@ export default ({ data, average, color = palette.schemes.primary, height = 300 }
           stroke={color}
           fill="white"
           animation="stiff"
-          onValueMouseOver={(datapoint, event)=>{
-              console.log('START: mouseover');
-
-              if (!currentHover ||
-                  (currentHover && (datapoint.x.toString() !== currentHover.x.toString() ||
-                                    datapoint.y !== currentHover.y))) {
-                  console.log('setting datapoint for current hover');
-                  setCurrentHover(datapoint);
-              }
-
-              console.log('END: mouseover');
-          }}
-          onValueMouseOut={(datapoint, event)=>{
-              console.log('START: mouseout');
-              setCurrentHover(null);
-              console.log('END: mouseout');
-          }}
+          onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
+          onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
         />
         <HorizontalGridLines
           tickValues={[average]}
@@ -57,16 +44,7 @@ export default ({ data, average, color = palette.schemes.primary, height = 300 }
           animation="stiff"
         />
 
-        {currentHover &&
-         <Hint value={currentHover}>
-           // TODO: This needs to be styled.
-           // `currentHover.x` is a datetime, `currentHover.y` is a number
-           <div style={{background: 'black'}}>
-             <h4>Value of hint</h4>
-             <p>x: {currentHover.x.toString()}</p>
-             <p>y: {currentHover.y}</p>
-           </div>
-         </Hint>}
+        {currentHover && <Tooltip value={currentHover} />}
 
       </FlexibleWidthXYPlot>
     </div>
