@@ -20,7 +20,7 @@ export default ({
             </div>
             <div className="col-md-4">
                 <MainMetric
-                    title="Pull requests in progress" value={createdPRsAvg} variation={createdPRsVariation}
+                    title="Pull requests" value={createdPRsAvg} variation={createdPRsVariation}
                     hint="Number of Pull Requests that hav been created within the active filters"
                 />
             </div>
