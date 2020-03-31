@@ -1,8 +1,13 @@
 .ath-tabs .tab {
     cursor: pointer;
 
-    &.active {
+    &.active,
+    &.active:hover {
         @extend .border-bottom-primary;
         cursor: default;
+    }
+
+    &:hover {
+        border-bottom: 0.25rem solid $at-border-color !important;
     }
 }
