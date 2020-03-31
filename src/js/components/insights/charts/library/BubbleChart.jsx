@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { scaleLog } from 'd3-scale';
 
 import _ from 'lodash';
@@ -16,6 +16,7 @@ import {
     DiscreteColorLegend
 } from 'react-vis';
 
+import Tooltip, { onValueChange, onValueReset } from 'js/components/charts/Tooltip';
 
 export default ({title, data, extra}) => (
     <div style={{ background: 'white' }}>
@@ -42,7 +43,7 @@ const formatData = (data, extra) => _(data)
       })
       .value();
 
-const buildSeries = (title, formattedData, extra) => {
+const buildSeries = (title, formattedData, extra, currentHover, setCurrentHover) => {
     const transformer = extra.isLogScale ? logScale : (v) => v;
     let marksSeries;
     if (extra.grouper) {
@@ -60,6 +61,8 @@ const buildSeries = (title, formattedData, extra) => {
                     size: v.size,
                     label: v.label
                 }))}
+                onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
+                onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
               />
           ))
             .value();
@@ -86,6 +89,15 @@ const buildSeries = (title, formattedData, extra) => {
                           )
                       }))
                   }
+                  onValueMouseOver={
+                      (datapoint, event) => onValueChange(
+                          datapoint, "mouseover", currentHover, setCurrentHover,
+                          ['customComponent'])
+                  }
+                  onValueMouseOut={
+                      (datapoint, event) => onValueReset(
+                          datapoint, "mouseout", currentHover, setCurrentHover)
+                  }
                 />
             ];
         } else {
@@ -100,7 +112,10 @@ const buildSeries = (title, formattedData, extra) => {
                       y: transformer(v.y),
                       size: v.size,
                       label: v.label
-                  }))} />
+                  }))}
+                  onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
+                  onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
+                />
             ];
         }
     }
@@ -109,12 +124,15 @@ const buildSeries = (title, formattedData, extra) => {
 };
 
 const BubbleChart = ({ title, data, extra }) => {
+    const [currentHover, setCurrentHover] = useState(null);
+
     if (data.length === 0) {
         return <></>;
     }
 
     const formattedData = formatData(data, extra);
-    const marksSeries = buildSeries(title, formattedData, extra);
+    const marksSeries = buildSeries(title, formattedData, extra,
+                                    currentHover, setCurrentHover);
 
     const legend = _(extra.groups)
           .map(v => ({ title: v.title, color: v.color }))
@@ -139,6 +157,7 @@ const BubbleChart = ({ title, data, extra }) => {
           <YBubbleChartAxis formattedData={formattedData} label={extra.axisLabels.y} />
 
           {marksSeries}
+          {currentHover && <Tooltip value={currentHover} />}
 
         </FlexibleWidthXYPlot>
     );
@@ -165,12 +184,15 @@ const CircleMask = ({id, maskProperties}) => (
 CircleMask.requiresSVG = true;
 
 const BubbleChartLogScale = ({ title, data, extra }) => {
+    const [currentHover, setCurrentHover] = useState(null);
+
     if (data.length === 0) {
         return <></>;
     }
 
     const formattedData = formatData(data, extra);
-    const marksSeries = buildSeries(title, formattedData, extra);
+    const marksSeries = buildSeries(title, formattedData, extra,
+                                    currentHover, setCurrentHover);
 
     const legend = _(extra.groups)
           .map(v => ({ title: v.title, color: v.color }))
@@ -195,6 +217,7 @@ const BubbleChartLogScale = ({ title, data, extra }) => {
           <YBubbleChartLogAxis formattedData={formattedData} label={extra.axisLabels.y} />
 
           {marksSeries}
+          {currentHover && <Tooltip value={currentHover} />}
 
         </FlexibleWidthXYPlot>
     );

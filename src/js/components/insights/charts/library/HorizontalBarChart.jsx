@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
     FlexibleWidthXYPlot,
@@ -9,6 +9,8 @@ import {
     DiscreteColorLegend,
 } from 'react-vis';
 
+import Tooltip, { onValueChange, onValueReset } from 'js/components/charts/Tooltip';
+
 import _ from 'lodash';
 
 export default ({title, data, extra}) => (
@@ -18,6 +20,8 @@ export default ({title, data, extra}) => (
 );
 
 const HorizontalBarChart = ({ title, data, extra }) => {
+    const [currentHover, setCurrentHover] = useState(null);
+
     if (data.length === 0) {
         return <></>;
     }
@@ -75,7 +79,11 @@ const HorizontalBarChart = ({ title, data, extra }) => {
                                      data={s.reverse()}
                                      color={extra.series[k].color}
                                      key={k}
-                                     barWidth={extra.barWidth || 0.5}/>).value()}
+                                     barWidth={extra.barWidth || 0.5}
+                                     onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
+                                     onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
+                                   />).value()}
+          {currentHover && <Tooltip value={currentHover} />}
         </FlexibleWidthXYPlot>
     );
 };

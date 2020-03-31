@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { dateTime } from 'js/services/format';
 
@@ -14,6 +14,8 @@ import {
     LineSeries,
     MarkSeries
 } from 'react-vis';
+
+import Tooltip, { onValueChange, onValueReset } from 'js/components/charts/Tooltip';
 
 export default ({title, data, extra}) => (
     <div style={{ background: 'white' }}>
@@ -64,6 +66,8 @@ const computeTickValues = (formattedData, maxNumberOfTicks) => {
 };
 
 const TimeSeries = ({ title, data, extra }) => {
+    const [currentHover, setCurrentHover] = useState(null);
+
     if (data.length === 0) {
         return <></>;
     }
@@ -106,6 +110,8 @@ const TimeSeries = ({ title, data, extra }) => {
             strokeWidth={3}
             data={formattedData}
             animation="stiff"
+            onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
+            onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
           />
 
           {referenceData.length > 0 &&
@@ -120,6 +126,8 @@ const TimeSeries = ({ title, data, extra }) => {
              data={referenceData}
              animation="stiff"
            />}
+
+          {currentHover && <Tooltip value={currentHover} />}
         </FlexibleWidthXYPlot>
     );
 };
