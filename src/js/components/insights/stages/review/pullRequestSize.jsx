@@ -26,7 +26,7 @@ const pullRequestSize = {
                     files: pr.files_changed,
                     label: pr.repository + " - #" + pr.number,
                     age: endTime.diff(pr.created, 'hours'),
-                    reviewRequested: pr.review_requested,
+                    reviewRequested: pr.review_requested || false,
                 };
             })
             .orderBy(['age', 'loc'], ['desc', 'desc'])
