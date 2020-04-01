@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Badge from 'js/components/ui/Badge';
+import Badge, { NEGATIVE_IS_BETTER, POSITIVE_IS_BETTER } from 'js/components/ui/Badge';
 import { BigNumber } from 'js/components/ui/Typography';
 import Info from 'js/components/ui/Info';
 
@@ -17,12 +17,14 @@ export default ({
             <div className="col-md-3">
                 <MainMetric title="Lead time" value={leadTimeAvg && dateTime.human(leadTimeAvg)} variation={leadTimeVariation}
                     hint="Average of time elapsed between the creation of the 1st commit in the Pull Requests within the active filters, and the code being used in production"
+                    negativeIsBetter
                 />
             </div>
             <div className="col-md-3">
                 <MainMetric
                     title="Cycle time" value={cycleTimeAvg} variation={cycleTimeVariation}
                     hint="The sum of each stage average time from start to finish"
+                    negativeIsBetter
                 />
             </div>
             <div className="col-md-3">
@@ -40,7 +42,7 @@ export default ({
     );
 };
 
-const MainMetric = ({ title, hint, value, variation }) => (
+const MainMetric = ({ title, hint, value, variation, negativeIsBetter = false }) => (
     <div className="card">
         <div className="card-body py-2 px-3">
             <div className="card-title mb-0">
@@ -51,7 +53,11 @@ const MainMetric = ({ title, hint, value, variation }) => (
                     </div>
                     <div className="d-flex align-items-center">
                         <BigNumber content={value} />
-                        {value ? <Badge value={number.round(variation)} trend className="ml-4" /> : ''}
+                        {value ? <Badge
+                            value={number.round(variation)}
+                            trend={negativeIsBetter ? NEGATIVE_IS_BETTER : POSITIVE_IS_BETTER}
+                            className="ml-4"
+                        /> : ''}
                     </div>
                 </div>
             </div>
