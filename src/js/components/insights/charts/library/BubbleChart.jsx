@@ -80,7 +80,7 @@ const buildSeries = (title, formattedData, extra, currentHover, setCurrentHover)
                           customComponent: () => (
                               <Pic
                                 url={
-                                    extra.yAxis.imageMapping[v.label] ?
+                                    extra.yAxis.imageMapping && extra.yAxis.imageMapping[v.label] ?
                                         extra.yAxis.imageMapping[v.label] :
                                         "https://via.placeholder.com/30x30.png"
                                 }
