@@ -10,6 +10,7 @@ import { dateTime, number } from 'js/services/format';
 import { palette } from 'js/res/palette';
 
 import FilledAreaChart from 'js/components/charts/FilledAreaChart';
+import { NEGATIVE_IS_BETTER } from 'js/components/ui/Badge';
 
 export const SummaryMetrics = ({ conf, children }) => {
   return (
@@ -21,7 +22,7 @@ export const SummaryMetrics = ({ conf, children }) => {
             <div className="pl-2">
               <div className="font-weight-bold mt-4 mb-3 pb-2 border-bottom">
                 <BigNumber content={dateTime.human(conf.avg)} isXL />
-                <Badge value={number.round(conf.variation)} className="ml-2" trend />
+                <Badge value={number.round(conf.variation)} className="ml-2" trend={NEGATIVE_IS_BETTER} />
               </div>
               <div>
                 {children}

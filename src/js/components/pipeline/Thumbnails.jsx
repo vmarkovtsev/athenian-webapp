@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 
 import CleanAreaChart, { vertical } from 'js/components/charts/CleanAreaChart';
-import Badge from 'js/components/ui/Badge';
+import Badge, { NEGATIVE_IS_BETTER } from 'js/components/ui/Badge';
 import { BigNumber, SmallTitle } from 'js/components/ui/Typography';
 import Info from 'js/components/ui/Info'
 
@@ -55,7 +55,7 @@ const Stage = ({ title, text, hint, badge, variation, color, data, active, onCli
                 <div className="row no-gutters card-text">
                     <div className="col-5">
                         <BigNumber content={text} className="mb-1 w-100" />
-                        {text ? <Badge trend value={number.round(variation)} /> : ''}
+                        {text ? <Badge trend={NEGATIVE_IS_BETTER} value={number.round(variation)} /> : ''}
                     </div>
                     <div className="col-7 pl-2" style={{ height: 55 }}>
                         {data && <PipelineCardMiniChart data={data} color={color} active={active} />}
