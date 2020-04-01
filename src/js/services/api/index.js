@@ -85,7 +85,7 @@ export const getContributors = (token, userAccount, from, to, repos) => {
 };
 
 export const getMetrics = (api, accountId, dateInterval, repos, contributors) => {
-  const metrics = ['lead-time', 'wip-time', 'review-time', 'merging-time', 'release-time'];
+  const metrics = ['lead-time', 'cycle-time', 'wip-time', 'review-time', 'merging-time', 'release-time'];
   const result = {};
   metrics.forEach(metric => {
     result[metric] = {
