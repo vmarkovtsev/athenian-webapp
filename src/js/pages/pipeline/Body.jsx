@@ -37,12 +37,17 @@ const withMainMetrics = (leadTimeData = {}, prs) => {
 
     const leadTimeAvg = leadTimeData.avg;
     const leadTimeVariation = leadTimeData.variation;
+
+    const cycleTimeAvg = 33; // TODO(dpordomingo): https://athenianco.atlassian.net/browse/ENG-464 cycleTimeData.avg;
+    const cycleTimeVariation = 33; // TODO(dpordomingo): https://athenianco.atlassian.net/browse/ENG-464 cycleTimeData.variation;
+
     const createdPRsVariation = -5; // TODO(dpordomingo): variations to be calculated in another PR
     const contribsVariation = 10; // TODO(dpordomingo): variations to be calculated in another PR
 
     return (
         <MainMetrics
             leadTimeAvg={leadTimeAvg} leadTimeVariation={leadTimeVariation}
+            cycleTimeAvg={cycleTimeAvg} cycleTimeVariation={cycleTimeVariation}
             createdPRsAvg={prCount} createdPRsVariation={createdPRsVariation}
             contribsAvg={contribCount} contribsVariation={contribsVariation}
         />
