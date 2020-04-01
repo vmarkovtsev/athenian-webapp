@@ -4,9 +4,9 @@ const FiltersContext = React.createContext({ repositories: [], contributors: [],
 
 export const useFiltersContext = () => useContext(FiltersContext);
 
-export default ({ repositories, contributors, dateInterval, children }) => {
+export default ({ ready, repositories, contributors, dateInterval, children }) => {
     return (
-        <FiltersContext.Provider value={{ repositories, contributors, dateInterval }}>
+        <FiltersContext.Provider value={{ ready, repositories, contributors, dateInterval }}>
             {children}
         </FiltersContext.Provider >
     );
