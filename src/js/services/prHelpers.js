@@ -17,11 +17,12 @@ export const PR_STAGE = {
 export const PR_EVENT = {
   CREATION: 'created',
   COMMIT: 'commit_happened',
-  REVIEW_REQUEST: 'review_requested', // Transitions to 'review' Stage
+  REVIEW_REQUEST: 'review_request_happened', // Transitions to 'review' Stage
   REVIEW: 'review_happened',
-  APPROVE: 'approve_happened',        // Transitions to 'merge' Stage
-  MERGE: 'merge_happened',            // Transitions to 'release' Stage
-  RELEASE: 'release_happened',        // Transitions to 'done' Stage
+  REJECTION: 'changes_request_happened',
+  APPROVE: 'approve_happened',               // Transitions to 'merge' Stage
+  MERGE: 'merge_happened',                   // Transitions to 'release' Stage
+  RELEASE: 'release_happened',               // Transitions to 'done' Stage
 };
 
 export const PR_STATUS = {
@@ -70,6 +71,8 @@ export default pr => {
     created: new Date(pr.created),
     updated: new Date(pr.updated),
     closed: pr.closed && new Date(pr.closed),
+    review_requested: pr.review_requested && new Date(pr.review_requested),
+    approved: pr.approved && new Date(pr.approved),
     merged: pr.merged && new Date(pr.merged),
     released: pr.released && new Date(pr.released),
   }
@@ -92,14 +95,7 @@ const extractParticipantsByKind = pr => pr.participants.reduce((acc, participant
   return acc;
 }, { authors: [], commentersReviewers: [], mergers: [] });
 
-const extractEvents = pr => {
-  const events = pr.properties.filter(property => realEvents.indexOf(property) >= 0);
-  if (pr.review_requested) {
-    events.push(PR_EVENT.REVIEW_REQUEST);
-  }
-
-  return events;
-};
+const extractEvents = pr => pr.properties.filter(property => realEvents.indexOf(property) >= 0);
 
 const extractStatus = pr => {
   if (pr.merged) {

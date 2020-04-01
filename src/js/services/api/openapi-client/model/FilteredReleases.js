@@ -12,25 +12,23 @@
  */
 
 import ApiClient from '../ApiClient';
+import FilteredRelease from './FilteredRelease';
 import IncludedNativeUsers from './IncludedNativeUsers';
-import PullRequest from './PullRequest';
 
 /**
- * The PullRequestSet model module.
- * @module model/PullRequestSet
+ * The FilteredReleases model module.
+ * @module model/FilteredReleases
  * @version 1.0.20
  */
-class PullRequestSet {
+class FilteredReleases {
     /**
-     * Constructs a new <code>PullRequestSet</code>.
-     * List of pull requests together with the participant profile pictures.
-     * @alias module:model/PullRequestSet
-     * @param include {module:model/IncludedNativeUsers} 
-     * @param data {Array.<module:model/PullRequest>} List of matched pull requests.
+     * Constructs a new <code>FilteredReleases</code>.
+     * Response of &#x60;/filter/releases&#x60; - releases metadata and user details.
+     * @alias module:model/FilteredReleases
      */
-    constructor(include, data) { 
+    constructor() { 
         
-        PullRequestSet.initialize(this, include, data);
+        FilteredReleases.initialize(this);
     }
 
     /**
@@ -38,27 +36,25 @@ class PullRequestSet {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, include, data) { 
-        obj['include'] = include;
-        obj['data'] = data;
+    static initialize(obj) { 
     }
 
     /**
-     * Constructs a <code>PullRequestSet</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>FilteredReleases</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/PullRequestSet} obj Optional instance to populate.
-     * @return {module:model/PullRequestSet} The populated <code>PullRequestSet</code> instance.
+     * @param {module:model/FilteredReleases} obj Optional instance to populate.
+     * @return {module:model/FilteredReleases} The populated <code>FilteredReleases</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new PullRequestSet();
+            obj = obj || new FilteredReleases();
 
             if (data.hasOwnProperty('include')) {
                 obj['include'] = IncludedNativeUsers.constructFromObject(data['include']);
             }
             if (data.hasOwnProperty('data')) {
-                obj['data'] = ApiClient.convertToType(data['data'], [PullRequest]);
+                obj['data'] = ApiClient.convertToType(data['data'], [FilteredRelease]);
             }
         }
         return obj;
@@ -70,18 +66,18 @@ class PullRequestSet {
 /**
  * @member {module:model/IncludedNativeUsers} include
  */
-PullRequestSet.prototype['include'] = undefined;
+FilteredReleases.prototype['include'] = undefined;
 
 /**
- * List of matched pull requests.
- * @member {Array.<module:model/PullRequest>} data
+ * List of release metadata.
+ * @member {Array.<module:model/FilteredRelease>} data
  */
-PullRequestSet.prototype['data'] = undefined;
+FilteredReleases.prototype['data'] = undefined;
 
 
 
 
 
 
-export default PullRequestSet;
+export default FilteredReleases;
 
