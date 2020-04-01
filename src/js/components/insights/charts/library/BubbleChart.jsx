@@ -54,7 +54,6 @@ const buildSeries = (title, formattedData, extra, currentHover, setCurrentHover)
                 key={k}
                 strokeWidth={2}
                 color={extra.groups[k].color}
-                onValueMouseOver={v => console.log(v.label)}
                 data={series.map(v => ({
                     x: transformer(v.x),
                     y: transformer(v.y),
@@ -106,7 +105,6 @@ const buildSeries = (title, formattedData, extra, currentHover, setCurrentHover)
                   key={1}
                   strokeWidth={2}
                   color={extra.color}
-                  onValueMouseOver={v => console.log(v.label)}
                   data={formattedData.map(v => ({
                       x: transformer(v.x),
                       y: transformer(v.y),
