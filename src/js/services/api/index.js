@@ -3,7 +3,7 @@ import {
   ApiClient,
   PullRequestMetricsRequest,
   DeveloperMetricsRequest,
-  FilterContribsOrReposRequest,
+  GenericFilterRequest,
   FilterPullRequestsRequest
 } from 'js/services/api/openapi-client';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
@@ -71,14 +71,14 @@ export const getUserWithAccountRepos = async token => {
 
 export const getRepos = (token, userAccount, from, to, repos) => {
   const api = buildApi(token);
-  const filter = new FilterContribsOrReposRequest(userAccount, from, to);
+  const filter = new GenericFilterRequest(userAccount, from, to);
   filter.in = repos;
   return api.filterRepositories({ body: filter }).then(repos => [...repos])
 };
 
 export const getContributors = (token, userAccount, from, to, repos) => {
   const api = buildApi(token);
-  const filter = new FilterContribsOrReposRequest(userAccount, from, to);
+  const filter = new GenericFilterRequest(userAccount, from, to);
   filter.in = repos;
   return api.filterContributors({ body: filter })
     .then(contribs => contribs.map(c => c.login));
