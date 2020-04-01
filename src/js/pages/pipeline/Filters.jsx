@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { useAuth0 } from 'js/context/Auth0';
 import { useUserContext } from 'js/context/User';
@@ -12,6 +12,8 @@ import DateInterval, { EOD, YEAR_AGO, TWO_WEEKS_AGO } from 'js/components/ui/fil
 import { getRepos, getContributors } from 'js/services/api';
 import { dateTime, github } from 'js/services/format';
 
+import { useMountEffect } from 'js/hooks';
+
 const allowedDateInterval = { from: YEAR_AGO, to: EOD };
 const defaultDateInterval = { from: TWO_WEEKS_AGO, to: EOD };
 
@@ -19,144 +21,156 @@ export default ({ children }) => {
     const { getTokenSilently } = useAuth0();
     const userContext = useUserContext();
 
-    const [allReposState, setAllReposState] = useState([]);
+    const [readyState, setReadyState] = useState(false);
+
     const [reposReadyState, setReposReadyState] = useState(false);
+    const [allReposState, setAllReposState] = useState([]);
     const [filteredReposState, setFilteredReposState] = useState([]);
 
-    const [allContribsState, setAllContribsState] = useState([]);
     const [contribsReadyState, setContribsReadyState] = useState(false);
+    const [allContribsState, setAllContribsState] = useState([]);
     const [filteredContribsState, setFilteredContribsState] = useState([]);
 
     const [filteredDateIntervalState, setFilteredDateIntervalState] = useState(defaultDateInterval);
 
-    useEffect(() => {
-        if (!userContext) {
-            return;
-        }
+    const context = {
+        account: userContext.defaultAccount.id,
+        dateInterval: defaultDateInterval,
+        repos: userContext.defaultReposet.repos
+    };
 
-        let token;
+    const reposSetters = {
+        ready: setReposReadyState,
+        all: setAllReposState,
+        filtered: setFilteredReposState
+    };
+
+    const contribsSetters = {
+        ready: setContribsReadyState,
+        all: setAllContribsState,
+        filtered: setFilteredContribsState
+    };
+
+    useMountEffect(() => {
         (async () => {
-            token = await getTokenSilently();
+            const token = await getTokenSilently();
+            await updateReposFilter({...context, token, setters: reposSetters});
+            await updateContribsFilter({...context, token, setters: contribsSetters});
+            setReadyState(true);
+        })();
+    });
 
-            setReposReadyState(false);
-            getReposForFilter(
-                token,
-                userContext.defaultAccount.id,
-                defaultDateInterval,
-                userContext.defaultReposet.repos
-            ).then(
-                repos => {
-                    setAllReposState(repos);
-                    setFilteredReposState(repos);
-                    setReposReadyState(true);
-                });
+    const onDateIntervalChange = async (selectedDateInterval) => {
+        setReadyState(false);
+        console.info('DateInterval selection changed',
+                     dateTime.ymd(selectedDateInterval.from), dateTime.ymd(selectedDateInterval.to));
 
-            setContribsReadyState(false);
-            getContribsForFilter(
-                token,
-                userContext.defaultAccount.id,
-                defaultDateInterval,
-                userContext.defaultReposet.repos
-            ).then(
-                contribs => {
-                    setAllContribsState(contribs);
-                    setContribsReadyState(true);
-                });
-        })()
+        setFilteredDateIntervalState(selectedDateInterval);
 
-    }, [userContext, getTokenSilently]);
-
-    const onDateIntervalChange = async dateInterval => {
-        console.info('DateInterval changed', dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to));
-        setReposReadyState(false);
-        setContribsReadyState(false);
-
-        getTokenSilently()
-            .then(token => getReposForFilter(
-                token,
-                userContext.defaultAccount.id,
-                dateInterval,
-                userContext.defaultReposet.repos
-            )).then(repos => {
-                setAllReposState(repos);
-                setFilteredReposState(repos.length === 0 ? userContext.defaultReposet : repos);
-                return onReposChange(repos, dateInterval);
-            }).finally(() => {
-                setReposReadyState(true);
-                setContribsReadyState(true);
-                setFilteredDateIntervalState(dateInterval);
-            });
+        const token = await getTokenSilently();
+        const updatedRepos = await updateReposFilter(
+            {...context, token, dateInterval: selectedDateInterval,
+             setters: reposSetters});
+        await updateContribsFilter(
+            {...context, token, repos: updatedRepos, dateInterval: selectedDateInterval,
+             setters: contribsSetters});
+        setReadyState(true);
     };
 
-    const onReposChange = (filteredRepos, dateInterval) => {
-        console.info('Repositories changed', filteredRepos);
-        filteredRepos = filteredRepos.length ? filteredRepos : userContext.defaultReposet.repos;
+    const onReposChange = async (selectedRepos, dateInterval) => {
+        setReadyState(false);
+        console.info('Repositories selection changed', selectedRepos);
+        selectedRepos = selectedRepos.length > 0 ? selectedRepos : context.repos;
         dateInterval = dateInterval || filteredDateIntervalState;
-        setContribsReadyState(false);
-        getTokenSilently()
-            .then(token => getContribsForFilter(
-                token,
-                userContext.defaultAccount.id,
-                dateInterval,
-                filteredRepos
-            )).then(contribs => {
-                setAllContribsState(contribs);
-                onContribsChange(contribs);
-            }).finally(() => {
-                setContribsReadyState(true);
-                setFilteredReposState(filteredRepos);
-            });
+
+        setFilteredReposState(selectedRepos);
+
+        const token = await getTokenSilently();
+        await updateContribsFilter({...context, token, dateInterval, repos: selectedRepos,
+                                    setters: contribsSetters});
+        setReadyState(true);
     };
 
-    const onContribsChange = filteredContribs => {
-        console.info('Contributors changed', filteredContribs);
-        setFilteredContribsState(filteredContribs);
+    const onContribsChange = async (selectedContribs) => {
+        setReadyState(false);
+        console.info('Contributors selection changed', selectedContribs);
+        setFilteredContribsState(selectedContribs);
+        setReadyState(true);
     };
 
     return (
         <FiltersContext
-            repositories={filteredReposState}
-            contributors={filteredContribsState}
-            dateInterval={filteredDateIntervalState}
+          ready={readyState}
+          repositories={filteredReposState}
+          contributors={filteredContribsState}
+          dateInterval={filteredDateIntervalState}
         >
-            <TopFilter
-                reposFilter={
-                    <MultiSelect
-                        id="reposFilter"
-                        className="filter"
-                        name="Repositories"
-                        noDataMsg="There are no repositories for the date interval filter"
-                        options={allReposState}
-                        isReady={reposReadyState}
-                        labelFormat={repo => (github.repoName(repo) || 'UNKNOWN')}
-                        onChange={onReposChange}
-                    />
-                }
-                contribsFilter={
-                    <MultiSelect
-                        id="contribsFilter"
-                        className="filter"
-                        name="Contributors"
-                        noDataMsg="There are no contributors for the date interval and repositories filters"
-                        options={allContribsState}
-                        isReady={contribsReadyState}
-                        labelFormat={repo => (github.userName(repo) || 'ANONYMOUS')}
-                        onChange={onContribsChange}
-                    />
-                }
-                dateIntervalFilter={
-                    <DateInterval
-                        minDate={allowedDateInterval.from}
-                        maxDate={allowedDateInterval.to}
-                        initialFrom={defaultDateInterval.from}
-                        initialTo={defaultDateInterval.to}
-                        onChange={onDateIntervalChange}
-                    />
-                }
-            />
-            {children}
+          <TopFilter
+            reposFilter={
+                <MultiSelect
+                  id="reposFilter"
+                  className="filter"
+                  name="Repositories"
+                  noDataMsg="There are no repositories for the date interval filter"
+                  options={allReposState}
+                  isReady={reposReadyState}
+                  labelFormat={repo => (github.repoName(repo) || 'UNKNOWN')}
+                  onChange={onReposChange}
+                />
+            }
+            contribsFilter={
+                <MultiSelect
+                  id="contribsFilter"
+                  className="filter"
+                  name="Contributors"
+                  noDataMsg="There are no contributors for the date interval and repositories filters"
+                  options={allContribsState}
+                  isReady={contribsReadyState}
+                  labelFormat={repo => (github.userName(repo) || 'ANONYMOUS')}
+                  onChange={onContribsChange}
+                />
+            }
+            dateIntervalFilter={
+                <DateInterval
+                  minDate={allowedDateInterval.from}
+                  maxDate={allowedDateInterval.to}
+                  initialFrom={defaultDateInterval.from}
+                  initialTo={defaultDateInterval.to}
+                  onChange={onDateIntervalChange}
+                />
+            }
+          />
+          {children}
         </FiltersContext >
     );
+};
+
+const updateFilter = async ({token, account, dateInterval, repos, setters, getter}) => {
+    setters.ready(false);
+
+    const updatedValues = await getter(token, account, dateInterval, repos);
+
+    setters.all(updatedValues);
+    setters.filtered(updatedValues);
+    setters.ready(true);
+
+    return updatedValues;
+};
+
+const updateReposFilter = async ({token, account, dateInterval, repos, setters}) => {
+    console.log('Updating repos filter', dateInterval, repos);
+    const updatedRepos = await updateFilter(
+        {token, account, dateInterval, repos, setters, getter: getReposForFilter});
+    console.log('Updated repos filter', updatedRepos);
+    return updatedRepos;
+};
+
+const updateContribsFilter = async ({token, account, dateInterval, repos, setters}) => {
+    console.log('Updating contribs filter', dateInterval, repos);
+    const updatedContribs = await updateFilter(
+        {token, account, dateInterval, repos, setters, getter: getContribsForFilter});
+    console.log('Updated contribs filter', updatedContribs);
+    return updatedContribs;
 };
 
 const getDataForFilter = async (dataName, dataFetcherFn, token, accountID, dateInterval, inRepos = []) => {
@@ -174,10 +188,8 @@ const getDataForFilter = async (dataName, dataFetcherFn, token, accountID, dateI
     }
 };
 
-const getReposForFilter = (token, accountID, dateInterval, inRepos) => {
-    return getDataForFilter('repositories', getRepos, token, accountID, dateInterval, inRepos);
-};
+const getReposForFilter = (token, accountID, dateInterval, inRepos) => getDataForFilter(
+    'repositories', getRepos, token, accountID, dateInterval, inRepos);
 
-const getContribsForFilter = (token, accountID, dateInterval, inRepos) => {
-    return getDataForFilter('contributors', getContributors, token, accountID, dateInterval, inRepos);
-};
+const getContribsForFilter = (token, accountID, dateInterval, inRepos) => getDataForFilter(
+    'contributors', getContributors, token, accountID, dateInterval, inRepos);
