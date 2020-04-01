@@ -22,7 +22,7 @@ export default ({
             </div>
             <div className="col-md-3">
                 <MainMetric
-                    title="Cycle time" value={cycleTimeAvg} variation={cycleTimeVariation}
+                    title="Cycle time" value={cycleTimeAvg && dateTime.human(cycleTimeAvg)} variation={cycleTimeVariation}
                     hint="The sum of each stage average time from start to finish"
                     negativeIsBetter
                 />

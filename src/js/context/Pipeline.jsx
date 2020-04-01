@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-const PipelineContext = React.createContext({ leadtime: {}, stages: [] });
+const PipelineContext = React.createContext({ leadtime: {}, cycletime: {}, stages: [] });
 
 /**
  * Returns the leadtime and stages metrics within the active filters.

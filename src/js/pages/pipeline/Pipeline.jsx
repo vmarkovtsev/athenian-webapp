@@ -22,11 +22,9 @@ export const pipelineStagesConf = [
         metric: 'lead-time',
         stageName: 'leadtime',
         color: palette.stages.leadtime,
-        hint: 'Trom the 1st commit of the Pull Requests until the code is being used in production',
-        event: {
-            before: 'First Commit',
-            after: 'Release',
-        },
+        hint: 'From the 1st commit of the Pull Requests until the code is being used in production',
+    }, {
+        metric: 'cycle-time',
     }, {
         title: 'Work in progress',
         slug: 'work-in-progress',
@@ -135,7 +133,7 @@ export default ({ children }) => {
     const { getTokenSilently } = useAuth0();
     const userContext = useUserContext();
 
-    const [pipelineState, setPipelineState] = useState({ leadtime: {}, stages: [] });
+    const [pipelineState, setPipelineState] = useState({ leadtime: {}, cycletime: {}, stages: [] });
     const { dateInterval, repositories, contributors } = useFiltersContext();
 
     useEffect(() => {
@@ -147,6 +145,7 @@ export default ({ children }) => {
             .then(token => fetchApi(token, getMetrics, userContext.defaultAccount.id, dateInterval, repositories, contributors))
             .then(data => {
                 let leadtime = {};
+                let cycletime = {};
                 const stages = [];
                 pipelineStagesConf.forEach(metricConf => {
                     const metric = { ...metricConf, ...data[metricConf.metric] };
@@ -154,6 +153,8 @@ export default ({ children }) => {
                         stages.push(metric);
                     } else if (metricConf.stageName === 'leadtime') {
                         leadtime = metric;
+                    } else if (metricConf.metric === 'cycle-time') {
+                        cycletime = metric;
                     }
                 });
 
@@ -161,7 +162,7 @@ export default ({ children }) => {
                     stages.forEach(stage => stage.leadTimePercentage = 100 * stage.avg / leadtime.avg);
                 }
 
-                setPipelineState({ leadtime, stages });
+                setPipelineState({ leadtime, cycletime, stages });
             })
             .catch(err => console.error('Could not get pipeline metrics', err));
     }, [userContext, dateInterval, repositories, contributors, getTokenSilently]);
