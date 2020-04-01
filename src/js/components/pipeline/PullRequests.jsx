@@ -103,7 +103,7 @@ export default ({ stage, data }) => {
                     },
                 },
                 {
-                    title: 'Pull Requests',
+                    title: 'Pull Requests | Created',
                     className: 'pr-main',
                     render: (_, type, row) => {
                         switch (type) {
@@ -124,7 +124,7 @@ export default ({ stage, data }) => {
                             case 'type':
                             case 'sort':
                             default:
-                                return row.number;
+                                return row.created;
                         }
                     },
                 }, {
