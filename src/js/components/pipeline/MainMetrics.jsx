@@ -30,12 +30,12 @@ export default ({
             <div className="col-md-3">
                 <MainMetric
                     title="Pull requests" value={createdPRsAvg} variation={createdPRsVariation}
-                    hint="Number of created pull requests"
+                    hint="Number of pull requests processed through the delivery pipeline"
                 />
             </div>
             <div className="col-md-3">
                 <MainMetric title="Contributors" value={contribsAvg} variation={contribsVariation}
-                    hint="Number of people participating in pull requests"
+                    hint="Number of people participating in (the processed) pull requests"
                 />
             </div>
         </div >
