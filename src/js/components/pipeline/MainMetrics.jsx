@@ -23,7 +23,7 @@ export default ({
             <div className="col-md-3">
                 <MainMetric
                     title="Cycle time" value={cycleTimeAvg && dateTime.human(cycleTimeAvg)} variation={cycleTimeVariation}
-                    hint="The sum of the average time required in each development stage"
+                    hint="Sum of the average time required in each development stage"
                     negativeIsBetter
                 />
             </div>
