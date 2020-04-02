@@ -10,7 +10,6 @@ import Info from 'js/components/ui/Info'
 import { dateTime, number } from 'js/services/format';
 
 export default ({ prs, stages, activeCard }) => {
-    //TODO(dpordomingo): stage.badge should count the stage-complete PRs, not the stage-pending ones. It should be obtained from the API
     return (
         <div className="row mt-4 mb-4 align-items-end pipeline-thumbnails">
             {
@@ -27,7 +26,7 @@ export default ({ prs, stages, activeCard }) => {
                                     color={card.color}
                                     data={card.data}
                                     active={activeCard === card.slug}
-                                    badge={prs.filter(pr => pr.stage === card.stageName).length}
+                                    badge={card.stageCompleteCount(prs)}
                                 >
                                 </Stage>
                             </Link>

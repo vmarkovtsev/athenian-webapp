@@ -37,6 +37,7 @@ export const pipelineStagesConf = [
             after: 'Review Requested',
         },
         prs: prs => prs.filter(pr => pr.stage === prStage.WIP || pr.completedStages.indexOf(prStageComplete.WIP) >= 0),
+        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.indexOf(prStageComplete.WIP) >= 0).length,
         summary: (stage, prs, dateInterval) => {
             const createdPrs = prs.filter(pr => dateInterval.from < pr.created && pr.created < dateInterval.to);
             const authors = distinct(createdPrs, pr => pr.authors);
@@ -60,6 +61,7 @@ export const pipelineStagesConf = [
             after: 'Approved',
         },
         prs: prs => prs.filter(pr => pr.stage === prStage.REVIEW || pr.completedStages.indexOf(prStageComplete.REVIEW) >= 0),
+        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.indexOf(prStageComplete.REVIEW) >= 0).length,
         summary: (stage, prs) => {
             const reviewAndReviewCompletePRs = prs.filter(pr => pr.stage !== 'wip');
             const reviewed = reviewAndReviewCompletePRs.filter(pr => pr.comments || pr.review_comments)
@@ -84,7 +86,9 @@ export const pipelineStagesConf = [
             after: 'Merged',
         },
         prs: prs => prs.filter(pr => pr.stage === prStage.MERGE || pr.completedStages.indexOf(prStageComplete.MERGE) >= 0),
+        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.indexOf(prStageComplete.MERGE) >= 0).length,
         summary: (stage, prs) => {
+            debugger;
             const mergedPRs = prs.filter(pr => pr.merged);
             const mergerers = distinct(mergedPRs, pr => pr.mergers);
             const repos = distinct(mergedPRs, pr => pr.repository);
@@ -107,6 +111,7 @@ export const pipelineStagesConf = [
             after: 'Released',
         },
         prs: prs => prs.filter(pr => pr.stage === prStage.RELEASE || pr.completedStages.indexOf(prStageComplete.RELEASE) >= 0),
+        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.indexOf(prStageComplete.RELEASE) >= 0).length,
         summary: (stage, prs) => {
             const releasedPRs = prs.filter(pr => pr.release_url);
             const releases = distinct(releasedPRs, pr => pr.release_url);
