@@ -5,7 +5,7 @@ import 'datatables.net-bs4';
 import 'datatables.net-bs4/css/dataTables.bootstrap4.css';
 
 import { dateTime, github, number } from 'js/services/format';
-import { PR_STATUS as prStatus, prLabel } from 'js/services/prHelpers'
+import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses } from 'js/services/prHelpers'
 
 const userImage = users => user => {
     if (users[user] && users[user].avatar) {
@@ -206,7 +206,7 @@ export default ({ stage, data }) => {
                                     `events:[${row.events.map(stage => stage.replace('_happened', '')).join(', ')}],\n` +
                                     `stage-completes:[${row.completedStages.map(stage => stage.replace('-complete', '')).join(', ')}]`;
                                 return (
-                                    `<div class="badge badge-outlined badge-${row.stage}">
+                                    `<div class="badge badge-outlined ${prLabelClasses[prLabelStage(row)]}">
                                         <span
                                             title="${hint}"
                                             data-toggle="tooltip"

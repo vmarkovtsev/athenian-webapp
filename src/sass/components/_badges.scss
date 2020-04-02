@@ -65,27 +65,30 @@
             color: $danger;
         }
 
-        &.badge-wip {
+        &.label-wip,
+        &.label-review-requested {
             border-color: $color-wip;
             color: $color-wip;
         }
-
-        &.badge-review {
+        &.label-review-pending,
+        &.label-review-submitted,
+        &.label-review-rejected,
+        &.label-review-approval {
             border-color: $color-review;
             color: $color-review;
         }
-
-        &.badge-merge {
+        &.label-merge-pending,
+        &.label-merged {
             border-color: $color-merge;
             color: $color-merge;
         }
-
-        &.badge-release {
+        &.label-release-pending,
+        &.label-released {
             border-color: $color-release;
             color: $color-release;
         }
 
-        &.badge-done {
+        &.label-closed {
             border-color: $color-done;
             color: $color-done;
         }

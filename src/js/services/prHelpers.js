@@ -47,6 +47,20 @@ export const PR_LABELS = {
   CLOSED: 'Closed',
 };
 
+export const PR_LABELS_CLASSNAMES = {
+  [PR_LABELS.WIP]: 'label-wip',
+  [PR_LABELS.WIP_DONE]: 'label-review-requested',
+  [PR_LABELS.REVIEW_PENDING]: 'label-review-pending',
+  [PR_LABELS.REVIEW_SUBMITTED]: 'label-review-submitted',
+  [PR_LABELS.REVIEW_REJECTED]: 'label-review-rejected',
+  [PR_LABELS.REVIEW_APPROVAL]: 'label-review-approval',
+  [PR_LABELS.MERGE_PENDING]: 'label-merge-pending',
+  [PR_LABELS.MERGE_COMPLETED]: 'label-merged',
+  [PR_LABELS.RELEASE_PENDING]: 'label-release-pending',
+  [PR_LABELS.RELEASE_COMPLETED]: 'label-released',
+  [PR_LABELS.CLOSED]: 'label-closed',
+};
+
 const realEvents = Object.keys(PR_EVENT).map(eventKey => PR_EVENT[eventKey]);
 
 export default pr => {
