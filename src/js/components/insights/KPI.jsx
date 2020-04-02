@@ -11,6 +11,7 @@ import { number } from 'js/services/format';
   - params: object{
         value: number (required)
         variation: number (optional)
+        variationMeaning: NEGATIVE_IS_BETTER | POSITIVE_IS_BETTER (optional, default:POSITIVE_IS_BETTER)
         unit: string | object{
             singular: string
             plural: string
@@ -38,7 +39,7 @@ import { number } from 'js/services/format';
 export const SimpleKPI = ({params}) => (
     <div className="font-weight-bold">
       <BigNumber content={buildContent(params.value, getUnit(params.value, params.unit))} />
-      {params.variation && <Badge value={number.round(params.variation)} trend className="ml-2" />}
+      {params.variation && <Badge value={number.round(params.variation)} trend={params.variationMeaning} className="ml-2" />}
     </div>
 );
 

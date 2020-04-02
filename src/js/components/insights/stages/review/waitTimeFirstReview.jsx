@@ -1,5 +1,6 @@
 import { SimpleKPI } from 'js/components/insights/KPI';
 import TimeSeries from 'js/components/insights/charts/library/TimeSeries';
+import { NEGATIVE_IS_BETTER } from 'js/components/ui/Badge';
 
 import { fetchPRsMetrics } from 'js/services/api/index';
 
@@ -113,6 +114,7 @@ const waitTimeFirstReview = {
                             params: {
                                 value: computed.KPIsData.avgWaitingTime.value,
                                 variation: computed.KPIsData.avgWaitingTime.variation,
+                                variationMeaning: NEGATIVE_IS_BETTER,
                                 unit: {
                                     singular: 'hour',
                                     plural: 'hours'
@@ -125,6 +127,7 @@ const waitTimeFirstReview = {
                             params: {
                                 value: computed.KPIsData.overallProportion.value.toFixed(2),
                                 variation: computed.KPIsData.overallProportion.variation,
+                                variationMeaning: NEGATIVE_IS_BETTER,
                                 unit: '%'
                             }
                         },
