@@ -47,11 +47,11 @@ const pullRequestSize = {
         grouper: 'reviewRequested',
         groups: {
             false: {
-                title: 'Waiting Review',
+                title: 'Waiting review',
                 color: '#FFC507'
             },
             true: {
-                title: 'Review Submitted',
+                title: 'Review submitted',
                 color: '#23C2C7'
             }
         }
@@ -66,7 +66,7 @@ const pullRequestSize = {
                     chart: {
                         component: BubbleChart,
                         params: {
-                            title: 'Number of Pull Requests created',
+                            title: 'Number of created pull requests',
                             data: computed.chartData,
                             extra: {
                                 grouper: computed.grouper,
@@ -82,15 +82,15 @@ const pullRequestSize = {
                     },
                     kpis: [
                         {
-                            title: {text: 'Total Number of Files', bold: true},
-                            subtitle: {text: 'Waiting for Review'},
+                            title: {text: 'Total number of files', bold: true},
+                            subtitle: {text: 'Waiting for review'},
                             component: SimpleKPI,
                             params: {
                                 value: computed.totalFiles
                             }
                         },
                         {
-                            title: {text: 'Average Pull Request Size', bold: true},
+                            title: {text: 'Average pull request size', bold: true},
                             component: MultiKPI,
                             params: [
                                 {
