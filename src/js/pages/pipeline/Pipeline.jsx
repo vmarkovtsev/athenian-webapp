@@ -42,7 +42,7 @@ export const pipelineStagesConf = [
             const authors = distinct(createdPrs, pr => pr.authors);
             const repos = distinct(createdPrs, pr => pr.repository);
             return [
-                ['proportion of the lead time', number.percentage(stage.leadTimePercentage)],
+                ['proportion of the cycle time', number.percentage(stage.overallProportion)],
                 ['pull requests created', createdPrs.length],
                 ['contributors', authors.length],
                 ['repositories', repos.length],
@@ -66,7 +66,7 @@ export const pipelineStagesConf = [
             const reviewers = distinct(reviewAndReviewCompletePRs, pr => pr.commentersReviewers);
             const repos = distinct(reviewAndReviewCompletePRs, pr => pr.repository);
             return [
-                ['proportion of the lead time', number.percentage(stage.leadTimePercentage)],
+                ['proportion of the cycle time', number.percentage(stage.overallProportion)],
                 ['pull requests reviewed', reviewed.length],
                 ['reviewers', reviewers.length],
                 ['repositories', repos.length],
@@ -89,7 +89,7 @@ export const pipelineStagesConf = [
             const mergerers = distinct(mergedPRs, pr => pr.mergers);
             const repos = distinct(mergedPRs, pr => pr.repository);
             return [
-                ['proportion of the lead time', number.percentage(stage.leadTimePercentage)],
+                ['proportion of the cycle time', number.percentage(stage.overallProportion)],
                 ['pull requests merged', mergedPRs.length],
                 ['contributors', mergerers.length],
                 ['repositories', repos.length],
@@ -112,7 +112,7 @@ export const pipelineStagesConf = [
             const releases = distinct(releasedPRs, pr => pr.release_url);
             const repos = distinct(releasedPRs, pr => pr.repository);
             return [
-                ['proportion of the lead time', number.percentage(stage.leadTimePercentage)],
+                ['proportion of the cycle time', number.percentage(stage.overallProportion)],
                 ['pull requests released', releasedPRs.length],
                 ['releases', releases.length],
                 ['repositories', repos.length],
@@ -159,7 +159,7 @@ export default ({ children }) => {
                 });
 
                 if (leadtime.avg) {
-                    stages.forEach(stage => stage.leadTimePercentage = 100 * stage.avg / leadtime.avg);
+                    stages.forEach(stage => stage.overallProportion = 100 * stage.avg / cycletime.avg);
                 }
 
                 setPipelineState({ leadtime, cycletime, stages });

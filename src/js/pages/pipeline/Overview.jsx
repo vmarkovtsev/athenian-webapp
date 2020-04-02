@@ -9,7 +9,7 @@ import { SummaryMetrics } from 'js/components/pipeline/StageMetrics';
 import { SmallTitle } from 'js/components/ui/Typography';
 import Tabs from 'js/components/layout/Tabs';
 
-import { dateTime } from 'js/services/format';
+import { dateTime, number } from 'js/services/format';
 
 export default () => {
     const prsContext = usePRsContext();
@@ -18,8 +18,8 @@ export default () => {
     let slowerStage = 0;
     if (leadtimeContext.avg) {
         stagesContext.forEach(stage => {
-            if (stage.leadTimePercentage > slowerStage) {
-                slowerStage = stage.leadTimePercentage;
+            if (stage.overallProportion > slowerStage) {
+                slowerStage = stage.overallProportion;
             }
         });
     }
@@ -27,16 +27,15 @@ export default () => {
     return <>
         {leadtimeContext.avg ? (
             <SummaryMetrics conf={leadtimeContext} >
-                {stagesContext.map((stage, i) => stage.leadTimePercentage ? (
+                {stagesContext.map((stage, i) => stage.overallProportion ? (
                     <div key={i}>
                         <div><SmallTitle content={stage.title} /></div>
                         <span
-                            className={classnames('leadtime-proportion d-block mb-2', stage.stageName)}
-                            style={{ width: `${100 * stage.leadTimePercentage / slowerStage}%` }}
-                            alt={`${stage.leadTimePercentage}%`}
+                            className={classnames('overall-proportion d-block mb-2', stage.stageName)}
+                            style={{ width: `${100 * stage.overallProportion / slowerStage}%` }}
                             data-toggle="tooltip"
                             data-placement="right"
-                            title={dateTime.human(stage.avg)}
+                            title={`${dateTime.human(stage.avg)} (${number.percentage(stage.overallProportion)})`}
                         />
                     </div>
                 ) : null)}

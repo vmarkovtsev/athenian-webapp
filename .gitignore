@@ -16,12 +16,13 @@ package-lock.json
 # misc
 .DS_Store
 
-# dotenv environment variables file
+# environment variables file
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+public/config.js.local
 
 # Logs
 logs
