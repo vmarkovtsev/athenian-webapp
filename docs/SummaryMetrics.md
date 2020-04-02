@@ -12,11 +12,11 @@ Design doc at https://docs.google.com/document/d/1DXLVz4L1Ag9sOUMAKdRRgVh1fk6peU
   ```
 
 ## WIP
-- Created PRs: Pull Requests Created
+- Created PRs: pull requests created
   ```
   prs.filter(from<pr.created<to).count
   ```
-- Contributors: Number of PR creators of PRs created during the period selected
+- Contributors: Number of people that have created pull requests during the period selected
   ```
   prs.filter(from<pr.created<to).creators.distinct.count
   ```
@@ -26,7 +26,7 @@ Design doc at https://docs.google.com/document/d/1DXLVz4L1Ag9sOUMAKdRRgVh1fk6peU
   ```
 
 ## Review
-- Reviewed PRs: Pull Requests Reviewed (PRs where a review has been submitted or a regular comment posted)
+- Reviewed PRs: Pull requests where a review has been submitted or a regular comment posted
   ```
   prs.filter(pr.stage>=review).having(comments|reviews).count
   ```
@@ -54,7 +54,7 @@ Design doc at https://docs.google.com/document/d/1DXLVz4L1Ag9sOUMAKdRRgVh1fk6peU
   ```
 
 ## Release
-- Released PRs: Pull Requests Released (PRs part of releases that happened during the time period selected)
+- Released PRs: Pull requests released (PRs part of releases that happened during the time period selected)
   ```
   prs.filter(pr.release_url)
   ```
