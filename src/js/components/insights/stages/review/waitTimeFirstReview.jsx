@@ -11,7 +11,7 @@ const waitTimeFirstReview = {
         const fetchKPIsData = async () => {
             const daysDiff = moment(context.interval.to).diff(context.interval.from, 'days');
             const granularity = `${daysDiff} day`;
-            const metrics = ['lead-time', 'wait-first-review'];
+            const metrics = ['cycle-time', 'wait-first-review'];
 
             const current = await fetchPRsMetrics(
                 api, context.account, granularity, context.interval,
@@ -48,17 +48,17 @@ const waitTimeFirstReview = {
         });
     },
     calculator: (fetched) => {
-        const [currLeadTime, currtWaitFirstReview] = fetched.KPIsData.current
-              .calculated[0].values[0].values;
-        const [prevLeadTime, prevWaitFirstReview] = fetched.KPIsData.previous
-              .calculated[0].values[0].values;
+        const [currOverall, currtWaitFirstReview] = fetched.KPIsData.current
+            .calculated[0].values[0].values;
+        const [prevOverall, prevWaitFirstReview] = fetched.KPIsData.previous
+            .calculated[0].values[0].values;
 
         const avgWaitingTimeVariation = currtWaitFirstReview * 100 / prevWaitFirstReview;
 
-        const currLeadTimeProportion = currtWaitFirstReview * 100 / currLeadTime;
-        const prevLeadTimeProportion = prevWaitFirstReview * 100 / prevLeadTime;
+        const currOverallProportion = currtWaitFirstReview * 100 / currOverall;
+        const prevOverallProportion = prevWaitFirstReview * 100 / prevOverall;
 
-        const leadTimeProportionVariation = currLeadTimeProportion * 100 / prevLeadTimeProportion;
+        const overallProportionVariation = currOverallProportion * 100 / prevOverallProportion;
 
         return {
             chartData: _(fetched.chartData.calculated[0].values)
@@ -69,9 +69,9 @@ const waitTimeFirstReview = {
                     value: Math.round(currtWaitFirstReview / 3600),
                     variation: avgWaitingTimeVariation
                 },
-                leadTimeProportion: {
-                    value: currLeadTimeProportion,
-                    variation: leadTimeProportionVariation
+                overallProportion: {
+                    value: currOverallProportion,
+                    variation: overallProportionVariation
                 }
             },
             axisKeys: {
@@ -120,11 +120,11 @@ const waitTimeFirstReview = {
                             }
                         },
                         {
-                            title: {text: 'Proportion of the Lead Time', bold: true},
+                            title: {text: 'Proportion of the Cycle Time', bold: true},
                             component: SimpleKPI,
                             params: {
-                                value: computed.KPIsData.leadTimeProportion.value.toFixed(2),
-                                variation: computed.KPIsData.leadTimeProportion.variation,
+                                value: computed.KPIsData.overallProportion.value.toFixed(2),
+                                variation: computed.KPIsData.overallProportion.variation,
                                 unit: '%'
                             }
                         },
