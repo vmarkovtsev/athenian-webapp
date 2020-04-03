@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useAuth0 } from 'js/context/Auth0';
 import { useUserContext } from 'js/context/User';
+import { useDataContext } from 'js/context/Data';
 import FiltersContext from 'js/context/Filters';
 
 import TopFilter from 'js/components/pipeline/TopFilter';
@@ -20,6 +21,7 @@ const defaultDateInterval = { from: TWO_WEEKS_AGO, to: EOD };
 export default ({ children }) => {
     const { getTokenSilently } = useAuth0();
     const userContext = useUserContext();
+    const { reset: resetData } = useDataContext();
 
     const [readyState, setReadyState] = useState(false);
 
@@ -59,6 +61,14 @@ export default ({ children }) => {
             setReadyState(true);
         })();
     });
+
+    useEffect(() => {
+        if (!readyState) {
+            console.log("Resetting data context due to filter update");
+            resetData();
+        }
+        // eslint-disable-next-line
+    }, [readyState]);
 
     const onDateIntervalChange = async (selectedDateInterval) => {
         setReadyState(false);

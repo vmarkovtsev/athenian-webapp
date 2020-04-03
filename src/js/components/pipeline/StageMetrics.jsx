@@ -7,12 +7,9 @@ import { SmallTitle } from 'js/components/ui/Typography';
 
 import { dateTime, number } from 'js/services/format';
 
-import { palette } from 'js/res/palette';
-
-import FilledAreaChart from 'js/components/charts/FilledAreaChart';
 import { NEGATIVE_IS_BETTER } from 'js/components/ui/Badge';
 
-export const SummaryMetrics = ({ conf, children }) => {
+export const SummaryMetrics = ({ conf, chart, kpi }) => {
   return (
     <div className={classnames('summary-metric card mb-4 px-2', conf.stageName)}>
       <div className="card-body">
@@ -25,17 +22,12 @@ export const SummaryMetrics = ({ conf, children }) => {
                 <Badge value={number.round(conf.variation)} className="ml-2" trend={NEGATIVE_IS_BETTER} />
               </div>
               <div>
-                {children}
+                {kpi}
               </div>
             </div>
           </div>
           <div className="col-8 align-self-center">
-            {conf && conf.data && <FilledAreaChart
-              data={conf.data}
-              height={280}
-              color={palette.stages[conf.stageName]}
-              average={conf.avg}
-            />}
+            {chart}
           </div>
         </div>
       </div>
