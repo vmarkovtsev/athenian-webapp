@@ -66,6 +66,8 @@ export default () => {
             // remove this once we implement some caching logic on the client
             // when querying.
             try {
+                // TODO: Each insight chart should be refactored to use the self-loader
+                // `js/components/charts/Chart` component
                 const result = await getInsights(stageSlug, api, apiContext, prsContext);
                 const action = {
                     stageSlug,
