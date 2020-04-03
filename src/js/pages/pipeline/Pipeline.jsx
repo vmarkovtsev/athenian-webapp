@@ -88,7 +88,6 @@ export const pipelineStagesConf = [
         prs: prs => prs.filter(pr => pr.stage === prStage.MERGE || pr.completedStages.indexOf(prStageComplete.MERGE) >= 0),
         stageCompleteCount: prs => prs.filter(pr => pr.completedStages.indexOf(prStageComplete.MERGE) >= 0).length,
         summary: (stage, prs) => {
-            debugger;
             const mergedPRs = prs.filter(pr => pr.merged);
             const mergerers = distinct(mergedPRs, pr => pr.mergers);
             const repos = distinct(mergedPRs, pr => pr.repository);
