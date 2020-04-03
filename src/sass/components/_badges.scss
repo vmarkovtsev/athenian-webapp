@@ -65,32 +65,51 @@
             color: $danger;
         }
 
-        &.label-wip,
-        &.label-review-requested {
+        &.label-wip {
             border-color: $color-wip;
             color: $color-wip;
         }
+
+        &.label-review-requested {
+            border-color: $color-brown;
+            color: $color-brown;
+        }
+
         &.label-review-pending,
-        &.label-review-submitted,
-        &.label-review-rejected,
-        &.label-review-approval {
+        &.label-review-submitted {
             border-color: $color-review;
             color: $color-review;
         }
-        &.label-merge-pending,
+
+        &.label-review-rejected {
+            border-color: $color-red;
+            color: $color-red;
+        }
+
+        &.label-merge-pending {
+            border-color: $color-light-pink;
+            color: $color-light-pink;
+        }
+
         &.label-merged {
             border-color: $color-merge;
             color: $color-merge;
         }
-        &.label-release-pending,
-        &.label-released {
+
+        &.label-released,
+        &.label-review-approval {
             border-color: $color-release;
             color: $color-release;
         }
 
+        &.label-release-pending {
+            border-color: $color-turquoise;
+            color: $color-turquoise;
+        }
+
         &.label-closed {
-            border-color: $color-done;
-            color: $color-done;
+            border-color: $color-secondary;
+            color: $color-secondary;
         }
     }
 }
