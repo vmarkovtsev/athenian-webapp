@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { useAuth0 } from 'js/context/Auth0';
 import { useFiltersContext } from 'js/context/Filters';
@@ -7,6 +7,14 @@ import { useUserContext } from 'js/context/User';
 import { buildApi } from 'js/services/api';
 
 export const useMountEffect = (fun) => useEffect(fun, []);
+
+export const usePrevious = (value) => {
+    const ref = useRef();
+    useEffect(() => {
+        ref.current = value;
+    });
+    return ref.current;
+};
 
 export const useApi = () => {
     const { getTokenSilently } = useAuth0();
