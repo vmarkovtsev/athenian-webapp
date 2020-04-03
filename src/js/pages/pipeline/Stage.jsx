@@ -5,6 +5,8 @@ import { SummaryMetrics, StageSummaryKPI } from 'js/components/pipeline/StageMet
 import Insights from 'js/components/insights/Insights';
 import Tabs from 'js/components/layout/Tabs';
 import PullRequests from 'js/components/pipeline/PullRequests';
+import SummaryChart from 'js/components/pipeline/SummaryChart';
+import { palette } from 'js/res/palette';
 
 import { pipelineStagesConf, getStage } from 'js/pages/pipeline/Pipeline';
 
@@ -37,21 +39,31 @@ export default () => {
         users: prsContext.users,
     };
 
-    return <>
-        <SummaryMetrics conf={activeStage}>
-            <StageSummaryKPI data={activeStage.summary(activeStage, prsContext.prs, dateInterval)} />
-        </SummaryMetrics>
+    const chart = <SummaryChart
+                    name={activeStage.stageName}
+                    metric={activeStage.metric}
+                    config={{
+                        height: 280,
+                        color: palette.stages[activeStage.stageName],
+                        average: activeStage.avg
+                    }}
+                  />;
+    const kpi = <StageSummaryKPI data={activeStage.summary(activeStage, prsContext.prs, dateInterval)} />;
 
-        <Tabs tabs={[
-            {
-                title: 'Insights',
-                content: <Insights />,
-            },
-            {
-                title: 'Pull Requests',
-                badge: filteredPRs.prs.length,
-                content: <PullRequests data={filteredPRs} stage={activeStage.stageName} />
-            }
-        ]} />
-    </>;
+    return (
+        <>
+          <SummaryMetrics conf={activeStage} chart={chart} kpi={kpi} />
+          <Tabs tabs={[
+              {
+                  title: 'Insights',
+                  content: <Insights />,
+              },
+              {
+                  title: 'Pull Requests',
+                  badge: filteredPRs.prs.length,
+                  content: <PullRequests data={filteredPRs} stage={activeStage.stageName} />
+              }
+          ]} />
+        </>
+    );
 };
