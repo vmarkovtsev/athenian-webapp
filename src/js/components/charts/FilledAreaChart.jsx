@@ -11,7 +11,7 @@ import { palette } from 'js/res/palette';
 import { dateTime } from 'js/services/format';
 import { hexToRGBA } from 'js/services/colors';
 
-import Tooltip, { onValueChange, onValueReset } from 'js/components/charts/Tooltip';
+import { DateBigNumber, BigText, onValueChange, onValueReset } from 'js/components/charts/Tooltip';
 
 export default ({ data, average, color = palette.schemes.primary, height = 300 }) => {
   const fillColor = hexToRGBA(color, .2);
@@ -44,7 +44,7 @@ export default ({ data, average, color = palette.schemes.primary, height = 300 }
           animation="stiff"
         />
 
-        {currentHover && <Tooltip value={currentHover} />}
+        {currentHover && <DateBigNumber value={currentHover} renderBigFn={v => <BigText content={dateTime.human(v.y)} />} />}
 
       </FlexibleWidthXYPlot>
     </div>

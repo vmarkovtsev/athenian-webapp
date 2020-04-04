@@ -1,7 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
 import classnames from 'classnames';
+import moment from 'moment';
 import { Hint } from 'react-vis';
+
+import { number } from 'js/services/format';
 
 export default ({value, ...props}) => {
     // TODO: This needs to be styled.
@@ -19,6 +22,21 @@ export default ({value, ...props}) => {
             }
 
           </div>
+        </Hint>
+    );
+};
+
+export const DateBigNumber = ({ value, renderBigFn = v => <BigText content={number.round(v.y)} />, ...props }) => {
+    if (!value) return null;
+
+    return (
+        <Hint {...props} value={value}>
+            <TooltipContainer left>
+                <Group>
+                    <SmallTitle content={<SmallDate date={moment(value.x)} />} />
+                    {renderBigFn(value)}
+                </Group>
+            </TooltipContainer>
         </Hint>
     );
 };

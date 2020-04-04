@@ -1,11 +1,14 @@
+import React from 'react';
+import moment from 'moment';
+import _ from 'lodash';
+
 import { SimpleKPI } from 'js/components/insights/KPI';
 import TimeSeries from 'js/components/insights/charts/library/TimeSeries';
+import { BigText } from 'js/components/charts/Tooltip';
 import { NEGATIVE_IS_BETTER } from 'js/components/ui/Badge';
 
 import { fetchPRsMetrics } from 'js/services/api/index';
-
-import moment from 'moment';
-import _ from 'lodash';
+import { number, dateTime } from 'js/services/format';
 
 const waitTimeFirstReview = {
     fetcher: async (api, context) => {
@@ -102,7 +105,10 @@ const waitTimeFirstReview = {
                                 axisLabels: {
                                     y: 'Wait Time, hours'
                                 },
-                                color: '#41CED3'
+                                color: '#41CED3',
+                                tooltip: {
+                                    renderBigFn: v => <BigText content={dateTime.human(v.y * 60 * 60 * 1000)} />,
+                                },
                             }
                         }
                     },

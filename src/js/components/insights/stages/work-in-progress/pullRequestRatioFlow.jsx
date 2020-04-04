@@ -1,10 +1,13 @@
-import { SimpleKPI } from 'js/components/insights/KPI';
-import TimeSeries from 'js/components/insights/charts/library/TimeSeries';
-
-import { fetchPRsMetrics } from 'js/services/api/index';
-
+import React from 'react';
 import moment from 'moment';
 import _ from 'lodash';
+
+import { SimpleKPI } from 'js/components/insights/KPI';
+import TimeSeries from 'js/components/insights/charts/library/TimeSeries';
+import { BigText } from 'js/components/charts/Tooltip';
+
+import { fetchPRsMetrics } from 'js/services/api/index';
+import { number } from 'js/services/format';
 
 const pullRequestRatioFlow = {
     fetcher: async (api, context) => fetchPRsMetrics(
@@ -16,7 +19,8 @@ const pullRequestRatioFlow = {
         chartData: _(fetched.calculated[0].values)
             .map(v => ({
                 day: v.date,
-                value: (v.values[1] || 1) / (v.values[2] || 1)
+                value: (v.values[1] || 1) / (v.values[2] || 1),
+                legend: [v.values[1], v.values[2]],
             }))
             .value(),
         KPIsData: {
@@ -66,8 +70,14 @@ const pullRequestRatioFlow = {
                             },
                             maxNumberOfTicks: 10,
                             axisKeys: computed.axisKeys,
-                            color: '#41CED3'
-                        }
+                            color: '#41CED3',
+                            tooltip: {
+                                renderBigFn: v => <BigText
+                                    content={`${v.legend[0] || 0}/${v.legend[1] || 0}`}
+                                    extra={number.round((v.legend[0] || 1) / (v.legend[1] || 1), 1)}
+                                />,
+                            },
+                        },
                     }
                 },
                 kpis: [
