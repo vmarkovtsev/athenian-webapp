@@ -1,67 +1,22 @@
-.tooltip {
-
-    &.show {
-        opacity: 1 !important;
-    }
-
-    .tooltip-inner {
-        background: #121343;
-        border-radius: 0;
-        font-size: 1rem;
-        font-weight: 300;
-        max-width: 250px;
-        opacity: 1;
-        padding: 1.5rem;
-        text-align: left;
-    }
-}
-
-.hint {
-
-    .hint-content {
-        background: $white;
-        box-shadow: 0 0 2px rgba(0,0,0,0.02);
-        color: $dark;
-        font-weight: 500;
-        border-radius: 0;
-        font-size: 1rem;
-        font-weight: 300;
-        max-width: 250px;
-        opacity: 1;
-        padding: 1.5rem;
-        text-align: left;
-        width: fit-content;
-
-        .card {
-            border: none;
-        }
-    }
-}
-
-.tooltip-light {
-
-    .tooltip-inner {
-        background: $white;
-        box-shadow: 0 0 2px rgba(0,0,0,0.02);
-        color: $dark;
-        font-weight: 500;
-    }
-
-    &.tooltip.bs-tooltip-right .arrow:before {
-        border-right-color: $white !important;
-    }
-    &.tooltip.bs-tooltip-left .arrow:before {
-        border-left-color: $white !important;
-    }
-    &.tooltip.bs-tooltip-bottom .arrow:before {
-        border-bottom-color: $white !important;
-    }
-    &.tooltip.bs-tooltip-top .arrow:before {
-        border-top-color: $white !important;
-    }
+.chart-tooltip {
+    background: $white;
+    box-shadow: 0 0 7px rgba(0,0,0,0.2);
+    color: $dark;
+    border-radius: 0;
+    font-size: 1rem;
+    font-weight: 300;
+    max-width: 250px;
+    padding: 1.5rem;
+    text-align: left;
+    width: fit-content;
 
     .card {
         border: none;
+    }
+
+    .mb-2:last-child,
+    p:last-child {
+        margin-bottom: 0 !important;
     }
 }
 
@@ -77,8 +32,4 @@
 
 .user-info {
     font-size: 1.5rem;
-}
-
-.tooltip-demo {
-    display: inline-block;
 }
