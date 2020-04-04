@@ -15,7 +15,7 @@ import {
     MarkSeries
 } from 'react-vis';
 
-import Tooltip, { onValueChange, onValueReset } from 'js/components/charts/Tooltip';
+import { DateBigNumber, onValueChange, onValueReset } from 'js/components/charts/Tooltip';
 
 export default ({title, data, extra}) => (
     <div style={{ background: 'white' }}>
@@ -74,6 +74,7 @@ const TimeSeries = ({ title, data, extra }) => {
 
     const formattedData = _(data)
           .map(v => ({
+              ...v.legend && { legend: v.legend },
               x: v[extra.axisKeys.x],
               y: v[extra.axisKeys.y]
           }))
@@ -127,7 +128,7 @@ const TimeSeries = ({ title, data, extra }) => {
              animation="stiff"
            />}
 
-          {currentHover && <Tooltip value={currentHover} />}
+          <DateBigNumber value={currentHover} renderBigFn={extra?.tooltip?.renderBigFn} />
         </FlexibleWidthXYPlot>
     );
 };
