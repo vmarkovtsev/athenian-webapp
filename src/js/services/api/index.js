@@ -174,6 +174,7 @@ export const buildApi = token => {
   const client = new ApiClient();
   client.authentications.bearerAuth.accessToken = token;
   client.basePath = window.ENV.api.basePath;
+  client.timeout = 5 * 60 * 1000;
 
   return new DefaultApi(client);
 };
