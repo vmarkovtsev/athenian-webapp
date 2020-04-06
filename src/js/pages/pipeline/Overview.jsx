@@ -10,7 +10,6 @@ import { SmallTitle } from 'js/components/ui/Typography';
 import SummaryChart from 'js/components/pipeline/SummaryChart';
 import Tabs from 'js/components/layout/Tabs';
 
-import { palette } from 'js/res/palette';
 import { dateTime, number } from 'js/services/format';
 
 export default () => {
@@ -30,8 +29,6 @@ export default () => {
                     name={leadtimeContext.stageName}
                     metric={leadtimeContext.metric}
                     config={{
-                        height: 280,
-                        color: palette.stages[leadtimeContext.stageName],
                         average: leadtimeContext.avg
                     }}
                   />;

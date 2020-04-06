@@ -6,7 +6,6 @@ import Insights from 'js/components/insights/Insights';
 import Tabs from 'js/components/layout/Tabs';
 import PullRequests from 'js/components/pipeline/PullRequests';
 import SummaryChart from 'js/components/pipeline/SummaryChart';
-import { palette } from 'js/res/palette';
 
 import { pipelineStagesConf, getStage } from 'js/pages/pipeline/Pipeline';
 
@@ -43,8 +42,6 @@ export default () => {
                     name={activeStage.stageName}
                     metric={activeStage.metric}
                     config={{
-                        height: 280,
-                        color: palette.stages[activeStage.stageName],
                         average: activeStage.avg
                     }}
                   />;

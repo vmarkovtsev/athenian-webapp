@@ -6,6 +6,7 @@ import { useApi } from 'js/hooks';
 
 import FilledAreaChart from 'js/components/charts/FilledAreaChart';
 import Chart from 'js/components/charts/Chart';
+import { palette } from 'js/res/palette';
 
 import moment from 'moment';
 import _ from "lodash";
@@ -38,11 +39,18 @@ export default ({name, metric, config}) => {
           }))
           .value();
 
+    const defaultConfig = {
+        height: 280,
+        color: palette.stages[name],
+    };
+
+    const chartConfig = {...defaultConfig, ...config};
+
     return (
         <Chart
           id={`summary-chart-${name}`}
           component={FilledAreaChart} fetcher={fetcher} plumber={plumber}
-          config={config}
+          config={chartConfig}
         />
     );
 };
