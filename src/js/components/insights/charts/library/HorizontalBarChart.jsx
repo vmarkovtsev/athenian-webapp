@@ -60,21 +60,6 @@ const HorizontalBarChart = ({ title, data, extra }) => {
            }}/> : null
           }
 
-          {extra && extra.yAxis && extra.yAxis.imageMapping ?
-           <YAxis tickFormat={
-               (value) => (
-                   extra.yAxis.imageMapping[value] ?
-                       <image
-                         href={extra.yAxis.imageMapping[value]}
-                         clipPath={extra.yAxis.imageMask ? `url(#${extra.yAxis.imageMask}-mask)` : ""}
-                         width="30" height="30"
-                         transform="translate(-40,-15)"
-                       /> :
-                   value
-               )
-           } /> :
-           <YAxis />}
-
           {_(series).map((s, k) => <HorizontalBarSeries
                                      data={s.reverse()}
                                      color={extra.series[k].color}
@@ -83,6 +68,27 @@ const HorizontalBarChart = ({ title, data, extra }) => {
                                      onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
                                      onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
                                    />).value()}
+
+          { extra?.yAxis?.imageMapping && <UserNameBackground /> }
+
+          {extra && extra.yAxis && extra.yAxis.imageMapping ?
+           <YAxis tickFormat={
+               (value) => (
+                   extra.yAxis.imageMapping[value] ?
+		       <g className="userIcon">
+                           <image
+                             href={extra.yAxis.imageMapping[value]}
+                             clipPath={extra.yAxis.imageMask ? `url(#${extra.yAxis.imageMask}-mask)` : ""}
+                             width="30" height="30"
+                             transform="translate(-40,-15)"
+                           />
+                           <UserHint name={value} />
+                       </g> :
+                       value
+               )
+           } /> :
+           <YAxis />}
+
           {currentHover && <Tooltip value={currentHover} />}
         </FlexibleWidthXYPlot>
     );
@@ -98,3 +104,31 @@ const CircleMask = ({id, maskProperties}) => (
 );
 
 CircleMask.requiresSVG = true;
+
+const UserNameBackground = () => (
+    <defs>
+        <filter x="0" y="0" width="1" height="1" id="solid">
+            <feFlood floodColor="white" />
+            <feComposite in="SourceGraphic" />
+        </filter>
+    </defs>
+);
+
+UserNameBackground.requiresSVG = true;
+
+const userFontSize = 16;
+const UserHint = ({ name }) => (
+    // TODO(dpordomingo): Style the 'User Icon' tooltip using SVG native elements;
+    // alternative: investigate if it can be attached a javascript handler to <svg:image:onHover>,
+    //    and use it to handle the react-vis Hint passing the (x,y) position of the triggered event.
+    <text
+        className="userName"
+        x="0" y={30 + userFontSize * 1.3}
+        transform="translate(-40,-15)"
+        filter="url(#solid)"
+        fill="black"
+        fontSize={userFontSize}
+    >
+        {name}
+    </text>
+);
