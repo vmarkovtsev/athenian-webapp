@@ -2,10 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 
-import CleanAreaChart, { vertical } from 'js/components/charts/CleanAreaChart';
 import Badge, { NEGATIVE_IS_BETTER } from 'js/components/ui/Badge';
 import { BigNumber, SmallTitle } from 'js/components/ui/Typography';
-import Info from 'js/components/ui/Info'
+import Info from 'js/components/ui/Info';
+import PipelineCardMiniChart from 'js/components/pipeline/PipelineCardMiniChart';
 
 import { dateTime, number } from 'js/services/format';
 
@@ -24,7 +24,8 @@ export default ({ prs, stages, activeCard }) => {
                                     hint={card.hint}
                                     variation={card.variation}
                                     color={card.color}
-                                    data={card.data}
+                                    name={card.stageName}
+                                    metric={card.metric}
                                     active={activeCard === card.slug}
                                     badge={card.stageCompleteCount(prs)}
                                 >
@@ -39,8 +40,7 @@ export default ({ prs, stages, activeCard }) => {
     );
 };
 
-const Stage = ({ title, text, hint, badge, variation, color, data, active, onClick }) => {
-
+const Stage = ({ title, text, hint, badge, variation, color, name, metric, active, onClick }) => {
     return (
         <div className={classnames('card pipeline-thumbnail', active && 'active')} onClick={onClick}>
             <div className="card-body p-3">
@@ -57,54 +57,12 @@ const Stage = ({ title, text, hint, badge, variation, color, data, active, onCli
                         {text ? <Badge trend={NEGATIVE_IS_BETTER} value={number.round(variation)} /> : ''}
                     </div>
                     <div className="col-7 pl-2" style={{ height: 55 }}>
-                        {data && <PipelineCardMiniChart data={data} color={color} active={active} />}
+                      <PipelineCardMiniChart name={name} metric={metric} config={{
+                          color: active ? '#FFFFFF' : color
+                      }} />
                     </div>
                 </div>
             </div>
         </div >
-    )
-};
-
-const PipelineCardMiniChart = ({ color, active, data }) => {
-    if (active) {
-        color = '#FFFFFF';
-    }
-
-    const fill = {
-        direction: vertical,
-        stops: [
-            {
-                offset: "0%",
-                color,
-                opacity: .8
-            },
-            {
-                offset: "100%",
-                color,
-                opacity: .1
-            }
-        ]
-    };
-
-    const stroke = {
-        direction: vertical,
-        stops: [
-            {
-                offset: "0%",
-                color,
-                opacity: 1
-            },
-            {
-                offset: "100%",
-                color,
-                opacity: 1
-            }
-        ]
-    };
-
-    return (
-        <CleanAreaChart data={data}
-            fill={fill} stroke={stroke} >
-        </CleanAreaChart>
     );
 };
