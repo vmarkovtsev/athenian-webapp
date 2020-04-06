@@ -51,8 +51,7 @@ export default ({ data, average, color = palette.schemes.primary, height = 300 }
           animation="stiff"
         />
 
-        {currentHover && <DateBigNumber value={currentHover}
-                                        renderBigFn={v => <BigText content={dateTime.human(v.y * 1000)} />} />}
+        <DateBigNumber value={currentHover} renderBigFn={v => <BigText content={dateTime.human(v.y * 1000)} />} />
 
       </FlexibleWidthXYPlot>
     </div>

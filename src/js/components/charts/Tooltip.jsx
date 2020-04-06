@@ -7,6 +7,8 @@ import { Hint } from 'react-vis';
 import { number } from 'js/services/format';
 
 export default ({value, ...props}) => {
+    if (!value) return null;
+
     // TODO: This needs to be styled.
     // `value` is a flat key-value object
     return (

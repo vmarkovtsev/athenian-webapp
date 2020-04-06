@@ -155,7 +155,7 @@ const BubbleChart = ({ title, data, extra }) => {
           <YBubbleChartAxis formattedData={formattedData} label={extra.axisLabels.y} />
 
           {marksSeries}
-          {currentHover && <Tooltip value={currentHover} />}
+          <Tooltip value={currentHover} />
 
         </FlexibleWidthXYPlot>
     );
@@ -215,7 +215,7 @@ const BubbleChartLogScale = ({ title, data, extra }) => {
           <YBubbleChartLogAxis formattedData={formattedData} label={extra.axisLabels.y} />
 
           {marksSeries}
-          {currentHover && <Tooltip value={currentHover} />}
+          <Tooltip value={currentHover} />
 
         </FlexibleWidthXYPlot>
     );
