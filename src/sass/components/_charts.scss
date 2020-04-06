@@ -1,0 +1,9 @@
+.userIcon{
+    .userName {
+        display: none;
+    }
+
+    &:hover .userName {
+        display: block;
+    }
+}
