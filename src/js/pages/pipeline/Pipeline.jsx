@@ -45,7 +45,7 @@ export const pipelineStagesConf = [
             return [
                 ['proportion of the cycle time', number.percentage(stage.overallProportion)],
                 ['pull requests created', createdPrs.length],
-                ['contributors', authors.length],
+                ['authors', authors.length],
                 ['repositories', repos.length],
             ];
         },
@@ -94,7 +94,7 @@ export const pipelineStagesConf = [
             return [
                 ['proportion of the cycle time', number.percentage(stage.overallProportion)],
                 ['pull requests merged', mergedPRs.length],
-                ['contributors', mergerers.length],
+                ['mergers', mergerers.length],
                 ['repositories', repos.length],
             ];
         },
