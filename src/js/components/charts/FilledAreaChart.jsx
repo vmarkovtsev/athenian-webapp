@@ -19,6 +19,7 @@ export default ({ data, average, color = palette.schemes.primary, height = 300 }
   const fillColor = hexToRGBA(color, .2);
   const [currentHover, setCurrentHover] = useState(null);
   const tickValues = computeTickValues(data, 6);
+
   return (
     <div style={{ background: 'white' }}>
       <FlexibleWidthXYPlot
@@ -29,7 +30,9 @@ export default ({ data, average, color = palette.schemes.primary, height = 300 }
           tickValues={tickValues}
           tickFormat={dateTime.monthDay}
         />
-        <YAxis tickTotal={3} tickFormat={dateTime.human} />
+        <YAxis tickTotal={3}
+               tickFormat={(s) => dateTime.human(s * 1000)}
+        />
         <HorizontalGridLines tickTotal={3} />
         <VerticalGridLines tickValues={tickValues} />
         <AreaSeries data={data} stroke="none" fill={fillColor} animation="stiff" />
@@ -48,7 +51,8 @@ export default ({ data, average, color = palette.schemes.primary, height = 300 }
           animation="stiff"
         />
 
-        {currentHover && <DateBigNumber value={currentHover} renderBigFn={v => <BigText content={dateTime.human(v.y)} />} />}
+        {currentHover && <DateBigNumber value={currentHover}
+                                        renderBigFn={v => <BigText content={dateTime.human(v.y * 1000)} />} />}
 
       </FlexibleWidthXYPlot>
     </div>
