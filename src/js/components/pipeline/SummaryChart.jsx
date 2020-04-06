@@ -13,15 +13,15 @@ import _ from "lodash";
 
 export default ({name, metric, config}) => {
     const { api, ready: apiReady, context: apiContext } = useApi();
-    const { account, interval, repositories, contributors: developers } = apiContext;
-    const granularity = calculateGranularity(interval);
 
     if (!apiReady) {
         return null;
     }
 
+    const { account, interval, repositories, contributors: developers } = apiContext;
+    const granularity = calculateGranularity(interval);
     const adjustedInterval = {
-        from: moment(interval.from).subtract(1, 'days').toDate(),
+        from: moment(interval.from).subtract(1, granularity).toDate(),
         to: interval.to
     };
 
@@ -56,9 +56,16 @@ export default ({name, metric, config}) => {
 };
 
 const calculateGranularity = (interval) => {
-    // TODO: apply the following logic:
-    // <= 1 week: daily
-    // <= 2 months: weekly
-    // > 2 months: monthly
-    return 'day';
+    console.log(interval);
+    const diff = moment(interval.to).diff(interval.from, 'days');
+
+    if (diff <= 21) {
+        return 'day';
+    }
+
+    if (diff <= 90) {
+        return 'week';
+    }
+
+    return 'month';
 };
