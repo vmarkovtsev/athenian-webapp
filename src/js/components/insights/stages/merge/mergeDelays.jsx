@@ -102,7 +102,7 @@ const mergeDelays = {
                     },
                     kpis: [
                         {
-                            title: {text: 'Average Number of Uninque Mergers', bold: true},
+                            title: {text: 'Average Number of Mergers', bold: true},
                             subtitle: {text: 'Per Repository'},
                             component: SimpleKPI,
                             params: {
