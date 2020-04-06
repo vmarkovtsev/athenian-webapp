@@ -4,6 +4,8 @@ import { useAuth0 } from 'js/context/Auth0';
 import Simple from 'js/pages/templates/Simple';
 
 import { getUserWithAccountRepos } from 'js/services/api';
+import { useMountEffect } from 'js/hooks';
+import _ from 'lodash';
 
 const UserContext = React.createContext(null);
 
@@ -30,16 +32,44 @@ export default ({ children }) => {
 
     return (
         <UserContext.Provider value={userState}>
-            {
-                userState && !userState.defaultAccount ? (
-                    <Simple>
-                        <p>Your user was not invited to any account. You should accept an invitation first.</p>
-                        <button onClick={() => logout({ returnTo: window.ENV.auth.logoutRedirectUri })}>logout</button>
-                    </Simple>
-                ) : (
-                        children
-                    )
-            }
+          {
+              userState && !userState.defaultAccount ? (
+                  <Simple>
+                    <p>Your user was not invited to any account. You should accept an invitation first.</p>
+                    <button onClick={() => logout({ returnTo: window.ENV.auth.logoutRedirectUri })}>logout</button>
+                  </Simple>
+              ) : (
+                  <>
+                    {userState && <Intercom user={userState} />}
+                    {children}
+                  </>
+
+              )
+          }
         </UserContext.Provider >
     );
+};
+
+
+const Intercom = ({user}) => {
+    useMountEffect(() => {
+        if (window.ENV.intercom.appId) {
+            const githubOrgs = _(user.defaultReposet.repos)
+                  .map(r => r.split('/')[1])
+                  .uniq()
+                  .value();
+            window.Intercom('boot', {
+                app_id: window.ENV.intercom.appId,
+                user_id: user.id,
+                name: user.name,
+                email: user.email,
+                picture: user.picture,
+                updated: parseInt(user.updated.getTime() / 1000),
+                "Is Admin": user.defaultAccount.isAdmin,
+                "Github Organizations": githubOrgs,
+            });
+        }
+    });
+
+    return null;
 };
