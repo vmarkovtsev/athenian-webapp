@@ -13,21 +13,25 @@ import { hexToRGBA } from 'js/services/colors';
 
 import { DateBigNumber, BigText, onValueChange, onValueReset } from 'js/components/charts/Tooltip';
 
+import { computeTickValues } from 'js/components/insights/charts/library/TimeSeries';
+
 export default ({ data, average, color = palette.schemes.primary, height = 300 }) => {
   const fillColor = hexToRGBA(color, .2);
   const [currentHover, setCurrentHover] = useState(null);
+  const tickValues = computeTickValues(data, 6);
   return (
     <div style={{ background: 'white' }}>
       <FlexibleWidthXYPlot
         height={height}
         margin={{ left: 100 }}
       >
-        <XAxis tickTotal={6}
+        <XAxis
+          tickValues={tickValues}
           tickFormat={dateTime.monthDay}
         />
         <YAxis tickTotal={3} tickFormat={dateTime.human} />
         <HorizontalGridLines tickTotal={3} />
-        <VerticalGridLines tickTotal={6} />
+        <VerticalGridLines tickValues={tickValues} />
         <AreaSeries data={data} stroke="none" fill={fillColor} animation="stiff" />
         <LineMarkSeries
           data={data}

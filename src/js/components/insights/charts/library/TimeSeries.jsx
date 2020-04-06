@@ -50,7 +50,7 @@ const buildChartLabel = (text, which) => {
     return <ChartLabel text={text} {...labelParams} />;
 };
 
-const computeTickValues = (formattedData, maxNumberOfTicks) => {
+export const computeTickValues = (formattedData, maxNumberOfTicks) => {
     const tickValues = _(formattedData)
           .map(v => v.x.getTime())
           .value();
