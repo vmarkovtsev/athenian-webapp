@@ -14,32 +14,32 @@ const MONTH = 30 * DAY;
 const YEAR = 365 * DAY;
 
 /**
- * Returns the human format for the passed number of seconds.
- * e.g. if passed 242 seconds it will return '4 mins'
- * @param {int} seconds
+ * Returns the human format for the passed number of milliseconds.
+ * e.g. if passed the equivalent of 242 seconds it will return '4 mins'
+ * @param {int} milliseconds
  * @return {string}
  */
-const human = seconds => {
-    if (isNaN(seconds)) {
+const human = milliseconds => {
+    if (isNaN(milliseconds)) {
         return '';
     }
 
-    if (seconds < MINUTE) {
+    if (milliseconds < MINUTE) {
         return '<1 min';
-    } else if (seconds <= 1.75 * MINUTE) {
+    } else if (milliseconds <= 1.75 * MINUTE) {
         return '~1 min';
-    } else if (seconds <= 1.75 * HOUR) {
-        return Math.round(seconds / MINUTE) + ' mins';
-    } else if (seconds <= 1.75 * DAY) {
-        return Math.round(seconds / HOUR) + ' hours';
-    } else if (seconds <= 12 * DAY) {
-        return Math.round(seconds / DAY) + ' days';
-    } else if (seconds <= 8 * WEEK) {
-        return Math.round(seconds / WEEK) + ' weeks';
-    } else if (seconds <= 24 * MONTH) {
-        return Math.round(seconds / MONTH) + ' months';
-    } else if (seconds <= 5 * YEAR) {
-        return Math.round(seconds / YEAR) + ' years';
+    } else if (milliseconds <= 1.75 * HOUR) {
+        return Math.round(milliseconds / MINUTE) + ' mins';
+    } else if (milliseconds <= 1.75 * DAY) {
+        return Math.round(milliseconds / HOUR) + ' hours';
+    } else if (milliseconds <= 12 * DAY) {
+        return Math.round(milliseconds / DAY) + ' days';
+    } else if (milliseconds <= 8 * WEEK) {
+        return Math.round(milliseconds / WEEK) + ' weeks';
+    } else if (milliseconds <= 24 * MONTH) {
+        return Math.round(milliseconds / MONTH) + ' months';
+    } else if (milliseconds <= 5 * YEAR) {
+        return Math.round(milliseconds / YEAR) + ' years';
     }
 
     return '>5 years';

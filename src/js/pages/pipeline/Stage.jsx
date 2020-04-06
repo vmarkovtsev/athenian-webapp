@@ -42,7 +42,7 @@ export default () => {
                     name={activeStage.stageName}
                     metric={activeStage.metric}
                     config={{
-                        average: activeStage.avg
+                        average: activeStage.avg / 1000
                     }}
                   />;
     const kpi = <StageSummaryKPI data={activeStage.summary(activeStage, prsContext.prs, dateInterval)} />;

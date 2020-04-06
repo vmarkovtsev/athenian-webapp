@@ -29,7 +29,7 @@ export default () => {
                     name={leadtimeContext.stageName}
                     metric={leadtimeContext.metric}
                     config={{
-                        average: leadtimeContext.avg
+                        average: leadtimeContext.avg / 1000
                     }}
                   />;
     const kpi = stagesContext.map((stage, i) => stage.overallProportion ? (
