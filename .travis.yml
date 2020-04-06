@@ -1,6 +1,4 @@
-language: node_js
-node_js:
-  - '13'
+language: minimal
 
 os:
   - linux
@@ -26,11 +24,13 @@ jobs:
     - stage: test
       name: 'Frontend Tests'
       script:
-        - make test
+        - docker build --target app-deps -t webapp-frontend-testing .
+        - docker run -e CI=true webapp-frontend-testing make test
     - stage: build
       name: 'Frontend Build'
       script:
-        - make build
+        - docker build --target app-builder -t webapp-frontend-building .
+        - docker run webapp-frontend-building make build
     - stage: deploy
       name: 'Deploy App'
       script:
