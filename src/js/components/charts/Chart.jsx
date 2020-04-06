@@ -47,11 +47,12 @@ export default ({id, component, fetcher, plumber, config}) => {
         }
     }, [id, getData, prevLoadingDataState, loadingDataState]);
 
-    if (!dataState) {
+    const showSpinner = !dataState;
+    if (showSpinner) {
         return (
-            <div className="row mt-5 mb-5">
-              <div className="col-12 mt-5 text-center">
-                <Spinner loading={!dataState} color={config.color} />
+            <div className="row mt-5 mb-5 align-middle">
+              <div className="col-12 text-center">
+                <Spinner loading={true} color={config.color} />
               </div>
             </div>
         );
