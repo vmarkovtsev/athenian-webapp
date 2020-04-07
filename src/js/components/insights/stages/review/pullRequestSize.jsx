@@ -1,5 +1,6 @@
 import { SimpleKPI, MultiKPI } from 'js/components/insights/KPI';
 import BubbleChart from 'js/components/insights/charts/library/BubbleChart';
+import { PR_STAGE } from 'js/services/prHelpers';
 
 import moment from 'moment';
 import _ from 'lodash';
@@ -33,6 +34,7 @@ const pullRequestSize = {
             .take(20)
             .value(),
         totalFiles: _(data.prs)
+            .filter(pr => !pr.completedStages.includes(PR_STAGE.COMPLETE.REVIEW))
             .map(pr => pr.files_changed)
             .sum(),
         totalLoc: _(data.prs)
