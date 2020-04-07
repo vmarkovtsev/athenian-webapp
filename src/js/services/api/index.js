@@ -84,84 +84,50 @@ export const getContributors = (token, userAccount, from, to, repos) => {
     .then(contribs => contribs.map(c => c.login));
 };
 
-export const getMetrics = (api, accountId, dateInterval, repos, contributors) => {
-  const metrics = ['lead-time', 'cycle-time', 'wip-time', 'review-time', 'merging-time', 'release-time'];
-  const result = {};
-  metrics.forEach(metric => {
-    result[metric] = {
-      data: [],
-      avg: 0,
-      variation: 0,
-      aux: {
-        prevInterval: { sum: 0, count: 0 },
-        mainInterval: { sum: 0, count: 0 },
-      }
+export const getMetrics = async (api, accountId, dateInterval, repos, contributors) => {
+    const metrics = ['lead-time', 'cycle-time', 'wip-time', 'review-time', 'merging-time', 'release-time'];
+
+    const query = async (interval) => fetchPRsMetrics(
+        api, accountId, 'all', interval, metrics,
+        { repositories: repos, developers: contributors}
+    );
+
+    const currInterval = dateInterval;
+    const prevInterval = {
+        from: dateInterval.from - (dateInterval.to - dateInterval.from),
+        to: dateInterval.from
     };
-  });
 
-  const doubleDateInterval = {
-    from: dateInterval.from - (dateInterval.to - dateInterval.from),
-    to: dateInterval.to
-  };
+    const currResult = await query(currInterval);
+    const prevResult = await query(prevInterval);
+    const result = {};
 
-  return fetchApiMetricsLine(api, metrics, accountId, doubleDateInterval, repos, contributors).then(apiData => {
-    if (!apiData.calculated || !apiData.calculated[0]) {
-      throw new Error('API returned no calculated data');
-    }
+    _(metrics)
+        .forEach((m, index) => {
+            const prevAvg = dateTime.milliseconds(
+                prevResult.calculated[0].values[0].values[index]) || 0;
+            const currAvg = dateTime.milliseconds(
+                currResult.calculated[0].values[0].values[index]) || 0;
 
-    // This will unfold values, to have separate data per different metric, instead of all metrics under the same day.
-    apiData.calculated[0].values.forEach(step => {
-      const stepDate = new Date(step.date);
+            const variation = prevAvg > 0 ? (currAvg - prevAvg) * 100 / prevAvg : 0;
 
-      if (stepDate >= dateInterval.from) {
-        step.values.forEach((value, metricNo) => {
-          result[metrics[metricNo]].data.push({ x: stepDate, y: dateTime.milliseconds(value) });
-          result[metrics[metricNo]].aux.mainInterval.sum += dateTime.milliseconds(value);
-          result[metrics[metricNo]].aux.mainInterval.count++;
+            result[m] = {
+                data: [
+                    {
+                        x: prevResult.calculated[0].values[0].date,
+                        y: prevAvg
+                    },
+                    {
+                        x: currResult.calculated[0].values[0].date,
+                        y: currAvg
+                    }
+                ],
+                avg: currAvg,
+                variation: variation
+            };
         });
-      } else {
-        step.values.forEach((value, metricNo) => {
-          result[metrics[metricNo]].aux.prevInterval.sum += dateTime.milliseconds(value);
-          result[metrics[metricNo]].aux.prevInterval.count++;
-        });
-      }
-    });
-
-    Object.keys(result).forEach(metricName => {
-      let [prevAvg, mainAvg, variation] = [0, 0, 'inf'];
-      if (result[metricName].aux.mainInterval.count) {
-        mainAvg = result[metricName].aux.mainInterval.sum / result[metricName].aux.mainInterval.count;
-      }
-
-      if (result[metricName].aux.prevInterval.count) {
-        prevAvg = result[metricName].aux.prevInterval.sum / result[metricName].aux.prevInterval.count;
-      }
-
-      if (prevAvg) {
-        variation = (mainAvg - prevAvg) * 100 / prevAvg;
-      } else if (!mainAvg) {
-        variation = 0;
-      }
-
-      result[metricName].avg = mainAvg; // TODO(dpordomingo): Average should consider stage-complete PRs, not the stage-pending ones. It should be obtained from the API
-      result[metricName].variation = variation;
-      delete (result[metricName].aux);
-    });
 
     return result;
-  }).catch(error => {
-    // TODO(dpordomingo): notify to an error handler which may rise a toast
-    console.error('ERROR calling endpoint', error);
-    throw error;
-  });
-};
-
-// DEPRECATED: use `fetchPRsMetrics` instead
-const fetchApiMetricsLine = (api, metrics, accountId, dateInterval = { from: null, to: null }, repos = [], contributors = []) => {
-  return fetchPRsMetrics(api, accountId, 'week', dateInterval, metrics, {
-    repositories: repos,
-    developers: contributors
-  });
 };
 
 export const getInvitation = async (token, accountID) => {
