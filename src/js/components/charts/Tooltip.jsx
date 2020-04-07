@@ -3,10 +3,14 @@ import _ from 'lodash';
 import classnames from 'classnames';
 import moment from 'moment';
 import { Hint } from 'react-vis';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faClock } from '@fortawesome/free-regular-svg-icons'
 
 import { number } from 'js/services/format';
 
 export default ({value, ...props}) => {
+    if (!value) return null;
+
     // TODO: This needs to be styled.
     // `value` is a flat key-value object
     return (
@@ -35,6 +39,31 @@ export const DateBigNumber = ({ value, renderBigFn = v => <BigText content={numb
                 <Group>
                     <SmallTitle content={<SmallDate date={moment(value.x)} />} />
                     {renderBigFn(value)}
+                </Group>
+            </TooltipContainer>
+        </Hint>
+    );
+};
+
+export const PullRequestReview = ({ value, ...props }) => {
+    if (!value) return null;
+
+    const tooltip = value.tooltip;
+    return (
+        <Hint {...props} value={value}>
+            <TooltipContainer left>
+                <Group>
+                    <SmallTitle uppercase content={`#${tooltip.number}`} />
+                    <PullRequestRepoTitle repo={tooltip.repository} title={tooltip.title} />
+                </Group>
+                {tooltip.timeWaiting && (
+                    <Group className={tooltip.reviewed ? 'text-turquoise' : 'text-orange'}>
+                        <Icon icon={faClock} />
+                        <span>{tooltip.reviewed ? 'Waited' : 'Waiting'} review for {tooltip.timeWaiting}</span>
+                    </Group>
+                )}
+                <Group>
+                    <UserAvatar src={tooltip.image} name={tooltip.author} middleText="Created by" size="18" />
                 </Group>
             </TooltipContainer>
         </Hint>
@@ -103,5 +132,27 @@ export const BigText = ({ content, extra }) => (
 export const SmallDate = ({ date }) => (
     <>
         <span className="text-uppercase">{date.format('ddd')}</span>, {date.format('Do')} <span className="text-uppercase">{date.format('MMM')}</span>
+    </>
+);
+
+
+export const PullRequestRepoTitle = ({ repo, title }) => (
+    <span className="text-s">
+        <span className="text-secondary">{repo}: </span>
+        <span className="text-dark font-weight-bold">{title}</span>
+    </span>
+);
+
+export const Icon = ({ icon, className }) => (
+    <FontAwesomeIcon icon={icon} className={classnames('mr-1', className)} />
+);
+
+export const UserAvatar = ({ name, src, middleText, size = 30 }) => (
+    <>
+        <img src={src} alt={name} className="user-avatar inline-block" height={size} width={size} />
+        <span className="ml-2 inline-block font-weight-light align-middle">
+            {middleText && <span className="text-secondary">{middleText} </span>}
+            <span className={classnames('text-dark', !middleText ? 'text-m' : '')}>{name}</span>
+        </span>
     </>
 );

@@ -36,7 +36,7 @@ const human = milliseconds => {
         return Math.round(milliseconds / DAY) + ' days';
     } else if (milliseconds <= 8 * WEEK) {
         return Math.round(milliseconds / WEEK) + ' weeks';
-    } else if (milliseconds <= 24 * MONTH) {
+    } else if (milliseconds <= 22 * MONTH) {
         return Math.round(milliseconds / MONTH) + ' months';
     } else if (milliseconds <= 5 * YEAR) {
         return Math.round(milliseconds / YEAR) + ' years';
