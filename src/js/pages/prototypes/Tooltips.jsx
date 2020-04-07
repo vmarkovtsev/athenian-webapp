@@ -1,6 +1,4 @@
 import React from 'react';
-import classnames from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock, faCommentAlt, faUser } from '@fortawesome/free-regular-svg-icons'
 import { faCodeBranch } from '@fortawesome/free-solid-svg-icons'
 
@@ -19,7 +17,10 @@ import {
   Group,
   BigText,
   SmallTitle,
-  SmallDate
+  SmallDate,
+  PullRequestRepoTitle,
+  Icon,
+  UserAvatar,
 } from 'js/components/charts/Tooltip';
 import moment from 'moment';
 
@@ -27,27 +28,6 @@ const SmallText = ({ content }) => (
   <span className="font-weight-bold d-inline-block align-middle text-dark text-m">
     {content}
   </span>
-);
-
-const UserAvatar = ({ name, src, middleText, size = 30 }) => (
-  <>
-    <img src={src} alt={name} className="user-avatar inline-block" height={size} width={size} />
-    <span className="ml-2 inline-block font-weight-light align-middle">
-      {middleText && <span className="text-secondary">{middleText} </span>}
-      <span className={classnames('text-dark', !middleText ? 'text-m' : '')}>{name}</span>
-    </span>
-  </>
-);
-
-const PullRequestRepoTitle = ({ repo, title }) => (
-  <span className="text-s">
-    <span className="text-secondary">{repo}: </span>
-    <span className="text-dark font-weight-bold">{title}</span>
-  </span>
-);
-
-const Icon = ({ icon, className }) => (
-  <FontAwesomeIcon icon={icon} className={classnames('mr-1', className)} />
 );
 
 const PRCommentsStats = ({ prs, comments }) => (
