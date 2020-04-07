@@ -13,6 +13,42 @@ const WEEK = 7 * DAY;
 const MONTH = 30 * DAY;
 const YEAR = 365 * DAY;
 
+const roundDecimals = (num, decimals) => Math.round((num + Number.EPSILON) * 10**decimals) / 10**decimals;
+
+export const getBestTimeUnit = (milliseconds) => {
+    const units = [
+        [SECOND, 'secs'],
+        [MINUTE, 'mins'],
+        [HOUR, 'hours'],
+        [DAY, 'days'],
+        [WEEK, 'weeks'],
+        [MONTH, 'months'],
+        [YEAR, 'years'],
+    ];
+
+    if (milliseconds === 0) {
+        return units[0];
+    }
+
+    let current = [1, 'milliseconds'];
+    for (const u of units) {
+        const v = milliseconds / u[0];
+        if (v < 3) {
+            break;
+        }
+
+        current = u;
+    }
+
+    return current;
+};
+
+const bestTimeUnit = (milliseconds) => {
+    const [conversionValue, durationUnit] = getBestTimeUnit(milliseconds);
+    const value = milliseconds / conversionValue;
+    return `${roundDecimals(value, 2)} ${durationUnit}`;
+};
+
 /**
  * Returns the human format for the passed number of milliseconds.
  * e.g. if passed the equivalent of 242 seconds it will return '4 mins'
@@ -66,6 +102,7 @@ export const dateTime = {
     ago: date => human(Date.now() - date),
     interval: (dateFrom, dateTo) => human(dateTo - dateFrom),
     human,
+    bestTimeUnit,
 };
 
 export const github = {
