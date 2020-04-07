@@ -22,12 +22,18 @@ const pullRequestSize = {
                     endTime = moment();
                 }
 
+                // TODO(dpordomingo): This Chart shows PRs in two groups: waiting for review or not.
+                //   Grouping criteria should be having review_happened or approve_happened or changes_request_happened or merge_happened or being closed.
+                //   But API since the tooltip also needs to show the time waiting for being reviewed, and the events
+                //   above do not expose it, we can only differentiate between being review-complete, or not.
+                const reviewed = pr.completedStages.includes(PR_STAGE.COMPLETE.REVIEW);
+
                 return {
                     loc: pr.size_added + pr.size_removed,
                     files: pr.files_changed,
                     label: pr.repository + " - #" + pr.number,
                     age: endTime.diff(pr.created, 'hours'),
-                    reviewRequested: !!pr.review_requested,
+                    reviewed,
                 };
             })
             .orderBy(['age', 'loc'], ['desc', 'desc'])
@@ -46,7 +52,7 @@ const pullRequestSize = {
             y: 'files',
             size: 'age'
         },
-        grouper: 'reviewRequested',
+        grouper: 'reviewed',
         groups: {
             false: {
                 title: 'Waiting review',
