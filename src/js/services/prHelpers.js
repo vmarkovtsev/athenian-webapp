@@ -129,6 +129,11 @@ const extractCompletedStages = pr => {
       PR_STAGE.COMPLETE.MERGE,
       PR_STAGE.COMPLETE.RELEASE
     ];
+  } else if (pr.stage === PR_STAGE.DONE) {
+    return [
+      PR_STAGE.COMPLETE.WIP,
+      PR_STAGE.COMPLETE.REVIEW
+    ];
   } else if (pr.stage === PR_STAGE.RELEASE) {
     return [
       PR_STAGE.COMPLETE.WIP,
