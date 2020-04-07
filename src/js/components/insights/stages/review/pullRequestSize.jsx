@@ -45,7 +45,7 @@ const pullRequestSize = {
                     );
                     const tooltip = {
                         number: pr.number,
-                        repository: github.repoOrg(pr.repository),
+                        repository: pr.organization + '/' + pr.repo,
                         title: pr.title,
                         image: avatarMapping[author],
                         reviewed,

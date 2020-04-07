@@ -110,7 +110,7 @@ export default ({ stage, data }) => {
                             case 'display':
                                 return `
                                     <div class="table-title">
-                                        <span class="text-secondary">${github.repoOrg(row.repository)}/${github.repoName(row.repository)}:</span>
+                                        <span class="text-secondary">${row.organization}/${row.repo}:</span>
                                         <a class="text-dark font-weight-bold" href=${github.prLink(row.repository, row.number)} target="_blank">${row.title}</a>
                                     </div>
                                     <div class="table-creators">
