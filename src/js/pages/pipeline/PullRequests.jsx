@@ -11,7 +11,10 @@ export default ({ children }) => {
     const { getTokenSilently } = useAuth0();
     const userContext = useUserContext(null);
     const { dateInterval, repositories, contributors } = useFiltersContext();
-    const [prsState, setPrsState] = useState({ prs: [], users: {} });
+    const [prsState, setPrsState] = useState({
+        prev: { prs: [], users: {} },
+        curr: { prs: [], users: {} },
+    });
 
     useEffect(() => {
         if (!userContext || !repositories.length) {
@@ -26,8 +29,8 @@ export default ({ children }) => {
     }, [userContext, dateInterval, repositories, contributors, getTokenSilently]);
 
     return (
-        <PRsContext prs={prsState}>
+        <PRsContext prevPRs={prsState.prev} currPRs={prsState.curr}>
             {children}
         </PRsContext>
-    )
+    );
 };

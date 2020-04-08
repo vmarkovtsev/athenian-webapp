@@ -16,27 +16,51 @@ import _ from 'lodash';
 import moment from 'moment';
 
 export const getPRs = async (token, accountId, dateInterval, repos, contributors) => {
-  const api = buildApi(token);
-  const filter = new FilterPullRequestsRequest(accountId, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to));
-  filter.in = repos;
-  filter.stages = ['wip', 'review', 'merge', 'release', 'done'];
-  if (contributors.length) {
-    filter.with = {
-      author: contributors,
-      reviewer: contributors,
-      commit_author: contributors,
-      commit_committer: contributors,
-      commenter: contributors,
-      merger: contributors,
+    const api = buildApi(token);
+
+    const query = async (interval) => {
+        const filter = new FilterPullRequestsRequest(
+            accountId, dateTime.ymd(interval.from), dateTime.ymd(interval.to));
+        filter.in = repos;
+        filter.stages = ['wip', 'review', 'merge', 'release', 'done'];
+        if (contributors.length) {
+            filter.with = {
+                author: contributors,
+                reviewer: contributors,
+                commit_author: contributors,
+                commit_committer: contributors,
+                commenter: contributors,
+                merger: contributors,
+            };
+        }
+
+        return api.filterPrs({ filterPullRequestsRequest: filter });
     };
-  }
 
-  const prs = await api.filterPrs({ filterPullRequestsRequest: filter });
+    const currInterval = dateInterval;
+    const prevInterval = getPreviousInterval(currInterval);
 
-  return {
-    prs: prs.data.map(processPR),
-    users: (prs.include && prs.include.users) || {},
-  };
+    const currResult = await query(currInterval);
+    const prevResult = await query(prevInterval);
+
+    return {
+        prev: {
+            prs: prevResult.data.map(processPR),
+            users: (prevResult.include && prevResult.include.users) || {},
+
+        },
+        curr: {
+            prs: currResult.data.map(processPR),
+            users: (currResult.include && currResult.include.users) || {},
+        }
+    };
+};
+
+const getPreviousInterval = (dateInterval) => {
+    const diffDays = moment(dateInterval.to).diff(dateInterval.from, 'days');
+    const prevTo = moment(dateInterval.from).subtract(1, 'days');
+    const prevFrom = moment(prevTo).subtract(diffDays, 'days');
+    return { from: prevFrom.unix() * 1000, to: prevTo.unix() * 1000 };
 };
 
 export const getUserWithAccountRepos = async token => {
@@ -94,10 +118,7 @@ export const getMetrics = async (api, accountId, dateInterval, repos, contributo
     );
 
     const currInterval = dateInterval;
-    const diffDays = moment(dateInterval.to).diff(dateInterval.from, 'days');
-    const prevTo = moment(dateInterval.from).subtract(1, 'days');
-    const prevFrom = moment(prevTo).subtract(diffDays, 'days');
-    const prevInterval = { from: prevFrom.unix() * 1000, to: prevTo.unix() * 1000 };
+    const prevInterval = getPreviousInterval(currInterval);
 
     const currResult = await query(currInterval);
     const prevResult = await query(prevInterval);

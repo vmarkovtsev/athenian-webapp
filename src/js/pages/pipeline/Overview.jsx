@@ -13,7 +13,7 @@ import Tabs from 'js/components/layout/Tabs';
 import { dateTime, number } from 'js/services/format';
 
 export default () => {
-    const prsContext = usePRsContext();
+    const { curr: prsContext } = usePRsContext();
     const { leadtime: leadtimeContext, stages: stagesContext } = usePipelineContext();
 
     let slowerStage = 0;
@@ -54,7 +54,7 @@ export default () => {
           <Tabs tabs={[
               {
                   title: 'Pull Requests',
-                  badge: prsContext.prs.length,
+                  badge: prsContext.length,
                   content: <PullRequests data={prsContext} stage="overview" />
               }
           ]} />
