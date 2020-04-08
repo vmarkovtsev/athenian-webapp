@@ -98,6 +98,12 @@ export const UserReviewer = ({ value, ...props }) => {
                         <BigText content={tooltip.reviewsPerc.number} extra={number.percentage(tooltip.reviewsPerc.percentage)} />
                     </Group>
                 )}
+                {tooltip.x && (
+                    <Group>
+                        <SmallTitle uppercase content="Pull Requests" />
+                        <BigText content={tooltip.x.number} />
+                    </Group>
+                )}
             </TooltipContainer>
         </Hint >
     );

@@ -1,38 +1,56 @@
+import _ from 'lodash';
+
 import { SimpleKPI } from 'js/components/insights/KPI';
 import HorizontalBarChart from 'js/components/insights/charts/library/HorizontalBarChart';
+import { UserReviewer } from 'js/components/charts/Tooltip';
 
-import _ from 'lodash';
+import { github } from 'js/services/format';
 
 const mostActiveDevs = {
     fetcher: async (api, context, data) => {
         // TODO: call the api to avoid receiving data from outside
         return Promise.resolve(data);
     },
-    calculator: (data) => ({
-        chartData: _(data.prs)
-            .flatMap(pr => pr.authors)
-            .countBy()
-            .map((v, k) => ({x: v, y: _.replace(k, 'github.com/', '')}))
-            .orderBy(['x'], ['desc'])
-            .take(10)
-            .value(),
-        activeDevs: _(data.prs)
-            .flatMap(pr => pr.participants)
-            .filter(participant => _.intersection(
-                participant.status,
-                ['author', 'commit_author', 'commit_committer']
-            ).length > 0)
-            .map(pr => _.replace(pr.id, 'github.com/', ''))
-            .uniq()
-            .value(),
-        avatarMapping: _(data.users)
+    calculator: (data) => {
+        const avatarMapping = _(data.users)
             .reduce((res, v, k) => {
-                res[_.replace(k, 'github.com/', '')] = v.avatar;
+                res[github.userName(k)] = v.avatar;
                 return res;
-            })
-        ,
-        totalPRs: data.prs.length
-    }),
+            });
+        return {
+            chartData: _(data.prs)
+                .flatMap(pr => pr.authors)
+                .countBy()
+                .map((v, k) => {
+                    const author = github.userName(k);
+                    return {
+                        x: v,
+                        y: author,
+                        tooltip: {
+                            author,
+                            image: avatarMapping[author],
+                            x: {
+                                number: v,
+                            },
+                        },
+                    };
+                })
+                .orderBy(['x'], ['desc'])
+                .take(10)
+                .value(),
+            activeDevs: _(data.prs)
+                .flatMap(pr => pr.participants)
+                .filter(participant => _.intersection(
+                    participant.status,
+                    ['author', 'commit_author', 'commit_committer']
+                ).length > 0)
+                .map(pr => _.replace(pr.id, 'github.com/', ''))
+                .uniq()
+                .value(),
+            avatarMapping,
+            totalPRs: data.prs.length
+        };
+    },
     factory: (computed) => ({
         meta: {
             title: 'Most Active Developer',
@@ -59,8 +77,8 @@ const mostActiveDevs = {
                                     name: 'Number of Pull Requests created',
                                     color: "#FFA008",
                                 },
-                            }
-
+                            },
+                            tooltip: { template: UserReviewer },
                         }
                     }
                 },
