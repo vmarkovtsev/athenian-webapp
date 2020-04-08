@@ -1,9 +1,11 @@
+import _ from 'lodash';
+
 import { SimpleKPI } from 'js/components/insights/KPI';
 import VerticalBarChart from 'js/components/insights/charts/library/VerticalBarChart';
+import { TimeToMerge } from 'js/components/charts/Tooltip';
 
 import { fetchPRsMetrics, fetchDevsMetrics } from 'js/services/api/index';
-
-import _ from 'lodash';
+import { github, dateTime } from 'js/services/format';
 
 const mergeDelays = {
     fetcher: async (api, context) => {
@@ -51,7 +53,11 @@ const mergeDelays = {
             chartData: _(fetched.chartData.calculated)
                 .map(v => ({
                     repo: _(v.for.repositories[0]).split('/').nth(2),
-                    delay: (v.values[0].values[0] || 0) / 3600
+                    delay: (v.values[0].values[0] || 0) / 3600,
+                    tooltip: {
+                        repository: github.repoOrg(v.for.repositories[0]) + '/' + github.repoName(v.for.repositories[0]),
+                        time: dateTime.human((v.values[0].values[0] || 0) * 1000),
+                    },
                 }))
                 .filter(v => _(repos).includes(v.repo))
                 .orderBy(['delay'], ['desc'])
@@ -96,7 +102,8 @@ const mergeDelays = {
                                 axisLabels: {
                                     y: 'Time to Merge, Hours'
                                 },
-                                color: "#4EC7EE"
+                                color: "#4EC7EE",
+                                tooltip: { template: TimeToMerge },
                             }
                         }
                     },

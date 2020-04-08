@@ -101,8 +101,28 @@ export const UserReviewer = ({ value, ...props }) => {
             </TooltipContainer>
         </Hint >
     );
-
 };
+
+export const TimeToMerge = ({ value, ...props }) => {
+    if (!value) return null;
+
+    const tooltip = value.tooltip;
+    return (
+        <Hint {...props} value={value}>
+            <TooltipContainer>
+                <Group>
+                    <span className="text-secondary text-m align-middle">{tooltip.repository}</span>
+                </Group>
+                <Group>
+                    <p className="text-m text-dark m-0">
+                        <Icon icon={faClock} className="text-blue" />
+                        <span>{tooltip.time}</span>
+                    </p>
+                </Group>
+            </TooltipContainer>
+        </Hint >
+    );
+}
 
 export const onValueChange = (datapoint, eventType, current, setCurrent, blacklist) => {
     console.log(`START: ${eventType}`);

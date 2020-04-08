@@ -29,11 +29,14 @@ const VerticalBarChart = ({ title, data, extra }) => {
     const formattedData = _(data)
           .map(v => ({
               x: v[extra.axisKeys.x],
-              y: v[extra.axisKeys.y]
+              y: v[extra.axisKeys.y],
+              tooltip: v.tooltip,
           }))
           .value();
 
     const color = extra.color;
+
+    const ChartTooltip = extra?.tooltip?.template || Tooltip;
 
     return (
         <FlexibleWidthXYPlot height={500} margin={{ left: 80, bottom: 100}} xType="ordinal">
@@ -51,7 +54,8 @@ const VerticalBarChart = ({ title, data, extra }) => {
             onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
           />
 
-          <Tooltip value={currentHover} />
+          <ChartTooltip value={currentHover} />
+
         </FlexibleWidthXYPlot>
     );
 };

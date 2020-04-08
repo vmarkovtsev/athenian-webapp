@@ -9,7 +9,6 @@ import chart04 from 'js/pages/prototypes/tooltip-info/tooltip-charts/chart04.png
 import chart05 from 'js/pages/prototypes/tooltip-info/tooltip-charts/chart05.png';
 import chart06 from 'js/pages/prototypes/tooltip-info/tooltip-charts/chart06.png';
 import chart07 from 'js/pages/prototypes/tooltip-info/tooltip-charts/chart07.png';
-import chart08 from 'js/pages/prototypes/tooltip-info/tooltip-charts/chart08.png';
 import chart10 from 'js/pages/prototypes/tooltip-info/tooltip-charts/chart10.png';
 
 import {
@@ -250,7 +249,7 @@ export default () => {
         <div className="col-12">
           <h4 className="text-centerleft text-dark font-weight-light mr-2 mt-5">Text and numbers</h4>
 
-          <img className="mb-2" src={chart08} alt="" width="620" /><br />
+          <img className="mb-2" src={chart07} alt="" width="620" /><br />
 
           <p className="font-weight-light text-m mt-5 mb-3">One title and one number</p>
 
