@@ -1,6 +1,9 @@
 import React, { useContext } from 'react';
 
-const PRsContext = React.createContext({ prs: [], users: {} });
+const PRsContext = React.createContext({
+    prev: { prs: [], users: {} },
+    curr: { prs: [], users: {} },
+});
 
 /**
  * Returns the PRs (prs) and participants (users) within the active filters.
@@ -8,9 +11,9 @@ const PRsContext = React.createContext({ prs: [], users: {} });
  */
 export const usePRsContext = () => useContext(PRsContext);
 
-export default ({ children, prs }) => {
+export default ({ children, prevPRs, currPRs }) => {
     return (
-        <PRsContext.Provider value={prs}>
+        <PRsContext.Provider value={{prev: prevPRs, curr: currPRs}}>
             {children}
         </PRsContext.Provider >
     );
