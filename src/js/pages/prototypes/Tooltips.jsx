@@ -1,5 +1,5 @@
 import React from 'react';
-import { faClock, faCommentAlt, faUser } from '@fortawesome/free-regular-svg-icons'
+import { faClock, faUser } from '@fortawesome/free-regular-svg-icons'
 import { faCodeBranch } from '@fortawesome/free-solid-svg-icons'
 
 import chart01 from 'js/pages/prototypes/tooltip-info/tooltip-charts/chart01.png';
@@ -21,6 +21,7 @@ import {
   PullRequestRepoTitle,
   Icon,
   UserAvatar,
+  PRCommentsStats,
 } from 'js/components/charts/Tooltip';
 import moment from 'moment';
 
@@ -28,15 +29,6 @@ const SmallText = ({ content }) => (
   <span className="font-weight-bold d-inline-block align-middle text-dark text-m">
     {content}
   </span>
-);
-
-const PRCommentsStats = ({ prs, comments }) => (
-  <p className="user-info text-secondary font-weight-light m-0">
-    <Icon icon={faCodeBranch} />
-    <span className="mr-3">{prs}</span>
-    <Icon icon={faCommentAlt} />
-    <span>{comments}</span>
-  </p>
 );
 
 const ReleaseStats = ({ PRs, additions, removals }) => (

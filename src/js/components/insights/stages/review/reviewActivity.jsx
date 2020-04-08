@@ -1,10 +1,12 @@
+import _ from 'lodash';
+
 import { SimpleKPI } from 'js/components/insights/KPI';
 import HorizontalBarChart from 'js/components/insights/charts/library/HorizontalBarChart';
 import BubbleChart from 'js/components/insights/charts/library/BubbleChart';
+import { UserReviewer } from 'js/components/charts/Tooltip';
 
 import { fetchDevsMetrics } from 'js/services/api/index';
-
-import _ from 'lodash';
+import { github } from 'js/services/format';
 
 const reviewActivity = {
     fetcher: async (api, context, data) => {
@@ -43,6 +45,11 @@ const reviewActivity = {
         });
     },
     calculator: (fetched) => {
+        const avatarMapping = _(fetched.legacyData.users)
+            .reduce((res, v, k) => {
+                res[github.userName(k)] = v.avatar;
+                return res;
+            });
         const totalReviews = _(fetched.secondBox.calculated)
               .map(v => v.values[0][0])
               .sum();
@@ -54,11 +61,28 @@ const reviewActivity = {
               .value()
               .length;
         const secondBoxChartData = _(fetched.secondBox.calculated)
-              .map(v => ({
-                  developer: _.replace(v.for.developers[0], 'github.com/', ''),
-                  reviewsPerc: v.values[0][0] * 100 / totalReviews,
-                  prsCommentsPerc: v.values[0][1] * 100 / totalPRsComments
-              }))
+              .map(v => {
+                  const [reviewsTotal, prsCommentsTotal] = [v.values[0][0], v.values[0][1]];
+                  const [reviewsPerc, prsCommentsPerc] = [reviewsTotal * 100 / totalReviews, prsCommentsTotal * 100 / totalPRsComments];
+                  const author = github.userName(v.for.developers[0]);
+                  return {
+                      developer: author,
+                      reviewsPerc,
+                      prsCommentsPerc,
+                      tooltip: {
+                          author,
+                          image: avatarMapping[author],
+                          reviewsPerc: {
+                              number: reviewsTotal,
+                              percentage: reviewsPerc,
+                          },
+                          prsCommentsPerc: {
+                              number: prsCommentsTotal,
+                              percentage: prsCommentsPerc,
+                          },
+                      },
+                  };
+              })
               .filter(v => v.reviewsPerc > 0 || v.prsCommentsPerc > 0)
               .orderBy(['prsCommentsPerc', 'reviewsPerc'], ['desc', 'desc'])
               .take(10)
@@ -76,12 +100,23 @@ const reviewActivity = {
         return {
             firstBox: {
                 chartData: _(fetched.firstBox.calculated)
-                    .map(v => ({
-                        developer: _.replace(v.for.developers[0], 'github.com/', ''),
-                        reviews: v.values[0][0],
-                        prs: v.values[0][1],
-                        size: 5
-                    }))
+                    .map(v => {
+                        const author = github.userName(v.for.developers[0]);
+                        return {
+                            developer: author,
+                            reviews: v.values[0][0],
+                            prs: v.values[0][1],
+                            size: 5,
+                            tooltip: {
+                                author,
+                                image: avatarMapping[author],
+                                stats: {
+                                    prsCount: v.values[0][1],
+                                    commentsCount: v.values[0][0],
+                                },
+                            },
+                        };
+                    })
                     .filter(v => v.reviews > 0 || v.prs > 0)
                     .orderBy(['reviews'], ['desc'])
                     .take(10)
@@ -92,11 +127,7 @@ const reviewActivity = {
                     size: 'size',
                     label: 'developer'
                 },
-                avatarMapping: _(fetched.legacyData.users)
-                    .reduce((res, v, k) => {
-                        res[_.replace(k, 'github.com/', '')] = v.avatar;
-                        return res;
-                    }),
+                avatarMapping,
                 KPIsData: {
                     sumPrsCreated: _(fetched.firstBox.calculated)
                         .map(v => v.values[0][1])
@@ -113,11 +144,7 @@ const reviewActivity = {
                     x: ['prsCommentsPerc', 'reviewsPerc'],
                     y: 'developer'
                 },
-                avatarMapping: _(fetched.legacyData.users)
-                    .reduce((res, v, k) => {
-                        res[_.replace(k, 'github.com/', '')] = v.avatar;
-                        return res;
-                    }),
+                avatarMapping,
                 KPIsData: {
                     reviewers: totalReviewers,
                     topReviewer: topReviewer
@@ -156,6 +183,7 @@ const reviewActivity = {
                                     y: 'Number of PRs Created'
                                 },
                                 color: '#41CED3',
+                                tooltip: { template: UserReviewer },
                             }
                         }
                     },
@@ -200,7 +228,8 @@ const reviewActivity = {
                                         name: '% Reviews',
                                         color: '#FFC507',
                                     }
-                                }
+                                },
+                                tooltip: { template: UserReviewer },
                             }
                         }
                     },
