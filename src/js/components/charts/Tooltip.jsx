@@ -4,7 +4,8 @@ import classnames from 'classnames';
 import moment from 'moment';
 import { Hint } from 'react-vis';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClock } from '@fortawesome/free-regular-svg-icons'
+import { faClock, faCommentAlt } from '@fortawesome/free-regular-svg-icons'
+import { faCodeBranch } from '@fortawesome/free-solid-svg-icons'
 
 import { number } from 'js/services/format';
 
@@ -68,6 +69,39 @@ export const PullRequestReview = ({ value, ...props }) => {
             </TooltipContainer>
         </Hint>
     );
+};
+
+export const UserReviewer = ({ value, ...props }) => {
+    if (!value) return null;
+
+    const tooltip = value.tooltip;
+    return (
+        <Hint {...props} value={value}>
+            <TooltipContainer>
+                <Group>
+                    <UserAvatar src={tooltip.image} name={tooltip.author} />
+                </Group>
+                {tooltip.stats && (
+                    <Group>
+                        <PRCommentsStats prs={tooltip.stats.prsCount || 0} comments={tooltip.stats.commentsCount || 0} />
+                    </Group>
+                )}
+                {tooltip.prsCommentsPerc && (
+                    <Group>
+                        <SmallTitle uppercase content="Reviews" />
+                        <BigText content={tooltip.prsCommentsPerc.number} extra={number.percentage(tooltip.prsCommentsPerc.percentage)} />
+                    </Group>
+                )}
+                {tooltip.reviewsPerc && (
+                    <Group>
+                        <SmallTitle uppercase content="Reviews comments" />
+                        <BigText content={tooltip.reviewsPerc.number} extra={number.percentage(tooltip.reviewsPerc.percentage)} />
+                    </Group>
+                )}
+            </TooltipContainer>
+        </Hint >
+    );
+
 };
 
 export const onValueChange = (datapoint, eventType, current, setCurrent, blacklist) => {
@@ -155,4 +189,13 @@ export const UserAvatar = ({ name, src, middleText, size = 30 }) => (
             <span className={classnames('text-dark', !middleText ? 'text-m' : '')}>{name}</span>
         </span>
     </>
+);
+
+export const PRCommentsStats = ({ prs, comments }) => (
+    <p className="user-info text-secondary font-weight-light m-0">
+        <Icon icon={faCodeBranch} />
+        <span className="mr-3">{prs}</span>
+        <Icon icon={faCommentAlt} />
+        <span>{comments}</span>
+    </p>
 );

@@ -33,7 +33,14 @@ const HorizontalBarChart = ({ title, data, extra }) => {
                       acc[ax] = acc[ax] || [];
                       acc[ax].push({
                           x: v[ax],
-                          y: v[extra.axisKeys.y]
+                          y: v[extra.axisKeys.y],
+                          ...v.tooltip && {
+                              tooltip: {
+                                  author: v.tooltip?.author,
+                                  image: v.tooltip?.image,
+                                  [ax]: v.tooltip && v.tooltip[ax],
+                              },
+                          },
                       });
                   });
               return acc;
@@ -45,6 +52,8 @@ const HorizontalBarChart = ({ title, data, extra }) => {
             color: extra.series[k].color,
         }))
         .value();
+
+    const ChartTooltip = extra?.tooltip?.template || Tooltip;
 
     return (
         <FlexibleWidthXYPlot height={data.length * 40 * Object.keys(extra.series).length} margin={{ left: 50 }} yType="ordinal">
@@ -89,7 +98,7 @@ const HorizontalBarChart = ({ title, data, extra }) => {
            } /> :
            <YAxis />}
 
-          {currentHover && <Tooltip value={currentHover} />}
+          <ChartTooltip value={currentHover} />
         </FlexibleWidthXYPlot>
     );
 };
