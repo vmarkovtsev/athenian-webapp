@@ -13,6 +13,7 @@ import { dateTime } from 'js/services/format';
 import processPR from 'js/services/prHelpers';
 
 import _ from 'lodash';
+import moment from 'moment';
 
 export const getPRs = async (token, accountId, dateInterval, repos, contributors) => {
   const api = buildApi(token);
@@ -93,10 +94,10 @@ export const getMetrics = async (api, accountId, dateInterval, repos, contributo
     );
 
     const currInterval = dateInterval;
-    const prevInterval = {
-        from: dateInterval.from - (dateInterval.to - dateInterval.from),
-        to: dateInterval.from
-    };
+    const diffDays = moment(dateInterval.to).diff(dateInterval.from, 'days');
+    const prevTo = moment(dateInterval.from).subtract(1, 'days');
+    const prevFrom = moment(prevTo).subtract(diffDays, 'days');
+    const prevInterval = { from: prevFrom.unix() * 1000, to: prevTo.unix() * 1000 };
 
     const currResult = await query(currInterval);
     const prevResult = await query(prevInterval);
