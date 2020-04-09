@@ -111,7 +111,10 @@ export default ({ stage, data }) => {
                                 return `
                                     <div class="table-title">
                                         <span class="text-secondary">${row.organization}/${row.repo}:</span>
-                                        <a class="text-dark font-weight-bold" href=${github.prLink(row.repository, row.number)} target="_blank">${row.title}</a>
+                                        <a class="text-dark font-weight-bold" href=${github.prLink(row.repository, row.number)} target="_blank">
+                                            <span class="text-secondary">#${row.number}</span>
+                                            ${row.title}
+                                        </a>
                                     </div>
                                     <div class="table-creators">
                                         ${row.authors.map(userImage(users)).join(' ')}
