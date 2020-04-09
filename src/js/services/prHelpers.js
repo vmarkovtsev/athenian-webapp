@@ -1,5 +1,7 @@
 import { github } from 'js/services/format';
 
+import _ from 'lodash';
+
 export const PR_STAGE = {
   WIP: 'wip',
   REVIEW: 'reviewing',
@@ -71,6 +73,7 @@ export default pr => {
   const status = extractStatus(pr);
 
   const { authors, mergers, commentersReviewers } = extractParticipantsByKind(pr);
+  const stage_timings = extractStageTimings(pr);
 
   return {
     ...pr,
@@ -89,8 +92,14 @@ export default pr => {
     approved: pr.approved && new Date(pr.approved),
     merged: pr.merged && new Date(pr.merged),
     released: pr.released && new Date(pr.released),
-  }
+    stage_timings,
+  };
 };
+
+const extractStageTimings = pr => _(pr.stage_timings)
+      .pickBy()
+      .mapValues(v => parseInt(v.slice(0, v.length - 1)))
+      .value();
 
 const extractParticipantsByKind = pr => pr.participants.reduce((acc, participant) => {
   const has_status = status => participant.status.includes(status);
