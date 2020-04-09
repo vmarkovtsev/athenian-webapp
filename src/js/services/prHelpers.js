@@ -2,9 +2,9 @@ import { github } from 'js/services/format';
 
 export const PR_STAGE = {
   WIP: 'wip',
-  REVIEW: 'review',
-  MERGE: 'merge',
-  RELEASE: 'release',
+  REVIEW: 'reviewing',
+  MERGE: 'merging',
+  RELEASE: 'releasing',
   DONE: 'done',
   COMPLETE: {
     WIP: 'wip-complete',
@@ -64,7 +64,7 @@ export const PR_LABELS_CLASSNAMES = {
 const realEvents = Object.keys(PR_EVENT).map(eventKey => PR_EVENT[eventKey]);
 
 export default pr => {
-  // TODO(dpordomingo): This won't be needed once 'pr.properties' are split into 'pr.stage' and 'pr.events'
+  // TODO(dpordomingo): This won't be needed if 'pr.properties' are split into 'pr.stage' and 'pr.events'
   const events = extractEvents(pr);
 
   const completedStages = extractCompletedStages(pr);
@@ -93,16 +93,17 @@ export default pr => {
 };
 
 const extractParticipantsByKind = pr => pr.participants.reduce((acc, participant) => {
-  if (participant.status.indexOf('author') >= 0) {
+  const has_status = status => participant.status.includes(status);
+  if (has_status('author')) {
     acc.authors.push(participant.id);
     return acc;
   }
 
-  if (participant.status.indexOf('merger') >= 0) {
+  if (has_status('merger')) {
     acc.mergers.push(participant.id);
   }
 
-  if (participant.status.indexOf('reviewer') >= 0 || participant.status.indexOf('commenter') >= 0) {
+  if (has_status('reviewer') || has_status('commenter')) {
     acc.commentersReviewers.push(participant.id);
   }
 
@@ -122,30 +123,31 @@ const extractStatus = pr => {
 };
 
 const extractCompletedStages = pr => {
-  if (pr.merged && pr.stage === PR_STAGE.DONE) {
+  const has_property = prop => pr.properties.includes(prop);
+  if (pr.merged && has_property(PR_STAGE.DONE)) {
     return [
       PR_STAGE.COMPLETE.WIP,
       PR_STAGE.COMPLETE.REVIEW,
       PR_STAGE.COMPLETE.MERGE,
       PR_STAGE.COMPLETE.RELEASE
     ];
-  } else if (pr.stage === PR_STAGE.DONE) {
+  } else if (has_property(PR_STAGE.DONE)) {
     return [
       PR_STAGE.COMPLETE.WIP,
       PR_STAGE.COMPLETE.REVIEW
     ];
-  } else if (pr.stage === PR_STAGE.RELEASE) {
+  } else if (has_property(PR_STAGE.RELEASE)) {
     return [
       PR_STAGE.COMPLETE.WIP,
       PR_STAGE.COMPLETE.REVIEW,
       PR_STAGE.COMPLETE.MERGE,
     ];
-  } else if (pr.stage === PR_STAGE.MERGE || pr.properties.indexOf(PR_EVENT.APPROVE) >= 0) {
+  } else if (has_property(PR_STAGE.MERGE) || has_property(PR_EVENT.APPROVE)) {
     return [
       PR_STAGE.COMPLETE.WIP,
       PR_STAGE.COMPLETE.REVIEW,
     ];
-  } else if (pr.stage === PR_STAGE.REVIEW || pr.properties.indexOf(PR_EVENT.REVIEW_REQUEST) >= 0) {
+  } else if (has_property(PR_STAGE.REVIEW) || has_property(PR_EVENT.REVIEW_REQUEST)) {
     return [
       PR_STAGE.COMPLETE.WIP,
     ];
@@ -159,44 +161,45 @@ export const prLabel = stage => pr => {
     return PR_LABELS.CLOSED;
   }
 
+  const has_stage = stage => pr.completedStages.includes(stage);
   switch (stage) {
     case PR_STAGE.WIP:
-      if (pr.completedStages.includes(PR_STAGE.COMPLETE.WIP)) {
+      if (has_stage(PR_STAGE.COMPLETE.WIP)) {
         return PR_LABELS.WIP_DONE;
       }
       return PR_LABELS.WIP;
     case PR_STAGE.REVIEW:
-      if (pr.completedStages.includes(PR_STAGE.COMPLETE.REVIEW)) {
+      if (has_stage(PR_STAGE.COMPLETE.REVIEW)) {
         return PR_LABELS.REVIEW_APPROVAL;
       } else if (pr.events.includes(PR_EVENT.REVIEW)) {
         return PR_LABELS.REVIEW_REJECTED;
       }
       return PR_LABELS.REVIEW_PENDING;
     case PR_STAGE.MERGE:
-      if (pr.completedStages.includes(PR_STAGE.COMPLETE.MERGE)) {
+      if (has_stage(PR_STAGE.COMPLETE.MERGE)) {
         return PR_LABELS.MERGE_COMPLETED;
       }
       return PR_LABELS.MERGE_PENDING;
     case PR_STAGE.RELEASE:
-      if (pr.completedStages.includes(PR_STAGE.COMPLETE.RELEASE)) {
+      if (has_stage(PR_STAGE.COMPLETE.RELEASE)) {
         return PR_LABELS.RELEASE_COMPLETED;
       }
       return PR_LABELS.RELEASE_PENDING;
     case PR_STAGE.DONE:
-      if (pr.completedStages.includes(PR_STAGE.COMPLETE.RELEASE)) {
+      if (has_stage(PR_STAGE.COMPLETE.RELEASE)) {
         return PR_LABELS.RELEASE_COMPLETED;
       }
       return PR_LABELS.CLOSED;
     default:
-      if (pr.completedStages.includes(PR_STAGE.COMPLETE.RELEASE)) {
+      if (has_stage(PR_STAGE.COMPLETE.RELEASE)) {
         return PR_LABELS.RELEASE_COMPLETED;
-      } else if (pr.completedStages.includes(PR_STAGE.COMPLETE.MERGE)) {
+      } else if (has_stage(PR_STAGE.COMPLETE.MERGE)) {
         return PR_LABELS.RELEASE_PENDING;
-      } else if (pr.completedStages.includes(PR_STAGE.COMPLETE.REVIEW)) {
+      } else if (has_stage(PR_STAGE.COMPLETE.REVIEW)) {
         return PR_LABELS.MERGE_PENDING;
       } else if (pr.events.includes(PR_EVENT.REVIEW)) {
         return PR_LABELS.REVIEW_REJECTED;
-      } else if (pr.completedStages.includes(PR_STAGE.COMPLETE.WIP)) {
+      } else if (has_stage(PR_STAGE.COMPLETE.WIP)) {
         return PR_LABELS.REVIEW_PENDING;
       }
       return PR_LABELS.WIP;
