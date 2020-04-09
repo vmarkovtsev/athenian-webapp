@@ -7,6 +7,8 @@ import 'datatables.net-bs4/css/dataTables.bootstrap4.css';
 import { dateTime, github, number } from 'js/services/format';
 import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses } from 'js/services/prHelpers'
 
+import _ from 'lodash';
+
 const userImage = users => user => {
     if (users[user] && users[user].avatar) {
         return `<img
@@ -73,7 +75,7 @@ export default ({ stage, data }) => {
                 {
                     title: '',
                     className: 'pr-merged',
-                    render: (_, type, row) => {
+                    render: (__, type, row) => {
                         let pic, sort;
                         switch (row.status) {
                             case prStatus.MERGED:
@@ -105,7 +107,7 @@ export default ({ stage, data }) => {
                 {
                     title: 'Pull Requests | Created',
                     className: 'pr-main',
-                    render: (_, type, row) => {
+                    render: (__, type, row) => {
                         switch (type) {
                             case 'display':
                                 return `
@@ -134,7 +136,7 @@ export default ({ stage, data }) => {
                     title: 'Size',
                     className: 'pr-size',
                     searchable: false,
-                    render: (_, type, row) => {
+                    render: (__, type, row) => {
                         switch (type) {
                             case 'display':
                                 return `
@@ -155,7 +157,7 @@ export default ({ stage, data }) => {
                     title: 'Comments',
                     className: 'pr-comments',
                     searchable: false,
-                    render: (_, type, row) => {
+                    render: (__, type, row) => {
                         switch (type) {
                             case 'display':
                                 return `<i class="fa far fa-comment-alt"></i>${row.comments + row.review_comments}`;
@@ -170,7 +172,7 @@ export default ({ stage, data }) => {
                 }, {
                     title: 'Reviewers',
                     className: 'pr-reviewers',
-                    render: (_, type, row) => {
+                    render: (__, type, row) => {
                         switch (type) {
                             case 'display':
                                 return row.commentersReviewers.map(userImage(users)).join(' ');
@@ -182,26 +184,11 @@ export default ({ stage, data }) => {
                                 return row.commentersReviewers.length;
                         }
                     },
-                }, {
-                    title: 'Age',
-                    searchable: false,
-                    className: 'pr-age',
-                    render: (_, type, row) => {
-                        switch (type) {
-                            case 'display':
-                                return dateTime.interval(row.created, row.closed || new Date());
-                            case 'filter':
-                                return '';
-                            case 'type':
-                            case 'sort':
-                            default:
-                                return (row.closed || new Date()) - row.created;
-                        }
-                    },
-                }, {
+                },
+                cycleTimeColumn(stage, data), {
                     title: 'Stage',
                     className: 'align-middle text-center',
-                    render: (_, type, row) => {
+                    render: (__, type, row) => {
                         switch (type) {
                             case 'display':
                                 const hint = '' +
@@ -230,8 +217,8 @@ export default ({ stage, data }) => {
 
         return () => {
             $(tableContainerId).DataTable().destroy();
-        }
-    }, [prs, users, prLabelStage])
+        };
+    }, [prs, users, prLabelStage, stage, data]);
 
     if (prs.length === 0) {
         return null;
@@ -243,3 +230,34 @@ export default ({ stage, data }) => {
         </div>
     );
 }
+
+const cycleTimeColumn = (stage, data) => {
+    const title = {
+        overview: 'Lead Time',
+        wip: 'WIP Time',
+        review: 'Review Time',
+        merge: 'Merge Time',
+        release: 'Release Time'
+    }[stage];
+
+    return {
+        title: title,
+        searchable: false,
+        className: 'pr-cycle-time',
+        render: (__, type, row) => {
+            const cycleTime = stage === 'overview' ?
+                  _(row.stage_timings).values().compact().sum(): row.stage_timings[stage];
+
+            switch (type) {
+            case 'display':
+                return !cycleTime ? '-' : dateTime.bestTimeUnit(cycleTime * 1000, 0);
+            case 'filter':
+                return '';
+            case 'type':
+            case 'sort':
+            default:
+                return cycleTime || 0;
+            }
+        },
+    };
+};
