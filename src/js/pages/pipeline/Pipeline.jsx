@@ -36,8 +36,8 @@ export const pipelineStagesConf = [
             before: 'First Commit',
             after: 'Review Requested',
         },
-        prs: prs => prs.filter(pr => pr.stage === prStage.WIP || pr.completedStages.indexOf(prStageComplete.WIP) >= 0),
-        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.indexOf(prStageComplete.WIP) >= 0).length,
+        prs: prs => prs.filter(pr => pr.properties.includes(prStage.WIP) || pr.completedStages.includes(prStageComplete.WIP)),
+        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStageComplete.WIP)).length,
         summary: (stage, prs, dateInterval) => {
             const createdPrs = prs.filter(pr => dateInterval.from < pr.created && pr.created < dateInterval.to);
             const authors = distinct(createdPrs, pr => pr.authors);
@@ -60,10 +60,10 @@ export const pipelineStagesConf = [
             before: 'Review Requested',
             after: 'Approved',
         },
-        prs: prs => prs.filter(pr => pr.stage === prStage.REVIEW || pr.completedStages.indexOf(prStageComplete.REVIEW) >= 0),
-        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.indexOf(prStageComplete.REVIEW) >= 0).length,
+        prs: prs => prs.filter(pr => pr.properties.includes(prStage.REVIEW) || pr.completedStages.includes(prStageComplete.REVIEW)),
+        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStageComplete.REVIEW)).length,
         summary: (stage, prs) => {
-            const reviewAndReviewCompletePRs = prs.filter(pr => pr.stage !== 'wip');
+            const reviewAndReviewCompletePRs = prs.filter(pr => !pr.properties.includes('wip'));
             const reviewed = reviewAndReviewCompletePRs.filter(pr => pr.comments || pr.review_comments)
             const reviewers = distinct(reviewAndReviewCompletePRs, pr => pr.commentersReviewers);
             const repos = distinct(reviewAndReviewCompletePRs, pr => pr.repository);
@@ -85,8 +85,8 @@ export const pipelineStagesConf = [
             before: 'Approved',
             after: 'Merged',
         },
-        prs: prs => prs.filter(pr => pr.stage === prStage.MERGE || pr.completedStages.indexOf(prStageComplete.MERGE) >= 0),
-        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.indexOf(prStageComplete.MERGE) >= 0).length,
+        prs: prs => prs.filter(pr => pr.properties.includes(prStage.MERGE) || pr.completedStages.includes(prStageComplete.MERGE)),
+        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStageComplete.MERGE)).length,
         summary: (stage, prs) => {
             const mergedPRs = prs.filter(pr => pr.merged);
             const mergerers = distinct(mergedPRs, pr => pr.mergers);
@@ -109,8 +109,8 @@ export const pipelineStagesConf = [
             before: 'Merged',
             after: 'Released',
         },
-        prs: prs => prs.filter(pr => pr.stage === prStage.RELEASE || pr.completedStages.indexOf(prStageComplete.RELEASE) >= 0),
-        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.indexOf(prStageComplete.RELEASE) >= 0).length,
+        prs: prs => prs.filter(pr => pr.properties.includes(prStage.RELEASE) || pr.completedStages.includes(prStageComplete.RELEASE)),
+            stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStageComplete.RELEASE)).length,
         summary: (stage, prs) => {
             const releasedPRs = prs.filter(pr => pr.release_url);
             const releases = distinct(releasedPRs, pr => pr.release_url);
