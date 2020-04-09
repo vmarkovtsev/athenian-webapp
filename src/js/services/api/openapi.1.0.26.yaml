@@ -8,7 +8,7 @@ info:
   license:
     name: CC-BY-4.0
   title: '{{ title }}'
-  version: 1.0.20
+  version: 1.0.26
 servers:
 - description: '{{ server_description }} - {{ server_url }}'
   url: '{{ server_url }}/v1'
@@ -325,6 +325,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: Invitation was not found.
+        409:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: Concurrent requests.
       security:
       - bearerAuth: []
       summary: Accept the account membership invitation and finish registration. The
@@ -600,6 +606,12 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: The user is forbidden to create a repository set from the specified
             items.
+        409:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: There is an existing reposet with the same contents.
       security:
       - bearerAuth: []
       summary: Create a repository set.
@@ -729,6 +741,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: The specified repository set was not found.
+        409:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: There is an existing reposet with the same contents.
       security:
       - bearerAuth: []
       summary: Update a repository set. The user must be an admin of the account that
@@ -765,6 +783,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: The user does not belong to the specified account.
+        409:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: Concurrent requests that are finishing the account registration.
       security:
       - bearerAuth: []
       summary: List the repository sets belonging to the current user.
@@ -774,6 +798,98 @@ paths:
       - default
 # {% endif %}
       x-openapi-router-controller: athenian.api.controllers.reposet_controller
+      x-codegen-request-body-name: body
+  /settings/release_match:
+    put:
+      operationId: set_release_match
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReleaseMatchRequest'
+        x-body-name: body
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositorySet'
+          description: List the repositories affected.
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: Request is invalid.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: The user is not an admin of this account.
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: The user or the account was not found.
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: The installation has not started yet.
+      security:
+      - bearerAuth: []
+      summary: Set the release matching rule for a list of repositories. Only for
+        account admins.
+      tags:
+      - settings
+# {% if False %}
+      - default
+# {% endif %}
+      x-openapi-router-controller: athenian.api.controllers.settings_controller
+      x-codegen-request-body-name: body
+  /settings/release_match/{id}:
+    get:
+      operationId: list_release_match_settings
+      parameters:
+      - description: Numeric identifier of the account.
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleaseMatchSettings'
+          description: Current release matching settings per repo.
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: The user does not belong to the specified account.
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: The installation has not started yet.
+      security:
+      - bearerAuth: []
+      summary: List the current release matching settings.
+      tags:
+      - settings
+# {% if False %}
+      - default
+# {% endif %}
+      x-openapi-router-controller: athenian.api.controllers.settings_controller
       x-codegen-request-body-name: body
   /user:
     get:
@@ -1220,8 +1336,8 @@ components:
         metrics:
         - pr-lead-time
         - pr-wip-time
-        date_from: 2000-01-23
-        date_to: 2020-01-23
+        date_from: 2020-01-23
+        date_to: 2020-01-24
         granularity: day
         account: 1
       properties:
@@ -1263,7 +1379,7 @@ components:
         and developers.
       example:
         values:
-        - date: 2000-01-23
+        - date: 2020-01-23
           values:
           - 0.8008282
           - 0.8008282
@@ -1276,7 +1392,7 @@ components:
           confidence_scores:
           - 75
           - 75
-        - date: 2000-01-23
+        - date: 2020-01-24
           values:
           - 0.8008282
           - 0.8008282
@@ -1309,15 +1425,17 @@ components:
       type: object
     CalculatedPullRequestMetrics:
       additionalProperties: false
+      description: The dates start from `date_from` and end earlier or equal to `date_to`.
       example:
         metrics:
         - pr-lead-time
         - pr-wip-time
-        date_from: 2000-01-23
+        date_from: 2020-01-23
+        date_to: 2020-01-24
         granularity: day
         calculated:
         - values:
-          - date: 2000-01-23
+          - date: 2020-01-23
             values:
             - 0.8008282
             - 0.8008282
@@ -1330,7 +1448,7 @@ components:
             confidence_scores:
             - 75
             - 75
-          - date: 2000-01-23
+          - date: 2020-01-24
             values:
             - 0.8008282
             - 0.8008282
@@ -1351,7 +1469,7 @@ components:
             - github.com/athenianco/athenian-webapp
             - github.com/athenianco/athenian-api
         - values:
-          - date: 2000-01-23
+          - date: 2020-01-23
             values:
             - 0.8008282
             - 0.8008282
@@ -1364,7 +1482,7 @@ components:
             confidence_scores:
             - 75
             - 75
-          - date: 2000-01-23
+          - date: 2020-01-24
             values:
             - 0.8008282
             - 0.8008282
@@ -1384,7 +1502,6 @@ components:
             repositories:
             - github.com/athenianco/athenian-webapp
             - github.com/athenianco/athenian-api
-        date_to: 2020-01-23
       properties:
         calculated:
           description: Values of the requested metrics through time. The sequence
@@ -1417,7 +1534,7 @@ components:
     CalculatedPullRequestMetricValues:
       additionalProperties: false
       example:
-        date: 2000-01-23
+        date: 2020-01-23
         values:
         - 0.8008282
         - 0.8008282
@@ -1447,7 +1564,7 @@ components:
             - type: string
           type: array
         confidence_mins:
-          description: Confidence interval @ p=0.95, minimum. The same order as `metrics`.
+          description: Confidence interval @ p=0.8, minimum. The same order as `metrics`.
             It is optional because there can be exact metrics like "count open PRs
             per month".
           items:
@@ -1460,7 +1577,7 @@ components:
             - type: string
           type: array
         confidence_maxs:
-          description: Confidence interval @ p=0.95, maximum. The same order as `metrics`.
+          description: Confidence interval @ p=0.8, maximum. The same order as `metrics`.
             It is optional because there can be exact metrics like "count open PRs
             per month".
           items:
@@ -1488,7 +1605,7 @@ components:
         `/filter/releases`.
       example:
         account: 1
-        date_from: 2000-01-23
+        date_from: 2020-01-23
         date_to: 2020-05-23
         in:
         - '{1}'
@@ -1519,7 +1636,7 @@ components:
         through all PRs matched by the other filters.
       example:
         account: 1
-        date_from: 2000-01-23
+        date_from: 2020-01-23
         date_to: 2020-05-23
         in:
         - '{1}'
@@ -1605,6 +1722,8 @@ components:
           created: 2019-05-17T01:14:00Z
           updated: 2019-09-18T10:49:00Z
           stage: wip
+          stage_timings:
+            wip: 2000s
           participants:
           - id: github.com/NonLogicalDev
             status: author
@@ -1668,6 +1787,8 @@ components:
         comments: 1
         commits: 2
         stage: wip
+        stage_timings:
+          wip: 2000s
         participants:
         - id: github.com/NonLogicalDev
           status: author
@@ -1735,6 +1856,8 @@ components:
           type: string
         stage:
           $ref: '#/components/schemas/PullRequestPipelineStage'
+        stage_timings:
+          $ref: '#/components/schemas/StageTimings'
         properties:
           description: List of the PR properties triggered in the given time window.
             There may be extra properties that were not originally requested.
@@ -1758,8 +1881,26 @@ components:
       - size_added
       - size_removed
       - stage
+      - stage_timings
       - title
       - updated
+      type: object
+    StageTimings:
+      additionalProperties: false
+      description: Time spent by the PR in each pipeline stage.
+      example:
+        wip: 120s
+      properties:
+        wip:
+          type: string
+        review:
+          type: string
+        merge:
+          type: string
+        release:
+          type: string
+      required:
+      - wip
       type: object
     PullRequestParticipant:
       additionalProperties: false
@@ -1816,7 +1957,7 @@ components:
       description: Filter for listing commits.
       example:
         account: 1
-        date_from: 2000-01-23
+        date_from: 2020-01-23
         date_to: 2020-05-23
         in:
         - '{1}'
@@ -2163,7 +2304,8 @@ components:
       description: Response from /metrics/developers - calculated metrics over developer
         activities.
       example:
-        date_to: 2000-01-23
+        date_from: 2020-01-23
+        date_to: 2020-01-24
         metrics:
         - dev-prs-created
         - dev-reviews
@@ -2192,7 +2334,6 @@ components:
             developers:
             - github.com/vmarkovtsev
             - github.com/dpordomingo
-        date_from: 2000-01-23
       properties:
         calculated:
           description: Values of the requested metrics on the given time interval.
@@ -2257,6 +2398,7 @@ components:
         - type: integer
         - format: float
           type: number
+        - type: string
       type: array
     DeveloperSummaries:
       description: List of developer activity statistics and profile details.
@@ -2343,6 +2485,30 @@ components:
     FilteredReleases:
       additionalProperties: false
       description: Response of `/filter/releases` - releases metadata and user details.
+      example:
+        include:
+          users:
+            github.com/gkwillie:
+              avatar: https://avatars0.githubusercontent.com/u/60340680?v=4
+        data:
+        - added_lines: 1000
+          commits: 20
+          deleted_lines: 200
+          name: v0.0.93
+          published: 2020-03-25T10:57:00Z
+          publisher: github.com/vmarkovtsev
+          publisher_avatar: https://avatars0.githubusercontent.com/u/60340680?v=4
+          repository: github.com/athenianco/athenian-api
+          url: https://github.com/athenianco/athenian-api/releases/tag/v0.0.93
+        - added_lines: 1000
+          commits: 20
+          deleted_lines: 200
+          name: v0.0.93
+          published: 2020-03-25T10:57:00Z
+          publisher: github.com/vmarkovtsev
+          publisher_avatar: https://avatars0.githubusercontent.com/u/60340680?v=4
+          repository: github.com/athenianco/athenian-api
+          url: https://github.com/athenianco/athenian-api/releases/tag/v0.0.93
       properties:
         include:
           $ref: '#/components/schemas/IncludedNativeUsers'
@@ -2413,4 +2579,66 @@ components:
       - publisher
       - repository
       - url
+      type: object
+    ReleaseMatchRequest:
+      additionalProperties: false
+      description: Release matching rule setting.
+      example:
+        account: 1
+        repositories:
+        - github.com/athenianco/athenian-webapp
+        - github.com/athenianco/athenian-api
+        match: branch
+        branches: master
+        tags: .*
+      properties:
+        account:
+          type: integer
+        repositories:
+          $ref: '#/components/schemas/RepositorySet'
+        branches:
+          description: 'Regular expression to match branch names. Reference: https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-SIMILARTO-REGEXP'
+          type: string
+        tags:
+          description: 'Regular expression to match tag names. Reference: https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-SIMILARTO-REGEXP'
+          type: string
+        match:
+          $ref: '#/components/schemas/ReleaseMatchStrategy'
+      required:
+      - account
+      - match
+      - repositories
+      type: object
+    ReleaseMatchStrategy:
+      description: 'Release workflow choice: how we should detect releases.
+        * branch: merges to certain branches are considered releases and nothing else.
+        * tag: tags with certain name patterns are considered releases and nothing else.
+        * tag_or_branch: follow "tag"; if the repository does not have tags, fallback
+        to "branch".'
+      enum:
+      - branch
+      - tag
+      - tag_or_branch
+      type: string
+    ReleaseMatchSettings:
+      additionalProperties:
+        $ref: '#/components/schemas/ReleaseMatchSetting'
+      description: Mapping from repository names to their release match settings.
+      type: object
+    ReleaseMatchSetting:
+      additionalProperties: false
+      description: Release matching setting for a specific repository.
+      properties:
+        branches:
+          description: 'Regular expression to match branch names. Reference: https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-SIMILARTO-REGEXP'
+          type: string
+        tags:
+          description: 'Regular expression to match tag names. Reference: https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-SIMILARTO-REGEXP'
+          type: string
+        match:
+          $ref: '#/components/schemas/ReleaseMatchStrategy'
+      required:
+      - branches
+      - match
+      - tags
       type: object
