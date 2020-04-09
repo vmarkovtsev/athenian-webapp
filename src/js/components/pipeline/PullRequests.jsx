@@ -249,7 +249,7 @@ const cycleTimeColumn = (stage, data) => {
 
             switch (type) {
             case 'display':
-                return !cycleTime ? '-' : dateTime.bestTimeUnit(cycleTime * 1000, 0);
+                return cycleTime === undefined ? '-' : dateTime.bestTimeUnit(cycleTime * 1000, 0);
             case 'filter':
                 return '';
             case 'type':
