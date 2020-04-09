@@ -20,14 +20,10 @@ export default ({name, metric, config}) => {
 
     const { account, interval, repositories, contributors: developers } = apiContext;
     const granularity = calculateGranularity(interval);
-    const adjustedInterval = {
-        from: moment(interval.from).subtract(1, granularity).toDate(),
-        to: interval.to
-    };
 
     const fetcher = async () => {
         return fetchPRsMetrics(
-            api, account, granularity, adjustedInterval, [metric],
+            api, account, granularity, interval, [metric],
             { repositories, developers }
         );
     };
