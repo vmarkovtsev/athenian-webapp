@@ -1,4 +1,5 @@
 import { timeFormat } from 'd3-time-format';
+import _ from 'lodash';
 
 const ymd = timeFormat("%Y-%m-%d");
 const monthDay = timeFormat("%b %d");
@@ -110,6 +111,11 @@ export const github = {
     repoName: fullName => fullName.split('/')[2],
     userName: fullName => fullName.split('/')[1],
     prLink: (repoUrl, number) => `https://${repoUrl}/pull/${number}`,
+    userImageIndex: usersData => _(usersData)
+        .reduce((res, v, k) => {
+            res[github.userName(k)] = v.avatar;
+            return res;
+        }, {}),
 };
 
 const KILO = 1000;

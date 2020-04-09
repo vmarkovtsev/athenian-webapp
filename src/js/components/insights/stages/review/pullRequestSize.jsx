@@ -14,12 +14,6 @@ const pullRequestSize = {
         return Promise.resolve(data);
     },
     calculator: (data) => {
-        const avatarMapping = _(data.users)
-            .reduce((res, v, k) => {
-                res[_.replace(k, 'github.com/', '')] = v.avatar;
-                return res;
-            });
-
         return {
             chartData: _(data.prs)
                 .map(pr => {
@@ -47,7 +41,7 @@ const pullRequestSize = {
                         number: pr.number,
                         repository: pr.organization + '/' + pr.repo,
                         title: pr.title,
-                        image: avatarMapping[author],
+                        image: github.userImageIndex(data.users)[author],
                         reviewed,
                         author,
                         timeWaiting,

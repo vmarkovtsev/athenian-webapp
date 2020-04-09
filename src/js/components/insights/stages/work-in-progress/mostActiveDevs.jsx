@@ -12,11 +12,7 @@ const mostActiveDevs = {
         return Promise.resolve(data);
     },
     calculator: (data) => {
-        const avatarMapping = _(data.users)
-            .reduce((res, v, k) => {
-                res[github.userName(k)] = v.avatar;
-                return res;
-            });
+        const avatarMapping = github.userImageIndex(data.users);
         return {
             chartData: _(data.prs)
                 .flatMap(pr => pr.authors)

@@ -45,11 +45,7 @@ const reviewActivity = {
         });
     },
     calculator: (fetched) => {
-        const avatarMapping = _(fetched.legacyData.users)
-            .reduce((res, v, k) => {
-                res[github.userName(k)] = v.avatar;
-                return res;
-            });
+        const avatarMapping = github.userImageIndex(fetched.legacyData.users);
         const totalReviews = _(fetched.secondBox.calculated)
               .map(v => v.values[0][0])
               .sum();
