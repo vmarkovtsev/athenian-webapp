@@ -19,7 +19,7 @@ $(MAKEFILE):
 CI ?=
 yarn := EXTEND_ESLINT=true yarn
 
-API_VERSION ?= 1.0.20
+API_VERSION ?= 1.0.26
 
 API_VERSION_TAG_NAME := spec-$(API_VERSION)
 API_SERVICE_PATH := src/js/services/api

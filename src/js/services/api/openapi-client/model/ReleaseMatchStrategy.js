@@ -13,52 +13,38 @@
 
 import ApiClient from '../ApiClient';
 /**
-* Enum class PullRequestPipelineStage.
+* Enum class ReleaseMatchStrategy.
 * @enum {}
 * @readonly
 */
-export default class PullRequestPipelineStage {
+export default class ReleaseMatchStrategy {
     
         /**
-         * value: "wip"
+         * value: "branch"
          * @const
          */
-        "wip" = "wip";
+        "branch" = "branch";
 
     
         /**
-         * value: "review"
+         * value: "tag"
          * @const
          */
-        "review" = "review";
+        "tag" = "tag";
 
     
         /**
-         * value: "merge"
+         * value: "tag_or_branch"
          * @const
          */
-        "merge" = "merge";
-
-    
-        /**
-         * value: "release"
-         * @const
-         */
-        "release" = "release";
-
-    
-        /**
-         * value: "done"
-         * @const
-         */
-        "done" = "done";
+        "tag_or_branch" = "tag_or_branch";
 
     
 
     /**
-    * Returns a <code>PullRequestPipelineStage</code> enum value from a Javascript object name.
+    * Returns a <code>ReleaseMatchStrategy</code> enum value from a Javascript object name.
     * @param {Object} data The plain JavaScript object containing the name of the enum value.
-    * @return {module:model/PullRequestPipelineStage} The enum <code>PullRequestPipelineStage</code> value.
+    * @return {module:model/ReleaseMatchStrategy} The enum <code>ReleaseMatchStrategy</code> value.
     */
     static constructFromObject(object) {
         return object;
