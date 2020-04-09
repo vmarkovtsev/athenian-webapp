@@ -243,7 +243,7 @@ const cycleTimeColumn = (stage, data) => {
     return {
         title: title,
         searchable: false,
-        className: 'pr-age',
+        className: 'pr-cycle-time',
         render: (__, type, row) => {
             const cycleTime = stage === 'overview' ?
                   _(row.stage_timings).values().compact().sum(): row.stage_timings[stage];

@@ -82,11 +82,11 @@
     }
 
     td.pr-size,
-    td.pr-age {
+    td.pr-cycle-time {
         white-space: nowrap;
     }
 
-    td.pr-age {
+    td.pr-cycle-time {
         font-size: 1.1rem;
     }
 
@@ -97,7 +97,7 @@
     }
 
     td.pr-comments,
-    td.pr-age {
+    td.pr-cycle-time {
         width: 80px;
     }
 
