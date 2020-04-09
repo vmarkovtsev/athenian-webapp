@@ -205,7 +205,7 @@ export default ({ stage, data }) => {
                         switch (type) {
                             case 'display':
                                 const hint = '' +
-                                    `stage:${row.stage},\n` +
+                                    `properties:[${row.properties.map(prop => prop.replace('_happened', '')).join(', ')}],\n` +
                                     `events:[${row.events.map(stage => stage.replace('_happened', '')).join(', ')}],\n` +
                                     `stage-completes:[${row.completedStages.map(stage => stage.replace('-complete', '')).join(', ')}]`;
                                 return (
@@ -221,7 +221,7 @@ export default ({ stage, data }) => {
                                     </div>`
                                 );
                             default:
-                                return row.stage;
+                                return row.properties.map(prop => prop.replace('_happened', '')).join(', ');
                         }
                     },
                 },
