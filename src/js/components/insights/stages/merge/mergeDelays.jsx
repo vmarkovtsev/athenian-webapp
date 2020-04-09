@@ -88,7 +88,7 @@ const mergeDelays = {
     factory: (computed) => ({
             meta: {
                 title: 'Merge Delays',
-                description: 'Some description for "Merge Delays"'
+                description: 'Identify in which repositories pull requests take longest from review approval to being merged.'
             },
             content: [
                 {

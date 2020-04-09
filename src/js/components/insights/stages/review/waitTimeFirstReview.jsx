@@ -88,7 +88,7 @@ const waitTimeFirstReview = {
     factory: (computed) => ({
             meta: {
                 title: 'Wait Time for 1st Review',
-                description: 'Some description for "Wait Time for 1st Review"'
+                description: 'Lower the time pull requests stay idle, waiting for the 1st review."'
             },
             content: [
                 {

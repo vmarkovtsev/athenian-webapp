@@ -52,7 +52,7 @@ const pullRequestRatioFlow = {
     factory: (computed) => ({
         meta: {
             title: 'Pull Request Ratio Flow',
-            description: 'Some description for "Pull Request Ratio Flow"'
+            description: 'Track the ratio of opened/closed pull requests per day and anticipate congestions in the delivery pipeline.'
         },
         content: [
             {

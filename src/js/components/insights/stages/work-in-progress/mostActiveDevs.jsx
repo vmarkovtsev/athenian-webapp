@@ -50,7 +50,7 @@ const mostActiveDevs = {
     factory: (computed) => ({
         meta: {
             title: 'Pull Request Authors',
-            description: 'Some description for "Most Active Developer"'
+            description: 'Pull Request throughput of the team.'
         },
         content: [
             {
