@@ -31,10 +31,14 @@ export const getBestTimeUnit = (milliseconds) => {
         return units[0];
     }
 
-    let current = [1, 'milliseconds'];
+    let current = [MILLISECOND, 'ms'];
     for (const u of units) {
         const v = milliseconds / u[0];
         if (v < 3) {
+            if (v >= 1 && current[0] === MILLISECOND) {
+                current = [SECOND, 'secs'];
+            }
+
             break;
         }
 
@@ -44,10 +48,10 @@ export const getBestTimeUnit = (milliseconds) => {
     return current;
 };
 
-const bestTimeUnit = (milliseconds) => {
+const bestTimeUnit = (milliseconds, decimals = 2) => {
     const [conversionValue, durationUnit] = getBestTimeUnit(milliseconds);
     const value = milliseconds / conversionValue;
-    return `${roundDecimals(value, 2)} ${durationUnit}`;
+    return `${roundDecimals(value, decimals)} ${durationUnit}`;
 };
 
 /**
