@@ -8,7 +8,7 @@ import { BigText } from 'js/components/charts/Tooltip';
 import { NEGATIVE_IS_BETTER } from 'js/components/ui/Badge';
 
 import { fetchPRsMetrics } from 'js/services/api/index';
-import { number, dateTime } from 'js/services/format';
+import { dateTime } from 'js/services/format';
 
 const waitTimeFirstReview = {
     fetcher: async (api, context) => {

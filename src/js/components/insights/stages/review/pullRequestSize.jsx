@@ -105,7 +105,10 @@ const pullRequestSize = {
                                     y: 'Files'
                                 },
                                 isLogScale: true,
-                                tooltip: { template: PullRequestReview },
+                                tooltip: {
+                                    template: PullRequestReview,
+                                    persistent: true,
+				},
                             }
                         }
                     },

@@ -63,7 +63,12 @@ const buildSeries = (title, formattedData, extra, currentHover, setCurrentHover)
                     ...v.tooltip && { tooltip: v.tooltip },
                 }))}
                 onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
-                onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
+                onValueMouseOut={(datapoint, event) => {
+                    if (!extra?.tooltip?.persistent) {
+                        onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)
+		    }
+		}}
+                onValueClick={(_, event) => event.event.stopPropagation()}
               />
           ))
             .value();
@@ -96,10 +101,12 @@ const buildSeries = (title, formattedData, extra, currentHover, setCurrentHover)
                           datapoint, "mouseover", currentHover, setCurrentHover,
                           ['customComponent'])
                   }
-                  onValueMouseOut={
-                      (datapoint, event) => onValueReset(
-                          datapoint, "mouseout", currentHover, setCurrentHover)
-                  }
+                  onValueMouseOut={(datapoint, event) => {
+                      if (!extra?.tooltip?.persistent) {
+                          onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)
+                      }
+                  }}
+                  onValueClick={(_, event) => event.event.stopPropagation()}
                 />
             ];
         } else {
@@ -116,7 +123,12 @@ const buildSeries = (title, formattedData, extra, currentHover, setCurrentHover)
                       ...v.tooltip && { tooltip: v.tooltip },
                   }))}
                   onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
-                  onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
+                  onValueMouseOut={(datapoint, event) => {
+                      if (!extra?.tooltip?.persistent) {
+                          onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)
+                      }
+                  }}
+                  onValueClick={(_, event) => event.event.stopPropagation()}
                 />
             ];
         }
@@ -143,27 +155,32 @@ const BubbleChart = ({ title, data, extra }) => {
     const ChartTooltip = extra?.tooltip?.template || Tooltip;
 
     return (
-        <FlexibleWidthXYPlot height={300} margin={{ top: 20, left: 50, right: 30, bottom: 50 }}>
+        <div
+          onMouseLeave={()=>onValueReset({}, "chart.mouseleave", currentHover, setCurrentHover)}
+          onClick={()=>onValueReset({}, "chart.mouseclick", currentHover, setCurrentHover)}
+        >
+          <FlexibleWidthXYPlot height={300} margin={{ top: 20, left: 50, right: 30, bottom: 50 }}>
 
-          <DiscreteColorLegend items={legend} style={{
-              position: 'absolute',
-              left: '50px',
-              top: '0px'
-          }} />
+            <DiscreteColorLegend items={legend} style={{
+                position: 'absolute',
+                left: '50px',
+                top: '0px'
+            }} />
 
-          {extra && extra.yAxis && extra.yAxis.imageMapping ?
-           <CircleMask id={`${extra.yAxis.imageMask}-mask`} maskProperties={{
-               cx: 15, cy: 15, r: 15
-           }}/> : null
-          }
+            {extra && extra.yAxis && extra.yAxis.imageMapping ?
+             <CircleMask id={`${extra.yAxis.imageMask}-mask`} maskProperties={{
+                 cx: 15, cy: 15, r: 15
+             }}/> : null
+            }
 
-          <XBubbleChartAxis formattedData={formattedData} label={extra.axisLabels.x} />
-          <YBubbleChartAxis formattedData={formattedData} label={extra.axisLabels.y} />
+            <XBubbleChartAxis formattedData={formattedData} label={extra.axisLabels.x} />
+            <YBubbleChartAxis formattedData={formattedData} label={extra.axisLabels.y} />
 
-          {marksSeries}
-          <ChartTooltip value={currentHover} />
+            {marksSeries}
+            <ChartTooltip value={currentHover} />
 
-        </FlexibleWidthXYPlot>
+          </FlexibleWidthXYPlot>
+        </div>
     );
 };
 
@@ -211,21 +228,26 @@ const BubbleChartLogScale = ({ title, data, extra }) => {
     const ChartTooltip = extra?.tooltip?.template || Tooltip;
 
     return (
-        <FlexibleWidthXYPlot height={300} margin={{ left: 50, right: 30, bottom: 50 }}
+        <div
+          onMouseLeave={()=>onValueReset({}, "chart.mouseleave", currentHover, setCurrentHover)}
+          onClick={()=>onValueReset({}, "chart.mouseclick", currentHover, setCurrentHover)}
+        >
+          <FlexibleWidthXYPlot height={300} margin={{ left: 50, right: 30, bottom: 50 }}
                              xDomain={[0, maxExpX]} yDomain={[0, maxExpY]} >
-          <DiscreteColorLegend items={legend} style={{
+            <DiscreteColorLegend items={legend} style={{
               position: 'absolute',
               left: '50px',
               top: '0px'
-          }} />
+            }} />
 
-          <XBubbleChartLogAxis formattedData={formattedData} label={extra.axisLabels.x} />
-          <YBubbleChartLogAxis formattedData={formattedData} label={extra.axisLabels.y} />
+            <XBubbleChartLogAxis formattedData={formattedData} label={extra.axisLabels.x} />
+            <YBubbleChartLogAxis formattedData={formattedData} label={extra.axisLabels.y} />
 
-          {marksSeries}
-          <ChartTooltip value={currentHover} />
+            {marksSeries}
+            <ChartTooltip value={currentHover} />
 
-        </FlexibleWidthXYPlot>
+          </FlexibleWidthXYPlot>
+        </div>
     );
 };
 
