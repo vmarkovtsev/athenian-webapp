@@ -15,8 +15,7 @@ import processPR from 'js/services/prHelpers';
 import _ from 'lodash';
 import moment from 'moment';
 
-export const getPRs = async (token, accountId, dateInterval, repos, contributors) => {
-    const api = buildApi(token);
+export const getPRs = async (api, accountId, dateInterval, repos, contributors) => {
 
     const query = async (interval) => {
         const filter = new FilterPullRequestsRequest(
