@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock, faCommentAlt } from '@fortawesome/free-regular-svg-icons'
 import { faCodeBranch } from '@fortawesome/free-solid-svg-icons'
 
-import { number } from 'js/services/format';
+import { github, number } from 'js/services/format';
 
 export default ({value, ...props}) => {
     if (!value) return null;
@@ -51,11 +51,11 @@ export const PullRequestReview = ({ value, ...props }) => {
 
     const tooltip = value.tooltip;
     return (
-        <Hint {...props} value={value}>
+        <Hint {...props} value={value} style={{ pointerEvents: 'auto' }}>
             <TooltipContainer left>
                 <Group>
                     <SmallTitle uppercase content={`#${tooltip.number}`} />
-                    <PullRequestRepoTitle repo={tooltip.repository} title={tooltip.title} />
+                    <PullRequestRepoTitle repo={tooltip.repository} title={tooltip.title} number={tooltip.number} />
                 </Group>
                 {tooltip.timeWaiting && (
                     <Group className={tooltip.reviewed ? 'text-turquoise' : 'text-orange'}>
@@ -160,7 +160,7 @@ const getFilteredObject = (obj, blacklist) => _(obj).omit(blacklist).value();
 
 export const TooltipContainer = ({ left = false, children }) => {
     return (
-        <div className="chart-tooltip">
+        <div className="chart-tooltip" onClick={event => event.stopPropagation()}>
             <div className="card">
                 <div className={classnames('card-body p-1', left ? 'text-left' : 'text-center')}>
                     {children}
@@ -196,10 +196,16 @@ export const SmallDate = ({ date }) => (
 );
 
 
-export const PullRequestRepoTitle = ({ repo, title }) => (
+export const PullRequestRepoTitle = ({ repo, title, number }) => (
     <span className="text-s">
         <span className="text-secondary">{repo}: </span>
-        <span className="text-dark font-weight-bold">{title}</span>
+        <a
+            href={github.prLink(`github.com/${repo}`, number)}
+            target="_blank" rel="noopener noreferrer"
+            className="text-dark font-weight-bold"
+        >
+            {title}
+        </a>
     </span>
 );
 
