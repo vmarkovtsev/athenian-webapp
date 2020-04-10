@@ -1,32 +1,35 @@
 import React, { useState, useEffect } from 'react';
 
 import PRsContext from 'js/context/PRs';
-import { useAuth0 } from 'js/context/Auth0';
-import { useUserContext } from 'js/context/User';
-import { useFiltersContext } from 'js/context/Filters';
+import { useApi } from 'js/hooks';
 
 import { getPRs } from 'js/services/api';
 
 export default ({ children }) => {
-    const { getTokenSilently } = useAuth0();
-    const userContext = useUserContext(null);
-    const { dateInterval, repositories, contributors } = useFiltersContext();
+    const { api, ready: apiReady, context: apiContext } = useApi();
     const [prsState, setPrsState] = useState({
         prev: { prs: [], users: {} },
         curr: { prs: [], users: {} },
     });
 
     useEffect(() => {
-        if (!userContext || !repositories.length) {
+        if (!apiReady) {
+            console.log("api not ready");
             return;
         };
 
-        getTokenSilently()
-            .then(token => getPRs(token, userContext.defaultAccount.id, dateInterval, repositories, contributors))
-            .then(setPrsState)
-            .catch(err => console.error('Could not get pull requests', err));
+        const getAndSetPRs = async () => {
+            try {
+                const prs = await getPRs(api, apiContext.account, apiContext.interval,
+                                         apiContext.repositories, apiContext.contributors);
+                setPrsState(prs);
+            } catch (err) {
+                console.error('Could not get pull requests', err);
+            }
+        };
 
-    }, [userContext, dateInterval, repositories, contributors, getTokenSilently]);
+        getAndSetPRs();
+    }, [apiReady, api, apiContext.account, apiContext.interval, apiContext.repositories, apiContext.contributors]);
 
     return (
         <PRsContext prevPRs={prsState.prev} currPRs={prsState.curr}>
