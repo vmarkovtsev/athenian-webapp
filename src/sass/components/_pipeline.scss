@@ -39,6 +39,13 @@
                     border-color: $color-wip;
                 }
             }
+            &.wip .event-before,
+            &.wip .event-after {
+                &:hover {
+                    background:$color-wip;
+                }
+            }
+
             &.review,
             &.review .event-before,
             &.review .event-after {
@@ -50,6 +57,13 @@
                     border-color: $color-review;
                 }
             }
+            &.review .event-before,
+            &.review .event-after {
+                &:hover {
+                    background:$color-review;
+                }
+            }
+
             &.merge,
             &.merge .event-before,
             &.merge .event-after {
@@ -61,6 +75,13 @@
                     border-color: $color-merge;
                 }
             }
+            &.merge .event-before,
+            &.merge .event-after {
+                &:hover {
+                    background:$color-merge;
+                }
+            }
+
             &.release,
             &.release .event-before,
             &.release .event-after {
@@ -70,6 +91,12 @@
                 a .pipeline-thumbnail.active {
                     background-color: $color-release;
                     border-color: $color-release;
+                }
+            }
+            &.release .event-before,
+            &.release .event-after {
+                &:hover {
+                    background:$color-release;
                 }
             }
         }
@@ -86,6 +113,10 @@
             position: absolute;
             top: -1 -$event-size/2;
             z-index: 10;
+
+            &:hover {
+                background: $at-border-color;
+            }
         }
 
         .event-before {
