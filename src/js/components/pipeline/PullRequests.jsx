@@ -112,10 +112,9 @@ export default ({ stage, data }) => {
                             case 'display':
                                 return `
                                     <div class="table-title">
-                                        <span class="text-secondary">${row.organization}/${row.repo}:</span>
+                                        <span class="text-secondary">${row.organization}/${row.repo}</span>
                                         <a class="text-dark font-weight-bold" href=${github.prLink(row.repository, row.number)} target="_blank">
-                                            <span class="text-secondary">#${row.number}</span>
-                                            ${row.title}
+                                            #${row.number} ${row.title}
                                         </a>
                                     </div>
                                     <div class="table-creators">
