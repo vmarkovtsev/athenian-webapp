@@ -105,7 +105,6 @@ const extractParticipantsByKind = pr => pr.participants.reduce((acc, participant
   const has_status = status => participant.status.includes(status);
   if (has_status('author')) {
     acc.authors.push(participant.id);
-    return acc;
   }
 
   if (has_status('merger')) {
