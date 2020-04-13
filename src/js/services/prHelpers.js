@@ -2,35 +2,73 @@ import { github } from 'js/services/format';
 
 import _ from 'lodash';
 
-export const PR_STAGE = {
-  WIP: 'wip',
-  REVIEW: 'reviewing',
-  MERGE: 'merging',
-  RELEASE: 'releasing',
-  DONE: 'done',
-  COMPLETE: {
-    WIP: 'wip-complete',
-    REVIEW: 'review-complete',
-    MERGE: 'merge-complete',
-    RELEASE: 'release-complete',
-  },
-};
-
-export const PR_EVENT = {
-  CREATION: 'created',
-  COMMIT: 'commit_happened',
-  REVIEW_REQUEST: 'review_request_happened', // Transitions to 'review' Stage
-  REVIEW: 'review_happened',
-  REJECTION: 'changes_request_happened',
-  APPROVE: 'approve_happened',               // Transitions to 'merge' Stage
-  MERGE: 'merge_happened',                   // Transitions to 'release' Stage
-  RELEASE: 'release_happened',               // Transitions to 'done' Stage
-};
-
 export const PR_STATUS = {
   OPENED: 'opened',
   MERGED: 'merged',
   CLOSED: 'closed',
+};
+
+export const PR_STAGE = {
+    WIP: 'wip',
+    REVIEW: 'review',
+    MERGE: 'merge',
+    RELEASE: 'release',
+    DONE: 'done',
+};
+
+const PR_STAGE_API_MAPPING = {
+    wip: PR_STAGE.WIP,
+    reviewing: PR_STAGE.REVIEW,
+    merging: PR_STAGE.MERGE,
+    releasing: PR_STAGE.RELEASE,
+    done: PR_STAGE.DONE
+};
+
+const PR_STAGE_TIMELINE = [
+    PR_STAGE.WIP,
+    PR_STAGE.REVIEW,
+    PR_STAGE.MERGE,
+    PR_STAGE.RELEASE,
+    PR_STAGE.DONE,
+];
+
+const PR_EVENT = {
+  CREATION: 'created',
+  COMMIT: 'commit_happened',
+  REVIEW_REQUEST: 'review_request_happened',
+  REVIEW: 'review_happened',
+  REJECTION: 'changes_request_happened',
+  APPROVE: 'approve_happened',
+  MERGE: 'merge_happened',
+  RELEASE: 'release_happened',
+};
+
+const PR_STAGE_EVENTS = {
+    [PR_STAGE.WIP]: {
+        start: PR_EVENT.COMMIT,
+        end: PR_EVENT.REVIEW_REQUEST,
+        others: [PR_EVENT.CREATION],
+    },
+    [PR_STAGE.REVIEW]: {
+        start: PR_EVENT.REVIEW_REQUEST,
+        end: PR_EVENT.APPROVE,
+        others: [PR_EVENT.REVIEW, PR_EVENT.REJECTION],
+    },
+    [PR_STAGE.MERGE]: {
+        start: PR_EVENT.APPROVE,
+        end: PR_EVENT.MERGE,
+        others: []
+    },
+    [PR_STAGE.RELEASE]: {
+        start: PR_EVENT.MERGE,
+        end: PR_EVENT.RELEASE,
+        others: []
+    },
+    [PR_STAGE.DONE]: {
+        start: null,
+        end: null,
+        others: []
+    },
 };
 
 // These are the PR labels that will appear in PR tables depending on pr status/stage/events
@@ -42,6 +80,8 @@ export const PR_LABELS = {
   REVIEW_SUBMITTED: 'Review Submitted',
   REVIEW_REJECTED: 'Changes Requested',
   REVIEW_APPROVAL: 'Review Approved',
+  REVIEW_SKIPPED: 'Not Reviewed',
+  REVIEW_IGNORED: 'Review Ignored',
   MERGE_PENDING: 'Waiting for Merge',
   MERGE_COMPLETED: 'Merged',
   RELEASE_PENDING: 'Waiting for Release',
@@ -56,6 +96,8 @@ export const PR_LABELS_CLASSNAMES = {
   [PR_LABELS.REVIEW_SUBMITTED]: 'label-review-submitted',
   [PR_LABELS.REVIEW_REJECTED]: 'label-review-rejected',
   [PR_LABELS.REVIEW_APPROVAL]: 'label-review-approval',
+  [PR_LABELS.REVIEW_SKIPPED]: 'label-review-skipped',
+  [PR_LABELS.REVIEW_IGNORED]: 'label-review-ignored',
   [PR_LABELS.MERGE_PENDING]: 'label-merge-pending',
   [PR_LABELS.MERGE_COMPLETED]: 'label-merged',
   [PR_LABELS.RELEASE_PENDING]: 'label-release-pending',
@@ -63,21 +105,16 @@ export const PR_LABELS_CLASSNAMES = {
   [PR_LABELS.CLOSED]: 'label-closed',
 };
 
-const realEvents = Object.keys(PR_EVENT).map(eventKey => PR_EVENT[eventKey]);
-
 export default pr => {
-  // TODO(dpordomingo): This won't be needed if 'pr.properties' are split into 'pr.stage' and 'pr.events'
-  const events = extractEvents(pr);
-
-  const completedStages = extractCompletedStages(pr);
   const status = extractStatus(pr);
-
   const { authors, mergers, commentersReviewers } = extractParticipantsByKind(pr);
   const stage_timings = extractStageTimings(pr);
 
+  pr.properties = _(pr.properties).map(p => PR_STAGE_API_MAPPING[p] || p).value();
+  const completedStages = extractCompletedStages(pr);
+
   return {
     ...pr,
-    events,
     status,
     completedStages,
     authors,
@@ -118,8 +155,6 @@ const extractParticipantsByKind = pr => pr.participants.reduce((acc, participant
   return acc;
 }, { authors: [], commentersReviewers: [], mergers: [] });
 
-const extractEvents = pr => pr.properties.filter(property => realEvents.indexOf(property) >= 0);
-
 const extractStatus = pr => {
   if (pr.merged) {
     return PR_STATUS.MERGED;
@@ -130,86 +165,117 @@ const extractStatus = pr => {
   }
 };
 
-const extractCompletedStages = pr => {
-  const has_property = prop => pr.properties.includes(prop);
-  if (pr.merged && has_property(PR_STAGE.DONE)) {
-    return [
-      PR_STAGE.COMPLETE.WIP,
-      PR_STAGE.COMPLETE.REVIEW,
-      PR_STAGE.COMPLETE.MERGE,
-      PR_STAGE.COMPLETE.RELEASE
-    ];
-  } else if (has_property(PR_STAGE.DONE)) {
-    return [
-      PR_STAGE.COMPLETE.WIP,
-      PR_STAGE.COMPLETE.REVIEW
-    ];
-  } else if (has_property(PR_STAGE.RELEASE)) {
-    return [
-      PR_STAGE.COMPLETE.WIP,
-      PR_STAGE.COMPLETE.REVIEW,
-      PR_STAGE.COMPLETE.MERGE,
-    ];
-  } else if (has_property(PR_STAGE.MERGE) || has_property(PR_EVENT.APPROVE)) {
-    return [
-      PR_STAGE.COMPLETE.WIP,
-      PR_STAGE.COMPLETE.REVIEW,
-    ];
-  } else if (has_property(PR_STAGE.REVIEW) || has_property(PR_EVENT.REVIEW_REQUEST)) {
-    return [
-      PR_STAGE.COMPLETE.WIP,
-    ];
-  }
+export const isInStage = (pr, stage) => (
+    stageHappening(pr, stage) || stageHappened(pr, stage)
+);
+const stageHappening = (pr, stage) => _(pr.properties)
+      .includes(stage);
+const stageCompleted = (pr, stage) => _(pr.properties)
+      .includes(PR_STAGE_EVENTS[stage].end);
+const stageHappened = (pr, stage) => {
+    if (stageCompleted(pr, stage)) {
+        return true;
+    }
 
-  return [];
-}
+    if (stage === 'MERGE' && pr.status === PR_STATUS.CLOSED) {
+        return true;
+    }
+
+    const events = PR_STAGE_EVENTS[stage];
+    return (
+        _(pr.properties).includes(events.start) ||
+            _(pr.properties).intersection(events.others).length > 0
+    );
+};
+
+const getCurrentStageHappening = (pr) => {
+    for (const s of PR_STAGE_TIMELINE) {
+        if (stageHappening(pr, s)) {
+            return s;
+        }
+    };
+
+    throw Error("no stage happening");
+};
+
+const getFirstStageHappened = (pr) => {
+    for (const s of PR_STAGE_TIMELINE) {
+        if (stageHappened(pr, s)) {
+            return s;
+        }
+    };
+
+    // no events happened in current interval
+    return null;
+};
+
+const extractCompletedStages = pr => {
+    const firstStageHapened = getFirstStageHappened(pr);
+    if (!firstStageHapened) {
+        return [];
+    }
+
+    const currentStage = getCurrentStageHappening(pr);
+
+    const firstStageIndex = _(PR_STAGE_TIMELINE).indexOf(firstStageHapened);
+    const currentStageIndex = _(PR_STAGE_TIMELINE).indexOf(currentStage);
+
+    return PR_STAGE_TIMELINE.slice(firstStageIndex, currentStageIndex);
+};
 
 export const prLabel = stage => pr => {
-  if (pr.status === PR_STATUS.CLOSED) {
-    return PR_LABELS.CLOSED;
-  }
+    if (pr.status === PR_STATUS.CLOSED) {
+        return PR_LABELS.CLOSED;
+    }
 
-  const has_stage = stage => pr.completedStages.includes(stage);
-  switch (stage) {
+    const hasCompletedStage = stage => pr.completedStages.includes(stage);
+
+    switch (stage) {
     case PR_STAGE.WIP:
-      if (has_stage(PR_STAGE.COMPLETE.WIP)) {
-        return PR_LABELS.WIP_DONE;
-      }
-      return PR_LABELS.WIP;
+        if (hasCompletedStage(PR_STAGE.WIP)) {
+            return PR_LABELS.WIP_DONE;
+        }
+
+        return PR_LABELS.WIP;
     case PR_STAGE.REVIEW:
-      if (has_stage(PR_STAGE.COMPLETE.REVIEW)) {
-        return PR_LABELS.REVIEW_APPROVAL;
-      } else if (pr.events.includes(PR_EVENT.REVIEW)) {
-        return PR_LABELS.REVIEW_REJECTED;
-      }
-      return PR_LABELS.REVIEW_PENDING;
-    case PR_STAGE.MERGE:
-      if (has_stage(PR_STAGE.COMPLETE.MERGE)) {
-        return PR_LABELS.MERGE_COMPLETED;
-      }
-      return PR_LABELS.MERGE_PENDING;
-    case PR_STAGE.RELEASE:
-      if (has_stage(PR_STAGE.COMPLETE.RELEASE)) {
-        return PR_LABELS.RELEASE_COMPLETED;
-      }
-      return PR_LABELS.RELEASE_PENDING;
-    case PR_STAGE.DONE:
-      if (has_stage(PR_STAGE.COMPLETE.RELEASE)) {
-        return PR_LABELS.RELEASE_COMPLETED;
-      }
-      return PR_LABELS.CLOSED;
-    default:
-      if (has_stage(PR_STAGE.COMPLETE.RELEASE)) {
-        return PR_LABELS.RELEASE_COMPLETED;
-      } else if (has_stage(PR_STAGE.COMPLETE.MERGE)) {
-        return PR_LABELS.RELEASE_PENDING;
-      } else if (has_stage(PR_STAGE.COMPLETE.REVIEW)) {
-        return PR_LABELS.MERGE_PENDING;
-      } else if (pr.events.includes(PR_EVENT.REVIEW)) {
-        return PR_LABELS.REVIEW_REJECTED;
-      } else if (has_stage(PR_STAGE.COMPLETE.WIP)) {
+        if (hasCompletedStage(PR_STAGE.REVIEW)) {
+            if (pr.properties.includes(PR_EVENT.REJECTION)) {
+                return PR_LABELS.REVIEW_REJECTED;
+            } else if (pr.properties.includes(PR_EVENT.APPROVE)) {
+                return PR_LABELS.REVIEW_APPROVAL;
+            } else if (!pr.properties.includes(PR_EVENT.REVIEW)) {
+                return PR_LABELS.REVIEW_SKIPPED;
+            } else {
+                return PR_LABELS.REVIEW_IGNORED;
+            }
+        }
+
         return PR_LABELS.REVIEW_PENDING;
-      }
-      return PR_LABELS.WIP;
-  }
+    case PR_STAGE.MERGE:
+        if (hasCompletedStage(PR_STAGE.MERGE)) {
+            return PR_LABELS.MERGE_COMPLETED;
+        }
+
+        return PR_LABELS.MERGE_PENDING;
+    case PR_STAGE.RELEASE:
+        if (hasCompletedStage(PR_STAGE.RELEASE)) {
+            return PR_LABELS.RELEASE_COMPLETED;
+        }
+
+        return PR_LABELS.RELEASE_PENDING;
+    default:
+        if (hasCompletedStage(PR_STAGE.RELEASE)) {
+            return PR_LABELS.RELEASE_COMPLETED;
+        } else if (hasCompletedStage(PR_STAGE.MERGE)) {
+            return PR_LABELS.RELEASE_PENDING;
+        } else if (hasCompletedStage(PR_STAGE.REVIEW)) {
+            return PR_LABELS.MERGE_PENDING;
+        } else if (pr.properties.includes(PR_EVENT.REJECTION)) {
+            return PR_LABELS.REVIEW_REJECTED;
+        } else if (hasCompletedStage(PR_STAGE.WIP)) {
+            return PR_LABELS.REVIEW_PENDING;
+        }
+
+        return PR_LABELS.WIP;
+    }
 };

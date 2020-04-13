@@ -30,7 +30,7 @@ const pullRequestSize = {
                     //   Grouping criteria should be having review_happened or approve_happened or changes_request_happened or merge_happened or being closed.
                     //   But API since the tooltip also needs to show the time waiting for being reviewed, and the events
                     //   above do not expose it, we can only differentiate between being review-complete, or not.
-                    const reviewed = pr.completedStages.includes(PR_STAGE.COMPLETE.REVIEW);
+                    const reviewed = pr.completedStages.includes(PR_STAGE.REVIEW);
 
                     const author = github.userName(pr.authors[0]);
                     const timeWaiting = dateTime.interval(
