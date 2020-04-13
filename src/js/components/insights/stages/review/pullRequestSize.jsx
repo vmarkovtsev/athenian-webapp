@@ -59,7 +59,6 @@ const pullRequestSize = {
                 .take(20)
                 .value(),
             totalFiles: _(data.prs)
-                .filter(pr => !pr.completedStages.includes(PR_STAGE.COMPLETE.REVIEW))
                 .map(pr => pr.files_changed)
                 .sum(),
             totalLoc: _(data.prs)
@@ -137,7 +136,7 @@ const pullRequestSize = {
                                     value: computed.totalPRs > 0 ?
                                         Math.round(computed.totalLoc / computed.totalPRs) : 0,
                                     unit: {
-                                        singular: 'lile',
+                                        singular: 'line',
                                         plural: 'lines'
                                     }
                                 }
