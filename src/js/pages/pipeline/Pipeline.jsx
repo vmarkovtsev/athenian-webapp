@@ -39,7 +39,7 @@ export const pipelineStagesConf = [
         prs: prs => prs.filter(pr => pr.properties.includes(prStage.WIP) || pr.completedStages.includes(prStageComplete.WIP)),
         stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStageComplete.WIP)).length,
         summary: (stage, prs, dateInterval) => {
-            const createdPrs = prs.filter(pr => dateInterval.from < pr.created && pr.created < dateInterval.to);
+            const createdPrs = prs.filter(pr => dateInterval.from <= pr.created);
             const authors = distinct(createdPrs, pr => pr.authors);
             const repos = distinct(createdPrs, pr => pr.repository);
             return [
