@@ -97,6 +97,10 @@ const waitTimeFirstReview = {
                         params: {
                             data: computed.chartData,
                             extra: {
+                                average: {
+                                    value: computed.KPIsData.avgWaitingTime.value,
+                                    color: '#FFA008'
+                                },
                                 labels: {
                                     y: 'Wait Time, hours'
                                 },
