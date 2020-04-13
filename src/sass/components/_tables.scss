@@ -18,6 +18,15 @@
         border: 1px solid $at-border-color !important;
         color: $secondary;
 
+        th {
+            padding: 0.8rem 0 1rem 1rem !important;
+
+            &.sorting_asc,
+            &.sorting_desc {
+                color: $color-dark !important;
+            }
+        }
+
         tr {
             height: 30px;
         }
@@ -38,8 +47,9 @@
         .sorting_asc:before,
         .sorting_desc:after {
             color: $dark;
-            left: 10px;
+            left: auto;
             opacity: 1;
+            right: 1rem;
         }
 
         th {
@@ -54,14 +64,13 @@
             &.sorting_asc:after,
             &.sorting_desc:after
             {
-                left: 10px;
-                right: auto;
+                left: auto;
+                right: 1rem;
             }
 
             &.sorting_asc,
             &.sorting_desc {
                 color: $dark;
-                padding-left: 24px !important;
             }
         }
     }
@@ -195,4 +204,69 @@ div.dataTables_wrapper div.dataTables_filter {
         font-weight: 300;
         margin-left: 0;
     }
+}
+
+// Custom sort icons
+
+table.dataTable thead span.table-head {
+    position: relative;
+
+    &.table-no-tit {
+        display: block;
+        height: 10px;
+        width: 0px;
+        margin: -16px 0;
+    }
+}
+
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_asc_disabled:before,
+table.dataTable thead .sorting_desc_disabled:before,
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:after,
+table.dataTable thead .sorting_asc_disabled:after,
+table.dataTable thead .sorting_desc_disabled:after {
+    content: '' !important;
+    opacity: 0 !important;
+}
+
+table.dataTable thead .sorting span:after,
+table.dataTable thead .sorting_asc span:after,
+table.dataTable thead .sorting_desc span:after,
+table.dataTable thead .sorting_asc_disabled span:after,
+table.dataTable thead .sorting_desc_disabled span:after {
+    right: -1.5rem;
+    content: "\2193";
+    position: absolute;
+}
+
+table.dataTable thead .sorting span:before,
+table.dataTable thead .sorting_asc span:before,
+table.dataTable thead .sorting_desc span:before,
+table.dataTable thead .sorting_asc_disabled span:before,
+table.dataTable thead .sorting_desc_disabled span:before {
+    right: -1.5rem;
+    content: "\2191";
+    position: absolute;
+}
+
+#dataTable thead .sorting span:before,
+#dataTable thead .sorting span:after,
+#dataTable thead .sorting_asc span:before,
+#dataTable thead .sorting_asc span:after,
+#dataTable thead .sorting_desc span:before,
+#dataTable thead .sorting_desc span:after,
+#dataTable thead .sorting_asc_disabled span:before,
+#dataTable thead .sorting_asc_disabled span:after,
+#dataTable thead .sorting_desc_disabled span:before,
+#dataTable thead .sorting_desc_disabled span:after {
+    opacity: 0;
+}
+
+#dataTable thead .sorting_asc span:before,
+#dataTable thead .sorting_desc span:after {
+    opacity: 1;
 }

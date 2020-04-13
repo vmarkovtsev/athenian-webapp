@@ -45,6 +45,7 @@ export default ({ stage, data }) => {
             `,
             searching: true,
             ordering: true,
+            order: [[ 1, 'desc' ]],
             language: {
                 paginate: {
                     next: "<i class='fas fa-angle-right'></i>",
@@ -64,11 +65,11 @@ export default ({ stage, data }) => {
             fixedHeader: true,
             data: prs,
             columnDefs: [
-                { "width": "50px", "targets": 0 },  //status
+                { "width": "50px", "targets": 0, "orderable": false },  //status
                 { "width": "130px", "targets": 2 }, //changes
-                { "width": "65px", "targets": 3 },  //comments
+                { "width": "90px", "targets": 3 },  //comments
                 { "width": "130px", "targets": 4 }, //participants
-                { "width": "70px", "targets": 5 },  //age
+                { "width": "100px", "targets": 5 },  //age
                 { "width": "150px", "targets": 6 }, //stage
             ],
             columns: [
@@ -105,7 +106,7 @@ export default ({ stage, data }) => {
                     },
                 },
                 {
-                    title: 'Pull Requests | Created',
+                    title: '<span class="table-head">Pull Requests | Created</span>',
                     className: 'pr-main',
                     render: (__, type, row) => {
                         switch (type) {
@@ -132,7 +133,7 @@ export default ({ stage, data }) => {
                         }
                     },
                 }, {
-                    title: 'Size',
+                    title: '<span class="table-head">Size</span>',
                     className: 'pr-size',
                     searchable: false,
                     render: (__, type, row) => {
@@ -153,7 +154,7 @@ export default ({ stage, data }) => {
                         }
                     },
                 }, {
-                    title: 'Comments',
+                    title: '<span class="table-head">Comments</span>',
                     className: 'pr-comments',
                     searchable: false,
                     render: (__, type, row) => {
@@ -169,7 +170,7 @@ export default ({ stage, data }) => {
                         }
                     },
                 }, {
-                    title: 'Reviewers',
+                    title: '<span class="table-head">Reviewers</span>',
                     className: 'pr-reviewers',
                     render: (__, type, row) => {
                         switch (type) {
@@ -185,7 +186,7 @@ export default ({ stage, data }) => {
                     },
                 },
                 cycleTimeColumn(stage, data), {
-                    title: 'Stage',
+                    title: '<span class="table-head">Stage</span>',
                     className: 'align-middle text-center',
                     render: (__, type, row) => {
                         switch (type) {
@@ -232,11 +233,11 @@ export default ({ stage, data }) => {
 
 const cycleTimeColumn = (stage, data) => {
     const title = {
-        overview: 'Lead Time',
-        wip: 'WIP Time',
-        review: 'Review Time',
-        merge: 'Merge Time',
-        release: 'Release Time'
+        overview: '<span class="table-head">Lead Time</span>',
+        wip: '<span class="table-head">WIP Time</span>',
+        review: '<span class="table-head">Review Time</span>',
+        merge: '<span class="table-head">Merge Time</span>',
+        release: '<span class="table-head">Release Time</span>'
     }[stage];
 
     return {
