@@ -87,7 +87,7 @@ const pullRequestSize = {
     factory: (computed) => ({
             meta: {
                 title: 'Pull Request Size',
-                description: 'Some description for "Pull Request Size"'
+                description: 'Shed light on big pull requests that slow down code reviews and scale up the lead time.'
             },
             content: [
                 {

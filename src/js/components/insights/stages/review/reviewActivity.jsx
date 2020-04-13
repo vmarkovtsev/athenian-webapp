@@ -156,7 +156,7 @@ const reviewActivity = {
         return {
             meta: {
                 title: 'Review Activity',
-                description: 'Some description for "Review Activity"'
+                description: 'Understand the role of each team member in the review process.'
             },
             content: [
                 {
