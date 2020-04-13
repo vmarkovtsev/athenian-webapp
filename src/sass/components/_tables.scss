@@ -52,6 +52,17 @@
                 &:before {
                     opacity: 0 !important;
                 }
+
+                &:hover {
+
+                    &:after {
+                        content: '\2191' !important;
+                        position: static;
+                        display: inline;
+                        margin-left: 1rem;
+                        opacity: 0.7 !important;
+                    }
+                }
             }
 
             &.sorting_desc,
