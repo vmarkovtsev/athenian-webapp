@@ -195,19 +195,17 @@ export default ({ stage, data }) => {
                                     `events:[${row.properties.map(prop => prop.replace('_happened', '')).join(', ')}],\n` +
                                     `stage-completes:[${row.completedStages.join(', ')}]`;
                                 return (
-                                    `<div class="badge badge-outlined ${prLabelClasses[prLabelStage(row)]}">
-                                        <span
-                                            title="${hint}"
-                                            data-toggle="tooltip"
-                                            data-placement="bottom"
-                                            className="ml-2"
-                                        >
+                                    `<div title="${hint}" class="badge badge-outlined ${prLabelClasses[prLabelStage(row)]}">
+                                        <span data-toggle="tooltip" data-placement="bottom" className="ml-2">
                                             ${prLabelStage(row)}
                                         </span>
                                     </div>`
                                 );
-                            default:
+                            case 'filter':
                                 return row.properties.map(prop => prop.replace('_happened', '')).join(', ');
+                            case 'sort':
+                            case 'type':
+                                return prLabelStage(row);
                         }
                     },
                 },
