@@ -12,7 +12,8 @@ import {
     VerticalGridLines,
     HorizontalGridLines,
     LineSeries,
-    MarkSeries
+    MarkSeries,
+    LineMarkSeries
 } from 'react-vis';
 
 import { DateBigNumber, onValueChange, onValueReset } from 'js/components/charts/Tooltip';
@@ -94,6 +95,18 @@ const TimeSeries = ({ title, data, extra }) => {
         });
     }
 
+    const averagedData = [];
+    if (extra.average) {
+        averagedData.push({
+            x: formattedData[0].x,
+            y: extra.average.value
+        });
+        averagedData.push({
+            x: formattedData[formattedData.length - 1].x,
+            y: extra.average.value
+        });
+    }
+
     return (
         <FlexibleWidthXYPlot height={300} margin={{ left: 100, right: 30 }}>
 
@@ -126,6 +139,18 @@ const TimeSeries = ({ title, data, extra }) => {
              strokeWidth={3}
              data={referenceData}
              animation="stiff"
+           />}
+
+          {averagedData.length > 0 &&
+           <LineMarkSeries
+             data={averagedData}
+             strokeWidth={2}
+             stroke={extra.average.color}
+             strokeStyle="dashed"
+             fill="white"
+             animation="stiff"
+             onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
+             onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
            />}
 
           <DateBigNumber value={currentHover} renderBigFn={extra?.tooltip?.renderBigFn} />
