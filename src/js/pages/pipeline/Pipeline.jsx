@@ -6,7 +6,7 @@ import { useUserContext } from 'js/context/User';
 import { useFiltersContext } from 'js/context/Filters';
 
 import { getMetrics, fetchApi } from 'js/services/api';
-import { PR_STAGE as prStage, isInStage } from 'js/services/prHelpers';
+import { PR_STAGE as prStage, isInStage, happened, PR_EVENT as prEvent } from 'js/services/prHelpers';
 import { number } from 'js/services/format';
 
 import { palette } from 'js/res/palette';
@@ -61,8 +61,15 @@ export const pipelineStagesConf = [
         prs: prs => prs.filter(pr => isInStage(pr, prStage.REVIEW)),
         stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.REVIEW)).length,
         summary: (stage, prs) => {
-            const reviewAndReviewCompletePRs = prs.filter(pr => !pr.properties.includes('wip'));
-            const reviewed = reviewAndReviewCompletePRs.filter(pr => pr.comments || pr.review_comments)
+            const reviewAndReviewCompletePRs = prs.filter(pr => isInStage(pr, prStage.REVIEW));
+            const reviewed = reviewAndReviewCompletePRs.filter(pr => {
+                if (pr.comments || pr.review_comments) {
+                    return true;
+                }
+
+                return happened(pr, prEvent.REVIEW) || happened(pr, prEvent.REJECTION) || happened(pr, prEvent.APPROVE);
+            });
+
             const reviewers = distinct(reviewAndReviewCompletePRs, pr => pr.commentersReviewers);
             const repos = distinct(reviewAndReviewCompletePRs, pr => pr.repository);
             return [

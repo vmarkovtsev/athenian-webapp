@@ -28,7 +28,7 @@ Design doc at https://docs.google.com/document/d/1DXLVz4L1Ag9sOUMAKdRRgVh1fk6peU
 ## Review
 - Reviewed PRs: Pull requests where a review has been submitted or a regular comment posted
   ```
-  prs.filter(pr.stage>=review).having(comments|reviews).count
+  prs.filter(pr.stage>=review).having(OR[comments|review_comments,properties.oneOf(review|approve|changes_request)]).count
   ```
 - Reviewers: authors of one review or regular comment among the Reviewed PRs
   ```

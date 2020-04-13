@@ -32,7 +32,7 @@ const PR_STAGE_TIMELINE = [
     PR_STAGE.DONE,
 ];
 
-const PR_EVENT = {
+export const PR_EVENT = {
   CREATION: 'created',
   COMMIT: 'commit_happened',
   REVIEW_REQUEST: 'review_request_happened',
@@ -164,6 +164,8 @@ const extractStatus = pr => {
     return PR_STATUS.OPENED;
   }
 };
+
+export const happened = (pr, event) => pr.properties.includes(event);
 
 export const isInStage = (pr, stage) => (
     stageHappening(pr, stage) || stageHappened(pr, stage)
