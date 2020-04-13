@@ -53,9 +53,9 @@ const reviewActivity = {
               .map(v => v.values[0][1])
               .sum();
         const totalReviewers = _(fetched.secondBox.calculated)
-              .filter(v => v.values[0][1] > 0)
-              .value()
-              .length;
+            .filter(v => v.values[0][0] > 0)
+            .value()
+            .length;
         const secondBoxChartData = _(fetched.secondBox.calculated)
               .map(v => {
                   const [reviewsTotal, prsCommentsTotal] = [v.values[0][0], v.values[0][1]];
