@@ -27,6 +27,16 @@ export default ({ data, average, color = palette.schemes.primary, height = 300 }
     .map(v => ({...v, y: v.y * 1000 / conversionValue}))
     .value();
 
+  const averagedData = [];
+    averagedData.push({
+        x: formattedData[0].x,
+        y: average * 1000 / conversionValue
+    });
+    averagedData.push({
+        x: formattedData[formattedData.length - 1].x,
+        y: average * 1000 / conversionValue
+    });
+
   return (
     <div style={{ background: 'white' }}>
       <FlexibleWidthXYPlot
@@ -52,10 +62,15 @@ export default ({ data, average, color = palette.schemes.primary, height = 300 }
           onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
           onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
         />
-        <HorizontalGridLines
-          tickValues={[average * 1000 / conversionValue]}
-          style={{ stroke: palette.schemes.trend, strokeWidth: '2px', strokeDasharray: [4, 4] }}
+        <LineMarkSeries
+          data={averagedData}
+          stroke={palette.schemes.trend}
+          strokeStyle="dashed"
+          strokeWidth={2}
+          fill="white"
           animation="stiff"
+          onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
+          onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
         />
 
         <DateBigNumber value={currentHover} renderBigFn={
