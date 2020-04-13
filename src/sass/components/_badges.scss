@@ -81,7 +81,9 @@
             color: $color-review;
         }
 
-        &.label-review-rejected {
+        &.label-review-rejected,
+        &.label-review-skipped,
+        &.label-review-ignored {
             border-color: $color-red;
             color: $color-red;
         }

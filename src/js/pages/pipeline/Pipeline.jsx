@@ -6,12 +6,10 @@ import { useUserContext } from 'js/context/User';
 import { useFiltersContext } from 'js/context/Filters';
 
 import { getMetrics, fetchApi } from 'js/services/api';
-import { PR_STAGE as prStage } from 'js/services/prHelpers';
+import { PR_STAGE as prStage, isInStage } from 'js/services/prHelpers';
 import { number } from 'js/services/format';
 
 import { palette } from 'js/res/palette';
-
-const prStageComplete = prStage.COMPLETE;
 
 const distinct = (collection, extractor) => Array.from(new Set(collection.flatMap(extractor)));
 
@@ -29,15 +27,15 @@ export const pipelineStagesConf = [
         title: 'Work in progress',
         slug: 'work-in-progress',
         metric: 'wip-time',
-        stageName: 'wip',
+        stageName: prStage.WIP,
         color: palette.stages.wip,
         hint: 'From the 1st commit of the Pull Request until the review is requested',
         event: {
             before: 'First Commit',
             after: 'Review Requested',
         },
-        prs: prs => prs.filter(pr => pr.properties.includes(prStage.WIP) || pr.completedStages.includes(prStageComplete.WIP)),
-        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStageComplete.WIP)).length,
+        prs: prs => prs.filter(pr => isInStage(pr, prStage.WIP)),
+        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.WIP)).length,
         summary: (stage, prs, dateInterval) => {
             const createdPrs = prs.filter(pr => dateInterval.from <= pr.created);
             const authors = distinct(createdPrs, pr => pr.authors);
@@ -53,15 +51,15 @@ export const pipelineStagesConf = [
         title: 'Review',
         slug: 'review',
         metric: 'review-time',
-        stageName: 'review',
+        stageName: prStage.REVIEW,
         color: palette.stages.review,
         hint: 'From the moment the review is requested until the Pull Request is approved',
         event: {
             before: 'Review Requested',
             after: 'Approved',
         },
-        prs: prs => prs.filter(pr => pr.properties.includes(prStage.REVIEW) || pr.completedStages.includes(prStageComplete.REVIEW)),
-        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStageComplete.REVIEW)).length,
+        prs: prs => prs.filter(pr => isInStage(pr, prStage.REVIEW)),
+        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.REVIEW)).length,
         summary: (stage, prs) => {
             const reviewAndReviewCompletePRs = prs.filter(pr => !pr.properties.includes('wip'));
             const reviewed = reviewAndReviewCompletePRs.filter(pr => pr.comments || pr.review_comments)
@@ -78,15 +76,15 @@ export const pipelineStagesConf = [
         title: 'Merge',
         slug: 'merge',
         metric: 'merging-time',
-        stageName: 'merge',
+        stageName: prStage.MERGE,
         color: palette.stages.merge,
         hint: 'From the moment the Pull Request is approved until it gets merged',
         event: {
             before: 'Approved',
             after: 'Merged',
         },
-        prs: prs => prs.filter(pr => pr.properties.includes(prStage.MERGE) || pr.completedStages.includes(prStageComplete.MERGE)),
-        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStageComplete.MERGE)).length,
+        prs: prs => prs.filter(pr => isInStage(pr, prStage.MERGE)),
+        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.MERGE)).length,
         summary: (stage, prs) => {
             const mergedPRs = prs.filter(pr => pr.merged);
             const mergerers = distinct(mergedPRs, pr => pr.mergers);
@@ -102,15 +100,15 @@ export const pipelineStagesConf = [
         title: 'Release',
         slug: 'release',
         metric: 'release-time',
-        stageName: 'release',
+        stageName: prStage.RELEASE,
         color: palette.stages.release,
         hint: 'From the moment the Pull Request gets merged until it is shipped into production',
         event: {
             before: 'Merged',
             after: 'Released',
         },
-        prs: prs => prs.filter(pr => pr.properties.includes(prStage.RELEASE) || pr.completedStages.includes(prStageComplete.RELEASE)),
-            stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStageComplete.RELEASE)).length,
+        prs: prs => prs.filter(pr => isInStage(pr, prStage.RELEASE)),
+        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.RELEASE)).length,
         summary: (stage, prs) => {
             const releasedPRs = prs.filter(pr => pr.release_url);
             const releases = distinct(releasedPRs, pr => pr.release_url);

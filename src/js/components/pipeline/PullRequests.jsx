@@ -190,10 +190,10 @@ export default ({ stage, data }) => {
                     render: (__, type, row) => {
                         switch (type) {
                             case 'display':
-                                const hint = '' +
-                                    `properties:[${row.properties.map(prop => prop.replace('_happened', '')).join(', ')}],\n` +
-                                    `events:[${row.events.map(stage => stage.replace('_happened', '')).join(', ')}],\n` +
-                                    `stage-completes:[${row.completedStages.map(stage => stage.replace('-complete', '')).join(', ')}]`;
+                            const hint = '' +
+                                    `properties:[${row.properties.join(', ')}],\n` +
+                                    `events:[${row.properties.map(prop => prop.replace('_happened', '')).join(', ')}],\n` +
+                                    `stage-completes:[${row.completedStages.join(', ')}]`;
                                 return (
                                     `<div class="badge badge-outlined ${prLabelClasses[prLabelStage(row)]}">
                                         <span
@@ -249,7 +249,7 @@ const cycleTimeColumn = (stage, data) => {
 
             switch (type) {
             case 'display':
-                return !cycleTime ? '-' : dateTime.bestTimeUnit(cycleTime * 1000, 0);
+                return cycleTime === undefined ? '-' : dateTime.bestTimeUnit(cycleTime * 1000, 0);
             case 'filter':
                 return '';
             case 'type':
