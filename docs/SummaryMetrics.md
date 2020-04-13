@@ -14,15 +14,15 @@ Design doc at https://docs.google.com/document/d/1DXLVz4L1Ag9sOUMAKdRRgVh1fk6peU
 ## WIP
 - Created PRs: pull requests created
   ```
-  prs.filter(from<pr.created<to).count
+  prs.filter(from<pr.created).count
   ```
 - Contributors: Number of people that have created pull requests during the period selected
   ```
-  prs.filter(from<pr.created<to).creators.distinct.count
+  prs.filter(from<pr.created).creators.distinct.count
   ```
 - Repos: where commits have been pushed during the time period selected
   ```
-  prs.filter(from<pr.created<to).repos.distinct.count
+  prs.filter(from<pr.created).repos.distinct.count
   ```
 
 ## Review
