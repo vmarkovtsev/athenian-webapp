@@ -194,10 +194,10 @@ const reviewActivity = {
                         },
                         {
                             title: {text: 'Ratio of Pull Requests', bold: true},
-                            subtitle: {text: 'Created/Reviewed'},
+                            subtitle: { text: 'Reviewed/Created'},
                             component: SimpleKPI,
                             params: {
-                                value: `${sumPrsCreated / gcdPrsReviews}/${sumReviews / gcdPrsReviews}`
+                                value: `${sumReviews / gcdPrsReviews}/${sumPrsCreated / gcdPrsReviews}`
                             }
                         },
                     ]
