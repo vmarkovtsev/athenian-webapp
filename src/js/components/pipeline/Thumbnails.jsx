@@ -45,10 +45,12 @@ const Stage = ({ title, text, hint, badge, variation, color, name, metric, activ
         <div className={classnames('card pipeline-thumbnail', active && 'active')} onClick={onClick}>
             <div className="card-body p-3">
                 <div className="card-title d-flex justify-content-between align-items-center mb-3">
-                    <span>
-                        <SmallTitle content={title} />
-                        <Info content={hint} />
-                    </span>
+                    <div className="d-flex justify-content-between align-items-center">
+                        <div className="font-weight-bold text-uppercase text-xs">
+                            <span className="align-middle">{title}</span>
+                            <Info content={hint} />
+                        </div>
+                    </div>
                     {badge && <Badge value={badge} />}
                 </div>
                 <div className="row no-gutters card-text">
