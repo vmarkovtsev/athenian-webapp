@@ -33,3 +33,36 @@
 .user-info {
     font-size: 1.5rem;
 }
+
+// Info tooltips
+
+.tooltip.show {
+    opacity: 1 !important;
+}
+
+.tooltip-inner {
+    max-width: 250px !important;
+    padding: 1rem 1.5rem !important;
+    box-shadow: 0 0 7px rgba(0,0,0,0.2) !important;
+    color: $color-dark !important;
+    background-color: $white !important;
+    font-size: 1.2rem !important;
+    opacity: 1 !important;
+    text-align: left !important;
+}
+
+.bs-tooltip-auto[x-placement^=bottom] .arrow::before, .bs-tooltip-bottom .arrow::before {
+    border-bottom-color: $white !important;
+}
+
+.bs-tooltip-auto[x-placement^=top] .arrow::before, .bs-tooltip-top .arrow::before {
+    border-top-color: $white !important;
+}
+
+.bs-tooltip-auto[x-placement^=left] .arrow::before, .bs-tooltip-left .arrow::before {
+    border-left-color: $white !important;
+}
+
+.bs-tooltip-auto[x-placement^=right] .arrow::before, .bs-tooltip-right .arrow::before {
+    border-right-color: $white !important;
+}
