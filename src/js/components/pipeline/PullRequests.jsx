@@ -45,6 +45,7 @@ export default ({ stage, data }) => {
             `,
             searching: true,
             ordering: true,
+            order: [[ 1, 'desc' ]],
             language: {
                 paginate: {
                     next: "<i class='fas fa-angle-right'></i>",
@@ -64,11 +65,11 @@ export default ({ stage, data }) => {
             fixedHeader: true,
             data: prs,
             columnDefs: [
-                { "width": "50px", "targets": 0 },  //status
+                { "width": "50px", "targets": 0, "orderable": false },  //status
                 { "width": "130px", "targets": 2 }, //changes
-                { "width": "65px", "targets": 3 },  //comments
+                { "width": "90px", "targets": 3 },  //comments
                 { "width": "130px", "targets": 4 }, //participants
-                { "width": "70px", "targets": 5 },  //age
+                { "width": "100px", "targets": 5 },  //age
                 { "width": "150px", "targets": 6 }, //stage
             ],
             columns: [
@@ -233,7 +234,7 @@ const cycleTimeColumn = (stage, data) => {
         wip: 'WIP Time',
         review: 'Review Time',
         merge: 'Merge Time',
-        release: 'Release Time'
+        release: 'Release >'
     }[stage];
 
     return {

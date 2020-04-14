@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, Redirect } from 'react-router-dom';
 
 import { useAuth0 } from 'js/context/Auth0';
@@ -8,16 +8,18 @@ import { buildApi } from 'js/services/api';
 import InvitationLink from 'js/services/api/openapi-client/model/InvitationLink';
 
 export default () => {
+  const invitationAcceptRequest = useRef(false);
   const { loading, isAuthenticated, getTokenSilently, logout } = useAuth0();
   const [redirectTo, setRedirectTo] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const query = new URLSearchParams(useLocation().search);
 
   useEffect(() => {
-    if (loading || !isAuthenticated) {
+    if (loading || !isAuthenticated || invitationAcceptRequest.current) {
       return;
     };
 
+    invitationAcceptRequest.current = true;
     getTokenSilently()
       .then(async (token) => {
         const api = buildApi(token);
@@ -28,7 +30,6 @@ export default () => {
           const body = new InvitationLink(inviteLink);
 
           try {
-
             let check;
             try {
               check = await api.checkInvitation(body);
@@ -64,7 +65,9 @@ export default () => {
 
         if (invType === 'admin') {
           const win = window.open(window.ENV.application.githubAppUri, '_blank');
-          win.focus();
+          if (!!win) {
+                win.focus();
+          }
         }
 
         setRedirectTo(query.get('targetUrl'));

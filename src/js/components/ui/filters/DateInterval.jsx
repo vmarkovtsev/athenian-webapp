@@ -84,8 +84,8 @@ export default ({
 
         setPrevDateIntervalState(dateIntervalState);
         onChange({
-            from: dateIntervalState.startDate.valueOf(),
-            to: dateIntervalState.endDate.valueOf(),
+            from: dateIntervalState.startDate.startOf('day').valueOf(),
+            to: dateIntervalState.endDate.endOf('day').valueOf(),
         });
     }, [dateIntervalState, prevDateIntervalState, validateOrFix, focusedInputState, onChange]);
 
