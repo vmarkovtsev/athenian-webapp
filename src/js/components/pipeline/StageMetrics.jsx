@@ -15,7 +15,7 @@ export const SummaryMetrics = ({ conf, chart, kpi }) => {
       <div className="card-body">
         <div className="row">
           <div className="col-4">
-            <header className="font-weight-bold text-lg mt-2">{conf.title}</header>
+            <header className="font-weight-bold text-lg mt-2">{conf.summaryMetricTitle || conf.title}</header>
             <div className="pl-2">
               <div className="font-weight-bold mt-4 mb-3 pb-2 border-bottom">
                 <BigNumber content={dateTime.human(conf.avg)} isXL />

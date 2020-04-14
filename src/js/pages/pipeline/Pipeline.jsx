@@ -15,7 +15,8 @@ const distinct = (collection, extractor) => Array.from(new Set(collection.flatMa
 
 export const pipelineStagesConf = [
     {
-        title: 'Lead Time',
+        title: 'Overview',
+        summaryMetricTitle: 'Lead Time',
         slug: 'overview',
         metric: 'lead-time',
         stageName: 'leadtime',
