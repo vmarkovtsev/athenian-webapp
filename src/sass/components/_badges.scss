@@ -81,9 +81,7 @@
             color: $color-review;
         }
 
-        &.label-review-rejected,
-        &.label-review-skipped,
-        &.label-review-ignored {
+        &.label-review-rejected {
             border-color: $color-red;
             color: $color-red;
         }
@@ -112,6 +110,16 @@
         &.label-closed {
             border-color: $color-secondary;
             color: $color-secondary;
+        }
+
+        &.label-review-skipped {
+            border-color: rgba($color-secondary,0.5);
+            color: rgba($color-secondary,0.5);
+        }
+
+        &.label-review-ignored {
+            border-color: rgba($color-dark, 0.8);
+            color: rgba($color-dark, 0.8);
         }
     }
 }
