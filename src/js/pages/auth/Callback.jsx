@@ -64,7 +64,9 @@ export default () => {
 
         if (invType === 'admin') {
           const win = window.open(window.ENV.application.githubAppUri, '_blank');
-          win.focus();
+          if (!!win) {
+                win.focus();
+          }
         }
 
         setRedirectTo(query.get('targetUrl'));
