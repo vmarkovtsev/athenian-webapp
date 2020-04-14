@@ -202,7 +202,6 @@ export default ({ stage, data }) => {
                                     </div>`
                                 );
                             case 'filter':
-                                return row.properties.map(prop => prop.replace('_happened', '')).join(', ');
                             case 'sort':
                             case 'type':
                                 return prLabelStage(row);
