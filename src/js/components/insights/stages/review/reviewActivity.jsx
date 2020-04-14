@@ -189,7 +189,7 @@ const reviewActivity = {
                             subtitle: {text: 'Per Developer'},
                             component: SimpleKPI,
                             params: {
-                                value: computed.firstBox.KPIsData.avgReviewsPerDev
+                                value: computed.firstBox.KPIsData.avgReviewsPerDev.toFixed(2)
                             }
                         },
                         {
