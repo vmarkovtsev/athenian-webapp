@@ -18,6 +18,13 @@
         border: 1px solid $at-border-color !important;
         color: $secondary;
 
+        &.table-no-tit {
+            display: block;
+            height: 10px;
+            width: 0;
+            margin: -16px 0;
+        }
+
         tr {
             height: 30px;
         }
@@ -29,6 +36,11 @@
             text-align: left !important;
             transform: translateY(2px);
             border: 0;
+
+            &.pr-merged {
+                padding-right: 0 !important;
+                width: 30px !important;
+            }
 
             &.sorting_asc,
             &.sorting_desc {
@@ -80,38 +92,33 @@
         &:first-child {
             border-left-width: 1px !important;
         }
-    }
 
-    td.pr-size,
-    td.pr-cycle-time {
-        white-space: nowrap;
-    }
+        &.pr-size,
+        &.pr-cycle-time {
+            white-space: nowrap;
+        }
 
-    td.pr-cycle-time {
-        font-size: 1.1rem;
-    }
+        &.pr-cycle-time {
+            font-size: 1.1rem;
+        }
 
-    td.pr-reviewers,
-    td.pr-size {
-        min-width: 140px;
-        width: 140px;
-    }
+        &.pr-reviewers,
+        &.pr-size {
+            min-width: 140px;
+            width: 140px;
+        }
 
-    td.pr-comments,
-    td.pr-cycle-time {
-        width: 80px;
-    }
+        &.pr-comments,
+        &.pr-cycle-time {
+            width: 80px;
+        }
 
-    td.pr-merged {
-        vertical-align: middle;
-        padding: 0 0 0 12px;
-        text-align: center;
-        width: 60px;
-    }
-
-    th.pr-merged {
-        padding-right: 0 !important;
-        width: 30px !important;
+        &.pr-merged {
+            vertical-align: middle;
+            padding: 0 0 0 12px;
+            text-align: center;
+            width: 60px;
+        }
     }
 
     $mainAvatarSize: 26px;
@@ -174,39 +181,28 @@
     }
 }
 
-div.dataTables_wrapper div.dataTables_length select {
-    margin-left: .6rem;
-    width: 5rem !important;
-}
-
-div.dataTables_wrapper div.dataTables_filter {
-    text-align: left !important;
-
-    .field-icon {
-        position: absolute;
-        opacity: 0.5;
-        left: 1.1rem;
-        top: 1rem;
+div.dataTables_wrapper div{
+    &.dataTables_length select {
+        margin-left: .6rem;
+        width: 5rem !important;
     }
 
-    .form-control {
-        width: 40rem;
-        padding-left: 3rem;
-        font-size: 1.2rem;
-        font-weight: 300;
-        margin-left: 0;
-    }
-}
+    &.dataTables_filter {
+        text-align: left !important;
 
-// Custom sort icons
+        .field-icon {
+            position: absolute;
+            opacity: 0.5;
+            left: 1.1rem;
+            top: 1rem;
+        }
 
-table.dataTable thead span.table-head {
-    position: relative;
-
-    &.table-no-tit {
-        display: block;
-        height: 10px;
-        width: 0px;
-        margin: -16px 0;
+        .form-control {
+            width: 40rem;
+            padding-left: 3rem;
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-left: 0;
+        }
     }
 }
