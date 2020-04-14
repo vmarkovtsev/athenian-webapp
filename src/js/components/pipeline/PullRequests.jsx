@@ -106,7 +106,7 @@ export default ({ stage, data }) => {
                     },
                 },
                 {
-                    title: '<span class="table-head">Pull Requests | Created</span>',
+                    title: 'Pull Requests | Created',
                     className: 'pr-main',
                     render: (__, type, row) => {
                         switch (type) {
@@ -133,7 +133,7 @@ export default ({ stage, data }) => {
                         }
                     },
                 }, {
-                    title: '<span class="table-head">Size</span>',
+                    title: 'Size',
                     className: 'pr-size',
                     searchable: false,
                     render: (__, type, row) => {
@@ -154,7 +154,7 @@ export default ({ stage, data }) => {
                         }
                     },
                 }, {
-                    title: '<span class="table-head">Comments</span>',
+                    title: 'Comments',
                     className: 'pr-comments',
                     searchable: false,
                     render: (__, type, row) => {
@@ -170,7 +170,7 @@ export default ({ stage, data }) => {
                         }
                     },
                 }, {
-                    title: '<span class="table-head">Reviewers</span>',
+                    title: 'Reviewers',
                     className: 'pr-reviewers',
                     render: (__, type, row) => {
                         switch (type) {
@@ -186,7 +186,7 @@ export default ({ stage, data }) => {
                     },
                 },
                 cycleTimeColumn(stage, data), {
-                    title: '<span class="table-head">Stage</span>',
+                    title: 'Stage',
                     className: 'align-middle text-center',
                     render: (__, type, row) => {
                         switch (type) {
@@ -233,11 +233,11 @@ export default ({ stage, data }) => {
 
 const cycleTimeColumn = (stage, data) => {
     const title = {
-        overview: '<span class="table-head">Lead Time</span>',
-        wip: '<span class="table-head">WIP Time</span>',
-        review: '<span class="table-head">Review Time</span>',
-        merge: '<span class="table-head">Merge Time</span>',
-        release: '<span class="table-head">Release Time</span>'
+        overview: 'Lead Time',
+        wip: 'WIP Time',
+        review: 'Review Time',
+        merge: 'Merge Time',
+        release: 'Release >'
     }[stage];
 
     return {
