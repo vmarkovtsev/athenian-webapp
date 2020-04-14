@@ -7,8 +7,8 @@ export default ({ content }) => {
     }, [])
 
     return (
-        <span data-toggle="tooltip" data-placement="bottom" title={content} className="ml-2">
-            <i className="icon-info align-middle"></i>
+        <span data-toggle="tooltip" data-placement="bottom" title={content} className="ml-2 info-tooltip align-middle">
+            <i className="icon-info"></i>
         </span>
     );
 };

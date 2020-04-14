@@ -63,6 +63,6 @@ const Stage = ({ title, text, hint, badge, variation, color, name, metric, activ
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 };

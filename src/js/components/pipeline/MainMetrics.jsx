@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Badge, { NEGATIVE_IS_BETTER, POSITIVE_IS_BETTER } from 'js/components/ui/Badge';
-import { BigNumber } from 'js/components/ui/Typography';
+import { BigNumber, SmallTitle } from 'js/components/ui/Typography';
 import Info from 'js/components/ui/Info';
 
 import { dateTime, number } from 'js/services/format';
@@ -47,10 +47,10 @@ const MainMetric = ({ title, hint, value, variation, negativeIsBetter = false })
         <div className="card-body py-2 px-3">
             <div className="card-title mb-0">
                 <div className="d-flex justify-content-between align-items-center">
-                    <div className="font-weight-bold text-uppercase text-xs">
-                        <span className="align-middle">{title}</span>
-                        {hint && <Info content={hint} />}
-                    </div>
+                    <span className="align-middle">
+                        <SmallTitle content={title} />
+                        <Info content={hint} />
+                    </span>
                     <div className="d-flex align-items-center">
                         <BigNumber content={value} />
                         {value ? <Badge
