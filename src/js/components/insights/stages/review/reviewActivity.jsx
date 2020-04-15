@@ -151,7 +151,6 @@ const reviewActivity = {
     factory: (computed) => {
         const sumPrsCreated = computed.firstBox.KPIsData.sumPrsCreated;
         const sumReviews = computed.firstBox.KPIsData.sumReviews;
-        const gcdPrsReviews = gcd(sumPrsCreated, sumReviews);
 
         return {
             meta: {
@@ -197,7 +196,7 @@ const reviewActivity = {
                             subtitle: { text: 'Reviewed/Created'},
                             component: SimpleKPI,
                             params: {
-                                value: `${sumReviews / gcdPrsReviews}/${sumPrsCreated / gcdPrsReviews}`
+                                value: `${sumReviews}/${sumPrsCreated}`
                             }
                         },
                     ]
@@ -255,19 +254,6 @@ const reviewActivity = {
             ]
         };
     }
-};
-
-const gcd = (x, y) => {
-    if ((typeof x !== 'number') || (typeof y !== 'number'))
-        return false;
-    x = Math.abs(x);
-    y = Math.abs(y);
-    while(y) {
-        var t = y;
-        y = x % y;
-        x = t;
-    }
-    return x;
 };
 
 export default reviewActivity;
