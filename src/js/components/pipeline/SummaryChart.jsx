@@ -5,7 +5,7 @@ import { fetchPRsMetrics } from 'js/services/api/index';
 import { useApi } from 'js/hooks';
 
 import FilledAreaChart from 'js/components/charts/FilledAreaChart';
-import Chart from 'js/components/charts/Chart';
+import DataWidget from 'js/components/DataWidget';
 import { palette } from 'js/res/palette';
 
 import moment from 'moment';
@@ -43,7 +43,7 @@ export default ({name, metric, config}) => {
     const chartConfig = {...defaultConfig, ...config};
 
     return (
-        <Chart
+        <DataWidget
           id={`summary-chart-${name}`}
           component={FilledAreaChart} fetcher={fetcher} plumber={plumber}
           config={chartConfig}

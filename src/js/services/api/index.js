@@ -17,24 +17,11 @@ import moment from 'moment';
 
 export const getPRs = async (api, accountId, dateInterval, repos, contributors) => {
 
-    const query = async (interval) => {
-        const filter = new FilterPullRequestsRequest(
-            accountId, dateTime.ymd(interval.from), dateTime.ymd(interval.to));
-        filter.in = repos;
-        filter.stages = ['wip', 'review', 'merge', 'release', 'done'];
-        if (contributors.length) {
-            filter.with = {
-                author: contributors,
-                reviewer: contributors,
-                commit_author: contributors,
-                commit_committer: contributors,
-                commenter: contributors,
-                merger: contributors,
-            };
-        }
-
-        return api.filterPrs({ filterPullRequestsRequest: filter });
-    };
+    const query = async (interval) => fetchFilteredPRs(api, accountId, interval, {
+        repositories: repos,
+        developers: contributors,
+        stages: ['wip', 'review', 'merge', 'release', 'done']
+    });
 
     const currInterval = dateInterval;
     const prevInterval = getPreviousInterval(currInterval);
@@ -55,7 +42,7 @@ export const getPRs = async (api, accountId, dateInterval, repos, contributors) 
     };
 };
 
-const getPreviousInterval = (dateInterval) => {
+export const getPreviousInterval = (dateInterval) => {
     const diffDays = moment(dateInterval.to).diff(dateInterval.from, 'days');
     const prevTo = moment(dateInterval.from).subtract(1, 'days');
     const prevFrom = moment(prevTo).subtract(diffDays, 'days');
@@ -169,6 +156,40 @@ export const buildApi = token => {
 export const fetchApi = (token, apiCall, ...args) => {
   const api = buildApi(token);
   return apiCall(api, ...args);
+};
+
+export const fetchFilteredPRs = async (
+    api, accountID,
+    dateInterval,
+    filter = { repositories: [], developers: [], stages: [] },
+) => {
+    filter.repositories = filter.repositories || [];
+    filter.developers = filter.developers || [];
+    filter.stages = filter.stages || [];
+
+    const filter_ = new FilterPullRequestsRequest(
+        accountID, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to));
+
+    if (filter.repositories.length > 0) {
+        filter_.in = filter.repositories;
+    }
+
+    if (filter.stages.length > 0) {
+        filter_.stages = filter.stages;
+    }
+
+    if (filter.developers.length) {
+        filter_.with = {
+            author: filter.developers,
+            reviewer: filter.developers,
+            commit_author: filter.developers,
+            commit_committer: filter.developers,
+            commenter: filter.developers,
+            merger: filter.developers,
+        };
+    }
+
+    return api.filterPrs({ filterPullRequestsRequest: filter_ });
 };
 
 export const fetchPRsMetrics = async (
