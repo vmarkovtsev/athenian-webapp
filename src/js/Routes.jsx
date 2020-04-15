@@ -27,6 +27,7 @@ import Prototypes from 'js/pages/prototypes';
 import Charts from 'js/pages/prototypes/Charts';
 import MetricGroups from 'js/pages/prototypes/MetricGroups';
 import Tooltips from 'js/pages/prototypes/Tooltips';
+import EmptyStates from 'js/pages/prototypes/EmptyStates';
 
 export default () => {
 
@@ -82,6 +83,7 @@ export default () => {
                 'charts': <Charts />,
                 'metrics-groups': <MetricGroups />,
                 'tooltips': <Tooltips />,
+                'empty-states': <EmptyStates />,
               }} />
             </Route>
             <Route path='*'>
