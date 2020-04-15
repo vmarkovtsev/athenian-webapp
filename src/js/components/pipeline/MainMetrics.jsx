@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from "lodash";
-import Chart from 'js/components/charts/Chart';
+import DataWidget from 'js/components/DataWidget';
 import Badge, { NEGATIVE_IS_BETTER, POSITIVE_IS_BETTER } from 'js/components/ui/Badge';
 import { BigNumber, SmallTitle } from 'js/components/ui/Typography';
 import Info from 'js/components/ui/Info';
@@ -181,7 +181,7 @@ export default () => {
     };
 
     return (
-        <Chart
+        <DataWidget
           id={`main-metrics`}
           component={MainMetrics} fetcher={fetcher} plumber={plumber}
           config={{

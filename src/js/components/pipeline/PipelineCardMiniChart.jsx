@@ -5,7 +5,7 @@ import { fetchPRsMetrics } from 'js/services/api/index';
 import { useApi } from 'js/hooks';
 
 import CleanAreaChart, { vertical } from 'js/components/charts/CleanAreaChart';
-import Chart from 'js/components/charts/Chart';
+import DataWidget from 'js/components/DataWidget';
 
 import moment from 'moment';
 import _ from "lodash";
@@ -71,7 +71,7 @@ export default ({name, metric, config}) => {
     const chartConfig = {...defaultConfig, ...config};
 
     return (
-        <Chart
+        <DataWidget
           id={`pipeline-card-mini-chart-${name}`}
           component={CleanAreaChart} fetcher={fetcher} plumber={plumber}
           config={chartConfig}
