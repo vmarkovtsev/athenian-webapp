@@ -1,15 +1,16 @@
 import React from 'react';
 
 import {
-  Router,
-  Switch,
-  Route,
-  Redirect,
+    Router,
+    Switch,
+    Route,
+    Redirect,
 } from 'react-router-dom';
 
 import history from 'js/services/history';
 
 import PrivateRoute from 'js/PrivateRoute';
+import ContextRoute from 'js/ContextRoute';
 
 import Home from 'js/pages/Home';
 import UserContext from 'js/context/User';
@@ -30,66 +31,75 @@ import Tooltips from 'js/pages/prototypes/Tooltips';
 
 export default () => {
 
-  const devmode = (
-    process.env.NODE_ENV === 'development' ||
-    ['development', 'staging'].includes(window.ENV.environment)
-  );
+    const devmode = (
+        process.env.NODE_ENV === 'development' ||
+            ['development', 'staging'].includes(window.ENV.environment)
+    );
 
-  return (
-    <React.StrictMode>
-      <Router history={history}>
-        <UserContext>
-          <Switch>
-            <Route exact path='/'>
-              <Home />
-            </Route>
-            <Route path='/stage/:name?'>
-              <Pipeline>
-                <Switch>
-                  <Route exact path='/stage'>
-                    <Redirect to='/stage/overview' />
-                  </Route>
-                  <Route exact path='/stage/overview'>
-                    <Overview />
-                  </Route>
-                  <Route path='/stage/:name'>
-                    <Stage />
-                  </Route>
-                </Switch>
-              </Pipeline>
-            </Route>
-            <Route path='/i/:code(\w{8})'>
-              <Redirect to={
-                {
-                  pathname: '/login',
-                  state: { inviteLink: window.location.href }
-                }
-              } />
-            </Route>
-            <Route path='/callback'>
-              <Callback />
-            </Route>
-            <Route path='/login'>
-              <Login />
-            </Route>
-            <Route path='/logout'>
-              <Logout />
-            </Route>
-            {devmode && <Route path='/bearer'><Development.Bearer /></Route>}
-            <PrivateRoute path='/waiting' component={Waiting} />
-            <Route path='/prototypes/:name?'>
-              <Prototypes prototypes={{
-                'charts': <Charts />,
-                'metrics-groups': <MetricGroups />,
-                'tooltips': <Tooltips />,
-              }} />
-            </Route>
-            <Route path='*'>
-              <NotFound404 />
-            </Route>
-          </Switch>
-        </UserContext>
-      </Router>
-    </React.StrictMode>
-  );
+    return (
+        <React.StrictMode>
+          <Router history={history}>
+            <Switch>
+
+              <ContextRoute context={UserContext} exact path='/'>
+                <Home />
+              </ContextRoute>
+
+              <ContextRoute context={UserContext} path='/stage/:name?'>
+                <Pipeline>
+                  <Switch>
+                    <Route exact path='/stage'>
+                      <Redirect to='/stage/overview' />
+                    </Route>
+                    <Route exact path='/stage/overview'>
+                      <Overview />
+                    </Route>
+                    <Route path='/stage/:name'>
+                      <Stage />
+                    </Route>
+                  </Switch>
+                </Pipeline>
+              </ContextRoute>
+
+              <Route path='/i/:code(\w{8})'>
+                <Redirect to={
+                    {
+                        pathname: '/login',
+                        state: { inviteLink: window.location.href }
+                    }
+                } />
+              </Route>
+
+              <Route path='/callback'>
+                <Callback />
+              </Route>
+
+              <Route path='/login'>
+                <Login />
+              </Route>
+
+              <ContextRoute context={UserContext} path='/logout'>
+                <Logout />
+              </ContextRoute>
+
+              {devmode && <Route path='/bearer'><Development.Bearer /></Route>}
+
+              <PrivateRoute path='/waiting' component={Waiting} />
+
+              <Route path='/prototypes/:name?'>
+                <Prototypes prototypes={{
+                    'charts': <Charts />,
+                    'metrics-groups': <MetricGroups />,
+                    'tooltips': <Tooltips />,
+                }} />
+              </Route>
+
+              <Route path='*'>
+                <NotFound404 />
+              </Route>
+
+            </Switch>
+          </Router>
+        </React.StrictMode>
+    );
 };
