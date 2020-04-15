@@ -4,7 +4,8 @@ import { usePrevious } from 'js/hooks';
 
 import Spinner from 'js/components/ui/Spinner';
 
-export default ({id, component, fetcher, plumber, config}) => {
+export default ({id, component, fetcher, plumber, config, propagateSpinner = false}) => {
+    const conf = config ? config : {};
     const { get: getData, set: setData } = useDataContext();
     const [dataState, setDataState] = useState(null);
     const [loadingDataState, setLoadingDataState] = useState(false);
@@ -47,17 +48,24 @@ export default ({id, component, fetcher, plumber, config}) => {
         }
     }, [id, getData, prevLoadingDataState, loadingDataState]);
 
-    const showSpinner = !dataState;
-    if (showSpinner) {
-        return (
-            <div className="row mt-5 mb-5 align-middle">
-              <div className="col-12 text-center">
-                <Spinner loading={true} color={config.color} />
-              </div>
-            </div>
-        );
+    const waiting = !dataState;
+    const margin = conf.margin !== undefined ? conf.margin : 5;
+    const spinner = (
+        <div className={`row mt-${margin} mb-${margin} align-middle`}>
+          <div className="col-12 text-center">
+            <Spinner loading={true} color={conf.color || 'black'} />
+          </div>
+        </div>
+    );
+
+    if (waiting && !propagateSpinner) {
+        return spinner;
+    }
+
+    if (propagateSpinner) {
+        conf.spinner = spinner;
     }
 
     const Component = component;
-    return <Component data={dataState} {...config} />;
+    return <Component data={dataState} loading={waiting} {...conf} />;
 };
