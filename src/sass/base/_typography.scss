@@ -97,3 +97,15 @@ html {
 .small-title {
     line-height: 2rem;
 }
+
+// Link colors
+
+.navbar-nav a {
+    color: $color-secondary;
+
+    &:hover,
+    &:active {
+        color: $color-secondary;
+        opacity: 0.7;
+    }
+}

@@ -1,4 +1,5 @@
 .page-link {
+    color: $color-secondary !important;
     padding: 0.8rem 0.85rem 0.7rem !important;
     background-color: transparent !important;
     border: 1px solid transparent !important;
@@ -29,6 +30,7 @@
             background-color: $white !important;
             border: 1px solid $at-border-color !important;
             border-radius: 0 !important;
+            color: $color-dark !important;
             font-size: 1.2rem;
             height: 3.2rem;
             line-height: 1rem;
