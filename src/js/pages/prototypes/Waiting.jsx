@@ -16,7 +16,7 @@ export default () => {
                 <div className="row">
                   <div className="col">
                     <h2 className="h1 text-dark font-weight-normal mt-5 mb-2 pl-4">Welcome to Athenian</h2>
-                    <p className="h4 text-secondary font-weight-light pl-4 mb-5">Please, wait while we are fetching your data…</p>
+                    <p className="h4 text-secondary font-weight-light pl-4 mb-5">Please wait while we are fetching your data…</p>
 
                     <div className="pl-4">
                       <ul className="m-0 p-0">
