@@ -9,7 +9,6 @@ import {
 
 import history from 'js/services/history';
 
-import PrivateRoute from 'js/PrivateRoute';
 import ContextRoute from 'js/ContextRoute';
 
 import Home from 'js/pages/Home';
@@ -29,6 +28,7 @@ import Charts from 'js/pages/prototypes/Charts';
 import MetricGroups from 'js/pages/prototypes/MetricGroups';
 import Tooltips from 'js/pages/prototypes/Tooltips';
 import EmptyStates from 'js/pages/prototypes/EmptyStates';
+import WaitingProto from 'js/pages/prototypes/Waiting';
 
 export default () => {
 
@@ -85,16 +85,19 @@ export default () => {
 
               {devmode && <Route path='/bearer'><Development.Bearer /></Route>}
 
-              <PrivateRoute path='/waiting' component={Waiting} />
+              <ContextRoute context={UserContext} path='/waiting'>
+                <Waiting />
+              </ContextRoute>
 
-              <Route path='/prototypes/:name?'>
+              <ContextRoute context={UserContext} path='/prototypes/:name?'>
                 <Prototypes prototypes={{
                     'charts': <Charts />,
                     'metrics-groups': <MetricGroups />,
                     'tooltips': <Tooltips />,
                     'empty-states': <EmptyStates />,
+                    'waiting': <WaitingProto />,
                 }} />
-              </Route>
+              </ContextRoute>
 
               <Route path='*'>
                 <NotFound404 />

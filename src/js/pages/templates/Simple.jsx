@@ -16,7 +16,7 @@ export default ({ children, linkToHome = true }) => {
                     {children}
                     {linkToHome && (
                         <div className="mt-4">
-                            <Link to="/">
+                            <Link to="/" className="text-secondary">
                                 &lt; Back to Home
                         </Link>
                         </div>
