@@ -1,57 +1,52 @@
 import React from 'react';
-
-const slides = [
-  {
-    src: 'https://picsum.photos/480/270?buster=1',
-    alt: 'First slide',
-  },
-  {
-    src: 'https://picsum.photos/480/270?buster=2',
-    alt: 'Second slide',
-  },
-  {
-    src: 'https://picsum.photos/480/270?buster=3',
-    alt: 'Third slide',
-  },
-];
+import logo from 'images/logos/logo-transparent.svg';
+import waiting from 'images/waiting.svg';
 
 export default () => {
   return (
     <>
-      <div className="row">
-        <div className="col-12 mt-3 mb-3">
-          <div id="carousel-waiting" className="carousel slide w-75 mx-auto" data-ride="carousel">
-            <ol className="carousel-indicators">
-              {slides.map((slide, index) => {
-                return <li key={index} data-target="#carousel-waiting" data-slide-to={index} className={index === 0 ? "active" : ""}></li>;
-              })}
-            </ol>
-            <div className="carousel-inner">
-              {slides.map((slide, index) => {
-                return (
-                  <div key={index} className={index === 0 ? "carousel-item active" : "carousel-item"}>
-                    <img className="d-block w-100" src={slide.src} alt={slide.alt} />
-                  </div>
-                );
-              })}
-            </div>
-            <span className="carousel-control-prev" data-target="#carousel-waiting" role="button" data-slide="prev">
-              <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span className="sr-only">Previous</span>
-            </span>
-            <span className="carousel-control-next" data-target="#carousel-waiting" role="button" data-slide="next">
-              <span className="carousel-control-next-icon" aria-hidden="true"></span>
-              <span className="sr-only">Next</span>
-            </span>
+      <div className="row h-100">
+        <div className="col-12 my-auto">
+          <div className="mt-3 mb-5 text-center">
+            <img src={logo} alt="" width="200" />
           </div>
-        </div>
-      </div>
+          <div className="col-8 offset-2 mb-5">
+            <div className="card waiting py-5">
+              <div className="card-body py-5">
+                <div className="row">
+                  <div className="col">
+                    <h2 className="h1 text-dark font-weight-normal mt-5 mb-2 pl-4">Welcome to Athenian</h2>
+                    <p className="h4 text-secondary font-weight-light pl-4 mb-5">Please, wait while we are fetching your data…</p>
 
-      <div className="row">
-        <div className="col-12 mb-1 text-center">
-          <h3>foo bar</h3>
-          <h3>foo bar</h3>
-          <h3>foo bar</h3>
+                    <div className="pl-4">
+                      <ul className="m-0 p-0">
+                        <li className="waiting-container mb-1">
+                          <div className="waiting-chart">
+                            <span className="waiting-box"></span>
+                          </div>
+                        </li>
+                        <li className="waiting-container mb-1">
+                          <div className="waiting-table">
+                            <span className="waiting-box"></span>
+                          </div>
+                        </li>
+                        <li className="waiting-container mb-1">
+                          <div className="waiting-table">
+                            <span className="waiting-box"></span>
+                          </div>
+                        </li>
+                        <li className="waiting-container mb-1">
+                          <div className="waiting-table">
+                            <span className="waiting-box"></span>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="300px" height="31px" viewBox="0 0 300 31" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 62 (91390) - https://sketch.com -->
+    <title>Group 3</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Tabs" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Athenian---Overview---v1.3-Copy-3" transform="translate(-265.000000, -453.000000)">
+            <g id="Group-3" transform="translate(265.000000, 453.615385)">
+                <rect id="Rectangle" fill="#F2F2F4" x="0" y="-1.3500312e-13" width="300" height="29.6410256"></rect>
+                <rect id="Rectangle" fill="#FAFAFB" x="8.69565217" y="6.97435897" width="15.6521739" height="15.6923077"></rect>
+                <ellipse id="Oval" fill="#E6E7EC" cx="233.913043" cy="14.8205128" rx="4.34782609" ry="4.35897436"></ellipse>
+                <g id="Group-2" transform="translate(32.173913, 9.589744)" fill="#E6E7EC">
+                    <rect id="Rectangle" x="0" y="0" width="109.565217" height="5.23076923"></rect>
+                    <rect id="Rectangle" x="0" y="7.84615385" width="40" height="3.48717949"></rect>
+                </g>
+                <rect id="Rectangle" fill="#E6E7EC" x="159.130435" y="12.2051282" width="26.0869565" height="5.23076923"></rect>
+                <rect id="Rectangle" fill="#E6E7EC" x="193.913043" y="12.2051282" width="17.3913043" height="5.23076923"></rect>
+                <rect id="Rectangle" stroke="#E6E7EC" x="263.978261" y="11.8333333" width="22.4782609" height="5.97435897"></rect>
+            </g>
+        </g>
+    </g>
+</svg>
