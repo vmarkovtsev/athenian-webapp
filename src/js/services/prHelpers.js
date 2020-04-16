@@ -231,6 +231,7 @@ export const prLabel = stage => pr => {
     }
 
     const hasCompletedStage = stage => pr.completedStages.includes(stage);
+    const isStageHappening = stage => stageHappening(pr, stage);
 
     switch (stage) {
     case PR_STAGE.WIP:
@@ -241,10 +242,10 @@ export const prLabel = stage => pr => {
         return PR_LABELS.WIP;
     case PR_STAGE.REVIEW:
         if (hasCompletedStage(PR_STAGE.REVIEW)) {
-            if (pr.properties.includes(PR_EVENT.REJECTION)) {
-                return PR_LABELS.REVIEW_REJECTED;
-            } else if (pr.properties.includes(PR_EVENT.APPROVE)) {
+            if (pr.properties.includes(PR_EVENT.APPROVE)) {
                 return PR_LABELS.REVIEW_APPROVAL;
+            } else if (pr.properties.includes(PR_EVENT.REJECTION)) {
+                return PR_LABELS.REVIEW_REJECTED;
             } else if (!pr.properties.includes(PR_EVENT.REVIEW)) {
                 return PR_LABELS.REVIEW_SKIPPED;
             } else {
@@ -266,6 +267,22 @@ export const prLabel = stage => pr => {
 
         return PR_LABELS.RELEASE_PENDING;
     default:
+        if (pr.completedStages.length === 0) {
+            if (isStageHappening(PR_STAGE.RELEASE)) {
+                return PR_LABELS.RELEASE_PENDING;
+            } else if (isStageHappening(PR_STAGE.MERGE)) {
+                return PR_LABELS.MERGE_PENDING;
+            }  else if (isStageHappening(PR_STAGE.REVIEW)) {
+                if (pr.properties.includes(PR_EVENT.REJECTION)) {
+                    return PR_LABELS.REVIEW_REJECTED;
+                } else {
+                    return PR_LABELS.REVIEW_PENDING;
+                }
+            }
+
+            return PR_LABELS.WIP;
+        }
+
         if (hasCompletedStage(PR_STAGE.RELEASE)) {
             return PR_LABELS.RELEASE_COMPLETED;
         } else if (hasCompletedStage(PR_STAGE.MERGE)) {
