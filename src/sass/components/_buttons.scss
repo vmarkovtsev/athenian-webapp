@@ -1,5 +1,10 @@
 .btn {
 
+    &-large {
+        font-size: 1.3rem !important;
+        padding: 0.75rem 3rem !important;
+    }
+
     &:hover {
         opacity: 0.7;
     }
