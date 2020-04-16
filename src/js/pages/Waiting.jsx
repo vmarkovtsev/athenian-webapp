@@ -3,6 +3,8 @@ import { useHistory } from 'react-router-dom';
 
 import Page from 'js/pages/templates/Page';
 
+import BreadcrumbsContext from 'js/context/Breadcrumbs';
+
 const slides = [
   {
     src: 'https://picsum.photos/480/270?buster=1',
@@ -29,43 +31,45 @@ export default () => {
   }, [history]);
 
   return (
-    <Page>
-      <div className="row">
-        <div className="col-12 mt-3 mb-3">
-          <div id="carousel-waiting" className="carousel slide w-75 mx-auto" data-ride="carousel">
-            <ol className="carousel-indicators">
-              {slides.map((slide, index) => {
-                return <li key={index} data-target="#carousel-waiting" data-slide-to={index} className={index === 0 ? "active" : ""}></li>;
-              })}
-            </ol>
-            <div className="carousel-inner">
-              {slides.map((slide, index) => {
-                return (
-                  <div key={index} className={index === 0 ? "carousel-item active" : "carousel-item"}>
-                    <img className="d-block w-100" src={slide.src} alt={slide.alt} />
-                  </div>
-                );
-              })}
+    <BreadcrumbsContext>
+      <Page>
+        <div className="row">
+          <div className="col-12 mt-3 mb-3">
+            <div id="carousel-waiting" className="carousel slide w-75 mx-auto" data-ride="carousel">
+              <ol className="carousel-indicators">
+                {slides.map((slide, index) => {
+                  return <li key={index} data-target="#carousel-waiting" data-slide-to={index} className={index === 0 ? "active" : ""}></li>;
+                })}
+              </ol>
+              <div className="carousel-inner">
+                {slides.map((slide, index) => {
+                  return (
+                    <div key={index} className={index === 0 ? "carousel-item active" : "carousel-item"}>
+                      <img className="d-block w-100" src={slide.src} alt={slide.alt} />
+                    </div>
+                  );
+                })}
+              </div>
+              <span className="carousel-control-prev" data-target="#carousel-waiting" role="button" data-slide="prev">
+                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span className="sr-only">Previous</span>
+              </span>
+              <span className="carousel-control-next" data-target="#carousel-waiting" role="button" data-slide="next">
+                <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                <span className="sr-only">Next</span>
+              </span>
             </div>
-            <span className="carousel-control-prev" data-target="#carousel-waiting" role="button" data-slide="prev">
-              <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span className="sr-only">Previous</span>
-            </span>
-            <span className="carousel-control-next" data-target="#carousel-waiting" role="button" data-slide="next">
-              <span className="carousel-control-next-icon" aria-hidden="true"></span>
-              <span className="sr-only">Next</span>
-            </span>
           </div>
         </div>
-      </div>
 
-      <div className="row">
-        <div className="col-12 mb-1 text-center">
-          <h3>foo bar</h3>
-          <h3>foo bar</h3>
-          <h3>foo bar</h3>
+        <div className="row">
+          <div className="col-12 mb-1 text-center">
+            <h3>foo bar</h3>
+            <h3>foo bar</h3>
+            <h3>foo bar</h3>
+          </div>
         </div>
-      </div>
-    </Page>
+      </Page>
+    </BreadcrumbsContext>
   );
 };

@@ -9,7 +9,6 @@ import {
 
 import history from 'js/services/history';
 
-import PrivateRoute from 'js/PrivateRoute';
 import ContextRoute from 'js/ContextRoute';
 
 import Home from 'js/pages/Home';
@@ -85,16 +84,18 @@ export default () => {
 
               {devmode && <Route path='/bearer'><Development.Bearer /></Route>}
 
-              <PrivateRoute path='/waiting' component={Waiting} />
+              <ContextRoute context={UserContext} path='/waiting'>
+                <Waiting />
+              </ContextRoute>
 
-              <Route path='/prototypes/:name?'>
+              <ContextRoute context={UserContext} path='/prototypes/:name?'>
                 <Prototypes prototypes={{
                     'charts': <Charts />,
                     'metrics-groups': <MetricGroups />,
                     'tooltips': <Tooltips />,
                     'empty-states': <EmptyStates />,
                 }} />
-              </Route>
+              </ContextRoute>
 
               <Route path='*'>
                 <NotFound404 />
