@@ -32,7 +32,8 @@ const pullRequestSize = {
                     //   above do not expose it, we can only differentiate between being review-complete, or not.
                     const reviewed = pr.completedStages.includes(PR_STAGE.REVIEW);
 
-                    const author = github.userName(pr.authors[0]);
+                    const authorFullName = pr.authors[0];
+                    const author = authorFullName ? github.userName(authorFullName) : 'none';
                     const timeWaiting = dateTime.interval(
                         pr.review_requested || pr.created,
                         pr.approved || endTime
@@ -41,7 +42,9 @@ const pullRequestSize = {
                         number: pr.number,
                         repository: pr.organization + '/' + pr.repo,
                         title: pr.title,
-                        image: github.userImageIndex(data.users)[author],
+                        image: author === 'none' ?
+                            'https://avatars2.githubusercontent.com/u/10137':
+                            github.userImageIndex(data.users)[author],
                         reviewed,
                         author,
                         timeWaiting,
