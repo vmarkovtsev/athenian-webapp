@@ -20,6 +20,11 @@
         border-top: 2px dashed $at-border-color;
         padding-top: 14px;
 
+        a {
+            text-decoration: none; // !important;
+            color: $body-color; //!important;
+        }
+
         &.active {
             z-index: 20;
             border-top-style: solid;
