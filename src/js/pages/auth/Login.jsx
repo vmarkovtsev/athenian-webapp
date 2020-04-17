@@ -1,47 +1,38 @@
 import React from 'react';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useLocation, Redirect } from 'react-router-dom';
 
 import { useAuth0 } from 'js/context/Auth0';
 import Simple from 'js/pages/templates/Simple';
 
 export default () => {
-  const history = useHistory();
   const { loading, isAuthenticated, loginWithRedirect } = useAuth0();
   const location = useLocation();
+  const inviteLink = location.state?.inviteLink;
 
   if (loading) {
     return <Simple>Loading...</Simple>;
   }
 
   if (isAuthenticated) {
-    if (location.state && location.state.inviteLink) {
-      return (
+    return inviteLink ?
+      (
         <Simple>
           You must <Link to="/logout">logout</Link> first, and then open the invitation link.
         </Simple>
-      )
-    }
-
-    history.push('/');
-  }
-
-  const appState = {
-    targetUrl: '/',
-  };
-
-  if (location.state && location.state.inviteLink) {
-    appState.inviteLink = location.state.inviteLink;
+      ) : (
+        <Redirect to={{ pathname: '/' }} />
+      );
   }
 
   return (
     <Simple>
-      {location.state && location.state.inviteLink && (
-        <p>Login to accept invitation {appState.inviteLink}</p>
+      {inviteLink && (
+        <p>Login to accept invitation {inviteLink}</p>
       )}
       <button
         type="button"
         className="btn btn-primary btn-lg"
-        onClick={() => loginWithRedirect({ appState: appState })}
+        onClick={() => loginWithRedirect({ appState: { inviteLink } })}
       >
         Login
       </button>
