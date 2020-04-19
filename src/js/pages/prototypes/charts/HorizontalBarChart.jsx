@@ -43,7 +43,7 @@ export default () => (
 const HorizontalBarChart = ({ data }) => {
     // TODO: handle bar -> color (if more than available colors)
     const availableColor = palette.schemes.duoSimilar;
-    const legend = data.map((bar, i) => ({ title: bar.title, color: availableColor[i] }));
+    const legend = data.map((bar, i) => ({ title: bar.title, color: availableColor[i], strokeWidth: 10 }));
 
     return (
         <FlexibleWidthXYPlot height={250} margin={{ left: 50 }} yType="ordinal">
@@ -54,7 +54,7 @@ const HorizontalBarChart = ({ data }) => {
                     </clipPath>
                 </defs>
             </svg>
-            <DiscreteColorLegend items={legend} orientation="horizontal" style={{ position: 'absolute', top: '-30px', right: '50%', transform: 'translateX(50%)' }} />
+            <DiscreteColorLegend className="chart-legend" items={legend} orientation="horizontal" />
             <VerticalGridLines />
             <XAxis />
             <YAxis tickFormat={() => <image href="https://avatars2.githubusercontent.com/u/2437584?v=4" clipPath="url(#circular-mask)" width="30" height="30" transform="translate(-30,-15)" />} />

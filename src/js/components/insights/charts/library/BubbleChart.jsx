@@ -149,7 +149,7 @@ const BubbleChart = ({ title, data, extra }) => {
                                     currentHover, setCurrentHover);
 
     const legend = _(extra.groups)
-          .map(v => ({ title: v.title, color: v.color }))
+          .map(v => ({ title: v.title, color: v.color, strokeWidth: 10 }))
           .value();
 
     const ChartTooltip = extra?.tooltip?.template || Tooltip;
@@ -161,11 +161,7 @@ const BubbleChart = ({ title, data, extra }) => {
         >
           <FlexibleWidthXYPlot height={300} margin={{ top: 20, left: 50, right: 30, bottom: 50 }}>
 
-            <DiscreteColorLegend items={legend} style={{
-                position: 'absolute',
-                left: '50px',
-                top: '0px'
-            }} />
+            <DiscreteColorLegend className="chart-legend" items={legend} orientation="horizontal" />
 
             {extra && extra.yAxis && extra.yAxis.imageMapping ?
              <CircleMask id={`${extra.yAxis.imageMask}-mask`} maskProperties={{
@@ -216,7 +212,7 @@ const BubbleChartLogScale = ({ title, data, extra }) => {
                                     currentHover, setCurrentHover);
 
     const legend = _(extra.groups)
-          .map(v => ({ title: v.title, color: v.color }))
+          .map(v => ({ title: v.title, color: v.color, strokeWidth: 10 }))
           .value();
 
     const maxValueX = _.maxBy(formattedData, 'x')['x'];
@@ -234,11 +230,7 @@ const BubbleChartLogScale = ({ title, data, extra }) => {
         >
           <FlexibleWidthXYPlot height={300} margin={{ left: 50, right: 30, bottom: 50 }}
                              xDomain={[0, maxExpX]} yDomain={[0, maxExpY]} >
-            <DiscreteColorLegend items={legend} style={{
-              position: 'absolute',
-              left: '50px',
-              top: '0px'
-            }} />
+            <DiscreteColorLegend className="chart-legend" items={legend} orientation="horizontal" />
 
             <XBubbleChartLogAxis formattedData={formattedData} label={extra.axisLabels.x} />
             <YBubbleChartLogAxis formattedData={formattedData} label={extra.axisLabels.y} />

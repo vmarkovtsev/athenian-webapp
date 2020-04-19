@@ -50,6 +50,7 @@ const HorizontalBarChart = ({ title, data, extra }) => {
         .map((s, k) => ({
             title: extra.series[k].name,
             color: extra.series[k].color,
+            strokeWidth: 10,
         }))
         .value();
 
@@ -57,9 +58,7 @@ const HorizontalBarChart = ({ title, data, extra }) => {
 
     return (
         <FlexibleWidthXYPlot height={data.length * 40 * Object.keys(extra.series).length} margin={{ left: 50 }} yType="ordinal">
-          <DiscreteColorLegend
-            items={legend} orientation="horizontal"
-            style={{ position: 'absolute', top: '-30px', right: '50%', transform: 'translateX(50%)' }} />
+          <DiscreteColorLegend className="chart-legend" items={legend} orientation="horizontal" />
           <VerticalGridLines />
           <XAxis />
 
