@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import Simple from './templates/Simple';
+import Page from './templates/Page';
 
 import { useUserContext } from 'js/context/User';
+
+import logo from 'images/logos/logo-transparent.svg';
 
 export default () => {
   const location = useLocation();
@@ -30,47 +32,69 @@ export default () => {
 
   if (!isAdmin) {
     return (
-      <Simple linkToHome={false}>
-        <Loading />
-      </Simple>
+      <Slide
+        title="Welcome to Athenian"
+        text="Please wait while we are fetching your data…"
+      >
+        <Welcome />
+      </Slide>
     )
   }
 
   if (!autoOpen) {
     return (
-      <Simple linkToHome={false}>
-        <Loading />
-        <div>To install and configure the GH application, open <GhAppLink url={ghAppUrl} /></div>
-      </Simple>
+      <Slide
+        title="Welcome to Athenian"
+        text="Please wait while we are fetching your data…"
+        footer={<>To install and configure the GitHub application, open <GhAppLink url={ghAppUrl} /></>}
+      >
+        <Welcome />
+      </Slide>
     );
   }
 
   if (ghAppOpenErrorState) {
     return (
-      <Simple linkToHome={false}>
-        <div>Please, install and configure the Athenian GH application at <GhAppLink url={ghAppUrl} /></div>
-        <WillLoad />
-      </Simple>
+      <Slide
+        title="Install Athenian GitHub Application"
+        text={
+          <>
+            <div>
+              Please, install and configure the Athenian GitHub application
+              at <GhAppLink url={ghAppUrl} onClick={() => setGhAppOpenedState(true)} />
+            </div>
+            <div className="mt-2">
+              Once you install and configure the GitHub App, Athenian will start loading your data from GitHub. The loading process will take a while.
+            </div>
+          </>
+        }
+        footer="The Athenian GitHub application could not be automatically opened"
+      />
     );
   }
 
   if (!ghAppOpenedState) {
     return (
-      <Simple linkToHome={false}>
-        <div>Another tab is going to be opened to install and configure the GH application;</div>
-        <div>
-          if it doesn’t, please open <GhAppLink url={ghAppUrl} onClick={() => setGhAppOpenedState(true)} />
-        </div>
-      </Simple>
+      <Slide
+        title="Install Athenian GitHub Application"
+        text={
+          <>
+            Another tab is going to be opened to install and configure the GitHub application
+            if it doesn’t, please open <GhAppLink url={ghAppUrl} onClick={() => setGhAppOpenedState(true)} />
+          </>
+        }
+      />
     );
   }
 
   return (
-    <Simple linkToHome={false}>
-      <Loading />
-      <div>You can install and configure the GH application in the recently opened tab.</div>
-      <div>You can open it again <GhAppLink url={ghAppUrl} /></div>
-    </Simple>
+    <Slide
+      title="Welcome to Athenian"
+      text="Please wait while we are fetching your data…"
+      footer={<>Install and configure the GitHub application in the recently opened tab, or through <GhAppLink url={ghAppUrl} /></>}
+    >
+      <Welcome />
+    </Slide>
   );
 };
 
@@ -90,18 +114,67 @@ const openGhApp = (url, onOpen, onError) => {
   }
 }
 
-const Loading = () => {
-  return (
-    <div className="mb-2">We are loading your data from GitHub, this is going to take a while.</div>
-  );
-};
-
-const WillLoad = () => {
-  return (
-    <div>Once you install and configure the GitHub App, Athenian will start loading your data from GitHub. The loading process will take a while.</div>
-  );
-};
-
 const GhAppLink = ({ url, ...rest }) => (
   <a href={url} target="_blank" rel="noopener noreferrer" {...rest}>{url}</a>
 );
+
+const Slide = ({ title, text, footer, children }) => {
+  return (
+    <Page>
+      <div className="row h-100">
+        <div className="col-12 my-auto">
+          <div className="mt-3 mb-5 text-center">
+            <img src={logo} alt="" width="200" />
+          </div>
+          <div className="col-8 offset-2 mb-5">
+            <div className="card waiting py-5">
+              <div className="card-body py-5">
+                <div className="row">
+                  <div className="col">
+                    <h2 className="h1 text-dark font-weight-normal mt-5 mb-2 pl-4">{title}</h2>
+                    <p className="h4 text-secondary font-weight-light pl-4 mb-5">{text}</p>
+                    {children}
+                  </div>
+                </div>
+              </div>
+            </div>
+            {footer && (
+              <div>
+                {footer}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </Page>
+  );
+};
+
+const Welcome = () => {
+  return (
+    <div className="pl-4">
+      <ul className="m-0 p-0">
+        <li className="waiting-container mb-1">
+          <div className="waiting-chart">
+            <span className="waiting-box"></span>
+          </div>
+        </li>
+        <li className="waiting-container mb-1">
+          <div className="waiting-table">
+            <span className="waiting-box"></span>
+          </div>
+        </li>
+        <li className="waiting-container mb-1">
+          <div className="waiting-table">
+            <span className="waiting-box"></span>
+          </div>
+        </li>
+        <li className="waiting-container mb-1">
+          <div className="waiting-table">
+            <span className="waiting-box"></span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  );
+};

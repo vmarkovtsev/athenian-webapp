@@ -48,6 +48,7 @@
 .waiting {
     background: url(../../images/waiting-bg.svg) no-repeat right bottom $white !important;
     background-size: 50% !important;
+    min-height: 425px;
 
     &-container {
         display: flex;
@@ -63,6 +64,10 @@
         background: url(../../images/table-default.svg) left center no-repeat transparent;
         height: 30px;
         width: 300px;
+    }
+
+    .card-body {
+        max-width: 540px;;
     }
 }
 
