@@ -10,6 +10,10 @@
     text-align: left;
     width: fit-content;
 
+    a:hover {
+        text-decoration: underline !important;
+    }
+
     .card {
         border: none;
     }
