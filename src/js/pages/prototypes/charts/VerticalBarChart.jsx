@@ -53,7 +53,7 @@ export default () => (
 const VerticalBarChart = ({ data }) => {
     // TODO: handle bar -> color (if more than available colors)
     const availableColor = palette.schemes.duoSimilar;
-    const legend = data.map((bar, i) => ({ title: bar.title, color: availableColor[i] }));
+    const legend = data.map((bar, i) => ({ title: bar.title, color: availableColor[i], strokeWidth: 10  }));
     const [activeValueState, setActiveValueState] = useState(null);
 
     const persistentHint = true;
@@ -70,7 +70,7 @@ const VerticalBarChart = ({ data }) => {
                 xDistance={100}
                 margin={{ bottom: 100, left: 50 }}
             >
-                <DiscreteColorLegend items={legend} orientation="horizontal" style={{ position: 'absolute', top: '-30px', right: '50%', transform: 'translateX(50%)' }} />
+                <DiscreteColorLegend className="chart-legend" items={legend} orientation="horizontal" />
                 <HorizontalGridLines />
                 <XAxis tickTotal={6}
                     tickFormat={timeFormat("%B %d, %Y")}

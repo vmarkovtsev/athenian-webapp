@@ -7,3 +7,18 @@
         display: block;
     }
 }
+
+// Legend
+
+.chart-legend {
+    position: absolute;
+    top: -30px;
+    right: 50%;
+    transform: translateX(50%);
+}
+
+.rv-discrete-color-legend-item__title {
+    display: inline !important;
+    margin-left: 10px !important;
+    vertical-align: middle;
+}
