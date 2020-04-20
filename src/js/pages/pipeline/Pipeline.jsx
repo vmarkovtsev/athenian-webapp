@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 import PipelineContext from 'js/context/Pipeline';
-import { useAuth0 } from 'js/context/Auth0';
-import { useUserContext } from 'js/context/User';
-import { useFiltersContext } from 'js/context/Filters';
-
-import { getMetrics, fetchApi } from 'js/services/api';
+import { useApi } from 'js/hooks';
+import { getMetrics } from 'js/services/api';
 import { PR_STAGE as prStage, isInStage, happened, PR_EVENT as prEvent } from 'js/services/prHelpers';
 import { number } from 'js/services/format';
 
@@ -140,20 +137,20 @@ export const getStageTitle = (slug) => {
 };
 
 export default ({ children }) => {
-    const { getTokenSilently } = useAuth0();
-    const userContext = useUserContext();
-
+    const { api, ready: apiReady, context: apiContext } = useApi();
     const [pipelineState, setPipelineState] = useState({ leadtime: {}, cycletime: {}, stages: [] });
-    const { dateInterval, repositories, contributors } = useFiltersContext();
 
     useEffect(() => {
-        if (!userContext || !repositories.length) {
+        if (!apiReady) {
             return;
-        };
+        }
 
-        getTokenSilently()
-            .then(token => fetchApi(token, getMetrics, userContext.defaultAccount.id, dateInterval, repositories, contributors))
-            .then(data => {
+        (async () => {
+            try {
+                const data = await getMetrics(
+                    api, apiContext.account, apiContext.interval,
+                    apiContext.repositories, apiContext.contributors
+                );
                 let leadtime = {};
                 let cycletime = {};
                 const stages = [];
@@ -173,13 +170,15 @@ export default ({ children }) => {
                 }
 
                 setPipelineState({ leadtime, cycletime, stages });
-            })
-            .catch(err => console.error('Could not get pipeline metrics', err));
-    }, [userContext, dateInterval, repositories, contributors, getTokenSilently]);
+            } catch (err) {
+                console.error('Could not get pipeline metrics', err);
+            }
+        })();
+    }, [api, apiContext.account, apiContext.contributors, apiContext.interval, apiContext.repositories, apiReady]);
 
     return (
         <PipelineContext metrics={pipelineState}>
             {children}
         </PipelineContext>
-    )
+    );
 };
