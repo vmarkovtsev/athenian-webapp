@@ -62,16 +62,9 @@ export default ({ children }) => {
         })();
     });
 
-    useEffect(() => {
-        if (!readyState) {
-            console.log("Resetting data context due to filter update");
-            resetData();
-        }
-        // eslint-disable-next-line
-    }, [readyState]);
-
     const onDateIntervalChange = async (selectedDateInterval) => {
         setReadyState(false);
+        resetData();
         console.info('DateInterval selection changed',
                      dateTime.ymd(selectedDateInterval.from), dateTime.ymd(selectedDateInterval.to));
 
@@ -89,6 +82,7 @@ export default ({ children }) => {
 
     const onReposChange = async (selectedRepos, dateInterval) => {
         setReadyState(false);
+        resetData();
         console.info('Repositories selection changed', selectedRepos);
         selectedRepos = selectedRepos.length > 0 ? selectedRepos : context.repos;
         dateInterval = dateInterval || filteredDateIntervalState;
@@ -103,6 +97,7 @@ export default ({ children }) => {
 
     const onContribsChange = async (selectedContribs) => {
         setReadyState(false);
+        resetData();
         console.info('Contributors selection changed', selectedContribs);
         setFilteredContribsState(selectedContribs);
         setReadyState(true);
