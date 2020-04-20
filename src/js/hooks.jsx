@@ -16,7 +16,11 @@ export const usePrevious = (value) => {
     return ref.current;
 };
 
-export const useApi = () => {
+export const useApi = (noUsers = false, noFilters = false) => {
+    if (noUsers) {
+        noFilters = true;
+    }
+
     const { getTokenSilently } = useAuth0();
     const {
         ready: filtersReady,
@@ -41,14 +45,24 @@ export const useApi = () => {
         prepareApi();
     });
 
-    const ready = filtersReady && apiReadyState;
-    const context = ready ? {
-        account: userContext.defaultAccount.id,
-        interval: dateInterval,
-        repositories: repositories,
-        contributors: contributors
-    } : {};
+    let context = {};
+    let ready = apiReadyState;
 
+    if (!noUsers) {
+        context = {...context, account: userContext.defaultAccount.id};
+    }
+
+    if (!noFilters) {
+        ready &= filtersReady;
+        context = {
+            ...context,
+            interval: dateInterval,
+            repositories: repositories,
+            contributors: contributors
+        };
+    }
+
+    context = ready ? context : {};
     return {
         api: apiState,
         ready,
