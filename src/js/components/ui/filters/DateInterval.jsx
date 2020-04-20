@@ -39,9 +39,9 @@ const isSameDateInterval = (momentA, momentB) => {
     return momentA.startDate.isSame(momentB.startDate) && momentA.endDate.isSame(momentB.endDate);
 };
 
-export const EOD = moment().valueOf();
-export const YEAR_AGO = moment().subtract(1, 'year').valueOf();
-export const TWO_WEEKS_AGO = moment().subtract(2, 'weeks').valueOf();
+export const EOD = moment().endOf('day').valueOf();
+export const YEAR_AGO = moment().subtract(1, 'year').startOf('day').valueOf();
+export const TWO_WEEKS_AGO = moment().subtract(2, 'weeks').startOf('day').valueOf();
 
 export default ({
     minDate = YEAR_AGO,
