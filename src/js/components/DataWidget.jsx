@@ -49,23 +49,29 @@ export default ({id, component, fetcher, plumber, config, propagateSpinner = fal
     }, [id, getData, prevLoadingDataState, loadingDataState]);
 
     const waiting = !dataState;
-    const margin = conf.margin !== undefined ? conf.margin : 5;
-    const spinner = (
-        <div className={`row mt-${margin} mb-${margin} align-middle`}>
-          <div className="col-12 text-center">
-            <Spinner loading={true} color={conf.color || 'black'} />
-          </div>
-        </div>
-    );
+    const spinner = buildSpinner(conf);
 
     if (waiting && !propagateSpinner) {
         return spinner;
     }
 
     if (propagateSpinner) {
+        // this should be uniformed, not done yet for backward compatibility
         conf.spinner = spinner;
+        conf.spinnerBuilder = buildSpinner;
     }
 
     const Component = component;
     return <Component data={dataState} loading={waiting} {...conf} />;
+};
+
+const buildSpinner = (conf) => {
+    const margin = conf.margin !== undefined ? conf.margin : 5;
+    return (
+        <div className={`row mt-${margin} mb-${margin} mx-auto align-middle`}>
+          <div className="col-12 text-center">
+            <Spinner loading={true} color={conf.color || 'black'} />
+          </div>
+        </div>
+    );
 };
