@@ -206,9 +206,11 @@ export const fetchPRsMetrics = async (
     forSet, metrics.map(m => metricIDs[m]),
     dateTime.ymd(dateInterval.from),
     dateTime.ymd(dateInterval.to),
-    granularity, accountID
+    accountID
   );
 
+  // backward compatibility of the function, should be change to accept `granularities`
+  body.granularities = [granularity];
   return api.calcMetricsPrLinear(body);
 };
 
