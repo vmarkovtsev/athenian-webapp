@@ -23,10 +23,12 @@ const Thumbnails = ({ data, loading, spinnerBuilder, prs, stages, activeCard }) 
           // but just with the data populated.
           pipelineStagesConf.slice(2, pipelineStagesConf.length).map(
               (card, i) => {
+                  const active = activeCard === card.slug;
+                  const color = active ? '#FFFFFF' : card.color;
                   const allReady = !loading && prs.length > 0 && stages.length > 0;
                   const spinner = spinnerBuilder({
                       margin: 0,
-                      color: card.color
+                      color: color
                   });
 
                   let [stageData, textValue, variationValue, completedPRs] = [null, null, null, null];
@@ -39,7 +41,7 @@ const Thumbnails = ({ data, loading, spinnerBuilder, prs, stages, activeCard }) 
                   }
 
                   return (
-                      <div className={classnames('col-md-3 pipeline-stage', card.stageName, activeCard === card.slug && 'active')} key={i}>
+                      <div className={classnames('col-md-3 pipeline-stage', card.stageName, active && 'active')} key={i}>
                         <span data-toggle="tooltip" data-placement="bottom" title={card.event.before} className="event-before" />
                         <Link to={'/stage/' + card.slug}>
                           <Stage
@@ -50,7 +52,7 @@ const Thumbnails = ({ data, loading, spinnerBuilder, prs, stages, activeCard }) 
                             text={textValue}
                             hint={card.hint}
                             variation={variationValue}
-                            color={card.color}
+                            color={color}
                             active={activeCard === card.slug}
                             badge={completedPRs}
                           >
@@ -74,9 +76,7 @@ const Stage = ({ data, loading, spinner, title, text, hint, badge, variation, co
             {text ? <Badge trend={NEGATIVE_IS_BETTER} value={number.round(variation)} /> : ''}
           </div>
           <div className="col-7 pl-2" style={{ height: 55 }}>
-            <PipelineCardMiniChart data={data} config={{
-                color: active ? '#FFFFFF' : color
-            }} />
+            <PipelineCardMiniChart data={data} config={{color}} />
           </div>
         </>
     );
@@ -128,7 +128,7 @@ export default ({prs, stages, activeCard, config = {}}) => {
           }, {});
 
     const defaultConfig = {prs, stages};
-    const chartConfig = {...config, ...defaultConfig, margin: 0};
+    const chartConfig = {...config, ...defaultConfig, activeCard, margin: 0};
 
     return (
         <DataWidget
