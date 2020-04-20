@@ -8,11 +8,50 @@ info:
   license:
     name: CC-BY-4.0
   title: '{{ title }}'
-  version: 1.0.27
+  version: 1.0.32
 servers:
 - description: '{{ server_description }} - {{ server_url }}'
   url: '{{ server_url }}/v1'
 paths:
+  /account/user:
+    put:
+      operationId: change_user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountUserChangeRequest'
+        x-body-name: body
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+          description: Effective account members.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: Requesting user is not an admin of the account.
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: The account was not found.
+      security:
+      - bearerAuth: []
+      summary: 'Change the status of an account member: regular, admin, or banished
+        (deleted). This endpoint is allowed only for account admins.'
+      tags:
+      - user
+# {% if False %}
+      - default
+# {% endif %}
+      x-openapi-router-controller: athenian.api.controllers.user_controller
+      x-codegen-request-body-name: body
   /account/{id}:
     get:
       operationId: get_account
@@ -32,7 +71,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Account'
-          description: List the current user's account members.
+          description: List of the account members.
         403:
           content:
             application/json:
@@ -976,7 +1015,27 @@ components:
             $ref: '#/components/schemas/RepositorySet'
         type: object
     PullRequestMetricID:
-      description: Currently supported PR metric types.
+      description: |-
+        Currently supported PR metric types.
+        * `pr-wip-time`: average time spent in Work In Progress stage.
+        * `pr-wip-count`: number of PRs used to calculate `pr-wip-time`.
+        * `pr-review-time`: average time spent in Review stage.
+        * `pr-review-count`: number of PRs used to calculate `pr-review-time`.
+        * `pr-merging-time`: average time spent in Merge stage.
+        * `pr-merging-count`: number of PRs used to calculate `pr-merging-time`.
+        * `pr-release-time`: average time spent in Release stage.
+        * `pr-release-count`: number of PRs used to calculate `pr-release-time`.
+        * `pr-lead-time`: average Lead Time - time between the work started and the release.
+        * `pr-lead-count`: number of PRs used to calculate `pr-lead-time`. It should be the same as `pr-release-count`.
+        * `pr-cycle-time`: Cycle Time - sum of correspodning `pr-wip-time`, `pr-review-time`, `pr-merging-time`, and `pr-release-time`.
+        * `pr-cycle-count`: number of PRs used to calculate `pr-cycle-time`. It equals to the overall number of PRs observed in the given time window.
+        * `pr-wait-first-review`: average time of waiting for the first review.
+        * `pr-wait-first-review-count`: number of PRs used to calculate `pr-wait-first-review`. Note: this is *not* the same as the number of PRs waiting for the first review.
+        * `pr-flow-ratio`: ratio of opened to closed PRs.
+        * `pr-opened`: number of opened PRs.
+        * `pr-merged`: number of merged PRs.
+        * `pr-closed`: number of closed PRs.
+        * `pr-released`: number of released PRs.
       enum:
       - pr-wip-time
       - pr-wip-count
@@ -990,12 +1049,13 @@ components:
       - pr-lead-count
       - pr-cycle-time
       - pr-cycle-count
+      - pr-wait-first-review
+      - pr-wait-first-review-count
       - pr-flow-ratio
       - pr-opened
       - pr-merged
       - pr-closed
       - pr-released
-      - pr-wait-first-review
       example: pr-lead-time
       type: string
     DeveloperID:
@@ -1362,6 +1422,10 @@ components:
           type: string
         granularity:
           $ref: '#/components/schemas/Granularity'
+        granularities:
+          items:
+            $ref: '#/components/schemas/Granularity'
+          type: array
         account:
           description: Session account ID.
           type: integer
@@ -1370,7 +1434,6 @@ components:
       - date_from
       - date_to
       - for
-      - granularity
       - metrics
       type: object
     CalculatedPullRequestMetricsItem:
@@ -1412,9 +1475,12 @@ components:
           developers:
           - github.com/vmarkovtsev
           - github.com/dpordomingo
+        granularity: day
       properties:
         for:
           $ref: '#/components/schemas/ForSet'
+        granularity:
+          $ref: '#/components/schemas/Granularity'
         values:
           items:
             $ref: '#/components/schemas/CalculatedPullRequestMetricValues'
@@ -1432,7 +1498,8 @@ components:
         - pr-wip-time
         date_from: 2020-01-23
         date_to: 2020-01-24
-        granularity: day
+        granularities:
+        - day
         calculated:
         - values:
           - date: 2020-01-23
@@ -1504,8 +1571,7 @@ components:
             - github.com/athenianco/athenian-api
       properties:
         calculated:
-          description: Values of the requested metrics through time. The sequence
-            order is not guaranteed to be the same as in the preceding request.
+          description: Values of the requested metrics through time.
           items:
             $ref: '#/components/schemas/CalculatedPullRequestMetricsItem'
           type: array
@@ -1522,13 +1588,15 @@ components:
           description: Repeats `PullRequestMetricsRequest.date_to`.
           format: date
           type: string
-        granularity:
-          $ref: '#/components/schemas/Granularity'
+        granularities:
+          items:
+            $ref: '#/components/schemas/Granularity'
+          type: array
       required:
       - calculated
       - date_from
       - date_to
-      - granularity
+      - granularities
       - metrics
       type: object
     CalculatedPullRequestMetricValues:
@@ -1685,8 +1753,20 @@ components:
       example: wip
       type: string
     PullRequestProperty:
-      description: PR's modelled lifecycle stage or various events that happened between
-        `time_from` and `time_to`.
+      description: |-
+        PR's modelled lifecycle stage or various events that happened between `time_from` and `time_to`.
+        * `wip`: PRs in Work In Progress stage - that is, not yet reviewed or merged.
+        * `created`: opened PRs. Note: they were opened in the given time window.
+        * `commit_happened`: PRs with a new commit pushed. Note: the commits were pushed in the given time window.
+        * `review_request_happened`: PRs where the author requested a review. Note: the review was requested in the given time window.
+        * `approve_happened`: PRs with new review approvals. Note: they were approved in the given time window.
+        * `changes_request_happened`: PRs with new review rejections. Note: they were rejected in the given time window.
+        * `reviewing`: PRs in Review stage - that is, a review was requested or at least one review happened, but not approved yet.
+        * `merging`: PRs in Merge stage - that is, already reviewed but not yet merged.
+        * `merge_happened`: merged PRs. Note: they were merged in the given time window.
+        * `releasing`: PRs in Release stage - that is, already merged but not yet released.
+        * `release_happened`: released PRs. Note: they were released in the given time window.
+        * `done`: either released or otherwise closed PRs - "afterlife".
       enum:
       - wip
       - created
@@ -1700,7 +1780,7 @@ components:
       - merge_happened
       - releasing
       - release_happened
-      - done  # PR afterlife - PRs that were released or rejected and nothing ever happens to them
+      - done
       example: wip
       type: string
     PullRequestSet:
@@ -1722,7 +1802,7 @@ components:
           created: 2019-05-17T01:14:00Z
           updated: 2019-09-18T10:49:00Z
           properties:
-          - "wip"
+          - wip
           stage_timings:
             wip: 2000s
           participants:
@@ -1979,9 +2059,10 @@ components:
         with_committer:
           $ref: '#/components/schemas/DeveloperSet'
         property:
-          description: 'Main trait of the commits - the core of the filter.
+          description: |-
+            Main trait of the commits - the core of the filter.
             * no_pr_merges: select all the commits but PR merges by noreply@github.com
-            * bypassing_prs: select commits that were pushed without creating a PR'
+            * bypassing_prs: select commits that were pushed without creating a PR
           enum:
           - no_pr_merges
           - bypassing_prs
@@ -2281,11 +2362,26 @@ components:
       - metrics
       type: object
     DeveloperMetricID:
-      description: Currently supported developer metric types.
+      description: |-
+        Currently supported developer metric types.
+        * `dev-commits-pushed`: how many commits were pushed.
+        * `dev-lines-changed`: how many lines were either inserted or removed in the pushed commits.
+        * `dev-prs-created`: how many PRs were created.
+        * `dev-prs-reviewed`: how many *distinct* PRs were reviewed (approved, rejected or neutral).
+        * `dev-prs-merged`: how many PRs were merged by this developer. This is *not* how many authored PRs were merged!
+        * `dev-releases`: how many releases were authored by this developer.
+        * `dev-reviews`: how many reviews were submitted. One PR may have several reviews by the same developer! This value equals to the sum of `dev-review-approvals`, `dev-review-rejections` and `dev-review-neutrals`.
+        * `dev-review-approvals`: how many approvals this developer submitted. One PR may have several approvals by the same developer!
+        * `dev-review-rejections`: how many rejections this developer submitted. One PR may have several rejections by the same developer!
+        * `dev-review-neutrals`: how many neutral ("comment") reviews this developer submitted. One PR may have several neutral reviews by the same developer!
+        * `dev-pr-comments`: how many comments (both regular and review) this developer posted.
+        * `dev-regular-pr-comments`: how many regular comments (not review suggestions!) this developer posted.
+        * `dev-review-pr-comments`: how many review suggestions (summaries are not considered!) this developer posted.
       enum:
       - dev-commits-pushed
       - dev-lines-changed
       - dev-prs-created
+      - dev-prs-reviewed
       - dev-prs-merged
       - dev-releases
       - dev-reviews
@@ -2608,11 +2704,11 @@ components:
       - repositories
       type: object
     ReleaseMatchStrategy:
-      description: 'Release workflow choice: how we should detect releases.
-        * branch: merges to certain branches are considered releases and nothing else.
-        * tag: tags with certain name patterns are considered releases and nothing else.
-        * tag_or_branch: follow "tag"; if the repository does not have tags, fallback
-        to "branch".'
+      description: |-
+        Release workflow choice: how we should detect releases.
+        * `branch`: merges to certain branches are considered releases and nothing else.
+        * `tag`: tags with certain name patterns are considered releases and nothing else.
+        * `tag_or_branch`: follow "tag"; if the repository does not have tags, fallback to "branch".
       enum:
       - branch
       - tag
@@ -2639,4 +2735,30 @@ components:
       - branches
       - match
       - tags
+      type: object
+    AccountUserChangeRequest:
+      additionalProperties: false
+      description: Request to change an account member's status.
+      example:
+        user: github|60340680
+        account: 1
+        status: regular
+      properties:
+        account:
+          description: Account ID.
+          type: integer
+        user:
+          description: Account member ID.
+          type: string
+        status:
+          description: Account membership role.
+          enum:
+          - regular
+          - admin
+          - banished
+          type: string
+      required:
+      - account
+      - status
+      - user
       type: object
