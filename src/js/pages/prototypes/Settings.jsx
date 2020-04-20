@@ -60,7 +60,7 @@ export default () => {
                   <img className="rounded-circle mr-3" src={user} alt="" width="80"/>
                   <div>
                     <h3 className="text-dark h5">John Doe <FontAwesomeIcon icon={faGithub} /></h3>
-                    <p className="text-secondary font-weight-light">nick_evans@myemail.com</p>
+                    <p className="text-secondary font-weight-light mb-0">nick_evans@myemail.com</p>
                   </div>
                 </div>
               </div>
