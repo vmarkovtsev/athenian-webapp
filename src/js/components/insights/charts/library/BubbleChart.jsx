@@ -58,10 +58,11 @@ const buildSeries = (title, formattedData, extra, currentHover, setCurrentHover)
                 data={series.map(v => ({
                     x: transformer(v.x),
                     y: transformer(v.y),
-                    size: v.size,
+                    size: transformer(v.size),
                     ...v.label && { label: v.label },
                     ...v.tooltip && { tooltip: v.tooltip },
                 }))}
+                sizeRange={[5, 20]}
                 onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
                 onValueMouseOut={(datapoint, event) => {
                     if (!extra?.tooltip?.persistent) {
@@ -81,7 +82,7 @@ const buildSeries = (title, formattedData, extra, currentHover, setCurrentHover)
                       formattedData.map(v => ({
                           x: transformer(v.x),
                           y: transformer(v.y),
-                          size: v.size,
+                          size: transformer(v.size),
                           ...v.label && { label: v.label },
                           ...v.tooltip && { tooltip: v.tooltip },
                           customComponent: () => (
@@ -96,6 +97,7 @@ const buildSeries = (title, formattedData, extra, currentHover, setCurrentHover)
                           )
                       }))
                   }
+                  sizeRange={[5, 20]}
                   onValueMouseOver={
                       (datapoint, event) => onValueChange(
                           datapoint, "mouseover", currentHover, setCurrentHover,
@@ -118,10 +120,11 @@ const buildSeries = (title, formattedData, extra, currentHover, setCurrentHover)
                   data={formattedData.map(v => ({
                       x: transformer(v.x),
                       y: transformer(v.y),
-                      size: v.size,
+                      size: transformer(v.size),
                       ...v.label && { label: v.label },
                       ...v.tooltip && { tooltip: v.tooltip },
                   }))}
+                  sizeRange={[5, 20]}
                   onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
                   onValueMouseOut={(datapoint, event) => {
                       if (!extra?.tooltip?.persistent) {
