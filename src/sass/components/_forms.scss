@@ -3,3 +3,18 @@
     color: $dark !important;
     height: 3.2rem !important;
 }
+
+.input-group {
+
+    .input-group-prepend {
+        position: absolute;
+        left: .6rem;
+        z-index: 1;
+        font-size: 2rem;
+        top: .6rem;
+    }
+
+    .form-control {
+        padding-left: 3.5rem;
+    }
+}
