@@ -1,0 +1,33 @@
+.list-group {
+
+    &.list-group-flush {
+
+        .list-group-item {
+            color: $color-secondary;
+            font-weight: 300;
+
+            &:hover {
+                background-color: $color-light;
+            }
+
+            &.active {
+                background-color: transparent;
+                border-color: $border-color;
+                color: $color-dark;
+
+                &:after {
+                    content: ">";
+                    position: absolute;
+                    right: 10px;
+                }
+            }
+
+            &.bg-light {
+
+                &:hover {
+                    background-color: $color-light !important;
+                }
+            }
+        }
+    }
+}
