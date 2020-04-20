@@ -10,14 +10,20 @@ export default () => {
   const inviteLink = location.state?.inviteLink;
 
   if (loading) {
-    return <Simple>Loading...</Simple>;
+    return <Simple>
+        <div className="my-5">
+            <p className="text-secondary">Loading...</p>
+        </div>
+    </Simple>;
   }
 
   if (isAuthenticated) {
     return inviteLink ?
       (
         <Simple>
-          You must <Link to="/logout">logout</Link> first, and then open the invitation link.
+            <div className="my-5">
+                <p className="text-secondary">You must <Link to="/logout">logout</Link> first, and then open the invitation link.</p>
+            </div>
         </Simple>
       ) : (
         <Redirect to={{ pathname: '/' }} />
@@ -27,15 +33,25 @@ export default () => {
   return (
     <Simple>
       {inviteLink && (
-        <p>Login to accept invitation {inviteLink}</p>
+          <div className="my-5">
+            <p className="text-secondary">Login to accept invitation {inviteLink}</p>
+          </div>
       )}
+      <div className="my-5">
+          <h2 className="text-dark h4 mb-2">Welcome back!</h2>
+          <p className="text-secondary">Click to access your Athenian account</p>
+      </div>
+
       <button
         type="button"
-        className="btn btn-primary btn-lg"
+        className="btn btn-xlarge btn-orange"
         onClick={() => loginWithRedirect({ appState: { inviteLink } })}
       >
         Login
       </button>
+        <div class="my-5">
+            <a className="text-dark-orange" href="https://www.athenian.co">I don’t have an account</a>
+        </div>
     </Simple>
   );
 };
