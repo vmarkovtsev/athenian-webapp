@@ -5,7 +5,7 @@ import HorizontalBarChart from 'js/components/insights/charts/library/Horizontal
 import BubbleChart from 'js/components/insights/charts/library/BubbleChart';
 import { UserReviewer } from 'js/components/charts/Tooltip';
 
-import { fetchDevsMetrics } from 'js/services/api/index';
+import { fetchDevsMetrics, fetchPRsMetrics } from 'js/services/api/index';
 import { github } from 'js/services/format';
 
 const reviewActivity = {
@@ -26,6 +26,15 @@ const reviewActivity = {
             );
         };
 
+        const fetchFirstBoxReviewedPRs = async () => {
+            const metrics = ['review-count'];
+            const granularity = 'all';
+            return fetchPRsMetrics(
+                api, context.account, granularity, context.interval, metrics,
+                { repositories: context.repositories, developers: context.contributors }
+            );
+        };
+
         const fetchSecondBox = async () => {
             const metrics = [
                 'reviews',
@@ -41,6 +50,7 @@ const reviewActivity = {
 
         return Promise.resolve({
             firstBox: await fetchFirstBox(),
+            firstBoxReviewedPRs: await fetchFirstBoxReviewedPRs(),
             secondBox: await fetchSecondBox(),
             legacyData: data
         });
@@ -132,8 +142,8 @@ const reviewActivity = {
                     sumPrsCreated: _(fetched.firstBox.calculated)
                         .map(v => v.values[0][1])
                         .sum(),
-                    sumReviews: _(fetched.firstBox.calculated)
-                        .map(v => v.values[0][0])
+                    reviewedPRs: _(fetched.firstBoxReviewedPRs.calculated[0].values)
+                        .map(v => v.values[0])
                         .sum(),
                     avgReviewedPRsPerDev: totalReviewedPRs / totalReviewers,
                 }
@@ -154,7 +164,7 @@ const reviewActivity = {
     },
     factory: (computed) => {
         const sumPrsCreated = computed.firstBox.KPIsData.sumPrsCreated;
-        const sumReviews = computed.firstBox.KPIsData.sumReviews;
+        const reviewedPRs = computed.firstBox.KPIsData.reviewedPRs;
 
         return {
             meta: {
@@ -200,7 +210,7 @@ const reviewActivity = {
                             subtitle: { text: 'Reviewed/Created'},
                             component: SimpleKPI,
                             params: {
-                                value: `${sumReviews}/${sumPrsCreated}`
+                                value: `${reviewedPRs}/${sumPrsCreated}`
                             }
                         },
                     ]
