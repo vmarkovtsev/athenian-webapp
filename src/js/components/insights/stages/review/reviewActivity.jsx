@@ -16,6 +16,7 @@ const reviewActivity = {
             const metrics = [
                 'reviews',
                 'prs-created',
+                'prs-reviewed',
             ];
 
             return fetchDevsMetrics(
@@ -52,6 +53,9 @@ const reviewActivity = {
         const totalPRsComments = _(fetched.secondBox.calculated)
               .map(v => v.values[0][1])
               .sum();
+        const totalReviewedPRs = _(fetched.firstBox.calculated)
+            .map(v => v.values[0][2])
+            .sum();
         const totalReviewers = _(fetched.secondBox.calculated)
             .filter(v => v.values[0][0] > 0)
             .value()
@@ -131,7 +135,7 @@ const reviewActivity = {
                     sumReviews: _(fetched.firstBox.calculated)
                         .map(v => v.values[0][0])
                         .sum(),
-                    avgReviewsPerDev: totalReviews / totalReviewers
+                    avgReviewedPRsPerDev: totalReviewedPRs / totalReviewers,
                 }
             },
             secondBox: {
@@ -188,7 +192,7 @@ const reviewActivity = {
                             subtitle: {text: 'Per Developer'},
                             component: SimpleKPI,
                             params: {
-                                value: computed.firstBox.KPIsData.avgReviewsPerDev.toFixed(2)
+                                value: computed.firstBox.KPIsData.avgReviewedPRsPerDev.toFixed(2)
                             }
                         },
                         {
