@@ -32,6 +32,17 @@ export default ({ name, options, isReady, id, className, noDataMsg, labelFormat,
         }
     };
 
+    const customStyles = {
+        option: (styles, state) => ({
+          ...styles,
+          cursor: 'pointer',
+        }),
+        control: (styles) => ({
+          ...styles,
+          cursor: 'pointer',
+        })
+    }
+
     return <>
         <AriaLabel id={`${id}Label`} label={`${name} filter`} />
         <Select
@@ -54,6 +65,7 @@ export default ({ name, options, isReady, id, className, noDataMsg, labelFormat,
             loadingMessage={() => <em>loading...</em>}
             getOptionLabel={labelFormat}
             getOptionValue={value => value}
+            styles={customStyles}
         />
     </>;
 }
