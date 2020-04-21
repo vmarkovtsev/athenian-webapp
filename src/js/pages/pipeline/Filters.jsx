@@ -79,6 +79,9 @@ export default ({ children }) => {
         await updateContribsFilter(
             {...context, token, repos: updatedRepos, dateInterval: selectedDateInterval,
              setters: contribsSetters});
+
+        setGlobalData('filter.repos', updatedRepos);
+        setGlobalData('filter.contribs', updateContribsFilter);
         setReadyState(true);
     };
 
