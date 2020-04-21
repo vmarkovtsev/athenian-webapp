@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDataContext } from 'js/context/Data';
 import { usePrevious } from 'js/hooks';
-
+import _ from "lodash";
 import Spinner from 'js/components/ui/Spinner';
 
-export default ({id, component, fetcher, plumber, config, propagateSpinner = false}) => {
+export default ({id, component, fetcher, plumber, globalDataIDs, config, propagateSpinner = false}) => {
     const conf = config ? config : {};
-    const { get: getData, set: setData } = useDataContext();
+    const { get: getData, getGlobal: getGlobalData, set: setData } = useDataContext();
     const [dataState, setDataState] = useState(null);
     const [loadingDataState, setLoadingDataState] = useState(false);
     const prevLoadingDataState = usePrevious(loadingDataState);
@@ -18,7 +18,18 @@ export default ({id, component, fetcher, plumber, config, propagateSpinner = fal
         const fetchAndSetData = async () => {
             console.log("---> Rendering CHART: useEffect 1 | async | fetching", id);
             const fetched = await fetcher();
-            const plumbedData = plumber(fetched);
+
+            const globalData = _.reduce(globalDataIDs, function(result, gid) {
+                const d = getGlobalData(gid);
+                if (!d) {
+                    throw Error(`Missing global data with id ${gid} for data widget with id ${id}`);
+                }
+
+                result[gid] = d;
+                return result;
+            }, {});
+
+            const plumbedData = plumber({...fetched, global: globalData});
             console.log("---> Rendering CHART: useEffect 1 | async | fetching done", id);
             console.log("---> Rendering CHART: useEffect 1 | async | set data", plumbedData);
             setData(id, plumbedData);
@@ -38,7 +49,7 @@ export default ({id, component, fetcher, plumber, config, propagateSpinner = fal
         } else {
             setDataState(data);
         }
-    }, [id, loadingDataState, getData, setData, fetcher, plumber]);
+    }, [id, loadingDataState, getData, setData, fetcher, plumber, globalDataIDs, getGlobalData]);
 
     useEffect(() => {
         console.log("---> Rendering CHART: useEffect 2", id, prevLoadingDataState, loadingDataState);
