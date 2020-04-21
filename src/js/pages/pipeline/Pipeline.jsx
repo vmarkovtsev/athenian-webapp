@@ -60,11 +60,7 @@ export const pipelineStagesConf = [
         stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.REVIEW)).length,
         summary: (stage, prs) => {
             const reviewAndReviewCompletePRs = prs.filter(pr => isInStage(pr, prStage.REVIEW));
-            const reviewed = reviewAndReviewCompletePRs.filter(pr => {
-                if (pr.comments || pr.review_comments) {
-                    return true;
-                }
-
+            const reviewed = prs.filter(pr => {
                 return happened(pr, prEvent.REVIEW) || happened(pr, prEvent.REJECTION) || happened(pr, prEvent.APPROVE);
             });
 

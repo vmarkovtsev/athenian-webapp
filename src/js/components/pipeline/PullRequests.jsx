@@ -121,7 +121,7 @@ export default ({ stage, data }) => {
                                     <div class="table-creators">
                                         ${row.authors.map(userImage(users)).join(' ')}
                                         <div class="pr-created-by"><span>Created by</span> <span class="text-dark">${row.authors.map(github.userName).join(' ')}</span>
-                                        <span>${dateTime.ago(row.created)} ago</span></div>
+                                        <span title="${dateTime.ymd(row.created)}">${dateTime.ago(row.created)} ago</span></div>
                                     </div>
                                 `;
                             case 'filter':
