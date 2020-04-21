@@ -13,7 +13,7 @@ import Tabs from 'js/components/layout/Tabs';
 import { dateTime, number } from 'js/services/format';
 
 export default () => {
-    const { curr: prsContext } = usePRsContext();
+    const prsContext = usePRsContext();
     const { leadtime: leadtimeContext, stages: stagesContext } = usePipelineContext();
 
     let slowerStage = 0;

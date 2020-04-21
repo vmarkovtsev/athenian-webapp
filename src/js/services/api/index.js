@@ -16,29 +16,15 @@ import _ from 'lodash';
 import moment from 'moment';
 
 export const getPRs = async (api, accountId, dateInterval, repos, contributors) => {
-
-    const query = async (interval) => fetchFilteredPRs(api, accountId, interval, {
+    const currResult = await fetchFilteredPRs(api, accountId, dateInterval, {
         repositories: repos,
         developers: contributors,
         stages: ['wip', 'review', 'merge', 'release', 'done']
     });
 
-    const currInterval = dateInterval;
-    const prevInterval = getPreviousInterval(currInterval);
-
-    const currResult = await query(currInterval);
-    const prevResult = await query(prevInterval);
-
     return {
-        prev: {
-            prs: prevResult.data.map(processPR),
-            users: (prevResult.include && prevResult.include.users) || {},
-
-        },
-        curr: {
-            prs: currResult.data.map(processPR),
-            users: (currResult.include && currResult.include.users) || {},
-        }
+        prs: currResult.data.map(processPR),
+        users: (currResult.include && currResult.include.users) || {},
     };
 };
 
