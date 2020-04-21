@@ -140,12 +140,13 @@ const extractStageTimings = pr => _(pr.stage_timings)
 
 const extractParticipantsByKind = pr => pr.participants.reduce((acc, participant) => {
   const has_status = status => participant.status.includes(status);
-  if (has_status('author')) {
-    acc.authors.push(participant.id);
-  }
-
   if (has_status('merger')) {
     acc.mergers.push(participant.id);
+  }
+
+  if (has_status('author')) {
+    acc.authors.push(participant.id);
+    return acc;
   }
 
   if (has_status('reviewer') || has_status('commenter')) {
