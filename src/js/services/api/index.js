@@ -74,11 +74,12 @@ export const getRepos = (token, userAccount, from, to, repos) => {
 };
 
 export const getContributors = (token, userAccount, from, to, repos) => {
-  const api = buildApi(token);
-  const filter = new GenericFilterRequest(userAccount, from, to);
-  filter.in = repos;
-  return api.filterContributors({ body: filter })
-    .then(contribs => contribs.map(c => c.login));
+    const api = buildApi(token);
+    return fetchContributors(
+        api, userAccount,
+        {from: new Date(from), to: new Date(to)},
+        {repositories:repos}
+    ).then(contribs => contribs.map(c => c.login));
 };
 
 export const getMetrics = async (api, accountId, dateInterval, repos, contributors) => {
@@ -142,6 +143,17 @@ export const buildApi = token => {
 export const fetchApi = (token, apiCall, ...args) => {
   const api = buildApi(token);
   return apiCall(api, ...args);
+};
+
+export const fetchContributors = async (
+    api, accountID,
+    dateInterval,
+    filter = {repositories :[]}
+) => {
+    const filter_ = new GenericFilterRequest(
+        accountID, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to));
+    filter_.in = filter.repositories;
+    return api.filterContributors({ body: filter_ });
 };
 
 export const fetchFilteredPRs = async (
