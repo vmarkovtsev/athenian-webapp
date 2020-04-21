@@ -5,7 +5,7 @@ import Badge, { NEGATIVE_IS_BETTER, POSITIVE_IS_BETTER } from 'js/components/ui/
 import { BigNumber, SmallTitle } from 'js/components/ui/Typography';
 import Info from 'js/components/ui/Info';
 
-import { fetchPRsMetrics, fetchFilteredPRs, getPreviousInterval } from 'js/services/api/index';
+import { fetchPRsMetrics, fetchContributors, getPreviousInterval } from 'js/services/api/index';
 
 import { useApi } from 'js/hooks';
 
@@ -107,58 +107,43 @@ export default () => {
 
 
     const fetcher = async () => {
-        const metrics = ['lead-time', 'cycle-time'];
+        const metrics = ['lead-time', 'cycle-time', 'cycle-count'];
 
-        const data1Prev = await fetchPRsMetrics(
+        const dataPrev = await fetchPRsMetrics(
             api, account, granularity, prevInterval, metrics,
             { repositories, developers }
         );
-        const data1Curr = await fetchPRsMetrics(
+        const dataCurr = await fetchPRsMetrics(
             api, account, granularity, currInterval, metrics,
             { repositories, developers }
         );
 
-        const data2Prev = await fetchFilteredPRs(
+        const dataContribsPrev = await fetchContributors(
             api, account, prevInterval,
-            { repositories, developers }
-        );
-        const data2Curr = await fetchFilteredPRs(
-            api, account, currInterval,
-            { repositories, developers }
+            { repositories }
         );
 
         return Promise.resolve({
-            leadTimeCycleTime: {
-                prev: data1Prev,
-                curr: data1Curr,
+            leadTimeCycleTimePrsCount: {
+                prev: dataPrev,
+                curr: dataCurr,
             },
-            prs: {
-                prev: data2Prev,
-                curr: data2Curr,
+            contribs: {
+                prev: dataContribsPrev,
             }
         });
     };
 
     const plumber = (data) => {
-        const countContribs = (prs) => _(prs)
-              .flatMap(pr => pr.participants)
-              .map("id")
-              .uniq()
-              .value()
-              .length;
-
         const calcVariation = (prev, curr) => prev > 0 ? (curr - prev) * 100 / prev : 0;
 
-        const [leadTimePrev, cycleTimePrev] = data.leadTimeCycleTime.prev
+        const [leadTimePrev, cycleTimePrev, prsCountPrev] = data.leadTimeCycleTimePrsCount.prev
               .calculated[0].values[0].values;
-        const [leadTimeCurr, cycleTimeCurr] = data.leadTimeCycleTime.curr
+        const [leadTimeCurr, cycleTimeCurr, prsCountCurr] = data.leadTimeCycleTimePrsCount.curr
               .calculated[0].values[0].values;
 
-        const prsCountPrev = data.prs.prev.data.length;
-        const prsCountCurr = data.prs.curr.data.length;
-
-        const contribsCountPrev = countContribs(data.prs.prev.data);
-        const contribsCountCurr = countContribs(data.prs.curr.data);
+        const contribsCountPrev = data.contribs.prev.length;
+        const contribsCountCurr = data.global['filter.contribs'].length;
 
         return {
             leadTime: {
@@ -184,6 +169,7 @@ export default () => {
         <DataWidget
           id={`main-metrics`}
           component={MainMetrics} fetcher={fetcher} plumber={plumber}
+          globalDataIDs={['filter.contribs']}
           config={{
               margin: 0,
               color: '#858796',

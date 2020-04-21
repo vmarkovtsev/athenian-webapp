@@ -14,7 +14,7 @@ import { usePRsContext } from 'js/context/PRs';
 
 export default () => {
     const { stages: stagesContext } = usePipelineContext();
-    const { curr: prsContext } = usePRsContext();
+    const prsContext = usePRsContext();
 
     const { name: stageSlug } = useParams();
     const activeConf = getStage(pipelineStagesConf, stageSlug);

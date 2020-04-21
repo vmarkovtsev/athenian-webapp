@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { useAuth0 } from 'js/context/Auth0';
 import { useUserContext } from 'js/context/User';
@@ -21,7 +21,7 @@ const defaultDateInterval = { from: TWO_WEEKS_AGO, to: EOD };
 export default ({ children }) => {
     const { getTokenSilently } = useAuth0();
     const userContext = useUserContext();
-    const { reset: resetData } = useDataContext();
+    const { reset: resetData, setGlobal: setGlobalData } = useDataContext();
 
     const [readyState, setReadyState] = useState(false);
 
@@ -56,8 +56,10 @@ export default ({ children }) => {
     useMountEffect(() => {
         (async () => {
             const token = await getTokenSilently();
-            await updateReposFilter({...context, token, setters: reposSetters});
-            await updateContribsFilter({...context, token, setters: contribsSetters});
+            const initialRepos = await updateReposFilter({...context, token, setters: reposSetters});
+            setGlobalData('filter.repos', initialRepos);
+            const initialContribs = await updateContribsFilter({...context, token, setters: contribsSetters});
+            setGlobalData('filter.contribs', initialContribs);
             setReadyState(true);
         })();
     });
@@ -88,6 +90,7 @@ export default ({ children }) => {
         dateInterval = dateInterval || filteredDateIntervalState;
 
         setFilteredReposState(selectedRepos);
+        setGlobalData('filter.repos', selectedRepos);
 
         const token = await getTokenSilently();
         await updateContribsFilter({...context, token, dateInterval, repos: selectedRepos,
@@ -100,6 +103,9 @@ export default ({ children }) => {
         resetData();
         console.info('Contributors selection changed', selectedContribs);
         setFilteredContribsState(selectedContribs);
+        console.log("XXXX");
+        setGlobalData('filter.contribs', selectedContribs);
+        console.log("YYY");
         setReadyState(true);
     };
 

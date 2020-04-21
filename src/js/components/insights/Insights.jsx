@@ -20,7 +20,7 @@ const stageChartsStateReducer = (state, action) => {
 };
 
 export default () => {
-    const { curr: prsContext } = usePRsContext();
+    const prsContext = usePRsContext();
     const { api, ready: apiReady, context: apiContext } = useApi();
     const { name: stageSlug } = useParams();
 

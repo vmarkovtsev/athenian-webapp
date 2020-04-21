@@ -18,7 +18,7 @@ export default ({ children }) => {
     return (
         <>
           <MainMetrics />
-          <Thumbnails prs={prsContext.curr.prs} stages={stagesContext} activeCard={activeConf && activeConf.slug} />
+          <Thumbnails prs={prsContext.prs} stages={stagesContext} activeCard={activeConf && activeConf.slug} />
           {children}
         </>
     );

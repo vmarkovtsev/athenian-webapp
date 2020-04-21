@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react';
 
 import PRsContext from 'js/context/PRs';
 import { useApi } from 'js/hooks';
-
+import { useDataContext } from 'js/context/Data';
 import { getPRs } from 'js/services/api';
 
 export default ({ children }) => {
     const { api, ready: apiReady, context: apiContext } = useApi();
-    const [prsState, setPrsState] = useState({
-        prev: { prs: [], users: {} },
-        curr: { prs: [], users: {} },
-    });
+    const { setGlobal: setGlobalData } = useDataContext();
+    const [prsState, setPrsState] = useState({ prs: [], users: {} });
 
     useEffect(() => {
         if (!apiReady) {
@@ -22,6 +20,7 @@ export default ({ children }) => {
             try {
                 const prs = await getPRs(api, apiContext.account, apiContext.interval,
                                          apiContext.repositories, apiContext.contributors);
+                setGlobalData('prs', prs);
                 setPrsState(prs);
             } catch (err) {
                 console.error('Could not get pull requests', err);
@@ -29,10 +28,10 @@ export default ({ children }) => {
         };
 
         getAndSetPRs();
-    }, [apiReady, api, apiContext.account, apiContext.interval, apiContext.repositories, apiContext.contributors]);
+    }, [apiReady, api, apiContext.account, apiContext.interval, apiContext.repositories, apiContext.contributors, setGlobalData]);
 
     return (
-        <PRsContext prevPRs={prsState.prev} currPRs={prsState.curr}>
+        <PRsContext prs={prsState}>
             {children}
         </PRsContext>
     );
