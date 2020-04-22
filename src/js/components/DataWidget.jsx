@@ -6,12 +6,12 @@ import Spinner from 'js/components/ui/Spinner';
 
 export default ({id, component, fetcher, plumber, globalDataIDs, config, propagateSpinner = false}) => {
     const conf = config ? config : {};
-    const { get: getData, getGlobal: getGlobalData, set: setData } = useDataContext();
+    const { get: getData, getGlobal: getGlobalData, set: setData, globalDataReady } = useDataContext();
     const [dataState, setDataState] = useState(null);
     const [loadingDataState, setLoadingDataState] = useState(false);
     const prevLoadingDataState = usePrevious(loadingDataState);
 
-    console.log("Rendering CHART", id, prevLoadingDataState, loadingDataState, dataState);
+    console.log("Rendering CHART", id, globalDataReady, prevLoadingDataState, loadingDataState, dataState);
 
     useEffect(() => {
         console.log("---> Rendering CHART: useEffect 1", id);
@@ -45,14 +45,18 @@ export default ({id, component, fetcher, plumber, globalDataIDs, config, propaga
             console.log("---> Rendering CHART: useEffect 1 | set data", null);
             setDataState(null);
             console.log("---> Rendering CHART: useEffect 1 | set loading", true);
-            if (!loadingDataState) {
+
+            if (!globalDataReady) {
+                console.log("---> Rendering CHART: useEffect 1 | waiting for global data", id, globalDataReady);
+            } else if (!loadingDataState) {
                 setLoadingDataState(true);
                 fetchAndSetData();
             }
         } else {
+            console.log("---> Rendering CHART: useEffect 1 | found data", data);
             setDataState(data);
         }
-    }, [id, loadingDataState, getData, setData, fetcher, plumber, globalDataIDs, getGlobalData]);
+    }, [id, loadingDataState, getData, setData, fetcher, plumber, globalDataIDs, getGlobalData, globalDataReady]);
 
     useEffect(() => {
         console.log("---> Rendering CHART: useEffect 2", id, prevLoadingDataState, loadingDataState);
