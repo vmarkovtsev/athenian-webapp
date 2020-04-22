@@ -22,6 +22,7 @@ import Development from 'js/components/development';
 import Callback from 'js/pages/auth/Callback';
 import Waiting from 'js/pages/Waiting';
 import NotFound404 from 'js/pages/NotFound404';
+import Settings from './pages/Settings';
 
 import Prototypes from 'js/pages/prototypes';
 import Charts from 'js/pages/prototypes/Charts';
@@ -82,6 +83,10 @@ export default () => {
 
               <ContextRoute context={UserContext} path='/logout'>
                 <Logout />
+              </ContextRoute>
+
+              <ContextRoute context={UserContext} path='/settings'>
+                <Settings />
               </ContextRoute>
 
               {devmode && <Route path='/bearer'><Development.Bearer /></Route>}
