@@ -103,8 +103,12 @@ export default ({ children }) => {
         setGlobalData('filter.repos', Promise.resolve(selectedRepos));
 
         const token = await getTokenSilently();
-        await updateContribsFilter({...context, token, dateInterval, repos: selectedRepos,
-                                    setters: contribsSetters});
+        const selectedContribs = await updateContribsFilter({
+            ...context, token, dateInterval, repos: selectedRepos,
+            setters: contribsSetters
+        });
+
+        setGlobalData('filter.contribs', Promise.resolve(selectedContribs));
         setReadyState(true);
     };
 
@@ -113,6 +117,7 @@ export default ({ children }) => {
         resetData();
         console.info('Contributors selection changed', selectedContribs);
         setFilteredContribsState(selectedContribs);
+        setGlobalData('filter.repos', Promise.resolve(filteredReposState));
         setGlobalData('filter.contribs', Promise.resolve(selectedContribs));
         setReadyState(true);
     };
