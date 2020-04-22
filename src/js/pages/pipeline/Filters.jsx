@@ -14,9 +14,16 @@ import { getRepos, getContributors } from 'js/services/api';
 import { dateTime, github } from 'js/services/format';
 
 import { useMountEffect } from 'js/hooks';
+import moment from 'moment';
 
-const allowedDateInterval = { from: YEAR_AGO, to: EOD };
-const defaultDateInterval = { from: TWO_WEEKS_AGO, to: EOD };
+const allowedDateInterval = {
+    from: moment(YEAR_AGO).startOf('day').valueOf(),
+    to: moment(EOD).endOf('day').valueOf()
+};
+const defaultDateInterval = {
+    from: moment(TWO_WEEKS_AGO).startOf('day').valueOf(),
+    to: moment(EOD).endOf('day').valueOf()
+};
 
 export default ({ children }) => {
     const { getTokenSilently } = useAuth0();

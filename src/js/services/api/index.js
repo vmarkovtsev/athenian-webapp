@@ -30,8 +30,8 @@ export const getPRs = async (api, accountId, dateInterval, repos, contributors) 
 
 export const getPreviousInterval = (dateInterval) => {
     const diffDays = moment(dateInterval.to).diff(dateInterval.from, 'days');
-    const prevTo = moment(dateInterval.from).subtract(1, 'days');
-    const prevFrom = moment(prevTo).subtract(diffDays, 'days');
+    const prevTo = moment(dateInterval.from).subtract(1, 'days').endOf('day');
+    const prevFrom = moment(prevTo).subtract(diffDays, 'days').startOf('day');
     return { from: prevFrom.unix() * 1000, to: prevTo.unix() * 1000 };
 };
 
