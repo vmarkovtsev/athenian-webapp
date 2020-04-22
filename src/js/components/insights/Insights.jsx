@@ -8,6 +8,7 @@ import _ from "lodash";
 
 import Box from 'js/components/insights/Box';
 import Spinner from 'js/components/ui/Spinner';
+import { ComingSoon } from 'js/components/layout/Empty';
 
 const stageChartsStateReducer = (state, action) => {
     if (action.reset) {
@@ -103,6 +104,10 @@ export default () => {
               </div>
             </div>
         );
+    }
+
+    if (insights.length === 0) {
+        return <ComingSoon />;
     }
 
     return (
