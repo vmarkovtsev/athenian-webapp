@@ -5,9 +5,9 @@ import HorizontalBarChart from 'js/components/insights/charts/library/Horizontal
 import BubbleChart from 'js/components/insights/charts/library/BubbleChart';
 import { UserReviewer } from 'js/components/charts/Tooltip';
 
-import { fetchDevsMetrics, fetchPRsMetrics } from 'js/services/api/index';
+import { fetchDevsMetrics } from 'js/services/api/index';
 import { github } from 'js/services/format';
-import { happened, PR_EVENT as prEvent } from 'js/services/prHelpers';
+import { happened, authored, PR_EVENT as prEvent } from 'js/services/prHelpers';
 
 const reviewActivity = {
     fetcher: async (api, context, data) => {
@@ -41,8 +41,8 @@ const reviewActivity = {
         };
 
         // We're interested in the very same data than in the WIP.created and Review.reviewed Summary Metrics
-        const firstBoxKPIsCreatedCount = data.prs.filter(pr => context.interval.from <= pr.created).length;
-        const firstBoxKPIsReviewedCount = data.prs.filter(pr => {
+        const firstBoxKPIsCreatedCount = authored(data.prs).filter(pr => context.interval.from <= pr.created).length;
+        const firstBoxKPIsReviewedCount = authored(data.prs).filter(pr => {
             return happened(pr, prEvent.REVIEW) || happened(pr, prEvent.REJECTION) || happened(pr, prEvent.APPROVE);
         }).length;
 

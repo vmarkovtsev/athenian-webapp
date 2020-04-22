@@ -168,6 +168,8 @@ const extractStatus = pr => {
 
 export const happened = (pr, event) => pr.properties.includes(event);
 
+export const authored = prs => prs.filter(pr => pr.participants.filter(dev => dev.status.includes('author')).length);
+
 export const isInStage = (pr, stage) => (
     stageHappening(pr, stage) || stageHappened(pr, stage)
 );
