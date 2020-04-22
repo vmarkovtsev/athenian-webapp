@@ -7,6 +7,7 @@ import { UserReviewer } from 'js/components/charts/Tooltip';
 
 import { fetchDevsMetrics, fetchPRsMetrics } from 'js/services/api/index';
 import { github } from 'js/services/format';
+import { happened, PR_EVENT as prEvent } from 'js/services/prHelpers';
 
 const reviewActivity = {
     fetcher: async (api, context, data) => {
@@ -26,15 +27,6 @@ const reviewActivity = {
             );
         };
 
-        const fetchFirstBoxReviewedPRs = async () => {
-            const metrics = ['review-count'];
-            const granularity = 'all';
-            return fetchPRsMetrics(
-                api, context.account, granularity, context.interval, metrics,
-                { repositories: context.repositories, developers: context.contributors }
-            );
-        };
-
         const fetchSecondBox = async () => {
             const metrics = [
                 'reviews',
@@ -48,9 +40,17 @@ const reviewActivity = {
             );
         };
 
+        // We're interested in the very same data than in the WIP.created and Review.reviewed Summary Metrics
+        const firstBoxKPIsCreatedCount = data.prs.filter(pr => context.interval.from <= pr.created).length;
+        const firstBoxKPIsReviewedCount = data.prs.filter(pr => {
+            return happened(pr, prEvent.REVIEW) || happened(pr, prEvent.REJECTION) || happened(pr, prEvent.APPROVE);
+        }).length;
+
+
         return Promise.resolve({
             firstBox: await fetchFirstBox(),
-            firstBoxReviewedPRs: await fetchFirstBoxReviewedPRs(),
+            firstBoxKPIsCreatedCount,
+            firstBoxKPIsReviewedCount,
             secondBox: await fetchSecondBox(),
             legacyData: data
         });
@@ -139,12 +139,8 @@ const reviewActivity = {
                 },
                 avatarMapping,
                 KPIsData: {
-                    sumPrsCreated: _(fetched.firstBox.calculated)
-                        .map(v => v.values[0][1])
-                        .sum(),
-                    reviewedPRs: _(fetched.firstBoxReviewedPRs.calculated[0].values)
-                        .map(v => v.values[0])
-                        .sum(),
+                    createdPRs: fetched.firstBoxKPIsCreatedCount,
+                    reviewedPRs: fetched.firstBoxKPIsReviewedCount,
                     avgReviewedPRsPerDev: totalReviewedPRs / totalReviewers,
                 }
             },
@@ -163,7 +159,7 @@ const reviewActivity = {
         };
     },
     factory: (computed) => {
-        const sumPrsCreated = computed.firstBox.KPIsData.sumPrsCreated;
+        const createdPRs = computed.firstBox.KPIsData.createdPRs;
         const reviewedPRs = computed.firstBox.KPIsData.reviewedPRs;
 
         return {
@@ -210,7 +206,7 @@ const reviewActivity = {
                             subtitle: { text: 'Reviewed/Created'},
                             component: SimpleKPI,
                             params: {
-                                value: `${reviewedPRs}/${sumPrsCreated}`
+                                value: `${reviewedPRs}/${createdPRs}`
                             }
                         },
                     ]
