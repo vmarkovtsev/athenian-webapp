@@ -208,7 +208,11 @@ export const fetchPRsMetrics = async (
   );
 
   // backward compatibility of the function, should be change to accept `granularities`
-  body.granularities = [granularity];
+  if (Array.isArray(granularity)) {
+      body.granularities = granularity;
+  } else {
+      body.granularities = [granularity];
+  }
   return api.calcMetricsPrLinear(body);
 };
 
