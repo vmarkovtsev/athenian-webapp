@@ -5,6 +5,12 @@
         padding: 0.75rem 3rem !important;
     }
 
+    &-xlarge {
+        font-size: 1.8rem !important;
+        min-width: 25rem;
+        padding: 1.25rem 3rem !important;
+    }
+
     &:hover {
         opacity: 0.7;
     }

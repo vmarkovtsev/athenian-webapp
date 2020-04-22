@@ -82,6 +82,10 @@ html {
     color: $color-light-orange;
 }
 
+.text-dark-orange {
+    color: $color-orange;
+}
+
 .text-green {
     color: $color-green;
 }
@@ -106,6 +110,15 @@ html {
     &:hover,
     &:active {
         color: $color-secondary;
+        opacity: 0.7;
+    }
+}
+
+a.text-dark-orange {
+    text-decoration: underline !important;
+
+    &:hover {
+        color: $color-orange;
         opacity: 0.7;
     }
 }
