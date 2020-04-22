@@ -22,6 +22,7 @@ import Development from 'js/components/development';
 import Callback from 'js/pages/auth/Callback';
 import Waiting from 'js/pages/Waiting';
 import NotFound404 from 'js/pages/NotFound404';
+import Settings from './pages/Settings';
 
 import Prototypes from 'js/pages/prototypes';
 import Charts from 'js/pages/prototypes/Charts';
@@ -29,7 +30,6 @@ import MetricGroups from 'js/pages/prototypes/MetricGroups';
 import Tooltips from 'js/pages/prototypes/Tooltips';
 import EmptyStates from 'js/pages/prototypes/EmptyStates';
 import WaitingProto from 'js/pages/prototypes/Waiting';
-import SettingsProto from 'js/pages/prototypes/Settings';
 
 export default () => {
 
@@ -84,6 +84,10 @@ export default () => {
                 <Logout />
               </ContextRoute>
 
+              <ContextRoute context={UserContext} path='/settings'>
+                <Settings />
+              </ContextRoute>
+
               {devmode && <Route path='/bearer'><Development.Bearer /></Route>}
 
               <ContextRoute context={UserContext} path='/waiting'>
@@ -97,7 +101,6 @@ export default () => {
                     'tooltips': <Tooltips />,
                     'empty-states': <EmptyStates />,
                     'waiting': <WaitingProto />,
-                    'settings': <SettingsProto />,
                 }} />
               </ContextRoute>
 

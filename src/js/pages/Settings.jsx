@@ -1,32 +1,45 @@
 import React from 'react';
-import user from 'images/default-user-image.png';
-import welcome from 'images/settings-welcome.svg';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import _ from 'lodash';
+
+import defaultImage from 'images/default-user-image.png';
+import welcome from 'images/settings-welcome.svg';
+
+import Page from 'js/pages/templates/Page';
+
+import { useUserContext } from 'js/context/User';
+import { Link } from 'react-router-dom';
 
 export default () => {
+  const userContext = useUserContext();
+
+  if (!userContext) return null;
+
+  const orgName = _(userContext.defaultReposet.repos)
+    .map(r => r.split('/')[1])
+    .uniq()
+    .value();
+
+  const organization = {
+    name: orgName,
+    handler: orgName,
+  }
+
   return (
-    <>
+    <Page>
       <div className="row">
         <div className="col-2">
           <div className="card mb-5">
             <div className="card-header text-center bg-white">
-              <img className="rounded-circle mt-2 mb-4" src={user} alt="" width="100"/>
-              <h3 className="text-dark h5">John Doe</h3>
-              <p className="text-secondary font-weight-light">nick_evans@myemail.com</p>
+              <img className="rounded-circle mt-2 mb-4" src={userContext.picture || defaultImage} alt="" width="100" />
+              <h3 className="text-dark h5">{userContext.name}</h3>
+              <p className="text-secondary font-weight-light">{userContext.email}</p>
             </div>
             <div className="card-body p-0">
               <div className="list-group list-group-flush">
-                <a className="list-group-item py-2 active" href="">
-                  Account Settings
-                </a>
-                <a className="list-group-item py-2" href="">
-                  Team Preferences
-                </a>
-                <a className="list-group-item bg-light text-right py-2 rounded-bottom" href="">
-                  Logout
-                </a>
+                <a className="list-group-item py-2 active" href="">Account Settings</a>
+                <Link to="/logout" className="list-group-item bg-light text-right py-2 rounded-bottom">Logout</Link>
               </div>
             </div>
           </div>
@@ -41,7 +54,7 @@ export default () => {
                   organization preferences</p>
               </div>
               <div className="w-50 text-center mt-4">
-                <img src={welcome} alt="" width="220"/>
+                <img src={welcome} alt="" width="220" />
               </div>
             </div>
             <button type="button" className="close" data-dismiss="alert" aria-label="Close">
@@ -57,10 +70,10 @@ export default () => {
               <p className="text-dark mt-2 mb-3">User Information</p>
               <div className="card bg-light mb-5">
                 <div className="card-body d-flex align-items-center">
-                  <img className="rounded-circle mr-3" src={user} alt="" width="80"/>
+                  <img className="rounded-circle mr-3" src={userContext.picture || defaultImage} alt="" width="80" />
                   <div>
-                    <h3 className="text-dark h5">John Doe <FontAwesomeIcon icon={faGithub} /></h3>
-                    <p className="text-secondary font-weight-light mb-0">nick_evans@myemail.com</p>
+                    <h3 className="text-dark h5">{userContext.name} <FontAwesomeIcon icon={faGithub} /></h3>
+                    <p className="text-secondary font-weight-light mb-0">{userContext.email}</p>
                   </div>
                 </div>
               </div>
@@ -72,7 +85,7 @@ export default () => {
                     <div className="input-group-prepend">
                       <FontAwesomeIcon icon={faGithub} />
                     </div>
-                    <input type="text" className="form-control" id="formGroupExampleInput" placeholder="QuickRelease" disabled="true"/>
+                    <input type="text" className="form-control" id="formGroupExampleInput" placeholder={organization.name} disabled="true" />
                   </div>
                 </div>
               </div>
@@ -83,7 +96,7 @@ export default () => {
                     <div className="input-group-prepend">
                       <FontAwesomeIcon icon={faGithub} />
                     </div>
-                    <input type="text" className="form-control" id="formGroupExampleInput" placeholder="naomi" disabled="true"/>
+                    <input type="text" className="form-control" id="formGroupExampleInput" placeholder={organization.handler} disabled="true" />
                   </div>
                 </div>
               </div>
@@ -91,6 +104,6 @@ export default () => {
           </div>
         </div>
       </div>
-    </>
+    </Page>
   );
 };
