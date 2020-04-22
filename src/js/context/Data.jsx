@@ -1,4 +1,6 @@
-import React, { useReducer, useContext } from 'react';
+import React, { useState, useReducer, useContext } from 'react';
+
+import _ from "lodash";
 
 const DataContext = React.createContext({});
 
@@ -7,7 +9,9 @@ export const useDataContext = () => useContext(DataContext);
 const globalKeysWhitelist = [
     'filter.repos',
     'filter.contribs',
-    'prs'
+    'prs',
+    'prs-metrics.values',
+    'prs-metrics.variations'
 ];
 
 const globalKeyPrefix = 'global.';
@@ -37,15 +41,25 @@ const dataStateReducer = (state, action) => {
 
 export default ({ children }) => {
     const [dataState, dispatchDataState] = useReducer(dataStateReducer, {});
+    const [globalDataReady, setGlobalDataReady] = useState(false);
 
-    const reset = () => dispatchDataState({reset: true});
+    const reset = () => {
+        dispatchDataState({reset: true});
+        setGlobalDataReady(false);
+    };
     const get = (id) => id ? dataState[id] : null;
     const set = (id, data) => id ? dispatchDataState({id, data}) : null;
     const getGlobal = (id) => id ? dataState[`global.${id}`] : null;
-    const setGlobal = (id, data) => id ? dispatchDataState({id, data, global: true}) : null;
+    const setGlobal = (id, data) => {
+        if (id) {
+            dispatchDataState({id, data, global: true});
+        }
+
+        setGlobalDataReady(_(globalKeysWhitelist).map(getGlobal).every());
+    };
 
     return (
-        <DataContext.Provider value={{get, set, getGlobal, setGlobal, reset}}>
+        <DataContext.Provider value={{get, set, getGlobal, setGlobal, reset, globalDataReady}}>
             {children}
         </DataContext.Provider >
     );
