@@ -19,15 +19,15 @@ export default ({id, component, fetcher, plumber, globalDataIDs, config, propaga
             console.log("---> Rendering CHART: useEffect 1 | async | fetching", id);
             const fetched = await fetcher();
 
-            const globalData = _.reduce(globalDataIDs, function(result, gid) {
+            const globalData = {};
+            for (const gid of globalDataIDs || []) {
                 const d = getGlobalData(gid);
                 if (!d) {
                     throw Error(`Missing global data with id ${gid} for data widget with id ${id}`);
                 }
 
-                result[gid] = d;
-                return result;
-            }, {});
+                globalData[gid] = await d;
+            }
 
             const plumbedData = plumber({...fetched, global: globalData});
             console.log("---> Rendering CHART: useEffect 1 | async | fetching done", id);
