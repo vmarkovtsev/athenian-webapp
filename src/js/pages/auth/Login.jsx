@@ -38,7 +38,7 @@ export default () => {
           </div>
       )}
       <div className="my-5">
-          <h2 className="text-dark h4 mb-2">Welcome back!</h2>
+          <h2 className="text-dark h4 mb-2">Welcome!</h2>
           <p className="text-secondary">Click to access your Athenian account</p>
       </div>
 
