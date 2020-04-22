@@ -17,7 +17,10 @@ export default ({id, component, fetcher, plumber, globalDataIDs, config, propaga
         console.log("---> Rendering CHART: useEffect 1", id);
         const fetchAndSetData = async () => {
             console.log("---> Rendering CHART: useEffect 1 | async | fetching", id);
-            const fetched = await fetcher();
+            let fetched = {};
+            if (fetcher) {
+                fetched = await fetcher();
+            }
 
             const globalData = {};
             for (const gid of globalDataIDs || []) {
