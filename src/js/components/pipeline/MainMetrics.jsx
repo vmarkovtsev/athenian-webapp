@@ -1,11 +1,10 @@
 import React from 'react';
-import _ from "lodash";
 import DataWidget from 'js/components/DataWidget';
 import Badge, { NEGATIVE_IS_BETTER, POSITIVE_IS_BETTER } from 'js/components/ui/Badge';
 import { BigNumber, SmallTitle } from 'js/components/ui/Typography';
 import Info from 'js/components/ui/Info';
 
-import { fetchPRsMetrics, fetchContributors, getPreviousInterval } from 'js/services/api/index';
+import { fetchContributors, getPreviousInterval } from 'js/services/api/index';
 
 import { useApi } from 'js/hooks';
 

@@ -59,7 +59,7 @@ const getUnit = (value, unitConf) => {
     if (typeof unitConf === 'string') {
         unit = unitConf;
     } else if (unitConf && unitConf.singular && unitConf.plural) {
-        unit = (value != 1) ? unitConf.plural : unitConf.singular;
+        unit = (value !== 1) ? unitConf.plural : unitConf.singular;
     }
 
     return unit;
