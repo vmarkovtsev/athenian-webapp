@@ -170,11 +170,20 @@ export default ({ children }) => {
                     { repositories: apiContext.repositories, developers: apiContext.contributors }
                 );
 
+                let rawAllValues, rawCustomValues;
+                if (data.calculated[0].granularity === 'all') {
+                    rawAllValues = data.calculated[0].values;
+                    rawCustomValues = data.calculated[1].values;
+                } else {
+                    rawAllValues = data.calculated[1].values;
+                    rawCustomValues = data.calculated[0].values;
+                }
+
                 const allValues = _(allMetrics)
-                      .zip(data.calculated[0].values[0].values)
+                      .zip(rawAllValues[0].values)
                       .fromPairs()
                       .value();
-                const customValues = _(data.calculated[1].values).reduce(
+                const customValues = _(rawCustomValues).reduce(
                     (result, v) => {
                         _(allMetrics).forEach((m, i) => {
                             (result[m] || (result[m] = [])).push(
