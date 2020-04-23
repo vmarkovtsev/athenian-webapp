@@ -31,7 +31,7 @@ export default () => {
         stageChartsStateReducer, {});
 
     useEffect(() => {
-        if (!apiReady && !globalDataReady) {
+        if (!apiReady || !globalDataReady) {
             console.log("api not ready");
             return;
         };
