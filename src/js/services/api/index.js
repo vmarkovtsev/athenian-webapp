@@ -45,7 +45,7 @@ export const getUserWithAccountRepos = async token => {
       reposets = await api.listReposets(Number(accountID));
     } catch (err) {
       console.error(`Could not list reposets from account #${accountID}. Err#${err.body.status} ${err.body.type}. ${err.body.detail}`);
-      return { id: Number(accountID), reposets: [] };
+      return { id: Number(accountID), isAdmin, reposets: [] };
     }
 
     const reposetsContent = await Promise.all(reposets.map(async reposet => ({
