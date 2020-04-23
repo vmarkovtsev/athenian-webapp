@@ -16,8 +16,7 @@ const stageChartsStateReducer = (state, action) => {
         return {[action.stageSlug]: action.result};
     }
 
-    state[action.stageSlug] = action.result;
-    return state;
+    return {...state, [action.stageSlug]: action.result};
 };
 
 export default () => {
@@ -41,10 +40,10 @@ export default () => {
             return;
         }
 
-        const emptyStage = !stageChartsState[stageSlug];
+        const stageValue = stageChartsState[stageSlug];
         const sameFilters = _.isEqual(latestApiContextUsedState, apiContext);
-        if (!emptyStage && sameFilters) {
-            console.log("Filters didn't change and state is not empty: not calling api");
+        if (!!stageValue && sameFilters) {
+            console.log("Filters didn't change and state is not empty: not calling api", stageValue);
             return;
         }
 
@@ -52,26 +51,24 @@ export default () => {
             setLoadingApiCallState(true);
             const prs = await getGlobalData('prs');
             console.log(`CALLING API for slug: ${stageSlug}`, apiContext);
+
+            const action = {
+                stageSlug,
+                reset: !sameFilters
+            };
+
             // TODO: Don't pass `prs` global data manually. Each insight chart should
             // be refactored to use the self-loader `js/components/DataWidget` component
             try {
-                const result = await getInsights(stageSlug, api, apiContext, prs);
-                const action = {
-                    stageSlug,
-                    result
-                };
-
-                if (!sameFilters) {
-                    action.reset = true;
-                };
-
-                console.log("Dispatching stage charts state change", action);
-                dispatchStageChartsState(action);
+                action.result = await getInsights(stageSlug, api, apiContext, prs);
             } catch(err) {
+                action.result = err;
                 console.log(err);
             } finally {
                 console.log("Updating latest filters");
                 setLatestApiContextUsedState(apiContext);
+                console.log("Dispatching stage charts state change", action);
+                dispatchStageChartsState(action);
                 setLoadingApiCallState(false);
             }
         };
@@ -80,6 +77,16 @@ export default () => {
     }, [stageSlug, api, apiContext, apiReady, latestApiContextUsedState, loadingApiCallState, stageChartsState, globalDataReady, getGlobalData]);
 
     const insights = stageChartsState[stageSlug];
+    if (insights instanceof Error) {
+        return (
+            <div className="row mt-5 mb-5">
+              <div className="col-12 mt-5 text-center">
+                <span>An error occurred when loading insights charts</span>
+              </div>
+            </div>
+        );
+    }
+
     const loading = !insights || !apiReady || loadingApiCallState;
     if (loading) {
         return (
