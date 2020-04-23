@@ -8,10 +8,7 @@ import Info from 'js/components/ui/Info';
 import PipelineCardMiniChart from 'js/components/pipeline/PipelineCardMiniChart';
 import { dateTime, number } from 'js/services/format';
 import DataWidget from 'js/components/DataWidget';
-import { useApi } from 'js/hooks';
-import { fetchPRsMetrics } from 'js/services/api/index';
 import { pipelineStagesConf } from 'js/pages/pipeline/Pipeline';
-import moment from 'moment';
 import _ from "lodash";
 
 const Thumbnails = ({ data, loading, spinnerBuilder, activeCard }) => (

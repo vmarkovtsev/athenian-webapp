@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDataContext } from 'js/context/Data';
 import { usePrevious } from 'js/hooks';
-import _ from "lodash";
 import Spinner from 'js/components/ui/Spinner';
 
 export default ({id, component, fetcher, plumber, globalDataIDs, config, propagateSpinner = false}) => {
