@@ -54,6 +54,7 @@ export const StageSummaryMetrics = ({name, stage}) => {
           id={`summary-chart-${name}`}
           component={SummaryMetrics} plumber={plumber}
           globalDataIDs={['prs', 'prs-metrics.values', 'prs-metrics.variations']}
+          propagateSpinner={true}
           config={config}
         />
     );
@@ -102,35 +103,49 @@ export const OverviewSummaryMetrics = ({name, metric}) => {
           id={`summary-chart-${name}`}
           component={SummaryMetrics} plumber={plumber}
           globalDataIDs={['prs-metrics.values', 'prs-metrics.variations']}
+          propagateSpinner={true}
           config={config}
         />
     );
 };
 
-const SummaryMetrics = ({ data, stage, KPIComponent, chartConfig }) => {
-  return (
-    <div className={classnames('summary-metric card mb-4 px-2', stage.stageName)}>
-      <div className="card-body">
-        <div className="row">
-          <div className="col-4">
-            <header className="font-weight-bold text-lg mt-2">{stage.summaryMetricTitle || stage.title}</header>
-            <div className="pl-2">
-              <div className="font-weight-bold mt-4 mb-3 pb-2 border-bottom">
-                <BigNumber content={dateTime.human(data.average * 1000)} isXL />
-                <Badge value={number.round(data.variation)} className="ml-2" trend={NEGATIVE_IS_BETTER} />
+const SummaryMetrics = ({ data, stage, KPIComponent, loading, spinnerBuilder, chartConfig }) => {
+    const spinner = spinnerBuilder({
+        margin: 5,
+        color: chartConfig.color
+    });
+
+    return (
+        <div className={classnames('summary-metric card mb-4 px-2', stage.stageName)}>
+          <div className="card-body" style={{minHeight: '305px'}}>
+            <div className="row">
+              <div className="col-4">
+                <header className="font-weight-bold text-lg mt-2">{stage.summaryMetricTitle || stage.title}</header>
+                {
+                    !loading &&
+                        <div className="pl-2">
+                          <div className="font-weight-bold mt-4 mb-3 pb-2 border-bottom">
+                            <BigNumber content={dateTime.human(data.average * 1000)} isXL />
+                            <Badge value={number.round(data.variation)} className="ml-2" trend={NEGATIVE_IS_BETTER} />
+                          </div>
+                          <div>
+                            <KPIComponent data={data.kpisData} />
+                          </div>
+                        </div>
+                }
               </div>
-              <div>
-                <KPIComponent data={data.kpisData} />
-              </div>
+              {
+                  !loading &&
+                      <div className="col-8 align-self-center">
+                        <FilledAreaChart data={{timeseries: data.timeseries, average: data.average}} {...chartConfig}/>
+                      </div>
+              }
             </div>
-          </div>
-          <div className="col-8 align-self-center">
-            <FilledAreaChart data={{timeseries: data.timeseries, average: data.average}} {...chartConfig}/>
+
+            {loading && spinner}
           </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 const StageSummaryKPI = ({ data }) => {
