@@ -82,49 +82,6 @@ export const getContributors = (token, userAccount, from, to, repos) => {
     ).then(contribs => contribs.map(c => c.login));
 };
 
-export const getMetrics = async (api, accountId, dateInterval, repos, contributors) => {
-    const metrics = ['lead-time', 'cycle-time', 'wip-time', 'review-time', 'merging-time', 'release-time'];
-
-    const query = async (interval) => fetchPRsMetrics(
-        api, accountId, 'all', interval, metrics,
-        { repositories: repos, developers: contributors}
-    );
-
-    const currInterval = dateInterval;
-    const prevInterval = getPreviousInterval(currInterval);
-
-    const currResult = await query(currInterval);
-    const prevResult = await query(prevInterval);
-    const result = {};
-
-    _(metrics)
-        .forEach((m, index) => {
-            const prevAvg = dateTime.milliseconds(
-                prevResult.calculated[0].values[0].values[index]) || 0;
-            const currAvg = dateTime.milliseconds(
-                currResult.calculated[0].values[0].values[index]) || 0;
-
-            const variation = prevAvg > 0 ? (currAvg - prevAvg) * 100 / prevAvg : 0;
-
-            result[m] = {
-                data: [
-                    {
-                        x: prevResult.calculated[0].values[0].date,
-                        y: prevAvg
-                    },
-                    {
-                        x: currResult.calculated[0].values[0].date,
-                        y: currAvg
-                    }
-                ],
-                avg: currAvg,
-                variation: variation
-            };
-        });
-
-    return result;
-};
-
 export const getInvitation = async (token, accountID) => {
   const api = buildApi(token);
   const invitation = await api.genInvitation(accountID);
