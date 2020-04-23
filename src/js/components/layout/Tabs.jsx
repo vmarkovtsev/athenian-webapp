@@ -32,6 +32,6 @@ export default ({ tabs }) => {
             </div>
         </div>
 
-        {tabs[activeTabState].content}
+        {tabs.length > 0 && tabs[activeTabState].content}
     </>
 }

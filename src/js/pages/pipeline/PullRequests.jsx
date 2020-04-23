@@ -18,10 +18,10 @@ export default ({ children }) => {
 
         const getAndSetPRs = async () => {
             try {
-                const prs = await getPRs(api, apiContext.account, apiContext.interval,
-                                         apiContext.repositories, apiContext.contributors);
-                setGlobalData('prs', prs);
-                setPrsState(prs);
+                const prsAwaitable = getPRs(api, apiContext.account, apiContext.interval,
+                                   apiContext.repositories, apiContext.contributors);
+                setGlobalData('prs', prsAwaitable);
+                setPrsState(await prsAwaitable);
             } catch (err) {
                 console.error('Could not get pull requests', err);
             }

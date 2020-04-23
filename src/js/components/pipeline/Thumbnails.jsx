@@ -10,34 +10,28 @@ import { dateTime, number } from 'js/services/format';
 import DataWidget from 'js/components/DataWidget';
 import { useApi } from 'js/hooks';
 import { fetchPRsMetrics } from 'js/services/api/index';
-import { pipelineStagesConf, getStage } from 'js/pages/pipeline/Pipeline';
+import { pipelineStagesConf } from 'js/pages/pipeline/Pipeline';
 import moment from 'moment';
 import _ from "lodash";
 
-const Thumbnails = ({ data, loading, spinnerBuilder, prs, stages, activeCard }) => (
+const Thumbnails = ({ data, loading, spinnerBuilder, activeCard }) => (
     <div className="row mt-4 mb-4 align-items-end pipeline-thumbnails">
       {
-          // Here we're iterating on `pipelineStagesConf` so that we can already
-          // draw the UI even without the data. This has to be refactored in order to not
-          // use both `pipelineStagesConf` and `stages` since `stages` is the same thing,
-          // but just with the data populated.
           pipelineStagesConf.slice(2, pipelineStagesConf.length).map(
               (card, i) => {
                   const active = activeCard === card.slug;
                   const color = active ? '#FFFFFF' : card.color;
-                  const allReady = !loading && prs.length > 0 && stages.length > 0;
                   const spinner = spinnerBuilder({
                       margin: 0,
                       color: color
                   });
 
                   let [stageData, textValue, variationValue, completedPRs] = [null, null, null, null];
-                  if (allReady) {
-                      const computedCard = getStage(stages, card.slug);
-                      stageData = data[card.metric];
-                      textValue = computedCard.avg && dateTime.human(computedCard.avg);
-                      variationValue = computedCard.variation;
-                      completedPRs = computedCard.stageCompleteCount(prs);
+                  if (!loading) {
+                      stageData = data.timeseries[card.metric];
+                      textValue = dateTime.human(data.aggregated[card.metric] * 1000);
+                      variationValue = data.variations[card.metric];
+                      completedPRs = card.stageCompleteCount(data.prs);
                   }
 
                   return (
@@ -46,7 +40,7 @@ const Thumbnails = ({ data, loading, spinnerBuilder, prs, stages, activeCard }) 
                         <Link to={'/stage/' + card.slug}>
                           <Stage
                             data={stageData}
-                            loading={!allReady}
+                            loading={loading}
                             spinner={spinner}
                             title={card.title}
                             text={textValue}
@@ -98,58 +92,32 @@ const Stage = ({ data, loading, spinner, title, text, hint, badge, variation, co
     );
 };
 
-export default ({prs, stages, activeCard, config = {}}) => {
-    const { api, ready: apiReady, context: apiContext } = useApi();
+export default ({activeCard, config = {}}) => {
 
-    if (!apiReady) {
-        return null;
-    }
-
-    const { account, interval, repositories, contributors: developers } = apiContext;
-    const granularity = calculateGranularity(interval);
-    const metrics = ['wip-time', 'review-time', 'merging-time', 'release-time'];
-
-    const fetcher = async () => fetchPRsMetrics(
-        api, account, granularity, interval, metrics,
-        { repositories, developers }
+    const plumber = (data) => (
+        {
+            aggregated: data.global['prs-metrics.values'].all,
+            timeseries: _(data.global['prs-metrics.values'].custom)
+                .reduce((result, datapoints, k) => {
+                    result[k] = _(datapoints)
+                        .map(d => ({x: d.date, y: d.value}))
+                        .value();
+                    return result;
+                }, {}),
+            prs: data.global.prs.prs,
+            variations: data.global['prs-metrics.variations']
+        }
     );
 
-    const plumber = (data) => _(data.calculated[0].values)
-          .reduce(function(result, datapoint) {
-              _(metrics).each((metric, i) => {
-                  result[metric] = result[metric] || [];
-                  result[metric].push({
-                      x: datapoint.date,
-                      y: datapoint.values[i]
-                  });
-              });
-
-              return result;
-          }, {});
-
-    const defaultConfig = {prs, stages};
-    const chartConfig = {...config, ...defaultConfig, activeCard, margin: 0};
+    const widgetConfig = {...config, activeCard, margin: 0};
 
     return (
         <DataWidget
           id={`pipeline-cards-mini-charts`}
-          component={Thumbnails} fetcher={fetcher} plumber={plumber}
+          component={Thumbnails} plumber={plumber}
+          globalDataIDs={['prs', 'prs-metrics.values', 'prs-metrics.variations']}
           propagateSpinner={true}
-          config={chartConfig}
+          config={widgetConfig}
         />
     );
-};
-
-const calculateGranularity = (interval) => {
-    const diff = moment(interval.to).diff(interval.from, 'days');
-
-    if (diff <= 21) {
-        return 'day';
-    }
-
-    if (diff <= 90) {
-        return 'week';
-    }
-
-    return 'month';
 };

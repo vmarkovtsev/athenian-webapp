@@ -217,7 +217,7 @@ export default ({ stage, data }) => {
         };
     }, [prs, users, prLabelStage, stage, data]);
 
-    if (prs.length === 0) {
+    if (!prs || prs.length === 0) {
         return null;
     }
 

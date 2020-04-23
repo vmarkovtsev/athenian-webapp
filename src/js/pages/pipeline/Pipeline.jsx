@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import _ from "lodash";
 
 import PipelineContext from 'js/context/Pipeline';
 import { useApi } from 'js/hooks';
-import { getMetrics } from 'js/services/api';
 import { PR_STAGE as prStage, isInStage, happened, authored, PR_EVENT as prEvent } from 'js/services/prHelpers';
+import { useDataContext } from 'js/context/Data';
+import { fetchPRsMetrics, getPreviousInterval } from 'js/services/api';
 import { number } from 'js/services/format';
-
+import moment from 'moment';
 import { palette } from 'js/res/palette';
 
 const distinct = (collection, extractor) => Array.from(new Set(collection.flatMap(extractor)));
@@ -34,13 +36,13 @@ export const pipelineStagesConf = [
         },
         prs: prs => prs.filter(pr => isInStage(pr, prStage.WIP)),
         stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.WIP)).length,
-        summary: (stage, prs, dateInterval) => {
+        summary: (stageProportion, prs, dateInterval) => {
             const authoredPRs = authored(prs);
             const createdPrs = authoredPRs.filter(pr => dateInterval.from <= pr.created);
             const authors = distinct(createdPrs, pr => pr.authors);
             const repos = distinct(createdPrs, pr => pr.repository);
             return [
-                ['proportion of the cycle time', number.percentage(stage.overallProportion)],
+                ['proportion of the cycle time', number.percentage(stageProportion)],
                 ['pull requests created', createdPrs.length],
                 ['authors', authors.length],
                 ['repositories', repos.length],
@@ -59,7 +61,7 @@ export const pipelineStagesConf = [
         },
         prs: prs => prs.filter(pr => isInStage(pr, prStage.REVIEW)),
         stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.REVIEW)).length,
-        summary: (stage, prs) => {
+        summary: (stageProportion, prs) => {
             const authoredPRs = authored(prs);
             const reviewAndReviewCompletePRs = authoredPRs.filter(pr => isInStage(pr, prStage.REVIEW));
             const reviewed = authoredPRs.filter(pr => {
@@ -69,7 +71,7 @@ export const pipelineStagesConf = [
             const reviewers = distinct(reviewAndReviewCompletePRs, pr => pr.commentersReviewers);
             const repos = distinct(reviewAndReviewCompletePRs, pr => pr.repository);
             return [
-                ['proportion of the cycle time', number.percentage(stage.overallProportion)],
+                ['proportion of the cycle time', number.percentage(stageProportion)],
                 ['pull requests reviewed', reviewed.length],
                 ['reviewers', reviewers.length],
                 ['repositories', repos.length],
@@ -88,13 +90,13 @@ export const pipelineStagesConf = [
         },
         prs: prs => prs.filter(pr => isInStage(pr, prStage.MERGE)),
         stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.MERGE)).length,
-        summary: (stage, prs) => {
+        summary: (stageProportion, prs) => {
             const authoredPRs = authored(prs);
             const mergedPRs = authoredPRs.filter(pr => pr.merged);
             const mergerers = distinct(mergedPRs, pr => pr.mergers);
             const repos = distinct(mergedPRs, pr => pr.repository);
             return [
-                ['proportion of the cycle time', number.percentage(stage.overallProportion)],
+                ['proportion of the cycle time', number.percentage(stageProportion)],
                 ['pull requests merged', mergedPRs.length],
                 ['mergers', mergerers.length],
                 ['repositories', repos.length],
@@ -113,13 +115,13 @@ export const pipelineStagesConf = [
         },
         prs: prs => prs.filter(pr => isInStage(pr, prStage.RELEASE)),
         stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.RELEASE)).length,
-        summary: (stage, prs) => {
+        summary: (stageProportion, prs) => {
             const authoredPRs = authored(prs);
             const releasedPRs = authoredPRs.filter(pr => pr.release_url);
             const releases = distinct(releasedPRs, pr => pr.release_url);
             const repos = distinct(releasedPRs, pr => pr.repository);
             return [
-                ['proportion of the cycle time', number.percentage(stage.overallProportion)],
+                ['proportion of the cycle time', number.percentage(stageProportion)],
                 ['pull requests released', releasedPRs.length],
                 ['releases', releases.length],
                 ['repositories', repos.length],
@@ -127,8 +129,6 @@ export const pipelineStagesConf = [
         },
     },
 ];
-
-const mainStagesNames = ['wip', 'review', 'merge', 'release'];
 
 export const getStage = (stages, slug) => stages.find(conf => conf.slug === slug);
 export const getStageTitle = (slug) => {
@@ -138,47 +138,117 @@ export const getStageTitle = (slug) => {
 
 export default ({ children }) => {
     const { api, ready: apiReady, context: apiContext } = useApi();
-    const [pipelineState, setPipelineState] = useState({ leadtime: {}, cycletime: {}, stages: [] });
+    const { setGlobal: setGlobalData } = useDataContext();
 
     useEffect(() => {
         if (!apiReady) {
             return;
         }
 
-        (async () => {
-            try {
-                const data = await getMetrics(
-                    api, apiContext.account, apiContext.interval,
-                    apiContext.repositories, apiContext.contributors
+        const allMetrics = [
+            'wip-time',
+            'wip-count',
+            'review-time',
+            'review-count',
+            'merging-time',
+            'merging-count',
+            'release-time',
+            'release-count',
+            'lead-time',
+            'lead-count',
+            'cycle-time',
+            'cycle-count',
+        ];
+
+        const fetchGlobalPRMetrics = async () => {
+
+            const fetchValues = async () => {
+                const customGranularity = calculateGranularity(apiContext.interval);
+                const data = await fetchPRsMetrics(
+                    api, apiContext.account, ['all', customGranularity],
+                    apiContext.interval, allMetrics,
+                    { repositories: apiContext.repositories, developers: apiContext.contributors }
                 );
-                let leadtime = {};
-                let cycletime = {};
-                const stages = [];
-                pipelineStagesConf.forEach(metricConf => {
-                    const metric = { ...metricConf, ...data[metricConf.metric] };
-                    if (mainStagesNames.indexOf(metricConf.stageName) >= 0) {
-                        stages.push(metric);
-                    } else if (metricConf.stageName === 'leadtime') {
-                        leadtime = metric;
-                    } else if (metricConf.metric === 'cycle-time') {
-                        cycletime = metric;
-                    }
-                });
 
-                if (leadtime.avg) {
-                    stages.forEach(stage => stage.overallProportion = 100 * stage.avg / cycletime.avg);
-                }
+                const allValues = _(allMetrics)
+                      .zip(data.calculated[0].values[0].values)
+                      .fromPairs()
+                      .value();
+                const customValues = _(data.calculated[1].values).reduce(
+                    (result, v) => {
+                        _(allMetrics).forEach((m, i) => {
+                            (result[m] || (result[m] = [])).push(
+                                {
+                                    date: v.date,
+                                    value: v.values[i] || 0
+                                }
+                            );
+                        });
 
-                setPipelineState({ leadtime, cycletime, stages });
-            } catch (err) {
-                console.error('Could not get pipeline metrics', err);
-            }
-        })();
-    }, [api, apiContext.account, apiContext.contributors, apiContext.interval, apiContext.repositories, apiReady]);
+                        return result;
+                    }, {});
+
+                return {
+                    all: allValues,
+                    custom: customValues
+                };
+            };
+
+            setGlobalData('prs-metrics.values', fetchValues());
+        };
+
+        const fetchGlobalPRMetricsVariations = async() => {
+
+            const fetchValues = async () => {
+                const currInterval = apiContext.interval;
+                const prevInterval = getPreviousInterval(currInterval);
+
+                const diffDays = moment(currInterval.to).diff(currInterval.from, 'days');
+                const interval = {from: prevInterval.from,
+                                  to: currInterval.to};
+
+                const data = await fetchPRsMetrics(
+                    api, apiContext.account, `${diffDays + 1} day`,
+                    interval, allMetrics,
+                    { repositories: apiContext.repositories, developers: apiContext.contributors }
+                );
+
+                const calcVariation = (prev, curr) => prev > 0 ? (curr - prev) * 100 / prev : 0;
+
+                const prevValues = data.calculated[0].values[0].values;
+                const currValues = data.calculated[0].values[1].values;
+
+                return _(prevValues)
+                    .zip(currValues)
+                    .map((v, i) => [allMetrics[i], calcVariation(v[0], v[1])])
+                    .fromPairs()
+                    .value();
+            };
+
+            setGlobalData('prs-metrics.variations', fetchValues());
+        };
+
+        fetchGlobalPRMetrics();
+        fetchGlobalPRMetricsVariations();
+    }, [api, apiContext.account, apiContext.contributors, apiContext.interval, apiContext.repositories, apiReady, setGlobalData]);
 
     return (
-        <PipelineContext metrics={pipelineState}>
+        <PipelineContext metrics={{}}>
             {children}
         </PipelineContext>
     );
+};
+
+const calculateGranularity = (interval) => {
+    const diff = moment(interval.to).diff(interval.from, 'days');
+
+    if (diff <= 21) {
+        return 'day';
+    }
+
+    if (diff <= 90) {
+        return 'week';
+    }
+
+    return 'month';
 };

@@ -99,35 +99,17 @@ export default () => {
         return null;
     }
 
-    const { account, interval, repositories, contributors: developers } = apiContext;
+    const { account, interval, repositories } = apiContext;
     const currInterval = interval;
     const prevInterval = getPreviousInterval(currInterval);
 
-    const granularity = 'all';
-
-
     const fetcher = async () => {
-        const metrics = ['lead-time', 'cycle-time', 'cycle-count'];
-
-        const dataPrev = await fetchPRsMetrics(
-            api, account, granularity, prevInterval, metrics,
-            { repositories, developers }
-        );
-        const dataCurr = await fetchPRsMetrics(
-            api, account, granularity, currInterval, metrics,
-            { repositories, developers }
-        );
-
         const dataContribsPrev = await fetchContributors(
             api, account, prevInterval,
             { repositories }
         );
 
         return Promise.resolve({
-            leadTimeCycleTimePrsCount: {
-                prev: dataPrev,
-                curr: dataCurr,
-            },
             contribs: {
                 prev: dataContribsPrev,
             }
@@ -137,26 +119,21 @@ export default () => {
     const plumber = (data) => {
         const calcVariation = (prev, curr) => prev > 0 ? (curr - prev) * 100 / prev : 0;
 
-        const [leadTimePrev, cycleTimePrev, prsCountPrev] = data.leadTimeCycleTimePrsCount.prev
-              .calculated[0].values[0].values;
-        const [leadTimeCurr, cycleTimeCurr, prsCountCurr] = data.leadTimeCycleTimePrsCount.curr
-              .calculated[0].values[0].values;
-
         const contribsCountPrev = data.contribs.prev.length;
         const contribsCountCurr = data.global['filter.contribs'].length;
 
         return {
             leadTime: {
-                avg: leadTimeCurr * 1000,
-                variation: calcVariation(leadTimePrev, leadTimeCurr)
+                avg: data.global['prs-metrics.values'].all['lead-time'] * 1000,
+                variation: data.global['prs-metrics.variations']['lead-time']
             },
             cycleTime: {
-                avg: cycleTimeCurr * 1000,
-                variation: calcVariation(cycleTimePrev, cycleTimeCurr)
+                avg: data.global['prs-metrics.values'].all['cycle-time'] * 1000,
+                variation: data.global['prs-metrics.variations']['cycle-time']
             },
             createdPRs: {
-                avg: prsCountCurr,
-                variation: calcVariation(prsCountPrev, prsCountCurr)
+                avg: data.global['prs-metrics.values'].all['cycle-count'],
+                variation: data.global['prs-metrics.variations']['cycle-count']
             },
             contribs: {
                 avg: contribsCountCurr,
@@ -169,7 +146,7 @@ export default () => {
         <DataWidget
           id={`main-metrics`}
           component={MainMetrics} fetcher={fetcher} plumber={plumber}
-          globalDataIDs={['filter.contribs']}
+          globalDataIDs={['filter.contribs', 'prs-metrics.values', 'prs-metrics.variations']}
           config={{
               margin: 0,
               color: '#858796',

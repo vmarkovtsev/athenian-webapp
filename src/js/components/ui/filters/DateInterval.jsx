@@ -52,8 +52,8 @@ export default ({
 }) => {
     minDate = moment(minDate);
     maxDate = moment(maxDate);
-    initialFrom = moment(initialFrom);
-    initialTo = moment(initialTo);
+    initialFrom = moment(initialFrom).startOf('day');
+    initialTo = moment(initialTo).endOf('day');
 
     const initialDateInterval = {
         startDate: initialFrom,

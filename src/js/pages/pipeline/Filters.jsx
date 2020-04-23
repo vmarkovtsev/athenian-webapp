@@ -14,9 +14,16 @@ import { getRepos, getContributors } from 'js/services/api';
 import { dateTime, github } from 'js/services/format';
 
 import { useMountEffect } from 'js/hooks';
+import moment from 'moment';
 
-const allowedDateInterval = { from: YEAR_AGO, to: EOD };
-const defaultDateInterval = { from: TWO_WEEKS_AGO, to: EOD };
+const allowedDateInterval = {
+    from: moment(YEAR_AGO).startOf('day').valueOf(),
+    to: moment(EOD).endOf('day').valueOf()
+};
+const defaultDateInterval = {
+    from: moment(TWO_WEEKS_AGO).startOf('day').valueOf(),
+    to: moment(EOD).endOf('day').valueOf()
+};
 
 export default ({ children }) => {
     const { getTokenSilently } = useAuth0();
@@ -57,9 +64,9 @@ export default ({ children }) => {
         (async () => {
             const token = await getTokenSilently();
             const initialRepos = await updateReposFilter({...context, token, setters: reposSetters});
-            setGlobalData('filter.repos', initialRepos);
+            setGlobalData('filter.repos', Promise.resolve(initialRepos));
             const initialContribs = await updateContribsFilter({...context, token, setters: contribsSetters});
-            setGlobalData('filter.contribs', initialContribs);
+            setGlobalData('filter.contribs', Promise.resolve(initialContribs));
             setReadyState(true);
         })();
     });
@@ -93,11 +100,15 @@ export default ({ children }) => {
         dateInterval = dateInterval || filteredDateIntervalState;
 
         setFilteredReposState(selectedRepos);
-        setGlobalData('filter.repos', selectedRepos);
+        setGlobalData('filter.repos', Promise.resolve(selectedRepos));
 
         const token = await getTokenSilently();
-        await updateContribsFilter({...context, token, dateInterval, repos: selectedRepos,
-                                    setters: contribsSetters});
+        const selectedContribs = await updateContribsFilter({
+            ...context, token, dateInterval, repos: selectedRepos,
+            setters: contribsSetters
+        });
+
+        setGlobalData('filter.contribs', Promise.resolve(selectedContribs));
         setReadyState(true);
     };
 
@@ -106,9 +117,8 @@ export default ({ children }) => {
         resetData();
         console.info('Contributors selection changed', selectedContribs);
         setFilteredContribsState(selectedContribs);
-        console.log("XXXX");
-        setGlobalData('filter.contribs', selectedContribs);
-        console.log("YYY");
+        setGlobalData('filter.repos', Promise.resolve(filteredReposState));
+        setGlobalData('filter.contribs', Promise.resolve(selectedContribs));
         setReadyState(true);
     };
 
