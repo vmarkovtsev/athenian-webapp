@@ -17,13 +17,14 @@ import { DateBigNumber, BigText, onValueChange, onValueReset } from 'js/componen
 
 import { computeTickValues } from 'js/components/insights/charts/library/TimeSeries';
 
-export default ({ data, average, color = palette.schemes.primary, height = 300 }) => {
+export default ({ data, color = palette.schemes.primary, height = 300 }) => {
+  const {timeseries, average} = data;
   const fillColor = hexToRGBA(color, .2);
   const [currentHover, setCurrentHover] = useState(null);
-  const xTickValues = computeTickValues(data, 6);
-  const [conversionValue, durationUnit] = getBestFitDurationUnit(data);
+  const xTickValues = computeTickValues(timeseries, 6);
+  const [conversionValue, durationUnit] = getBestFitDurationUnit(timeseries);
 
-  const formattedData = _(data)
+  const formattedData = _(timeseries)
     .map(v => ({...v, y: v.y * 1000 / conversionValue}))
     .value();
 
