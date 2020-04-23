@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useContext } from 'react';
+import React, { useCallback, useReducer, useContext } from 'react';
 
 import _ from "lodash";
 
@@ -19,15 +19,17 @@ const globalKeyPrefix = 'global.';
 const dataStateReducer = (state, action) => {
     if (action.reset) {
         console.log("Resetting all data");
-        return {};
+        return {data: {}, globalReady: false};
     }
 
     const { id, data, global } = action;
-    console.log(`Setting ${global ? 'global ' : ''}data with id: ${id} | ${state[id]}`);
+    const newState = {...state};
+
+    console.log(`Setting ${global ? 'global ' : ''}data with id: ${id} | ${newState.data[id]}`);
     if (global) {
         if (!globalKeysWhitelist.includes(id)) {
             throw Error(`Trying to use unrecognized global id: ${id}`);
-        } else if (state[id]) {
+        } else if (newState.data[id]) {
             throw Error(`Trying to override global data with id: ${id}`);
         }
     } else if (id.startsWith(globalKeyPrefix)) {
@@ -35,31 +37,25 @@ const dataStateReducer = (state, action) => {
     }
 
     const prefix = global ? globalKeyPrefix : '';
-    state[`${prefix}${id}`] = data;
-    return state;
+
+    newState.data[`${prefix}${id}`] = data;
+    newState.globalReady = _(globalKeysWhitelist).map(k => !!newState.data[`global.${k}`]).every();
+    console.log('globalready', newState.globalReady);
+    return newState;
 };
 
 export default ({ children }) => {
-    const [dataState, dispatchDataState] = useReducer(dataStateReducer, {});
-    const [globalDataReady, setGlobalDataReady] = useState(false);
+    const [dataState, dispatchDataState] = useReducer(
+        dataStateReducer, {data: {}, globalReady: false});
 
-    const reset = () => {
-        dispatchDataState({reset: true});
-        setGlobalDataReady(false);
-    };
-    const get = (id) => id ? dataState[id] : null;
-    const set = (id, data) => id ? dispatchDataState({id, data}) : null;
-    const getGlobal = (id) => id ? dataState[`global.${id}`] : null;
-    const setGlobal = (id, data) => {
-        if (id) {
-            dispatchDataState({id, data, global: true});
-        }
-
-        setGlobalDataReady(_(globalKeysWhitelist).map(getGlobal).every());
-    };
+    const reset = useCallback(() => dispatchDataState({reset: true}),[]);
+    const get = useCallback((id) => id ? dataState.data[id] : null, [dataState]);
+    const set = useCallback((id, data) => id ? dispatchDataState({id, data}) : null, []);
+    const getGlobal = useCallback((id) => id ? dataState.data[`global.${id}`] : null, [dataState]);
+    const setGlobal = useCallback((id, data) => id ? dispatchDataState({id, data, global: true}) : null, []);
 
     return (
-        <DataContext.Provider value={{get, set, getGlobal, setGlobal, reset, globalDataReady}}>
+        <DataContext.Provider value={{get, set, getGlobal, setGlobal, reset, globalDataReady: dataState.globalReady}}>
             {children}
         </DataContext.Provider >
     );
