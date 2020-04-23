@@ -36,9 +36,6 @@ const User = ({ user }) => {
             </div>
           </header>
           <InvitationCreator user={user} className="menuItem py-3" />
-          <div className="d-flex flex-row d-flex justify-content-between align-items-center font-weight-light text-s menuItem py-3 border-top">
-            <Link to="/settings" className="text-dark">Settings</Link>
-          </div>
           <footer className="menuItem d-flex flex-row align-items-center justify-content-end bg-light py-2 text-xs border-top">
             <Link to="/logout" className="text-s text-secondary">Logout</Link>
           </footer>
