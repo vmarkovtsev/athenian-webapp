@@ -16,8 +16,7 @@ const stageChartsStateReducer = (state, action) => {
         return {[action.stageSlug]: action.result};
     }
 
-    state[action.stageSlug] = action.result;
-    return state;
+    return {...state, [action.stageSlug]: action.result};
 };
 
 export default () => {
