@@ -1,55 +1,44 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
-import { useFiltersContext } from 'js/context/Filters';
-import { SummaryMetrics, StageSummaryKPI } from 'js/components/pipeline/StageMetrics';
+import { StageSummaryMetrics } from 'js/components/pipeline/StageMetrics';
 import Insights from 'js/components/insights/Insights';
 import Tabs from 'js/components/layout/Tabs';
 import PullRequests from 'js/components/pipeline/PullRequests';
-import SummaryChart from 'js/components/pipeline/SummaryChart';
 
 import { pipelineStagesConf, getStage } from 'js/pages/pipeline/Pipeline';
-
-import { usePipelineContext } from 'js/context/Pipeline';
-import { usePRsContext } from 'js/context/PRs';
+import { useDataContext } from 'js/context/Data';
 
 export default () => {
-    const { stages: stagesContext } = usePipelineContext();
-    const prsContext = usePRsContext();
+    const { getGlobal: getGlobalData, globalDataReady } = useDataContext();
+    const [prsState, setPRsState] = useState(null);
+
+    useEffect(() => {
+        if (!globalDataReady) {
+            return;
+        }
+
+        (async () => {
+            const prs = await getGlobalData('prs');
+            setPRsState(prs);
+        })();
+    });
+
 
     const { name: stageSlug } = useParams();
-    const activeConf = getStage(pipelineStagesConf, stageSlug);
-    const activeStage = getStage(stagesContext, stageSlug);
+    const activeStage = getStage(pipelineStagesConf, stageSlug);
 
-    const {
-        dateInterval,
-    } = useFiltersContext();
-
-
-    if (!activeConf) {
+    if (!activeStage) {
         return <p>{stageSlug} is not a valid pipeline stage.</p>;
     }
 
-    if (!activeStage) {
-        return null;
-    }
-
     const filteredPRs = {
-        prs: activeStage.prs(prsContext.prs),
-        users: prsContext.users,
+        prs: prsState && activeStage.prs(prsState.prs),
+        users: prsState && prsState.users,
     };
-
-    const chart = <SummaryChart
-                    name={activeStage.stageName}
-                    metric={activeStage.metric}
-                    config={{
-                        average: activeStage.avg / 1000
-                    }}
-                  />;
-    const kpi = <StageSummaryKPI data={activeStage.summary(activeStage, prsContext.prs, dateInterval)} />;
 
     return (
         <>
-          <SummaryMetrics conf={activeStage} chart={chart} kpi={kpi} />
+          <StageSummaryMetrics name={activeStage.stageName} stage={activeStage} />
           <Tabs tabs={[
               {
                   title: 'Insights',
@@ -57,7 +46,7 @@ export default () => {
               },
               {
                   title: 'Pull Requests',
-                  badge: filteredPRs.prs.length,
+                  badge: filteredPRs.prs && filteredPRs.prs.length,
                   content: <PullRequests data={filteredPRs} stage={activeStage.stageName} />
               }
           ]} />
