@@ -46,3 +46,37 @@
     height: 3rem !important;
     width: 3rem !important;
 }
+
+.dropdown-toggle {
+    height: 3.2rem;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    &::after {
+        color: $color-secondary;
+        display: block;
+        position: absolute;
+        right: 1rem;
+        top: 1.5rem;
+    }
+
+    &.btn-white {
+        background: $white;
+        border: 1px solid $at-border-color;
+        border-radius: 0;
+        color: $color-dark !important;
+        min-width: 14rem;
+        text-align: left;
+    }
+}
+
+.dropdown-menu {
+    min-width: 14rem !important;
+
+    .dropdown-item {
+        font-size: 1.2rem;
+        padding: 1rem 1.5rem;
+    }
+}

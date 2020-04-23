@@ -1,0 +1,29 @@
+.accordion {
+
+    .btn {
+
+        &:focus {
+            box-shadow: none;
+        }
+
+        .accordion-icon {
+            color: $color-secondary;
+            font-size: 1.5rem !important;
+            transition: transform 0.1s ease-in;
+        }
+
+        &[aria-expanded=true] {
+
+            .accordion-icon {
+                transform: rotate(90deg);
+            }
+        }
+    }
+
+    .collapse {
+
+        .card-body {
+            border-top: 1px solid $at-border-color;
+        }
+    }
+}

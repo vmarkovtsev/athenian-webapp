@@ -193,27 +193,9 @@
 }
 
 div.dataTables_wrapper div{
+
     &.dataTables_length select {
         margin-left: .6rem;
         width: 5rem !important;
-    }
-
-    &.dataTables_filter {
-        text-align: left !important;
-
-        .field-icon {
-            position: absolute;
-            opacity: 0.5;
-            left: 1.1rem;
-            top: 1rem;
-        }
-
-        .form-control {
-            width: 40rem;
-            padding-left: 3rem;
-            font-size: 1.2rem;
-            font-weight: 300;
-            margin-left: 0;
-        }
     }
 }

@@ -30,6 +30,7 @@ import MetricGroups from 'js/pages/prototypes/MetricGroups';
 import Tooltips from 'js/pages/prototypes/Tooltips';
 import EmptyStates from 'js/pages/prototypes/EmptyStates';
 import WaitingProto from 'js/pages/prototypes/Waiting';
+import ReleaseSettingsProto from 'js/pages/prototypes/ReleaseSettings';
 
 export default () => {
 
@@ -101,6 +102,7 @@ export default () => {
                     'tooltips': <Tooltips />,
                     'empty-states': <EmptyStates />,
                     'waiting': <WaitingProto />,
+                    'release-settings': <ReleaseSettingsProto />,
                 }} />
               </ContextRoute>
 
