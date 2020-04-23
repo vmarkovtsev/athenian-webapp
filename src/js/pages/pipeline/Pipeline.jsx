@@ -1,13 +1,7 @@
-import React, { useEffect } from 'react';
-import _ from "lodash";
+import React from 'react';
 
-import PipelineContext from 'js/context/Pipeline';
-import { useApi } from 'js/hooks';
 import { PR_STAGE as prStage, isInStage, happened, authored, PR_EVENT as prEvent } from 'js/services/prHelpers';
-import { useDataContext } from 'js/context/Data';
-import { fetchPRsMetrics, getPreviousInterval } from 'js/services/api';
 import { number } from 'js/services/format';
-import moment from 'moment';
 import { palette } from 'js/res/palette';
 
 const distinct = (collection, extractor) => Array.from(new Set(collection.flatMap(extractor)));
@@ -137,127 +131,9 @@ export const getStageTitle = (slug) => {
 };
 
 export default ({ children }) => {
-    const { api, ready: apiReady, context: apiContext } = useApi();
-    const { setGlobal: setGlobalData } = useDataContext();
-
-    useEffect(() => {
-        if (!apiReady) {
-            return;
-        }
-
-        const allMetrics = [
-            'wip-time',
-            'wip-count',
-            'review-time',
-            'review-count',
-            'merging-time',
-            'merging-count',
-            'release-time',
-            'release-count',
-            'lead-time',
-            'lead-count',
-            'cycle-time',
-            'cycle-count',
-        ];
-
-        const fetchGlobalPRMetrics = async () => {
-
-            const fetchValues = async () => {
-                const customGranularity = calculateGranularity(apiContext.interval);
-                const data = await fetchPRsMetrics(
-                    api, apiContext.account, ['all', customGranularity],
-                    apiContext.interval, allMetrics,
-                    { repositories: apiContext.repositories, developers: apiContext.contributors }
-                );
-
-                let rawAllValues, rawCustomValues;
-                if (data.calculated[0].granularity === 'all') {
-                    rawAllValues = data.calculated[0].values;
-                    rawCustomValues = data.calculated[1].values;
-                } else {
-                    rawAllValues = data.calculated[1].values;
-                    rawCustomValues = data.calculated[0].values;
-                }
-
-                const allValues = _(allMetrics)
-                      .zip(rawAllValues[0].values)
-                      .fromPairs()
-                      .value();
-                const customValues = _(rawCustomValues).reduce(
-                    (result, v) => {
-                        _(allMetrics).forEach((m, i) => {
-                            (result[m] || (result[m] = [])).push(
-                                {
-                                    date: v.date,
-                                    value: v.values[i] || 0
-                                }
-                            );
-                        });
-
-                        return result;
-                    }, {});
-
-                return {
-                    all: allValues,
-                    custom: customValues
-                };
-            };
-
-            setGlobalData('prs-metrics.values', fetchValues());
-        };
-
-        const fetchGlobalPRMetricsVariations = async() => {
-
-            const fetchValues = async () => {
-                const currInterval = apiContext.interval;
-                const prevInterval = getPreviousInterval(currInterval);
-
-                const diffDays = moment(currInterval.to).diff(currInterval.from, 'days');
-                const interval = {from: prevInterval.from,
-                                  to: currInterval.to};
-
-                const data = await fetchPRsMetrics(
-                    api, apiContext.account, `${diffDays + 1} day`,
-                    interval, allMetrics,
-                    { repositories: apiContext.repositories, developers: apiContext.contributors }
-                );
-
-                const calcVariation = (prev, curr) => prev > 0 ? (curr - prev) * 100 / prev : 0;
-
-                const prevValues = data.calculated[0].values[0].values;
-                const currValues = data.calculated[0].values[1].values;
-
-                return _(prevValues)
-                    .zip(currValues)
-                    .map((v, i) => [allMetrics[i], calcVariation(v[0], v[1])])
-                    .fromPairs()
-                    .value();
-            };
-
-            setGlobalData('prs-metrics.variations', fetchValues());
-        };
-
-        fetchGlobalPRMetrics();
-        fetchGlobalPRMetricsVariations();
-    }, [api, apiContext.account, apiContext.contributors, apiContext.interval, apiContext.repositories, apiReady, setGlobalData]);
-
     return (
-        <PipelineContext metrics={{}}>
-            {children}
-        </PipelineContext>
+        <>
+          {children}
+        </>
     );
-};
-
-const calculateGranularity = (interval) => {
-    const diff = moment(interval.to).diff(interval.from, 'days');
-
-    if (diff <= 21) {
-        return 'day';
-    }
-
-    if (diff <= 90) {
-        return 'week';
-    }
-
-    return 'month';
 };
