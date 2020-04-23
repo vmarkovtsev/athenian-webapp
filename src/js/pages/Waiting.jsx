@@ -15,8 +15,11 @@ export default () => {
 
   const ghAppUrl = window.ENV.application.githubAppUri;
 
+  const isAdmin = userContext?.defaultAccount?.isAdmin;
+  const autoOpen = location.state?.ghAppAutoOpen;
+
   useEffect(() => {
-    if (!location.state?.ghAppAutoOpen) {
+    if (!isAdmin || !autoOpen) {
       return;
     }
 
@@ -25,10 +28,7 @@ export default () => {
     }, 5000);
 
     return () => clearTimeout(timer);
-  }, [ghAppOpenedState, location.state, ghAppUrl]);
-
-  const isAdmin = userContext?.defaultAccount?.isAdmin;
-  const autoOpen = location.state?.ghAppAutoOpen;
+  }, [ghAppOpenedState, isAdmin, autoOpen, ghAppUrl]);
 
   if (!isAdmin) {
     return (
@@ -61,7 +61,7 @@ export default () => {
           <>
             <div>
               Please, install and configure the Athenian GitHub application
-              at <GhAppLink url={ghAppUrl} onClick={() => setGhAppOpenedState(true)} />
+              at <GhAppLink url={ghAppUrl} onClick={() => { setGhAppOpeneErrorState(false); setGhAppOpenedState(true); }} />
             </div>
             <div className="mt-2">
               Once you install and configure the GitHub App, Athenian will start loading your data from GitHub. The loading process will take a while.
