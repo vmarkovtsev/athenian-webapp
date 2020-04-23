@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { PR_STAGE as prStage, isInStage, happened, authored, PR_EVENT as prEvent } from 'js/services/prHelpers';
 import { number } from 'js/services/format';
 import { palette } from 'js/res/palette';
@@ -128,12 +126,4 @@ export const getStage = (stages, slug) => stages.find(conf => conf.slug === slug
 export const getStageTitle = (slug) => {
     const conf = getStage(pipelineStagesConf, slug);
     return conf ? conf.title : null;
-};
-
-export default ({ children }) => {
-    return (
-        <>
-          {children}
-        </>
-    );
 };
