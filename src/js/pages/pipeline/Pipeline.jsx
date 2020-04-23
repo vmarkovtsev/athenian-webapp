@@ -36,13 +36,13 @@ export const pipelineStagesConf = [
         },
         prs: prs => prs.filter(pr => isInStage(pr, prStage.WIP)),
         stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.WIP)).length,
-        summary: (stage, prs, dateInterval) => {
+        summary: (stageProportion, prs, dateInterval) => {
             const authoredPRs = authored(prs);
             const createdPrs = authoredPRs.filter(pr => dateInterval.from <= pr.created);
             const authors = distinct(createdPrs, pr => pr.authors);
             const repos = distinct(createdPrs, pr => pr.repository);
             return [
-                ['proportion of the cycle time', number.percentage(stage.overallProportion)],
+                ['proportion of the cycle time', number.percentage(stageProportion)],
                 ['pull requests created', createdPrs.length],
                 ['authors', authors.length],
                 ['repositories', repos.length],
@@ -61,7 +61,7 @@ export const pipelineStagesConf = [
         },
         prs: prs => prs.filter(pr => isInStage(pr, prStage.REVIEW)),
         stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.REVIEW)).length,
-        summary: (stage, prs) => {
+        summary: (stageProportion, prs) => {
             const authoredPRs = authored(prs);
             const reviewAndReviewCompletePRs = authoredPRs.filter(pr => isInStage(pr, prStage.REVIEW));
             const reviewed = authoredPRs.filter(pr => {
@@ -71,7 +71,7 @@ export const pipelineStagesConf = [
             const reviewers = distinct(reviewAndReviewCompletePRs, pr => pr.commentersReviewers);
             const repos = distinct(reviewAndReviewCompletePRs, pr => pr.repository);
             return [
-                ['proportion of the cycle time', number.percentage(stage.overallProportion)],
+                ['proportion of the cycle time', number.percentage(stageProportion)],
                 ['pull requests reviewed', reviewed.length],
                 ['reviewers', reviewers.length],
                 ['repositories', repos.length],
@@ -90,13 +90,13 @@ export const pipelineStagesConf = [
         },
         prs: prs => prs.filter(pr => isInStage(pr, prStage.MERGE)),
         stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.MERGE)).length,
-        summary: (stage, prs) => {
+        summary: (stageProportion, prs) => {
             const authoredPRs = authored(prs);
             const mergedPRs = authoredPRs.filter(pr => pr.merged);
             const mergerers = distinct(mergedPRs, pr => pr.mergers);
             const repos = distinct(mergedPRs, pr => pr.repository);
             return [
-                ['proportion of the cycle time', number.percentage(stage.overallProportion)],
+                ['proportion of the cycle time', number.percentage(stageProportion)],
                 ['pull requests merged', mergedPRs.length],
                 ['mergers', mergerers.length],
                 ['repositories', repos.length],
@@ -115,13 +115,13 @@ export const pipelineStagesConf = [
         },
         prs: prs => prs.filter(pr => isInStage(pr, prStage.RELEASE)),
         stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.RELEASE)).length,
-        summary: (stage, prs) => {
+        summary: (stageProportion, prs) => {
             const authoredPRs = authored(prs);
             const releasedPRs = authoredPRs.filter(pr => pr.release_url);
             const releases = distinct(releasedPRs, pr => pr.release_url);
             const repos = distinct(releasedPRs, pr => pr.repository);
             return [
-                ['proportion of the cycle time', number.percentage(stage.overallProportion)],
+                ['proportion of the cycle time', number.percentage(stageProportion)],
                 ['pull requests released', releasedPRs.length],
                 ['releases', releases.length],
                 ['repositories', repos.length],
