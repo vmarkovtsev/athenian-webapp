@@ -18,3 +18,63 @@
         padding-left: 3.5rem;
     }
 }
+
+// Search fieds
+
+div.dataTables_wrapper div.dataTables_filter,
+.input-search {
+    position: relative;
+    text-align: left !important;
+
+    .field-icon {
+        position: absolute;
+        opacity: 0.5;
+        left: 1.1rem;
+        top: 1rem;
+    }
+
+    .form-control {
+        width: 40rem;
+        padding-left: 3rem;
+        font-size: 1.2rem;
+        font-weight: 300;
+        margin-left: 0;
+    }
+}
+
+// Radio buttons
+
+.custom-control-label {
+    line-height: 2.5rem;
+    margin-left: 1rem;
+
+    &::before,
+    &::after {
+        height: 1.5rem !important;
+        left: -2.5rem !important;
+        width: 1.5rem !important;
+    }
+}
+
+.custom-control-input {
+
+    &:checked ~ .custom-control-label::before {
+        background-color: $color-turquoise !important;
+        border-color: $color-turquoise !important;
+    }
+
+    &:focus ~ .custom-control-label::before {
+        box-shadow: 0 0 0 0.2rem rgba($color-turquoise, 0.25) !important;
+    }
+
+    &:focus:not(:checked) ~ .custom-control-label::before {
+        border-color: rgba($color-turquoise, 0.5) !important;
+    }
+
+    &:checked {
+
+        & + .custom-control-label {
+            color: $color-dark !important;
+        }
+    }
+}
