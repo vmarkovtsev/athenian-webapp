@@ -3,6 +3,7 @@ import { useLocation, Redirect } from 'react-router-dom';
 
 import { useAuth0 } from 'js/context/Auth0';
 import Simple from 'js/pages/templates/Simple';
+import { FROM_REGISTRATION } from 'js/pages/Waiting';
 
 import { buildApi } from 'js/services/api';
 import InvitationLink from 'js/services/api/openapi-client/model/InvitationLink';
@@ -34,8 +35,8 @@ export default () => {
           invitationAcceptRequest.current = true;
           const check = await acceptInvite(token, inviteLink);
           setRedirectTo({
-            pathname: '/waiting',
-            state: { ghAppAutoOpen: check.type === 'admin' },
+            pathname: check.type === 'admin' ? '/waiting' : '/stage/overview',
+            state: { origin: FROM_REGISTRATION },
           });
         } catch (err) {
           setErrorMessage(err.message);

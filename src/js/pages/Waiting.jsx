@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import Page from './templates/Page';
 
 import { useUserContext } from 'js/context/User';
 
 import logo from 'images/logos/logo-transparent.svg';
+
+export const FROM_REGISTRATION = 'registration';
 
 export default () => {
   const location = useLocation();
@@ -16,15 +18,15 @@ export default () => {
   const ghAppUrl = window.ENV.application.githubAppUri;
 
   const isAdmin = userContext?.defaultAccount?.isAdmin;
-  const autoOpen = location.state?.ghAppAutoOpen;
+  const autoOpen = location.state?.origin == FROM_REGISTRATION;
 
   useEffect(() => {
-    if (!isAdmin || !autoOpen) {
+    if (!isAdmin || !autoOpen || ghAppOpenedState) {
       return;
     }
 
     const timer = setTimeout(() => {
-      !ghAppOpenedState && openGhApp(ghAppUrl, () => setGhAppOpenedState(true), () => setGhAppOpeneErrorState(true))
+      openGhApp(ghAppUrl, () => setGhAppOpenedState(true), () => setGhAppOpeneErrorState(true))
     }, 5000);
 
     return () => clearTimeout(timer);
@@ -34,7 +36,7 @@ export default () => {
     return (
       <Slide
         title="Welcome to Athenian"
-        text="Please wait while we are fetching your data…"
+        text={<Link to="/stage/overview" className="btn btn-large btn-orange">Get the insights</Link>}
       >
         <Welcome />
       </Slide>
@@ -45,7 +47,7 @@ export default () => {
     return (
       <Slide
         title="Welcome to Athenian"
-        text="Please wait while we are fetching your data…"
+        text={<Link to="/stage/overview" className="btn btn-large btn-orange">Get the insights</Link>}
         footer={<>To install and configure the GitHub application, open <GhAppLink url={ghAppUrl} /></>}
       >
         <Welcome />
