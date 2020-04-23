@@ -33,8 +33,8 @@ export default () => {
           <div className="card mb-5">
             <div className="card-header text-center bg-white">
               <img className="rounded-circle mt-2 mb-4" src={userContext.picture || defaultImage} alt="" width="100" />
-              <h3 className="text-dark h5">{userContext.name}</h3>
-              <p className="text-secondary font-weight-light">{userContext.email}</p>
+              <h3 className="text-dark text-truncate h5">{userContext.name}</h3>
+              <p className="text-secondary text-truncate font-weight-light">{userContext.email}</p>
             </div>
             <div className="card-body p-0">
               <div className="list-group list-group-flush">
@@ -72,8 +72,8 @@ export default () => {
                 <div className="card-body d-flex align-items-center">
                   <img className="rounded-circle mr-3" src={userContext.picture || defaultImage} alt="" width="80" />
                   <div>
-                    <h3 className="text-dark h5">{userContext.name} <FontAwesomeIcon icon={faGithub} /></h3>
-                    <p className="text-secondary font-weight-light mb-0">{userContext.email}</p>
+                    <h3 className="text-dark text-truncate h5">{userContext.name} <FontAwesomeIcon icon={faGithub} /></h3>
+                    <p className="text-secondary text-truncate font-weight-light mb-0">{userContext.email}</p>
                   </div>
                 </div>
               </div>
