@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import _ from "lodash";
 
 import PipelineContext from 'js/context/Pipeline';
 import { useApi } from 'js/hooks';
 import { PR_STAGE as prStage, isInStage, happened, authored, PR_EVENT as prEvent } from 'js/services/prHelpers';
 import { useDataContext } from 'js/context/Data';
-import { getMetrics, fetchPRsMetrics, getPreviousInterval } from 'js/services/api';
+import { fetchPRsMetrics, getPreviousInterval } from 'js/services/api';
 import { number } from 'js/services/format';
 import moment from 'moment';
 import { palette } from 'js/res/palette';
@@ -130,8 +130,6 @@ export const pipelineStagesConf = [
     },
 ];
 
-const mainStagesNames = ['wip', 'review', 'merge', 'release'];
-
 export const getStage = (stages, slug) => stages.find(conf => conf.slug === slug);
 export const getStageTitle = (slug) => {
     const conf = getStage(pipelineStagesConf, slug);
@@ -141,7 +139,6 @@ export const getStageTitle = (slug) => {
 export default ({ children }) => {
     const { api, ready: apiReady, context: apiContext } = useApi();
     const { setGlobal: setGlobalData } = useDataContext();
-    const [pipelineState, setPipelineState] = useState({ leadtime: {}, cycletime: {}, stages: [] });
 
     useEffect(() => {
         if (!apiReady) {
@@ -235,44 +232,8 @@ export default ({ children }) => {
         fetchGlobalPRMetricsVariations();
     }, [api, apiContext.account, apiContext.contributors, apiContext.interval, apiContext.repositories, apiReady, setGlobalData]);
 
-    useEffect(() => {
-        if (!apiReady) {
-            return;
-        }
-
-        (async () => {
-            try {
-                const data = await getMetrics(
-                    api, apiContext.account, apiContext.interval,
-                    apiContext.repositories, apiContext.contributors
-                );
-                let leadtime = {};
-                let cycletime = {};
-                const stages = [];
-                pipelineStagesConf.forEach(metricConf => {
-                    const metric = { ...metricConf, ...data[metricConf.metric] };
-                    if (mainStagesNames.indexOf(metricConf.stageName) >= 0) {
-                        stages.push(metric);
-                    } else if (metricConf.stageName === 'leadtime') {
-                        leadtime = metric;
-                    } else if (metricConf.metric === 'cycle-time') {
-                        cycletime = metric;
-                    }
-                });
-
-                if (leadtime.avg) {
-                    stages.forEach(stage => stage.overallProportion = 100 * stage.avg / cycletime.avg);
-                }
-
-                setPipelineState({ leadtime, cycletime, stages });
-            } catch (err) {
-                console.error('Could not get pipeline metrics', err);
-            }
-        })();
-    }, [api, apiContext.account, apiContext.contributors, apiContext.interval, apiContext.repositories, apiReady]);
-
     return (
-        <PipelineContext metrics={pipelineState}>
+        <PipelineContext metrics={{}}>
             {children}
         </PipelineContext>
     );
