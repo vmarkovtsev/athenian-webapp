@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import { useParams } from 'react-router-dom';
-import { usePRsContext } from 'js/context/PRs';
+import { useDataContext } from 'js/context/Data';
 import { useApi } from 'js/hooks';
 import { getInsights } from 'js/components/insights/Helper';
 
@@ -21,7 +21,7 @@ const stageChartsStateReducer = (state, action) => {
 };
 
 export default () => {
-    const prsContext = usePRsContext();
+    const { getGlobal: getGlobalData, globalDataReady } = useDataContext();
     const { api, ready: apiReady, context: apiContext } = useApi();
     const { name: stageSlug } = useParams();
 
@@ -31,22 +31,13 @@ export default () => {
         stageChartsStateReducer, {});
 
     useEffect(() => {
-        if (!apiReady) {
+        if (!apiReady && !globalDataReady) {
             console.log("api not ready");
             return;
         };
 
         if (loadingApiCallState) {
             console.log("API call already running");
-            return;
-        }
-
-        // TODO: this could be removed once not needed anymore to be passed
-        // to `getInsights`. Anyway, this check is still an approximation since
-        // an empty array could still be a valid result. Ideally also the
-        // `PRsContext` should provide a `ready` state to query.
-        if (prsContext.prs.length === 0) {
-            console.log("prsContext not ready");
             return;
         }
 
@@ -59,17 +50,12 @@ export default () => {
 
         const updateData = async () => {
             setLoadingApiCallState(true);
+            const prs = await getGlobalData('prs');
             console.log(`CALLING API for slug: ${stageSlug}`, apiContext);
-            // TODO: Don't pass `prsContext`. Each chart should calculate its own
-            // data using the provided api.
-            // So far we user `prsContext` as it's already queried calculated.
-            // Making the chart call the api means querying the api again. We can
-            // remove this once we implement some caching logic on the client
-            // when querying.
+            // TODO: Don't pass `prs` global data manually. Each insight chart should
+            // be refactored to use the self-loader `js/components/DataWidget` component
             try {
-                // TODO: Each insight chart should be refactored to use the self-loader
-                // `js/components/charts/Chart` component
-                const result = await getInsights(stageSlug, api, apiContext, prsContext);
+                const result = await getInsights(stageSlug, api, apiContext, prs);
                 const action = {
                     stageSlug,
                     result
@@ -91,8 +77,7 @@ export default () => {
         };
 
         updateData();
-    }, [stageSlug, api, apiContext, apiReady, latestApiContextUsedState,
-        prsContext, loadingApiCallState, stageChartsState]);
+    }, [stageSlug, api, apiContext, apiReady, latestApiContextUsedState, loadingApiCallState, stageChartsState, globalDataReady, getGlobalData]);
 
     const insights = stageChartsState[stageSlug];
     const loading = !insights || !apiReady || loadingApiCallState;
