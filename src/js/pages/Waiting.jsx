@@ -18,7 +18,7 @@ export default () => {
   const ghAppUrl = window.ENV.application.githubAppUri;
 
   const isAdmin = userContext?.defaultAccount?.isAdmin;
-  const autoOpen = location.state?.origin == FROM_REGISTRATION;
+  const autoOpen = location.state?.origin === FROM_REGISTRATION;
 
   useEffect(() => {
     if (!isAdmin || !autoOpen || ghAppOpenedState) {

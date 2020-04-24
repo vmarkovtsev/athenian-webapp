@@ -38,7 +38,7 @@ export default () => {
             </div>
             <div className="card-body p-0">
               <div className="list-group list-group-flush">
-                <a className="list-group-item py-2 active" href="">Account Settings</a>
+                <a className="list-group-item py-2 active" href>Account Settings</a>
                 <Link to="/logout" className="list-group-item bg-light text-right py-2 rounded-bottom">Logout</Link>
               </div>
             </div>

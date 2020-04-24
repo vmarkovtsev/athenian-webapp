@@ -205,6 +205,7 @@ export default ({ stage, data }) => {
                             case 'filter':
                             case 'sort':
                             case 'type':
+                            default:
                                 return prLabelStage(row);
                         }
                     },
