@@ -15,28 +15,34 @@ export default ({id, component, fetcher, plumber, globalDataIDs, config, propaga
     useEffect(() => {
         console.log("---> Rendering CHART: useEffect 1", id);
         const fetchAndSetData = async () => {
-            console.log("---> Rendering CHART: useEffect 1 | async | fetching", id);
-            let fetched = {};
-            if (fetcher) {
-                fetched = await fetcher();
-            }
-
-            const globalData = {};
-            for (const gid of globalDataIDs || []) {
-                const d = getGlobalData(gid);
-                if (!d) {
-                    throw Error(`Missing global data with id ${gid} for data widget with id ${id}`);
+            try {
+                console.log("---> Rendering CHART: useEffect 1 | async | fetching", id);
+                let fetched = {};
+                if (fetcher) {
+                    fetched = await fetcher();
                 }
 
-                globalData[gid] = await d;
-            }
+                const globalData = {};
+                for (const gid of globalDataIDs || []) {
+                    const d = getGlobalData(gid);
+                    if (!d) {
+                        throw Error(`Missing global data with id ${gid} for data widget with id ${id}`);
+                    }
 
-            const plumbedData = plumber({...fetched, global: globalData});
-            console.log("---> Rendering CHART: useEffect 1 | async | fetching done", id);
-            console.log("---> Rendering CHART: useEffect 1 | async | set data", plumbedData);
-            setData(id, plumbedData);
-            console.log("---> Rendering CHART: useEffect 1 | async | set loading", false);
-            setLoadingDataState(false);
+                    globalData[gid] = await d;
+                }
+
+                const plumbedData = plumber({...fetched, global: globalData});
+                console.log("---> Rendering CHART: useEffect 1 | async | fetching done", id);
+                console.log("---> Rendering CHART: useEffect 1 | async | set data", plumbedData);
+                setData(id, plumbedData);
+                console.log("---> Rendering CHART: useEffect 1 | async | set loading", false);
+            } catch (err) {
+                console.log("---> Rendering CHART: useEffect 1 | async | set error", err);
+                setData(id, err);
+            } finally {
+                setLoadingDataState(false);
+            }
         };
 
         const data = getData(id);
@@ -78,8 +84,20 @@ export default ({id, component, fetcher, plumber, globalDataIDs, config, propaga
         conf.spinnerBuilder = buildSpinner;
     }
 
+
+
     const Component = component;
-    return <Component data={dataState} loading={waiting} {...conf} />;
+
+    let data, error;
+    if (dataState instanceof Error) {
+        data = null;
+        error = dataState;
+    } else {
+        data= dataState;
+        error = null;
+    }
+
+    return <Component data={data} loading={waiting} error={error} {...conf} />;
 };
 
 const buildSpinner = (conf) => {

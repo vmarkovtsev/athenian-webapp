@@ -5,50 +5,60 @@ import _ from 'lodash';
 import { SimpleKPI } from 'js/components/insights/KPI';
 import TimeSeries from 'js/components/insights/charts/library/TimeSeries';
 import { BigText } from 'js/components/charts/Tooltip';
-
 import { fetchPRsMetrics } from 'js/services/api/index';
+
 import { number } from 'js/services/format';
 
 const pullRequestRatioFlow = {
-    fetcher: async (api, context) => fetchPRsMetrics(
-        api, context.account, 'day', context.interval,
-        ['flow-ratio', 'opened', 'closed'],
-        { repositories: context.repositories, developers: context.contributors}
-    ),
-    calculator: (fetched) => ({
-        chartData: _(fetched.calculated[0].values)
-            .map(v => ({
-                day: v.date,
-                value: (v.values[1] || 1) / (v.values[2] || 1),
-                legend: [v.values[1], v.values[2]],
-            }))
-            .value(),
-        KPIsData: {
-            avgRatioFlow: {
-                value: _(fetched.calculated[0].values)
-                    .map(v => (v.values[1] || 1) / (v.values[2] || 1))
-                    .meanBy()
-            },
-            highestDay: _(fetched.calculated[0].values)
+    fetcher: async (api, context) => {
+        const { account, interval, repositories, contributors } = context;
+        // Cannot use global data as the KPI for PRs ratio flow needs `day` granularty
+        return {
+            timeseries: await fetchPRsMetrics(
+                api, account, 'day', interval, ['flow-ratio'],
+                { repositories, developers: contributors}
+            )
+        };
+    },
+    plumber: (data) => {
+        const prsMetrics = data.global['prs-metrics.values'].custom;
+        return {
+            chartData: _(
+                _.zip(
+                    prsMetrics['flow-ratio'],
+                    prsMetrics.opened,
+                    prsMetrics.closed,
+                )
+            )
                 .map(v => ({
-                    day: moment(v.date).format('dddd'),
-                    value: (v.values[1] || 1) / (v.values[2] || 1)
+                    day: v[0].date,
+                    value: v[0].value,
+                    legend: [v[1].value, v[2].value]
                 }))
-                .groupBy('day')
-                .map((series, k) => ({
-                    day: k,
-                    value: _(series)
-                        .map('value')
-                        .mean()
-                }))
-                .maxBy('value')
-        },
-        axisKeys: {
-            x: 'day',
-            y: 'value',
-        },
-        totalPRs: fetched.length
-    }),
+                .value(),
+            KPIsData: {
+                avgRatioFlow: data.global['prs-metrics.values'].all['flow-ratio'],
+                highestDay: _(data.timeseries.calculated[0].values)
+                    .map(v => ({
+                        day: moment(v.date).format('dddd'),
+                        value: v.values[0]
+                    }))
+                    .groupBy('day')
+                    .map((series, k) => ({
+                        day: k,
+                        value: _(series)
+                            .map('value')
+                            .mean()
+                    }))
+                    .maxBy('value')
+            },
+            axisKeys: {
+                x: 'day',
+                y: 'value',
+            },
+            totalPRs: data.global.prs.prs.length
+        };
+    },
     factory: (computed) => ({
         meta: {
             title: 'Pull Request Ratio Flow',
@@ -86,7 +96,7 @@ const pullRequestRatioFlow = {
                         subtitle: {text: 'Ratio Flow'},
                         component: SimpleKPI,
                         params: {
-                            value: computed.KPIsData.avgRatioFlow.value.toFixed(2)
+                            value: computed.KPIsData.avgRatioFlow.toFixed(2)
                         }
                     },
                     {

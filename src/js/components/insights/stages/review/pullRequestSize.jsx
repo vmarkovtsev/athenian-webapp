@@ -9,13 +9,10 @@ import { github, dateTime } from 'js/services/format';
 import { PR_STAGE } from 'js/services/prHelpers';
 
 const pullRequestSize = {
-    fetcher: async (api, context, data) => {
-        // TODO: call the api to avoid receiving data from outside
-        return Promise.resolve(data);
-    },
-    calculator: (data) => {
+    plumber: (data) => {
+        const { prs, users } = data.global['prs'];
         return {
-            chartData: _(data.prs)
+            chartData: _(prs)
                 .map(pr => {
                     let endTime;
                     if (pr.closed instanceof Date && !isNaN(pr.closed)) {
@@ -44,7 +41,7 @@ const pullRequestSize = {
                         title: pr.title,
                         image: author === 'none' ?
                             'https://avatars2.githubusercontent.com/u/10137':
-                            github.userImageIndex(data.users)[author],
+                            github.userImageIndex(users)[author],
                         reviewed,
                         author,
                         timeWaiting,
@@ -61,13 +58,13 @@ const pullRequestSize = {
                 .orderBy(['age', 'loc'], ['desc', 'desc'])
                 .take(20)
                 .value(),
-            totalFiles: _(data.prs)
+            totalFiles: _(prs)
                 .map(pr => pr.files_changed)
                 .sum(),
-            totalLoc: _(data.prs)
+            totalLoc: _(prs)
                 .map(pr => pr.size_added + pr.size_removed)
                 .sum(),
-            totalPRs: data.prs.length,
+            totalPRs: prs.length,
             axisKeys: {
                 x: 'loc',
                 y: 'files',

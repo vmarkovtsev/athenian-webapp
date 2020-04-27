@@ -1,24 +1,24 @@
-import getWipCharts from 'js/components/insights/stages/work-in-progress/index';
-import getReviewCharts from 'js/components/insights/stages/review/index';
-import getMergeCharts from 'js/components/insights/stages/merge/index';
+import React from 'react';
+import InsightsWorkInProgress from 'js/components/insights/stages/work-in-progress/index';
+import InsightsReview from 'js/components/insights/stages/review/index';
+import InsightsMerge from 'js/components/insights/stages/merge/index';
 
-// TODO: Passing data should be removed in favor of letting each chart
-// retrieving its own data using the api.
-export const getInsights = async (stage, api, context, data) => {
-    const chartsGetterFn = {
-        'work-in-progress': getWipCharts,
-        'review': getReviewCharts,
-        'merge': getMergeCharts,
-    }[stage];
+import { ComingSoon } from 'js/components/layout/Empty';
 
-    const charts = chartsGetterFn ? chartsGetterFn() : [];
+export const getInsights = (stage, api, context, data) => {
+    const Component = {
+        'work-in-progress': InsightsWorkInProgress,
+        'review': InsightsReview,
+        'merge': InsightsMerge,
+    }[stage] || ComingSoon;
 
-    return Promise.all(
-        charts.map(
-            async (def) => {
-                const fetched = await def.fetcher(api, context, data);
-                return Promise.resolve(def.factory(def.calculator(fetched)));
-            }
-        )
-    );
+    return <Component />;
 };
+
+export const InsightsError = () => (
+    <div className="row mt-5 mb-5">
+      <div className="col-12 mt-5 text-center">
+        <span>An error occurred when loading insights charts</span>
+      </div>
+    </div>
+);

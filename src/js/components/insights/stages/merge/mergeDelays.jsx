@@ -38,8 +38,8 @@ const mergeDelays = {
             KPIsData: await fetchKPIsData(),
         });
     },
-    calculator: (fetched) => {
-        const repos = _(fetched.chartData.calculated)
+    plumber: (data) => {
+        const repos = _(data.chartData.calculated)
               .map(v => ({
                   repo: _(v.for.repositories[0]).split('/').nth(2),
                   prsMerged: v.values[0].values[1] || 0
@@ -50,7 +50,7 @@ const mergeDelays = {
         const totalRepos = repos.length;
 
         return {
-            chartData: _(fetched.chartData.calculated)
+            chartData: _(data.chartData.calculated)
                 .map(v => ({
                     repo: _(v.for.repositories[0]).split('/').nth(2),
                     delay: (v.values[0].values[0] || 0) / 3600,
@@ -64,10 +64,10 @@ const mergeDelays = {
                 .take(10)
                 .value(),
             KPIsData: {
-                avgTimeToMerge: _(fetched.chartData.calculated)
+                avgTimeToMerge: _(data.chartData.calculated)
                     .map(v => (v.values[0].values[0] || 0) / 3600)
                     .mean(),
-                avgUniqueMergesPerRepo: _(fetched.KPIsData.calculated)
+                avgUniqueMergesPerRepo: _(data.KPIsData.calculated)
                     .map(v => ({
                         repo: _(v.for.repositories[0]).split('/').nth(2),
                         mergers: _(v.values).flatMap()
@@ -82,7 +82,7 @@ const mergeDelays = {
                 x: 'repo',
                 y: 'delay',
             },
-            totalPRs: fetched.length,
+            totalPRs: data.length,
         };
     },
     factory: (computed) => ({
