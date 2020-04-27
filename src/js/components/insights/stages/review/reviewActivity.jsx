@@ -10,9 +10,7 @@ import { github } from 'js/services/format';
 import { happened, authored, PR_EVENT as prEvent } from 'js/services/prHelpers';
 
 const reviewActivity = {
-    fetcher: async (api, context, data) => {
-        // TODO: call the api to avoid receiving data from outside
-
+    fetcher: async (api, context) => {
         const fetchFirstBox = async () => {
             const metrics = [
                 'reviews',
@@ -40,37 +38,28 @@ const reviewActivity = {
             );
         };
 
-        // We're interested in the very same data than in the WIP.created and Review.reviewed Summary Metrics
-        const firstBoxKPIsCreatedCount = authored(data.prs).filter(pr => context.interval.from <= pr.created).length;
-        const firstBoxKPIsReviewedCount = authored(data.prs).filter(pr => {
-            return happened(pr, prEvent.REVIEW) || happened(pr, prEvent.REJECTION) || happened(pr, prEvent.APPROVE);
-        }).length;
-
-
         return Promise.resolve({
             firstBox: await fetchFirstBox(),
-            firstBoxKPIsCreatedCount,
-            firstBoxKPIsReviewedCount,
             secondBox: await fetchSecondBox(),
-            legacyData: data
+            interval: context.interval
         });
     },
-    calculator: (fetched) => {
-        const avatarMapping = github.userImageIndex(fetched.legacyData.users);
-        const totalReviews = _(fetched.secondBox.calculated)
+    plumber: (data) => {
+        const avatarMapping = github.userImageIndex(data.global.prs.users);
+        const totalReviews = _(data.secondBox.calculated)
               .map(v => v.values[0][0])
               .sum();
-        const totalPRsComments = _(fetched.secondBox.calculated)
+        const totalPRsComments = _(data.secondBox.calculated)
               .map(v => v.values[0][1])
               .sum();
-        const totalReviewedPRs = _(fetched.firstBox.calculated)
+        const totalReviewedPRs = _(data.firstBox.calculated)
             .map(v => v.values[0][2])
             .sum();
-        const totalReviewers = _(fetched.secondBox.calculated)
+        const totalReviewers = _(data.secondBox.calculated)
             .filter(v => v.values[0][0] > 0)
             .value()
             .length;
-        const secondBoxChartData = _(fetched.secondBox.calculated)
+        const secondBoxChartData = _(data.secondBox.calculated)
               .map(v => {
                   const [reviewsTotal, prsCommentsTotal] = [v.values[0][0], v.values[0][1]];
                   const [reviewsPerc, prsCommentsPerc] = [reviewsTotal * 100 / totalReviews, prsCommentsTotal * 100 / totalPRsComments];
@@ -97,7 +86,7 @@ const reviewActivity = {
               .orderBy(['prsCommentsPerc', 'reviewsPerc'], ['desc', 'desc'])
               .take(10)
               .value();
-        const topReviewer = _(fetched.secondBox.calculated)
+        const topReviewer = _(data.secondBox.calculated)
               .map(v => ({
                   developer: _.replace(v.for.developers[0], 'github.com/', ''),
                   reviewsPerc: v.values[0][0] * 100 / totalReviews,
@@ -109,7 +98,7 @@ const reviewActivity = {
 
         return {
             firstBox: {
-                chartData: _(fetched.firstBox.calculated)
+                chartData: _(data.firstBox.calculated)
                     .map(v => {
                         const author = github.userName(v.for.developers[0]);
                         return {
@@ -139,8 +128,14 @@ const reviewActivity = {
                 },
                 avatarMapping,
                 KPIsData: {
-                    createdPRs: fetched.firstBoxKPIsCreatedCount,
-                    reviewedPRs: fetched.firstBoxKPIsReviewedCount,
+                    // We're interested in the very same data than in the WIP.created and Review.reviewed Summary Metrics
+                    createdPRs: authored(data.global.prs.prs)
+                        .filter(pr => data.interval.from <= pr.created)
+                        .length,
+                    reviewedPRs: authored(data.global.prs.prs)
+                        .filter(pr => {
+                            return happened(pr, prEvent.REVIEW) || happened(pr, prEvent.REJECTION) || happened(pr, prEvent.APPROVE);
+                        }).length,
                     avgReviewedPRsPerDev: totalReviewedPRs / totalReviewers,
                 }
             },

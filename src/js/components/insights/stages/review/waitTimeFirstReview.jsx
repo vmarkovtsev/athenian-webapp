@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 import _ from 'lodash';
 
 import { SimpleKPI } from 'js/components/insights/KPI';
@@ -7,71 +6,37 @@ import TimeSeries from 'js/components/insights/charts/library/TimeSeries';
 import { BigText } from 'js/components/charts/Tooltip';
 import { NEGATIVE_IS_BETTER } from 'js/components/ui/Badge';
 
-import { fetchPRsMetrics } from 'js/services/api/index';
 import { dateTime } from 'js/services/format';
 
 const waitTimeFirstReview = {
-    fetcher: async (api, context) => {
-        const fetchKPIsData = async () => {
-            const daysDiff = moment(context.interval.to).diff(context.interval.from, 'days');
-            const granularity = `${daysDiff} day`;
-            const metrics = ['cycle-time', 'wait-first-review'];
+    plumber: (data) => {
+        const waitFirstReviewVariation = data.global['prs-metrics.variations'][
+            'wait-first-review'];
+        const cycleTimeVariation = data.global['prs-metrics.variations']['cycle-time'];
 
-            const current = await fetchPRsMetrics(
-                api, context.account, granularity, context.interval,
-                metrics,
-                { repositories: context.repositories, developers: context.contributors}
-            );
+        const currWaitFirstReview = data.global['prs-metrics.values']
+              .all['wait-first-review'];
+        const currCycleTime = data.global['prs-metrics.values']
+              .all['cycle-time'];
 
-            const previous = await fetchPRsMetrics(
-                api, context.account, granularity,
-                {
-                    from: moment(context.interval.from).subtract(daysDiff, 'days').toDate(),
-                    to: context.interval.from
-                },
-                metrics,
-                { repositories: context.repositories, developers: context.contributors}
-            );
+        const prevWaitFirstReview = (currWaitFirstReview * 100) /
+              (waitFirstReviewVariation + 100);
+        const prevCycleTime = (currCycleTime * 100) /
+              (cycleTimeVariation + 100);
 
-            return Promise.resolve({
-                previous: previous,
-                current: current
-            });
-        };
-
-        const chartData = await fetchPRsMetrics(
-            api, context.account, 'day', context.interval,
-            ['wait-first-review'],
-            { repositories: context.repositories, developers: context.contributors}
-        );
-        const KPIsData = await fetchKPIsData();
-
-        return Promise.resolve({
-            chartData: chartData,
-            KPIsData: KPIsData
-        });
-    },
-    calculator: (fetched) => {
-        const [currOverall, currtWaitFirstReview] = fetched.KPIsData.current
-            .calculated[0].values[0].values;
-        const [prevOverall, prevWaitFirstReview] = fetched.KPIsData.previous
-            .calculated[0].values[0].values;
-
-        const avgWaitingTimeVariation = currtWaitFirstReview * 100 / prevWaitFirstReview;
-
-        const currOverallProportion = currtWaitFirstReview * 100 / currOverall;
-        const prevOverallProportion = prevWaitFirstReview * 100 / prevOverall;
+        const currOverallProportion = currWaitFirstReview * 100 / currCycleTime;
+        const prevOverallProportion = prevWaitFirstReview * 100 / prevCycleTime;
 
         const overallProportionVariation = currOverallProportion * 100 / prevOverallProportion;
 
         return {
-            chartData: _(fetched.chartData.calculated[0].values)
-                .map(v => ({day: v.date, value: (v.values[0] || 0) / 3600}))
+            chartData: _(data.global['prs-metrics.values'].custom['wait-first-review'])
+                .map(v => ({day: v.date, value: v.value / 3600}))
                 .value(),
             KPIsData: {
                 avgWaitingTime: {
-                    value: Math.round(currtWaitFirstReview / 3600),
-                    variation: avgWaitingTimeVariation
+                    value: Math.round(currWaitFirstReview / 3600),
+                    variation: waitFirstReviewVariation
                 },
                 overallProportion: {
                     value: currOverallProportion,
@@ -82,7 +47,7 @@ const waitTimeFirstReview = {
                 x: 'day',
                 y: 'value',
             },
-            totalPRs: fetched.length,
+            totalPRs: data.global.prs.prs.length,
         };
     },
     factory: (computed) => ({

@@ -7,14 +7,11 @@ import { UserReviewer } from 'js/components/charts/Tooltip';
 import { github } from 'js/services/format';
 
 const mostActiveDevs = {
-    fetcher: async (api, context, data) => {
-        // TODO: call the api to avoid receiving data from outside
-        return Promise.resolve(data);
-    },
-    calculator: (data) => {
-        const avatarMapping = github.userImageIndex(data.users);
+    plumber: (data) => {
+        const prs = data.global.prs;
+        const avatarMapping = github.userImageIndex(prs.users);
         return {
-            chartData: _(data.prs)
+            chartData: _(prs.prs)
                 .flatMap(pr => pr.authors)
                 .countBy()
                 .map((v, k) => {
@@ -34,7 +31,7 @@ const mostActiveDevs = {
                 .orderBy(['x'], ['desc'])
                 .take(10)
                 .value(),
-            activeDevs: _(data.prs)
+            activeDevs: _(prs.prs)
                 .flatMap(pr => pr.participants)
                 .filter(participant => _.intersection(
                     participant.status,
@@ -44,7 +41,7 @@ const mostActiveDevs = {
                 .uniq()
                 .value(),
             avatarMapping,
-            totalPRs: data.prs.length
+            totalPRs: prs.prs.length
         };
     },
     factory: (computed) => ({
