@@ -47,6 +47,13 @@ export default ({ children }) => {
             'lead-count',
             'cycle-time',
             'cycle-count',
+            'wait-first-review',
+            'wait-first-review-count',
+            'flow-ratio',
+            'opened',
+            'merged',
+            'closed',
+            'released'
         ];
 
         const fetchGlobalPRMetrics = async () => {
