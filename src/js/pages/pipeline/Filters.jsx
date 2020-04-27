@@ -83,12 +83,12 @@ export default ({ children }) => {
         const updatedRepos = await updateReposFilter(
             {...context, token, dateInterval: selectedDateInterval,
              setters: reposSetters});
-        await updateContribsFilter(
+        const updatedContribs = await updateContribsFilter(
             {...context, token, repos: updatedRepos, dateInterval: selectedDateInterval,
              setters: contribsSetters});
 
-        setGlobalData('filter.repos', updatedRepos);
-        setGlobalData('filter.contribs', updateContribsFilter);
+        setGlobalData('filter.repos', Promise.resolve(updatedRepos));
+        setGlobalData('filter.contribs', Promise.resolve(updatedContribs));
         setReadyState(true);
     };
 
