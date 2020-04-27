@@ -18,8 +18,8 @@ export default Empty;
 export const NoData = () => {
     return (
         <Empty background={noData}>
-            <h3 class="text-secondary font-weight-light mb-3">There is no data for the selected filters.</h3>
-            <p class="text-secondary font-weight-light">You can filter for different dates, repositories and contributors.</p>
+            <h3 className="text-secondary font-weight-light mb-3">There is no data for the selected filters.</h3>
+            <p className="text-secondary font-weight-light">You can filter for different dates, repositories and contributors.</p>
         </Empty>
     );
 };

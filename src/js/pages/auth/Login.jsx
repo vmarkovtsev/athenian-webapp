@@ -49,9 +49,9 @@ export default () => {
       >
         Login
       </button>
-        <div class="my-5">
-            <a className="text-dark-orange" href="https://www.athenian.co">I don’t have an account</a>
-        </div>
+      <div className="my-5">
+        <a className="text-dark-orange" href="https://www.athenian.co">I don’t have an account</a>
+      </div>
     </Simple>
   );
 };

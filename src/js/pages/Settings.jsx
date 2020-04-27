@@ -48,7 +48,7 @@ export default () => {
 
           <div className="alert alert-default py-0 mb-4">
             <div className="d-flex align-items-center">
-              <div class="p-4 w-50">
+              <div className="p-4 w-50">
                 <h4 className="alert-heading h2 mb-2">Welcome to your personal settings area</h4>
                 <p className="font-weight-light">Here you can check your Athenian setup information and choose your
                   organization preferences</p>
