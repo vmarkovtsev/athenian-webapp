@@ -11,17 +11,21 @@ import { useDataContext } from 'js/context/Data';
 export default () => {
     const { getGlobal: getGlobalData, globalDataReady } = useDataContext();
     const [prsState, setPRsState] = useState(null);
+    const [prsLoadingState, setPRsLoadingState] = useState(false);
 
     useEffect(() => {
         if (!globalDataReady) {
+            setPRsLoadingState(true);
             return;
         }
 
         (async () => {
+            setPRsLoadingState(true);
             const prs = await getGlobalData('prs');
             setPRsState(prs);
+            setPRsLoadingState(false);
         })();
-    });
+    }, [globalDataReady, getGlobalData]);
 
 
     const { name: stageSlug } = useParams();
@@ -47,7 +51,11 @@ export default () => {
               {
                   title: 'Pull Requests',
                   badge: filteredPRs.prs && filteredPRs.prs.length,
-                  content: <PullRequests data={filteredPRs} stage={activeStage.stageName} />
+                  content: <PullRequests
+                      data={filteredPRs}
+                      stage={activeStage.stageName}
+                      loading={prsLoadingState}
+                  />
               }
           ]} />
         </>

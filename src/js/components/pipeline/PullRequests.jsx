@@ -9,6 +9,9 @@ import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses 
 
 import _ from 'lodash';
 
+import { NoData } from 'js/components/layout/Empty';
+import Spinner from 'js/components/ui/Spinner';
+
 const userImage = users => user => {
     if (users[user] && users[user].avatar) {
         return `<img
@@ -24,17 +27,13 @@ const userImage = users => user => {
 
 const tableContainerId = '#dataTable';
 
-export default ({ stage, data }) => {
+export default ({ stage, data, loading }) => {
     const prLabelStage = prLabel(stage);
     const { prs, users } = data;
 
     useEffect(() => {
-        if (!prs.length || !$(tableContainerId).DataTable) {
+        if (loading || !prs?.length) {
             return;
-        }
-
-        if ($.fn.DataTable.isDataTable(tableContainerId)) {
-            $(tableContainerId).DataTable().clear();
         }
 
         $(tableContainerId).DataTable({
@@ -214,18 +213,23 @@ export default ({ stage, data }) => {
         });
 
         return () => {
-            $(tableContainerId).DataTable().destroy();
+            $.fn.DataTable.isDataTable(tableContainerId) && $(tableContainerId).DataTable().destroy();
+            $(tableContainerId).empty();
         };
-    }, [prs, users, prLabelStage, stage, data]);
-
-    if (!prs || prs.length === 0) {
-        return null;
-    }
+    }, [prs, users, prLabelStage, stage, data, loading]);
 
     return (
-        <div className="table-responsive mb-4">
-            <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0" style={{ tableLayout: 'fixed' }} />
-        </div>
+        <>
+            {loading && (
+                <div className="text-center">
+                    <Spinner loading={loading} color="black" />
+                </div>
+            )}
+            {!loading && !prs?.length && <NoData />}
+            <div className="table-responsive mb-4">
+                <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0" style={{ tableLayout: 'fixed' }} />
+            </div>
+        </>
     );
 }
 
@@ -259,3 +263,4 @@ const cycleTimeColumn = (stage, data) => {
         },
     };
 };
+
