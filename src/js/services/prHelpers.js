@@ -270,6 +270,10 @@ export const prLabel = stage => pr => {
 
         return PR_LABELS.RELEASE_PENDING;
     default:
+        if (isStageHappening(PR_STAGE.DONE)) {
+            return PR_LABELS.RELEASE_COMPLETED;
+        }
+
         if (pr.completedStages.length === 0) {
             if (isStageHappening(PR_STAGE.RELEASE)) {
                 return PR_LABELS.RELEASE_PENDING;
