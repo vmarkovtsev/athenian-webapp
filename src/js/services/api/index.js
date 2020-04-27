@@ -15,18 +15,6 @@ import processPR from 'js/services/prHelpers';
 import _ from 'lodash';
 import moment from 'moment';
 
-export const getPRs = async (api, accountId, dateInterval, repos, contributors) => {
-    const currResult = await fetchFilteredPRs(api, accountId, dateInterval, {
-        repositories: repos,
-        developers: contributors,
-    });
-
-    return {
-        prs: currResult.data.map(processPR),
-        users: (currResult.include && currResult.include.users) || {},
-    };
-};
-
 export const getPreviousInterval = (dateInterval) => {
     const diffDays = moment(dateInterval.to).diff(dateInterval.from, 'days');
     const prevTo = moment(dateInterval.from).subtract(1, 'days').endOf('day');
@@ -141,7 +129,12 @@ export const fetchFilteredPRs = async (
     }
 
     filter_.timezone = getOffset();
-    return api.filterPrs({ filterPullRequestsRequest: filter_ });
+
+    const prs = await api.filterPrs({ filterPullRequestsRequest: filter_ });
+    return {
+        prs: prs.data.map(processPR),
+        users: prs?.include?.users || {},
+    };
 };
 
 export const fetchPRsMetrics = async (

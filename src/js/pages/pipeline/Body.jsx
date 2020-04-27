@@ -5,7 +5,7 @@ import MainMetrics from 'js/components/pipeline/MainMetrics';
 import Thumbnails from 'js/components/pipeline/Thumbnails';
 import { useApi } from 'js/hooks';
 import { useDataContext } from 'js/context/Data';
-import { getPRs, fetchPRsMetrics, getPreviousInterval } from 'js/services/api';
+import { fetchFilteredPRs, fetchPRsMetrics, getPreviousInterval } from 'js/services/api';
 import _ from "lodash";
 import moment from 'moment';
 
@@ -26,8 +26,15 @@ export default ({ children }) => {
 
         const getAndSetPRs = async () => {
             try {
-                const prsAwaitable = getPRs(api, apiContext.account, apiContext.interval,
-                                   apiContext.repositories, apiContext.contributors);
+                const prsAwaitable = fetchFilteredPRs(
+                    api,
+                    apiContext.account,
+                    apiContext.interval,
+                    {
+                        repositories: apiContext.repositories,
+                        developers: apiContext.contributors,
+                    }
+                );
                 setGlobalData('prs', prsAwaitable);
             } catch (err) {
                 console.error('Could not get pull requests', err);
