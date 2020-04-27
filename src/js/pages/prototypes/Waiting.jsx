@@ -1,6 +1,5 @@
 import React from 'react';
 import logo from 'images/logos/logo-transparent.svg';
-import waiting from 'images/waiting.svg';
 
 export default () => {
   return (

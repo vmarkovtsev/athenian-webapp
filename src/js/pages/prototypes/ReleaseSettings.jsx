@@ -1,10 +1,6 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import _ from 'lodash';
 
 import defaultImage from 'images/default-user-image.png';
-import welcome from 'images/settings-welcome.svg';
 
 import Page from 'js/pages/templates/Page';
 
@@ -15,16 +11,6 @@ export default () => {
   const userContext = useUserContext();
 
   if (!userContext) return null;
-
-  const orgName = _(userContext.defaultReposet.repos)
-    .map(r => r.split('/')[1])
-    .uniq()
-    .value();
-
-  const organization = {
-    name: orgName,
-    handler: orgName,
-  }
 
   return (
     <Page>
@@ -38,8 +24,8 @@ export default () => {
             </div>
             <div className="card-body p-0">
               <div className="list-group list-group-flush">
-                <a className="list-group-item py-2" href="">Account Settings</a>
-                <a className="list-group-item py-2 active" href="">Team Preferences</a>
+                <a className="list-group-item py-2" href>Account Settings</a>
+                <a className="list-group-item py-2 active" href>Team Preferences</a>
                 <Link to="/logout" className="list-group-item bg-light text-right py-2 rounded-bottom">Logout</Link>
               </div>
             </div>
@@ -86,8 +72,8 @@ export default () => {
                                   Branch
                                 </button>
                                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                  <a className="dropdown-item" href="#">Branch</a>
-                                  <a className="dropdown-item" href="#">Tag</a>
+                                  <a className="dropdown-item" href>Branch</a>
+                                  <a className="dropdown-item" href>Tag</a>
                                 </div>
                               </div>
                               <div className="mr-5">
@@ -126,8 +112,8 @@ export default () => {
                                   Branch
                                 </button>
                                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                  <a className="dropdown-item" href="#">Branch</a>
-                                  <a className="dropdown-item" href="#">Tag</a>
+                                  <a className="dropdown-item" href>Branch</a>
+                                  <a className="dropdown-item" href>Tag</a>
                                 </div>
                               </div>
                               <div className="mr-5">
@@ -166,8 +152,8 @@ export default () => {
                                   Branch
                                 </button>
                                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                  <a className="dropdown-item" href="#">Branch</a>
-                                  <a className="dropdown-item" href="#">Tag</a>
+                                  <a className="dropdown-item" href>Branch</a>
+                                  <a className="dropdown-item" href>Tag</a>
                                 </div>
                               </div>
 
@@ -224,8 +210,8 @@ export default () => {
                                   Branch
                                 </button>
                                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                  <a className="dropdown-item" href="#">Branch</a>
-                                  <a className="dropdown-item" href="#">Tag</a>
+                                  <a className="dropdown-item" href>Branch</a>
+                                  <a className="dropdown-item" href>Tag</a>
                                 </div>
                               </div>
                               <div className="mr-5">
@@ -281,8 +267,8 @@ export default () => {
                                   Branch
                                 </button>
                                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                  <a className="dropdown-item" href="#">Branch</a>
-                                  <a className="dropdown-item" href="#">Tag</a>
+                                  <a className="dropdown-item" href>Branch</a>
+                                  <a className="dropdown-item" href>Tag</a>
                                 </div>
                               </div>
                               <div className="mr-5">

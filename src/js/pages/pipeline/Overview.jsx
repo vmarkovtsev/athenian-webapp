@@ -9,27 +9,28 @@ import { useDataContext } from 'js/context/Data';
 
 export default () => {
     const { getGlobal: getGlobalData, globalDataReady } = useDataContext();
-    const [prsState, setPRsState] = useState(null);
+    const [prsState, setPRsState] = useState({ prs: [], users: [] });
+    const [prsLoadingState, setPRsLoadingState] = useState(true);
 
     useEffect(() => {
         if (!globalDataReady) {
+            setPRsLoadingState(true);
             return;
         }
 
         (async () => {
+            setPRsLoadingState(true);
             const prs = await getGlobalData('prs');
             setPRsState(prs);
+            setPRsLoadingState(false);
         })();
-    });
+    }, [globalDataReady, getGlobalData]);
 
-    const tabs = [];
-    if (prsState) {
-        tabs.push({
-            title: 'Pull Requests',
-            badge: prsState && prsState.prs.length,
-            content: <PullRequests data={prsState} stage="overview" />
-        });
-    }
+    const tabs = [{
+        title: 'Pull Requests',
+        badge: prsState?.prs?.length,
+        content: <PullRequests data={prsState} stage="overview" loading={prsLoadingState} />
+    }];
 
     return (
         <>
