@@ -17,7 +17,7 @@ const MainMetrics = ({ data, loading, spinner }) => {
           <div className="col-md-3">
             <MainMetric
               title="Lead time"
-              hint="Elapsed time between the creation of the 1st commit in a pull request and the code being used in production"
+              hint="Elapsed time between the creation of the 1st commit in a pull request and the code being used in production."
               dataGetter={() => [dateTime.human(data.leadTime.avg), data.leadTime.variation]}
               spinner={spinner}
               loading={loading}
@@ -27,7 +27,7 @@ const MainMetrics = ({ data, loading, spinner }) => {
           <div className="col-md-3">
             <MainMetric
               title="Cycle time"
-              hint="Sum of the average time required in each development stage"
+              hint="Sum of the average time required in each development stage."
               dataGetter={() => [dateTime.human(data.cycleTime.avg), data.cycleTime.variation]}
               spinner={spinner}
               loading={loading}
@@ -37,8 +37,8 @@ const MainMetrics = ({ data, loading, spinner }) => {
           <div className="col-md-3">
             <MainMetric
               title="Pull requests"
-              hint="Number of pull requests processed through the delivery pipeline"
-              dataGetter={() => [data.createdPRs.avg, data.createdPRs.variation]}
+              hint="Number of pull requests released, counting in the Lead Time."
+              dataGetter={() => [data.releasedPRs.avg, data.releasedPRs.variation]}
               spinner={spinner}
               loading={loading}
             />
@@ -46,7 +46,7 @@ const MainMetrics = ({ data, loading, spinner }) => {
           <div className="col-md-3">
             <MainMetric
               title="Contributors"
-              hint="Number of people participating in (the processed) pull requests"
+              hint="Number of people involved in delivering software."
               dataGetter={() => [data.contribs.avg, data.contribs.variation]}
               spinner={spinner}
               loading={loading}
@@ -130,9 +130,9 @@ export default () => {
                 avg: data.global['prs-metrics.values'].all['cycle-time'] * 1000,
                 variation: data.global['prs-metrics.variations']['cycle-time']
             },
-            createdPRs: {
-                avg: data.global['prs-metrics.values'].all['cycle-count'],
-                variation: data.global['prs-metrics.variations']['cycle-count']
+            releasedPRs: {
+                avg: data.global['prs-metrics.values'].all['lead-count'],
+                variation: data.global['prs-metrics.variations']['lead-count']
             },
             contribs: {
                 avg: contribsCountCurr,
