@@ -1,6 +1,7 @@
 /* global process */
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 import {
     Router,
@@ -33,6 +34,8 @@ if (window.ENV.sentry.dsn) {
     Sentry.init(sentryConf);
 }
 
+toast.configure();
+
 // A function that routes the user to the right place
 // after login
 const onRedirectCallback = appState => {
@@ -54,6 +57,7 @@ ReactDOM.render(<>
       </Router>
     </React.StrictMode>
   </Auth0Provider>
+  <ToastContainer />
   {process.env.NODE_ENV === 'development' && <Development.Breakpoints />}
 </>,
   document.getElementById('root')
