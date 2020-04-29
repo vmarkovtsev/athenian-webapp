@@ -19,7 +19,6 @@ export const getPRs = async (api, accountId, dateInterval, repos, contributors) 
     const currResult = await fetchFilteredPRs(api, accountId, dateInterval, {
         repositories: repos,
         developers: contributors,
-        stages: ['wip', 'review', 'merge', 'release', 'done']
     });
 
     return {
@@ -61,7 +60,7 @@ export const getUserWithAccountRepos = async token => {
   );
 
   const defaultAccount = accounts[0] || { reposets: [] };
-  const defaultReposet = (defaultAccount && defaultAccount.reposets && defaultAccount.reposets[0]) || { repos: [] }
+  const defaultReposet = (defaultAccount && defaultAccount.reposets && defaultAccount.reposets[0]) || { repos: [] };
 
   return { ...user, accounts, defaultAccount, defaultReposet };
 };
@@ -70,7 +69,8 @@ export const getRepos = (token, userAccount, from, to, repos) => {
   const api = buildApi(token);
   const filter = new GenericFilterRequest(userAccount, from, to);
   filter.in = repos;
-  return api.filterRepositories({ body: filter }).then(repos => [...repos])
+  filter.timezone = getOffset();
+  return api.filterRepositories({ body: filter }).then(repos => [...repos]);
 };
 
 export const getContributors = (token, userAccount, from, to, repos) => {
@@ -97,11 +97,6 @@ export const buildApi = token => {
   return new DefaultApi(client);
 };
 
-export const fetchApi = (token, apiCall, ...args) => {
-  const api = buildApi(token);
-  return apiCall(api, ...args);
-};
-
 export const fetchContributors = async (
     api, accountID,
     dateInterval,
@@ -110,17 +105,18 @@ export const fetchContributors = async (
     const filter_ = new GenericFilterRequest(
         accountID, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to));
     filter_.in = filter.repositories;
+    filter_.timezone = getOffset();
     return api.filterContributors({ body: filter_ });
 };
 
 export const fetchFilteredPRs = async (
     api, accountID,
     dateInterval,
-    filter = { repositories: [], developers: [], stages: [] },
+    filter = { repositories: [], developers: [], properties: [] },
 ) => {
     filter.repositories = filter.repositories || [];
     filter.developers = filter.developers || [];
-    filter.stages = filter.stages || [];
+    filter.properties = filter.properties || [];
 
     const filter_ = new FilterPullRequestsRequest(
         accountID, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to));
@@ -129,8 +125,8 @@ export const fetchFilteredPRs = async (
         filter_.in = filter.repositories;
     }
 
-    if (filter.stages.length > 0) {
-        filter_.stages = filter.stages;
+    if (filter.properties.length > 0) {
+        filter_.properties = filter.properties;
     }
 
     if (filter.developers.length) {
@@ -144,12 +140,13 @@ export const fetchFilteredPRs = async (
         };
     }
 
+    filter_.timezone = getOffset();
     return api.filterPrs({ filterPullRequestsRequest: filter_ });
 };
 
 export const fetchPRsMetrics = async (
   api, accountID,
-  granularity,
+  granularities,
   dateInterval,
   metrics = [],
   filter = { repositories: [], developers: [] },
@@ -161,15 +158,11 @@ export const fetchPRsMetrics = async (
     forSet, metrics.map(m => metricIDs[m]),
     dateTime.ymd(dateInterval.from),
     dateTime.ymd(dateInterval.to),
+    granularities,
     accountID
   );
 
-  // backward compatibility of the function, should be change to accept `granularities`
-  if (Array.isArray(granularity)) {
-      body.granularities = granularity;
-  } else {
-      body.granularities = [granularity];
-  }
+  body.timezone = getOffset();
   return api.calcMetricsPrLinear(body);
 };
 
@@ -189,6 +182,7 @@ export const fetchDevsMetrics = async (
     accountID
   );
 
+  body.timezone = getOffset();
   return api.calcMetricsDeveloper(body);
 };
 
@@ -209,3 +203,5 @@ const buildForSet = (filter, groupBy) => {
 
   return forSet;
 };
+
+const getOffset = () => moment().utcOffset();

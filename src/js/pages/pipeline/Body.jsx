@@ -113,7 +113,7 @@ export default ({ children }) => {
                                   to: currInterval.to};
 
                 const data = await fetchPRsMetrics(
-                    api, apiContext.account, `${diffDays + 1} day`,
+                    api, apiContext.account, [`${diffDays + 1} day`],
                     interval, allMetrics,
                     { repositories: apiContext.repositories, developers: apiContext.contributors }
                 );
