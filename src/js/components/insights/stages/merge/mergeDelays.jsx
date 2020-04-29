@@ -14,7 +14,7 @@ const mergeDelays = {
             const metrics = ['merging-time', 'merging-count'];
 
             return await fetchPRsMetrics(
-                api, context.account, granularity, context.interval,
+                api, context.account, [granularity], context.interval,
                 metrics,
                 { repositories: context.repositories, developers: context.contributors},
                 'repositories'

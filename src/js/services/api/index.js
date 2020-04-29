@@ -149,7 +149,7 @@ export const fetchFilteredPRs = async (
 
 export const fetchPRsMetrics = async (
   api, accountID,
-  granularity,
+  granularities,
   dateInterval,
   metrics = [],
   filter = { repositories: [], developers: [] },
@@ -161,15 +161,10 @@ export const fetchPRsMetrics = async (
     forSet, metrics.map(m => metricIDs[m]),
     dateTime.ymd(dateInterval.from),
     dateTime.ymd(dateInterval.to),
+    granularities,
     accountID
   );
 
-  // backward compatibility of the function, should be change to accept `granularities`
-  if (Array.isArray(granularity)) {
-      body.granularities = granularity;
-  } else {
-      body.granularities = [granularity];
-  }
   return api.calcMetricsPrLinear(body);
 };
 

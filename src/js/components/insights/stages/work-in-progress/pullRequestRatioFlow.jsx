@@ -15,7 +15,7 @@ const pullRequestRatioFlow = {
         // Cannot use global data as the KPI for PRs ratio flow needs `day` granularty
         return {
             timeseries: await fetchPRsMetrics(
-                api, account, 'day', interval, ['flow-ratio'],
+                api, account, ['day'], interval, ['flow-ratio'],
                 { repositories, developers: contributors}
             )
         };
