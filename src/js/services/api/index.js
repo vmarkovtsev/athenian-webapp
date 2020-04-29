@@ -19,7 +19,6 @@ export const getPRs = async (api, accountId, dateInterval, repos, contributors) 
     const currResult = await fetchFilteredPRs(api, accountId, dateInterval, {
         repositories: repos,
         developers: contributors,
-        stages: ['wip', 'review', 'merge', 'release', 'done']
     });
 
     return {
@@ -61,7 +60,7 @@ export const getUserWithAccountRepos = async token => {
   );
 
   const defaultAccount = accounts[0] || { reposets: [] };
-  const defaultReposet = (defaultAccount && defaultAccount.reposets && defaultAccount.reposets[0]) || { repos: [] }
+  const defaultReposet = (defaultAccount && defaultAccount.reposets && defaultAccount.reposets[0]) || { repos: [] };
 
   return { ...user, accounts, defaultAccount, defaultReposet };
 };
@@ -71,7 +70,7 @@ export const getRepos = (token, userAccount, from, to, repos) => {
   const filter = new GenericFilterRequest(userAccount, from, to);
   filter.in = repos;
   filter.timezone = getOffset();
-  return api.filterRepositories({ body: filter }).then(repos => [...repos])
+  return api.filterRepositories({ body: filter }).then(repos => [...repos]);
 };
 
 export const getContributors = (token, userAccount, from, to, repos) => {
@@ -113,11 +112,11 @@ export const fetchContributors = async (
 export const fetchFilteredPRs = async (
     api, accountID,
     dateInterval,
-    filter = { repositories: [], developers: [], stages: [] },
+    filter = { repositories: [], developers: [], properties: [] },
 ) => {
     filter.repositories = filter.repositories || [];
     filter.developers = filter.developers || [];
-    filter.stages = filter.stages || [];
+    filter.properties = filter.properties || [];
 
     const filter_ = new FilterPullRequestsRequest(
         accountID, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to));
@@ -126,8 +125,8 @@ export const fetchFilteredPRs = async (
         filter_.in = filter.repositories;
     }
 
-    if (filter.stages.length > 0) {
-        filter_.stages = filter.stages;
+    if (filter.properties.length > 0) {
+        filter_.properties = filter.properties;
     }
 
     if (filter.developers.length) {
