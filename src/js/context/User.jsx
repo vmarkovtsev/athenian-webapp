@@ -4,9 +4,7 @@ import { useAuth0 } from 'js/context/Auth0';
 import Simple from 'js/pages/templates/Simple';
 
 import { getUserWithAccountRepos } from 'js/services/api';
-import { useMountEffect } from 'js/hooks';
 import { analytics } from 'js/analytics';
-import _ from 'lodash';
 
 const UserContext = React.createContext(null);
 
@@ -48,7 +46,6 @@ export default ({ children }) => {
                   </Simple>
               ) : (
                   <>
-                    {userState && <Intercom user={userState} />}
                     {children}
                   </>
 
@@ -56,28 +53,4 @@ export default ({ children }) => {
           }
         </UserContext.Provider >
     );
-};
-
-
-const Intercom = ({user}) => {
-    useMountEffect(() => {
-        if (window.ENV.intercom.appId) {
-            const githubOrgs = _(user.defaultReposet.repos)
-                  .map(r => r.split('/')[1])
-                  .uniq()
-                  .value();
-            window.Intercom('boot', {
-                app_id: window.ENV.intercom.appId,
-                user_id: user.id,
-                name: user.name,
-                email: user.email,
-                picture: user.picture,
-                updated: parseInt(user.updated.getTime() / 1000),
-                "Is Admin": user.defaultAccount.isAdmin,
-                "Github Organizations": githubOrgs,
-            });
-        }
-    });
-
-    return null;
 };
