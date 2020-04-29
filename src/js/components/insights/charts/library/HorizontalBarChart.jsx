@@ -57,7 +57,7 @@ const HorizontalBarChart = ({ title, data, extra }) => {
     const ChartTooltip = extra?.tooltip?.template || Tooltip;
 
     return (
-        <FlexibleWidthXYPlot height={data.length * 40 * Object.keys(extra.series).length} margin={{ left: 50 }} yType="ordinal">
+        <FlexibleWidthXYPlot height={data.length * 40} margin={{ left: 50 }} yType="ordinal">
           <DiscreteColorLegend className="chart-legend" items={legend} orientation="horizontal" />
           <VerticalGridLines />
           <XAxis />
@@ -72,7 +72,7 @@ const HorizontalBarChart = ({ title, data, extra }) => {
                                      data={s.reverse()}
                                      color={extra.series[k].color}
                                      key={k}
-                                     barWidth={extra.barWidth || 0.5}
+                                     barWidth={0.6}
                                      onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
                                      onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
                                    />).value()}
