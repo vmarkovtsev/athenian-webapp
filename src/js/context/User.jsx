@@ -5,6 +5,7 @@ import Simple from 'js/pages/templates/Simple';
 
 import { getUserWithAccountRepos } from 'js/services/api';
 import { useMountEffect } from 'js/hooks';
+import { analytics } from 'js/analytics';
 import _ from 'lodash';
 
 const UserContext = React.createContext(null);
@@ -20,10 +21,17 @@ export default ({ children }) => {
             return;
         };
 
-        getTokenSilently()
-            .then(getUserWithAccountRepos)
-            .then(setUserState)
-            .catch(err => console.error('Could not get user with repos', err));
+        (async () => {
+            try {
+                const token = await getTokenSilently();
+                const userWithRepos = await getUserWithAccountRepos(token);
+                analytics.identify(userWithRepos);
+                setUserState(userWithRepos);
+
+            } catch(err) {
+                console.error('Could not get user with repos', err);
+            }
+        })();
     }, [isAuthenticated, getTokenSilently]);
 
     if (loading) {
