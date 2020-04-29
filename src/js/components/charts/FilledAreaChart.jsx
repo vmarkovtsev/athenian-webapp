@@ -14,11 +14,15 @@ import { dateTime, getBestTimeUnit } from 'js/services/format';
 import { hexToRGBA } from 'js/services/colors';
 
 import { DateBigNumber, BigText, onValueChange, onValueReset } from 'js/components/charts/Tooltip';
-
 import { computeTickValues } from 'js/components/insights/charts/library/TimeSeries';
+import { NoData } from 'js/components/layout/Empty';
 
 export default ({ data, color = palette.schemes.primary, height = 300 }) => {
   const {timeseries, average} = data;
+  if (timeseries.length === 0) {
+    return <NoData textOnly />;
+  }
+
   const fillColor = hexToRGBA(color, .2);
   const [currentHover, setCurrentHover] = useState(null);
   const xTickValues = computeTickValues(timeseries, 6);

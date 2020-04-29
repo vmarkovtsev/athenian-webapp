@@ -15,7 +15,11 @@ const Empty = ({ background, children }) => {
 
 export default Empty;
 
-export const NoData = () => {
+export const NoData = ({textOnly=null}) => {
+    if (textOnly) {
+        return 'no data';
+    }
+
     return (
         <Empty background={noData}>
             <h3 className="text-secondary font-weight-light mb-3">There is no data for the selected filters.</h3>

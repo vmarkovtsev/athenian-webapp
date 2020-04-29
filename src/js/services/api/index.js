@@ -4,7 +4,8 @@ import {
   PullRequestMetricsRequest,
   DeveloperMetricsRequest,
   GenericFilterRequest,
-  FilterPullRequestsRequest
+  FilterPullRequestsRequest,
+  CalculatedPullRequestMetrics,
 } from 'js/services/api/openapi-client';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import PullRequestMetricID from 'js/services/api/openapi-client/model/PullRequestMetricID';
@@ -164,6 +165,19 @@ export const fetchPRsMetrics = async (
   groupBy
 ) => {
   const metricIDs = new PullRequestMetricID();
+
+  if (!filter.repositories?.length) {
+    const emptyResponse = new CalculatedPullRequestMetrics(
+      [],
+      metrics.map(m => metricIDs[m]),
+      dateTime.ymd(dateInterval.from),
+      dateTime.ymd(dateInterval.to),
+      granularities,
+    );
+
+    return emptyResponse;
+  }
+
   const forSet = buildForSet(filter, groupBy);
   const body = new PullRequestMetricsRequest(
     forSet, metrics.map(m => metricIDs[m]),
