@@ -70,6 +70,7 @@ export const getRepos = (token, userAccount, from, to, repos) => {
   const api = buildApi(token);
   const filter = new GenericFilterRequest(userAccount, from, to);
   filter.in = repos;
+  filter.timezone = getOffset();
   return api.filterRepositories({ body: filter }).then(repos => [...repos])
 };
 
@@ -110,6 +111,7 @@ export const fetchContributors = async (
     const filter_ = new GenericFilterRequest(
         accountID, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to));
     filter_.in = filter.repositories;
+    filter_.timezone = getOffset();
     return api.filterContributors({ body: filter_ });
 };
 
@@ -144,6 +146,7 @@ export const fetchFilteredPRs = async (
         };
     }
 
+    filter_.timezone = getOffset();
     return api.filterPrs({ filterPullRequestsRequest: filter_ });
 };
 
@@ -165,6 +168,7 @@ export const fetchPRsMetrics = async (
     accountID
   );
 
+  body.timezone = getOffset();
   return api.calcMetricsPrLinear(body);
 };
 
@@ -184,6 +188,7 @@ export const fetchDevsMetrics = async (
     accountID
   );
 
+  body.timezone = getOffset();
   return api.calcMetricsDeveloper(body);
 };
 
@@ -204,3 +209,5 @@ const buildForSet = (filter, groupBy) => {
 
   return forSet;
 };
+
+const getOffset = () => moment().utcOffset();
