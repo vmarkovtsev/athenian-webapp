@@ -106,7 +106,7 @@ export default ({
                 keepOpenOnDateSelect={true}
                 reopenPickerOnClearDates={false}
                 showClearDates={true}
-                initialVisibleMonth={() => moment().subtract(1, "M")}
+                initialVisibleMonth={() => moment(dateIntervalState.endDate).subtract(1, 'month')}
                 renderCalendarInfo={() => (
                     <CustomInfoPanel
                         onCancel={cancel}
