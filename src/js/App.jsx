@@ -1,6 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import {
+    Router,
+} from 'react-router-dom';
+
 import Routes from 'js/Routes';
 
 import * as serviceWorker from 'js/services/serviceWorker';
@@ -23,7 +27,11 @@ ReactDOM.render(<>
     audience={window.ENV.auth.audience}
     onRedirectCallback={onRedirectCallback}
   >
-    <Routes />
+    <React.StrictMode>
+      <Router history={history}>
+        <Routes />
+      </Router>
+    </React.StrictMode>
   </Auth0Provider>
   {process.env.NODE_ENV === 'development' && <Development.Breakpoints />}
 </>,
