@@ -15,5 +15,8 @@ window.ENV = {
   intercom: {
     "appId": "",
   },
+  segment: {
+      "writeKey": ""
+  },
   environment: "development"
 };
