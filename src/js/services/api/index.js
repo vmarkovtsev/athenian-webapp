@@ -98,11 +98,6 @@ export const buildApi = token => {
   return new DefaultApi(client);
 };
 
-export const fetchApi = (token, apiCall, ...args) => {
-  const api = buildApi(token);
-  return apiCall(api, ...args);
-};
-
 export const fetchContributors = async (
     api, accountID,
     dateInterval,
