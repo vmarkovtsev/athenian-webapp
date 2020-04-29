@@ -8,7 +8,7 @@ info:
   license:
     name: CC-BY-4.0
   title: '{{ title }}'
-  version: 1.0.32
+  version: 1.0.35
 servers:
 - description: '{{ server_description }} - {{ server_url }}'
   url: '{{ server_url }}/v1'
@@ -1029,6 +1029,7 @@ components:
         * `pr-lead-count`: number of PRs used to calculate `pr-lead-time`. It should be the same as `pr-release-count`.
         * `pr-cycle-time`: Cycle Time - sum of correspodning `pr-wip-time`, `pr-review-time`, `pr-merging-time`, and `pr-release-time`.
         * `pr-cycle-count`: number of PRs used to calculate `pr-cycle-time`. It equals to the overall number of PRs observed in the given time window.
+        * `pr-all-count`: equals to the sum of `pr-cycle-count` with the number of PRs which are still not done on the specified time interval but don't have any stage-changing events. This metric should be exactly the same as the number of PRs returned by `/filter/prs`.
         * `pr-wait-first-review`: average time of waiting for the first review.
         * `pr-wait-first-review-count`: number of PRs used to calculate `pr-wait-first-review`. Note: this is *not* the same as the number of PRs waiting for the first review.
         * `pr-flow-ratio`: ratio of opened to closed PRs.
@@ -1049,6 +1050,7 @@ components:
       - pr-lead-count
       - pr-cycle-time
       - pr-cycle-count
+      - pr-all-count
       - pr-wait-first-review
       - pr-wait-first-review-count
       - pr-flow-ratio
@@ -1398,7 +1400,8 @@ components:
         - pr-wip-time
         date_from: 2020-01-23
         date_to: 2020-01-24
-        granularity: day
+        granularities:
+        - day
         account: 1
       properties:
         for:
@@ -1420,8 +1423,10 @@ components:
           description: Date up to which to measure the metrics.
           format: date
           type: string
-        granularity:
-          $ref: '#/components/schemas/Granularity'
+        timezone:
+          description: Local time zone offset in minutes, used to adjust `date_from`
+            and `date_to`.
+          type: integer
         granularities:
           items:
             $ref: '#/components/schemas/Granularity'
@@ -1434,6 +1439,7 @@ components:
       - date_from
       - date_to
       - for
+      - granularities
       - metrics
       type: object
     CalculatedPullRequestMetricsItem:
@@ -1588,6 +1594,9 @@ components:
           description: Repeats `PullRequestMetricsRequest.date_to`.
           format: date
           type: string
+        timezone:
+          description: Repeats `PullRequestMetricsRequest.timezone`.
+          type: integer
         granularities:
           items:
             $ref: '#/components/schemas/Granularity'
@@ -1691,6 +1700,10 @@ components:
             is any action that influences the stage assignment.
           format: date
           type: string
+        timezone:
+          description: Local time zone offset in minutes, used to adjust `date_from`
+            and `date_to`.
+          type: integer
         in:
           $ref: '#/components/schemas/RepositorySet'
       required:
@@ -1725,6 +1738,10 @@ components:
           description: PRs must be updated earlier than or equal to this date.
           format: date
           type: string
+        timezone:
+          description: Local time zone offset in minutes, used to adjust `date_from`
+            and `date_to`.
+          type: integer
         in:
           $ref: '#/components/schemas/RepositorySet'
         stages:
@@ -1759,9 +1776,10 @@ components:
         * `created`: opened PRs. Note: they were opened in the given time window.
         * `commit_happened`: PRs with a new commit pushed. Note: the commits were pushed in the given time window.
         * `review_request_happened`: PRs where the author requested a review. Note: the review was requested in the given time window.
+        * `reviewing`: PRs in Review stage - that is, a review was requested or at least one review happened, but not approved yet.
+        * `review_happened`: PRs with new review. Note: they were reviewed in the given time window.
         * `approve_happened`: PRs with new review approvals. Note: they were approved in the given time window.
         * `changes_request_happened`: PRs with new review rejections. Note: they were rejected in the given time window.
-        * `reviewing`: PRs in Review stage - that is, a review was requested or at least one review happened, but not approved yet.
         * `merging`: PRs in Merge stage - that is, already reviewed but not yet merged.
         * `merge_happened`: merged PRs. Note: they were merged in the given time window.
         * `releasing`: PRs in Release stage - that is, already merged but not yet released.
@@ -2052,6 +2070,10 @@ components:
           description: Commits must be made earlier than or equal to this date.
           format: date
           type: string
+        timezone:
+          description: Local time zone offset in minutes, used to adjust `date_from`
+            and `date_to`.
+          type: integer
         in:
           $ref: '#/components/schemas/RepositorySet'
         with_author:
@@ -2239,6 +2261,10 @@ components:
           description: Commits must be made earlier than or equal to this date.
           format: date
           type: string
+        timezone:
+          description: Local time zone offset in minutes, used to adjust `date_from`
+            and `date_to`.
+          type: integer
         in:
           $ref: '#/components/schemas/RepositorySet'
         with_author:
@@ -2351,6 +2377,10 @@ components:
           description: Date up to which to measure the metrics.
           format: date
           type: string
+        timezone:
+          description: Local time zone offset in minutes, used to adjust `date_from`
+            and `date_to`.
+          type: integer
         account:
           description: Session account ID.
           type: integer
@@ -2442,6 +2472,9 @@ components:
           description: Repeats `DeveloperMetricsRequest.date_to`.
           format: date
           type: string
+        timezone:
+          description: Repeats `DeveloperMetricsRequest.timezone`.
+          type: integer
         metrics:
           description: Repeats `DeveloperMetricsRequest.metrics`.
           items:
