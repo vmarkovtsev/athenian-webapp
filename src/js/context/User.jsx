@@ -4,8 +4,7 @@ import { useAuth0 } from 'js/context/Auth0';
 import Simple from 'js/pages/templates/Simple';
 
 import { getUserWithAccountRepos } from 'js/services/api';
-import { useMountEffect } from 'js/hooks';
-import _ from 'lodash';
+import { analytics } from 'js/analytics';
 
 const UserContext = React.createContext(null);
 
@@ -20,10 +19,17 @@ export default ({ children }) => {
             return;
         };
 
-        getTokenSilently()
-            .then(getUserWithAccountRepos)
-            .then(setUserState)
-            .catch(err => console.error('Could not get user with repos', err));
+        (async () => {
+            try {
+                const token = await getTokenSilently();
+                const userWithRepos = await getUserWithAccountRepos(token);
+                analytics.identify(userWithRepos);
+                setUserState(userWithRepos);
+
+            } catch(err) {
+                console.error('Could not get user with repos', err);
+            }
+        })();
     }, [isAuthenticated, getTokenSilently]);
 
     if (loading) {
@@ -40,7 +46,6 @@ export default ({ children }) => {
                   </Simple>
               ) : (
                   <>
-                    {userState && <Intercom user={userState} />}
                     {children}
                   </>
 
@@ -48,28 +53,4 @@ export default ({ children }) => {
           }
         </UserContext.Provider >
     );
-};
-
-
-const Intercom = ({user}) => {
-    useMountEffect(() => {
-        if (window.ENV.intercom.appId) {
-            const githubOrgs = _(user.defaultReposet.repos)
-                  .map(r => r.split('/')[1])
-                  .uniq()
-                  .value();
-            window.Intercom('boot', {
-                app_id: window.ENV.intercom.appId,
-                user_id: user.id,
-                name: user.name,
-                email: user.email,
-                picture: user.picture,
-                updated: parseInt(user.updated.getTime() / 1000),
-                "Is Admin": user.defaultAccount.isAdmin,
-                "Github Organizations": githubOrgs,
-            });
-        }
-    });
-
-    return null;
 };

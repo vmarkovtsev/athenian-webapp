@@ -12,8 +12,8 @@ window.ENV = {
   application: {
     "githubAppUri": "https://github.com/apps/development-athenian-owl"
   },
-  intercom: {
-    "appId": "",
+  segment: {
+      "writeKey": ""
   },
   environment: "development"
 };

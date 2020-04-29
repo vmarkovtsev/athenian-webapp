@@ -1,13 +1,13 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 import {
-    Router,
     Switch,
     Route,
     Redirect,
+    useLocation,
 } from 'react-router-dom';
 
-import history from 'js/services/history';
+import { analytics } from 'js/analytics';
 
 import ContextRoute from 'js/ContextRoute';
 
@@ -33,6 +33,11 @@ import WaitingProto from 'js/pages/prototypes/Waiting';
 import ReleaseSettingsProto from 'js/pages/prototypes/ReleaseSettings';
 
 export default () => {
+    const location = useLocation();
+
+    useEffect(() => {
+        analytics.page();
+    }, [location]);
 
     const devmode = (
         process.env.NODE_ENV === 'development' ||
@@ -40,78 +45,74 @@ export default () => {
     );
 
     return (
-        <React.StrictMode>
-          <Router history={history}>
-            <Switch>
+        <Switch>
 
-              <ContextRoute context={UserContext} exact path='/'>
-                <Home />
-              </ContextRoute>
+          <ContextRoute context={UserContext} exact path='/'>
+            <Home />
+          </ContextRoute>
 
-              <ContextRoute context={UserContext} path='/stage/:name?'>
-                <Pipeline>
-                  <Switch>
-                    <Route exact path='/stage'>
-                      <Redirect to='/stage/overview' />
-                    </Route>
-                    <Route exact path='/stage/overview'>
-                      <Overview />
-                    </Route>
-                    <Route path='/stage/:name'>
-                      <Stage />
-                    </Route>
-                  </Switch>
-                </Pipeline>
-              </ContextRoute>
+          <ContextRoute context={UserContext} path='/stage/:name?'>
+            <Pipeline>
+              <Switch>
+                <Route exact path='/stage'>
+                  <Redirect to='/stage/overview' />
+                </Route>
+                <Route exact path='/stage/overview'>
+                  <Overview />
+                </Route>
+                <Route path='/stage/:name'>
+                  <Stage />
+                </Route>
+              </Switch>
+            </Pipeline>
+          </ContextRoute>
 
-              <Route path='/i/:code(\w{8})'>
-                <Redirect to={
-                    {
-                        pathname: '/login',
-                        state: { inviteLink: window.location.href }
-                    }
-                } />
-              </Route>
+          <Route path='/i/:code(\w{8})'>
+            <Redirect to={
+                {
+                    pathname: '/login',
+                    state: { inviteLink: window.location.href }
+                }
+            } />
+          </Route>
 
-              <Route path='/callback'>
-                <Callback />
-              </Route>
+          <Route path='/callback'>
+            <Callback />
+          </Route>
 
-              <Route path='/login'>
-                <Login />
-              </Route>
+          <Route path='/login'>
+            <Login />
+          </Route>
 
-              <ContextRoute context={UserContext} path='/logout'>
-                <Logout />
-              </ContextRoute>
+          <ContextRoute context={UserContext} path='/logout'>
+            <Logout />
+          </ContextRoute>
 
-              <ContextRoute context={UserContext} path='/settings'>
-                <Settings />
-              </ContextRoute>
+          <ContextRoute context={UserContext} path='/settings'>
+            <Settings />
+          </ContextRoute>
 
-              {devmode && <Route path='/bearer'><Development.Bearer /></Route>}
+          {devmode && <Route path='/bearer'><Development.Bearer /></Route>}
 
-              <ContextRoute context={UserContext} path='/waiting'>
-                <Waiting />
-              </ContextRoute>
+          <ContextRoute context={UserContext} path='/waiting'>
+            <Waiting />
+          </ContextRoute>
 
-              <ContextRoute context={UserContext} path='/prototypes/:name?'>
-                <Prototypes prototypes={{
-                    'charts': <Charts />,
-                    'metrics-groups': <MetricGroups />,
-                    'tooltips': <Tooltips />,
-                    'empty-states': <EmptyStates />,
-                    'waiting': <WaitingProto />,
-                    'release-settings': <ReleaseSettingsProto />,
-                }} />
-              </ContextRoute>
+          <ContextRoute context={UserContext} path='/prototypes/:name?'>
+            <Prototypes prototypes={{
+                'charts': <Charts />,
+                'metrics-groups': <MetricGroups />,
+                'tooltips': <Tooltips />,
+                'empty-states': <EmptyStates />,
+                'waiting': <WaitingProto />,
+                'release-settings': <ReleaseSettingsProto />,
+            }} />
+          </ContextRoute>
 
-              <Route path='*'>
-                <NotFound404 />
-              </Route>
+          <Route path='*'>
+            <NotFound404 />
+          </Route>
 
-            </Switch>
-          </Router>
-        </React.StrictMode>
+        </Switch>
     );
 };
