@@ -92,7 +92,7 @@ export default () => {
             <Settings />
           </ContextRoute>
 
-          {devmode && <Route path='/bearer'><Development.Bearer /></Route>}
+          <Route path='/bearer'><Development.Bearer /></Route>
 
           <ContextRoute context={UserContext} path='/waiting'>
             <Waiting />
