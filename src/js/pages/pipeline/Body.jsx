@@ -55,6 +55,7 @@ export default ({ children }) => {
             'lead-count',
             'cycle-time',
             'cycle-count',
+            'all-count',
             'wait-first-review',
             'wait-first-review-count',
             'flow-ratio',
