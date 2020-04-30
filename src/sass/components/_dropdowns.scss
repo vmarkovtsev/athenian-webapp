@@ -79,4 +79,9 @@
         font-size: 1.2rem;
         padding: 1rem 1.5rem;
     }
+
+    &.dropdown-card {
+        background-color: $at-main-bg !important;
+        min-width: 45rem !important;
+    }
 }

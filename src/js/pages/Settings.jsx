@@ -38,7 +38,7 @@ export default () => {
             </div>
             <div className="card-body p-0">
               <div className="list-group list-group-flush">
-                <a className="list-group-item py-2 active" href>Account Settings</a>
+                <a className="list-group-item py-2 active" href>Profile</a>
                 <Link to="/logout" className="list-group-item bg-light text-right py-2 rounded-bottom">Logout</Link>
               </div>
             </div>
@@ -64,7 +64,7 @@ export default () => {
 
           <div className="card mb-5">
             <div className="card-header p-4 bg-white font-weight-bold text-dark p-4">
-              <span className="text-m">Account Settings</span>
+              <span className="text-m">Profile</span>
             </div>
             <div className="card-body p-4">
               <p className="text-dark mt-2 mb-3">User Information</p>

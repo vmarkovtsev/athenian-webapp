@@ -24,8 +24,8 @@ export default () => {
             </div>
             <div className="card-body p-0">
               <div className="list-group list-group-flush">
-                <a className="list-group-item py-2" href>Account Settings</a>
-                <a className="list-group-item py-2 active" href>Team Preferences</a>
+                <a className="list-group-item py-2" href>Profile</a>
+                <a className="list-group-item py-2 active" href>Releases</a>
                 <Link to="/logout" className="list-group-item bg-light text-right py-2 rounded-bottom">Logout</Link>
               </div>
             </div>
@@ -38,7 +38,7 @@ export default () => {
               <span className="text-m">Releases</span>
             </div>
             <div className="card-body p-4">
-              <p className="text-dark mt-2 mb-3">Select your release workflow</p>
+              <p className="text-secondary mt-2 mb-3">Select your release workflow</p>
               <div className="input-search mb-5">
                 <label>
                   <i className="field-icon fas fa-search" aria-hidden="true"></i>
@@ -46,7 +46,7 @@ export default () => {
                 </label>
               </div>
               <div id="accordion" className="accordion">
-                <div className="card">
+                <div className="card mb-4 rounded-0 border-bottom">
                   <div className="card-header p-0" id="headingOne">
                     <h5 className="mb-0">
                       <button className="btn text-dark d-flex align-items-center w-100 py-3 pl-3" data-toggle="collapse" data-target="#collapseOne"
@@ -183,7 +183,7 @@ export default () => {
                     </div>
                   </div>
                 </div>
-                <div className="card">
+                <div className="card mb-4 rounded-0 border-bottom">
                   <div className="card-header p-0" id="headingTwo">
                     <h5 className="mb-0">
                       <button className="btn text-dark d-flex align-items-center w-100 py-3 pl-3" data-toggle="collapse" data-target="#collapseTwo"
@@ -240,7 +240,7 @@ export default () => {
                     </div>
                   </div>
                 </div>
-                <div className="card">
+                <div className="card mb-4 rounded-0 border-bottom">
                   <div className="card-header p-0" id="headingThree">
                     <h5 className="mb-0">
                       <button className="btn text-dark d-flex align-items-center w-100 py-3 pl-3" data-toggle="collapse" data-target="#collapseThree"
