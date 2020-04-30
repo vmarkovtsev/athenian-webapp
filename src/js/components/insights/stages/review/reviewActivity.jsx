@@ -218,7 +218,6 @@ const reviewActivity = {
                                     imageMask: 'circle'
                                 },
                                 axisKeys: computed.secondBox.axisKeys,
-                                barWidth: 0.6,
                                 series: {
                                     prsCommentsPerc: {
                                         name: '% Reviews Comments',
