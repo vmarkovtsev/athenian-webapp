@@ -1,62 +1,51 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, Redirect } from 'react-router-dom';
 
-import { useAuth0 } from 'js/context/Auth0';
 import Simple from 'js/pages/templates/Simple';
 import { FROM_REGISTRATION } from 'js/pages/Waiting';
 
-import { buildApi } from 'js/services/api';
+import { useApi } from 'js/hooks';
 import InvitationLink from 'js/services/api/openapi-client/model/InvitationLink';
 
 export default () => {
+    const {api, ready: apiReady, auth} = useApi(false, false);
+
     const invitationAcceptRequest = useRef(false);
-    const { loading, isAuthenticated, getTokenSilently, logout } = useAuth0();
     const [redirectTo, setRedirectTo] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
     const query = new URLSearchParams(useLocation().search);
 
     useEffect(() => {
-        if (loading || !isAuthenticated || invitationAcceptRequest.current) {
+        if (!apiReady || invitationAcceptRequest.current) {
             return;
         };
 
-        getTokenSilently()
-            .then(async token => {
-                const inviteLink = query.get('inviteLink');
+        invitationAcceptRequest.current = true;
 
-                if (!inviteLink) {
-                    setRedirectTo({
-                        pathname: query.get('targetUrl') || '/',
-                    });
-                    return;
-                }
+        (async () => {
+            const inviteLink = query.get('inviteLink');
 
-                try {
-                    invitationAcceptRequest.current = true;
-                    const check = await acceptInvite(token, inviteLink);
-                    setRedirectTo({
-                        pathname: check.type === 'admin' ? '/waiting' : '/stage/overview',
-                        state: { origin: FROM_REGISTRATION },
-                    });
-                } catch (err) {
-                    setErrorMessage(err.message);
+            if (!inviteLink) {
+                setRedirectTo({
+                    pathname: query.get('targetUrl') || '/',
+                });
+                return;
+            }
 
-                    // TODO (dpordomingo):
-                    // This is needed because if the invitation fails, the user should not be logged in.
-                    // Also, the logout is delayed because Auth0 redirects to the 'logoutRedirectUri'
-                    // inmediately, and then the user would not be able to see the error message.
-                    // Workaround: store the error, let Auth0 to redirect, and then show the stored message.
-                    window.setTimeout(() => logout({ returnTo: window.ENV.auth.logoutRedirectUri }), 3000);
-                    return;
-                }
-            });
-    }, [loading, isAuthenticated, getTokenSilently, logout, query]);
+            try {
+                const check = await acceptInvite(api, inviteLink);
+                setRedirectTo({
+                    pathname: check.type === 'admin' ? '/waiting' : '/stage/overview',
+                    state: { origin: FROM_REGISTRATION },
+                });
+            } catch (err) {
+                setErrorMessage(err.message);
+                window.setTimeout(() => setRedirectTo({pathname: '/'}), 3000);
+            }
+        })();
+    }, [apiReady, api, auth.logout, query, auth]);
 
-    if (errorMessage) {
-        return <Simple>{errorMessage}</Simple>;
-    }
-
-    if (loading) {
+    if (auth.loading) {
         return <Simple>Loading...</Simple>;
     }
 
@@ -64,15 +53,27 @@ export default () => {
         return <Redirect to={redirectTo} />;
     }
 
+    if (errorMessage) {
+        return (
+            <Simple linkToHome={false}>
+              <div>
+                <div>An error occurred while accepting the invitation:
+                  <span className="mt-3" style={{display: "block", fontStyle: "italic"}}>{errorMessage}</span>
+                </div>
+                <div className="mt-5">You'll be redirected to the home page.</div>
+              </div>
+            </Simple>
+        );
+    }
+
     return (
         <Simple>
-          {isAuthenticated ? 'Authenticated' : 'Not authenticated'}
+          {auth.isAuthenticated ? 'Authenticated' : 'Not authenticated'}
         </Simple>
     );
 };
 
-const acceptInvite = async (token, inviteLink) => {
-    const api = buildApi(token);
+const acceptInvite = async (api, inviteLink) => {
     const body = new InvitationLink(inviteLink);
 
     let check;
