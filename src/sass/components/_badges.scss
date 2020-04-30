@@ -75,10 +75,14 @@
             color: $color-brown;
         }
 
-        &.label-review-pending,
-        &.label-review-submitted {
+        &.label-review-pending {
             border-color: $color-review;
             color: $color-review;
+        }
+
+        &.label-review-submitted {
+            border-color: $color-wheat;
+            color: $color-wheat;
         }
 
         &.label-review-rejected {

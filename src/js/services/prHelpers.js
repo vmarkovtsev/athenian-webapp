@@ -254,6 +254,8 @@ export const prLabel = stage => pr => {
             } else {
                 return PR_LABELS.REVIEW_IGNORED;
             }
+        } else if (pr.properties.includes(PR_EVENT.REVIEW)) {
+            return PR_LABELS.REVIEW_SUBMITTED;
         }
 
         return PR_LABELS.REVIEW_PENDING;
@@ -278,6 +280,8 @@ export const prLabel = stage => pr => {
             }  else if (isStageHappening(PR_STAGE.REVIEW)) {
                 if (pr.properties.includes(PR_EVENT.REJECTION)) {
                     return PR_LABELS.REVIEW_REJECTED;
+                } else if (pr.properties.includes(PR_EVENT.REVIEW)) {
+                    return PR_LABELS.REVIEW_SUBMITTED;
                 } else {
                     return PR_LABELS.REVIEW_PENDING;
                 }
@@ -294,6 +298,8 @@ export const prLabel = stage => pr => {
             return PR_LABELS.MERGE_PENDING;
         } else if (pr.properties.includes(PR_EVENT.REJECTION)) {
             return PR_LABELS.REVIEW_REJECTED;
+        } else if (pr.properties.includes(PR_EVENT.REVIEW)) {
+            return PR_LABELS.REVIEW_SUBMITTED;
         } else if (hasCompletedStage(PR_STAGE.WIP)) {
             return PR_LABELS.REVIEW_PENDING;
         }
