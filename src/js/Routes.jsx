@@ -39,11 +39,6 @@ export default () => {
         analytics.page();
     }, [location]);
 
-    const devmode = (
-        process.env.NODE_ENV === 'development' ||
-            ['development', 'staging'].includes(window.ENV.environment)
-    );
-
     return (
         <Switch>
 
