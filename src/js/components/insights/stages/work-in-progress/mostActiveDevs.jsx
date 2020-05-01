@@ -4,7 +4,7 @@ import { SimpleKPI } from 'js/components/insights/KPI';
 import HorizontalBarChart from 'js/components/insights/charts/library/HorizontalBarChart';
 import { UserReviewer } from 'js/components/charts/Tooltip';
 
-import { github } from 'js/services/format';
+import { github, number } from 'js/services/format';
 
 const mostActiveDevs = {
     plumber: (data) => {
@@ -89,7 +89,7 @@ const mostActiveDevs = {
                         component: SimpleKPI,
                         params: {
                             value: computed.activeDevs.length > 0 ?
-                                (computed.totalPRs / computed.activeDevs.length).toFixed(2) : 0,
+                                number.fixed(computed.totalPRs / computed.activeDevs.length, 2) : 0,
                         }
                     },
                 ]

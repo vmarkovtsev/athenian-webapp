@@ -125,9 +125,12 @@ export const github = {
 const KILO = 1000;
 const MEGA = 1000 * KILO;
 
+// TODO(dpordomingo): should use roundDecimals instead
 const round = (n, decimals = 0) => {
     return Math.round(n * Math.pow(10, decimals)) / Math.pow(10, decimals);
 };
+
+const isNumber = n => typeof n === 'number' && isFinite(n);
 
 export const number = {
     si: n => {
@@ -141,6 +144,9 @@ export const number = {
 
         return '>500M';
     },
+    // rounds a number and returns it as a zero-padded string
+    fixed: (number, decimals = 0) => isNumber(number) ? number.toFixed(decimals) : number,
+    // rounds a number returning a number
     round,
     percentage: (n, decimals = 0) => {
         return round(n, decimals) + '%';

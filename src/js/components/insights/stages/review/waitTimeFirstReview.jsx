@@ -6,7 +6,7 @@ import TimeSeries from 'js/components/insights/charts/library/TimeSeries';
 import { BigText } from 'js/components/charts/Tooltip';
 import { NEGATIVE_IS_BETTER } from 'js/components/ui/Badge';
 
-import { dateTime } from 'js/services/format';
+import { dateTime, number } from 'js/services/format';
 
 const waitTimeFirstReview = {
     plumber: (data) => {
@@ -100,7 +100,7 @@ const waitTimeFirstReview = {
                             title: {text: 'Proportion of the Cycle Time', bold: true},
                             component: SimpleKPI,
                             params: {
-                                value: computed.KPIsData.overallProportion.value.toFixed(2),
+                                value: number.fixed(computed.KPIsData.overallProportion.value, 2),
                                 variation: computed.KPIsData.overallProportion.variation,
                                 variationMeaning: NEGATIVE_IS_BETTER,
                                 unit: '%'

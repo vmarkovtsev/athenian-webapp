@@ -5,7 +5,7 @@ import VerticalBarChart from 'js/components/insights/charts/library/VerticalBarC
 import { TimeToMerge } from 'js/components/charts/Tooltip';
 
 import { fetchPRsMetrics, fetchDevsMetrics } from 'js/services/api/index';
-import { github, dateTime } from 'js/services/format';
+import { github, dateTime, number } from 'js/services/format';
 
 const mergeDelays = {
     fetcher: async (api, context) => {
@@ -113,7 +113,7 @@ const mergeDelays = {
                             subtitle: {text: 'Per Repository'},
                             component: SimpleKPI,
                             params: {
-                                value: Number(computed.KPIsData.avgUniqueMergesPerRepo.toFixed(2))
+                                value: number.round(computed.KPIsData.avgUniqueMergesPerRepo, 2),
                             }
                         },
                         {
@@ -121,7 +121,7 @@ const mergeDelays = {
                             subtitle: {text: 'Per Repository'},
                             component: SimpleKPI,
                             params: {
-                                value: Number(computed.KPIsData.avgTimeToMerge.toFixed(2)),
+                                value: number.round(computed.KPIsData.avgTimeToMerge, 2),
                                 unit: {
                                     singular: 'hour',
                                     plural: 'hours'
