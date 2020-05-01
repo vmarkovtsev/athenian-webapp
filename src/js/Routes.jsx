@@ -17,6 +17,7 @@ import Pipeline from 'js/pages/Pipeline';
 import Stage from 'js/pages/pipeline/Stage';
 import Overview from 'js/pages/pipeline/Overview';
 import Login from 'js/pages/auth/Login';
+import SignUp from 'js/pages/auth/SignUp';
 import Logout from 'js/pages/auth/Logout';
 import Development from 'js/components/development';
 import Callback from 'js/pages/auth/Callback';
@@ -70,7 +71,7 @@ export default () => {
           <Route path='/i/:code(\w{8})'>
             <Redirect to={
                 {
-                    pathname: '/login',
+                    pathname: '/signup',
                     state: { inviteLink: window.location.href }
                 }
             } />
@@ -78,6 +79,10 @@ export default () => {
 
           <Route path='/callback'>
             <Callback />
+          </Route>
+
+          <Route path='/signup'>
+            <SignUp />
           </Route>
 
           <Route path='/login'>
