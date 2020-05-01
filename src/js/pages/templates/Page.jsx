@@ -65,6 +65,13 @@ const AuthenticatedWithUser = ({user, breadcrumbs, invitationDisabled, children}
 const AuthenticationError = ({message, logout}) => (
     <Simple>
       <p>{message}</p>
-      <button onClick={() => logout({ returnTo: window.ENV.auth.logoutRedirectUri })}>logout</button>
+
+      <button
+        type="button"
+        className="btn btn-xlarge btn-orange"
+        onClick={() => logout({ returnTo: window.ENV.auth.logoutRedirectUri })}
+      >
+        Logout
+      </button>
     </Simple>
 );
