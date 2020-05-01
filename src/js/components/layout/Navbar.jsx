@@ -8,18 +8,18 @@ import defaultImage from 'images/default-user-image.png';
 
 import InvitationCreator from 'js/smart-components/InvitationCreator';
 
-export default ({ user }) => (
+export default ({ user, invitationDisabled }) => (
   <div className="navbar navbar-expand-sm navbar-light bg-white topbar static-top border-bottom">
     <div className="container d-flex justify-content-between align-items-center">
       <Link to="/">
         <img src={logo} className="app-logo" alt="athenian" />
       </Link>
-      <User user={user} />
+      <User user={user} invitationDisabled={invitationDisabled}/>
     </div>
   </div>
 );
 
-const User = ({ user }) => {
+const User = ({ user, invitationDisabled }) => {
 
   return user ? (
     <ul className="navbar-nav ml-auto pr-0">
@@ -35,7 +35,7 @@ const User = ({ user }) => {
               <p className="mb-0 text-truncate font-weight-light text-s">{user.email}</p>
             </div>
           </header>
-          <InvitationCreator user={user} className="menuItem py-3" />
+          {!invitationDisabled && <InvitationCreator user={user} className="menuItem py-3" />}
           <footer className="menuItem d-flex flex-row align-items-center justify-content-end bg-light py-2 text-xs border-top">
             <Link to="/logout" className="text-s text-secondary">Logout</Link>
           </footer>

@@ -11,13 +11,13 @@ export const FROM_REGISTRATION = 'registration';
 
 export default () => {
   const location = useLocation();
-  const userContext = useUserContext();
+  const { user } = useUserContext();
   const [ghAppOpenedState, setGhAppOpenedState] = useState(false);
   const [ghAppOpenErrorState, setGhAppOpeneErrorState] = useState(false);
 
   const ghAppUrl = window.ENV.application.githubAppUri;
 
-  const isAdmin = userContext?.defaultAccount?.isAdmin;
+  const isAdmin = user?.defaultAccount?.isAdmin;
   const autoOpen = location.state?.origin === FROM_REGISTRATION;
 
   useEffect(() => {
@@ -122,7 +122,7 @@ const GhAppLink = ({ url, ...rest }) => (
 
 const Slide = ({ title, text, footer, children }) => {
   return (
-    <Page>
+      <Page invitationDisabled={true}>
       <div className="row h-100">
         <div className="col-12 my-auto">
           <div className="mt-3 mb-5 text-center">

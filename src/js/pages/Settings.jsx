@@ -12,11 +12,11 @@ import { useUserContext } from 'js/context/User';
 import { Link } from 'react-router-dom';
 
 export default () => {
-  const userContext = useUserContext();
+  const { user } = useUserContext();
 
-  if (!userContext) return null;
+  if (!user) return null;
 
-  const orgName = _(userContext.defaultReposet.repos)
+  const orgName = _(user.defaultReposet.repos)
     .map(r => r.split('/')[1])
     .uniq()
     .value();
@@ -32,9 +32,9 @@ export default () => {
         <div className="col-2">
           <div className="card mb-5">
             <div className="card-header text-center bg-white">
-              <img className="rounded-circle mt-2 mb-4" src={userContext.picture || defaultImage} alt="" width="100" />
-              <h3 className="text-dark text-truncate h5">{userContext.name}</h3>
-              <p className="text-secondary text-truncate font-weight-light">{userContext.email}</p>
+              <img className="rounded-circle mt-2 mb-4" src={user.picture || defaultImage} alt="" width="100" />
+              <h3 className="text-dark text-truncate h5">{user.name}</h3>
+              <p className="text-secondary text-truncate font-weight-light">{user.email}</p>
             </div>
             <div className="card-body p-0">
               <div className="list-group list-group-flush">
@@ -70,10 +70,10 @@ export default () => {
               <p className="text-dark mt-2 mb-3">User Information</p>
               <div className="card bg-light mb-5">
                 <div className="card-body d-flex align-items-center">
-                  <img className="rounded-circle mr-3" src={userContext.picture || defaultImage} alt="" width="80" />
+                  <img className="rounded-circle mr-3" src={user.picture || defaultImage} alt="" width="80" />
                   <div>
-                    <h3 className="text-dark text-truncate h5">{userContext.name} <FontAwesomeIcon icon={faGithub} /></h3>
-                    <p className="text-secondary text-truncate font-weight-light mb-0">{userContext.email}</p>
+                    <h3 className="text-dark text-truncate h5">{user.name} <FontAwesomeIcon icon={faGithub} /></h3>
+                    <p className="text-secondary text-truncate font-weight-light mb-0">{user.email}</p>
                   </div>
                 </div>
               </div>

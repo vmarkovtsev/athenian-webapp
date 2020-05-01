@@ -18,14 +18,13 @@ export default ({ user, className }) => {
             return;
         };
 
-        const ownedAccount = getOwnedAccount(user);
-        if (!ownedAccount) {
+        if (!user.defaultAccount.isAdmin) {
             return;
-        };
+        }
 
         setLoadingState(true);
         getTokenSilently()
-            .then(token => getInvitation(token, ownedAccount.id))
+            .then(token => getInvitation(token, user.defaultAccount.id))
             .then(setUrlState)
             .catch(err => console.error("Could not get invitation", err))
             .finally(() => setLoadingState(false));
@@ -50,13 +49,3 @@ export default ({ user, className }) => {
             )
     );
 };
-
-const getOwnedAccount = user => {
-    for (let id in user.accounts) {
-        if (user.accounts[id].isAdmin) {
-            return user.accounts[id];
-        }
-    }
-
-    return null;
-}

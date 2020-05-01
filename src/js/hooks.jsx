@@ -16,56 +16,84 @@ export const usePrevious = (value) => {
     return ref.current;
 };
 
-export const useApi = (noUsers = false, noFilters = false) => {
-    if (noUsers) {
-        noFilters = true;
-    }
+const useApiOnly = () => {
+    const { loading, isAuthenticated, loginWithRedirect, logout, getTokenSilently } = useAuth0();
+    const [apiState, setApiState] = useState(null);
 
-    const { getTokenSilently } = useAuth0();
+    useEffect(() => {
+        if (!isAuthenticated) {
+            return;
+        }
+
+        const prepareApi = async () => {
+            const token = await getTokenSilently();
+            const api = buildApi(token);
+
+            setApiState(api);
+        };
+
+        prepareApi();
+    }, [isAuthenticated, getTokenSilently]);
+
+    return {
+        api: apiState,
+        ready: !!apiState,
+        auth: {
+            loading,
+            isAuthenticated,
+            loginWithRedirect,
+            logout
+        },
+        context: {}
+    };
+};
+
+const useApiWithUser = () => {
+    const {api, auth, ready: apiReady} = useApiOnly();
+    const { user } = useUserContext();
+
+    const context = apiReady ? {account: user.defaultAccount.id} : {};
+    return {
+        api,
+        ready: apiReady,
+        auth,
+        context
+    };
+};
+
+const useApiWithFilters = () => {
+    const {api, auth, ready: apiReady, context: apiContext} = useApiWithUser();
     const {
         ready: filtersReady,
         dateInterval,
         repositories,
         contributors
     } = useFiltersContext();
-    const userContext = useUserContext();
 
-    const [apiState, setApiState] = useState(null);
-    const [apiReadyState, setApiStateReady] = useState(false);
+    const ready = apiReady && filtersReady;
+    const context = {
+        ...apiContext,
+        interval: dateInterval,
+        repositories: repositories,
+        contributors: contributors
+    };
 
-    useMountEffect(() => {
-        const prepareApi = async () => {
-            const token = await getTokenSilently();
-            const api = buildApi(token);
-
-            setApiState(api);
-            setApiStateReady(true);
-        };
-
-        prepareApi();
-    });
-
-    let context = {};
-    let ready = apiReadyState;
-
-    if (!noUsers) {
-        context = {...context, account: userContext.defaultAccount.id};
-    }
-
-    if (!noFilters) {
-        ready &= filtersReady;
-        context = {
-            ...context,
-            interval: dateInterval,
-            repositories: repositories,
-            contributors: contributors
-        };
-    }
-
-    context = ready ? context : {};
     return {
-        api: apiState,
+        api: api,
         ready,
+        auth,
         context
     };
+};
+
+export const useApi = (withUser = true, withFilters = true) => getApiHook(withUser, withFilters)();
+
+const getApiHook = (withUser = true, withFilters = true) => {
+    if (withFilters) {
+        return useApiWithFilters;
+    } else if (withUser) {
+        return useApiWithUser;
+    } else {
+        return useApiOnly;
+    }
 };
