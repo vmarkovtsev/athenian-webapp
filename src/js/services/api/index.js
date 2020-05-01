@@ -43,14 +43,32 @@ export const getUserWithAccountRepos = async token => {
     return { id: Number(accountID), isAdmin, reposets: reposetsContent };
   };
 
-  const accounts = await Promise.all(
-    Object.keys(user.accounts).map(accountID => getAccountRepos(accountID, user.accounts[accountID]))
-  );
+  const defaultAccountID = getDefaultAccountID(user.accounts);
+  if (!defaultAccountID) {
+      return null;
+  }
 
-  const defaultAccount = accounts[0];
-  const defaultReposet = (defaultAccount && defaultAccount.reposets && defaultAccount.reposets[0]) || { repos: [] };
+  const defaultAccount = await getAccountRepos(defaultAccountID, user.accounts[defaultAccountID]);
+  const defaultReposet = (defaultAccount.reposets && defaultAccount.reposets[0]) || { repos: [] };
 
-  return { ...user, accounts, defaultAccount, defaultReposet };
+  return { ...user, defaultAccount, defaultReposet };
+};
+
+const getDefaultAccountID = (accounts) => {
+    if (!accounts) {
+        return null;
+    }
+
+    const accounts_ = _(accounts)
+        .reduce((result, value, key) => {
+            (result[value] || (result[value] = [])).push(key);
+            return result;
+        }, {});
+
+    const adminAccounts = accounts_[true] || [];
+    const nonAdminAccoubnst = accounts_[false] || [];
+
+    return adminAccounts[0] || nonAdminAccoubnst[0];
 };
 
 export const getRepos = (token, userAccount, from, to, repos) => {
