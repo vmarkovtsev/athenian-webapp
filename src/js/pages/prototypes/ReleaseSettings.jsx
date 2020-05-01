@@ -8,9 +8,9 @@ import { useUserContext } from 'js/context/User';
 import { Link } from 'react-router-dom';
 
 export default () => {
-  const userContext = useUserContext();
+  const { user } = useUserContext();
 
-  if (!userContext) return null;
+  if (!user) return null;
 
   return (
     <Page>
@@ -18,9 +18,9 @@ export default () => {
         <div className="col-2">
           <div className="card mb-5">
             <div className="card-header text-center bg-white">
-              <img className="rounded-circle mt-2 mb-4" src={userContext.picture || defaultImage} alt="" width="100" />
-              <h3 className="text-dark h5">{userContext.name}</h3>
-              <p className="text-secondary font-weight-light">{userContext.email}</p>
+              <img className="rounded-circle mt-2 mb-4" src={user.picture || defaultImage} alt="" width="100" />
+              <h3 className="text-dark h5">{user.name}</h3>
+              <p className="text-secondary font-weight-light">{user.email}</p>
             </div>
             <div className="card-body p-0">
               <div className="list-group list-group-flush">

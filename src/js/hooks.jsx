@@ -50,9 +50,9 @@ const useApiOnly = () => {
 
 const useApiWithUser = () => {
     const {api, auth, ready: apiReady} = useApiOnly();
-    const userContext = useUserContext();
+    const { user } = useUserContext();
 
-    const context = apiReady ? {account: userContext.defaultAccount.id} : {};
+    const context = apiReady ? {account: user.defaultAccount.id} : {};
     return {
         api,
         ready: apiReady,

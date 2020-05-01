@@ -11,13 +11,13 @@ export const FROM_REGISTRATION = 'registration';
 
 export default () => {
   const location = useLocation();
-  const userContext = useUserContext();
+  const { user } = useUserContext();
   const [ghAppOpenedState, setGhAppOpenedState] = useState(false);
   const [ghAppOpenErrorState, setGhAppOpeneErrorState] = useState(false);
 
   const ghAppUrl = window.ENV.application.githubAppUri;
 
-  const isAdmin = userContext?.defaultAccount?.isAdmin;
+  const isAdmin = user?.defaultAccount?.isAdmin;
   const autoOpen = location.state?.origin === FROM_REGISTRATION;
 
   useEffect(() => {

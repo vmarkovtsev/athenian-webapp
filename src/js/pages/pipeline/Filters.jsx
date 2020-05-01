@@ -27,7 +27,7 @@ const defaultDateInterval = {
 
 export default ({ children }) => {
     const { getTokenSilently } = useAuth0();
-    const userContext = useUserContext();
+    const { user } = useUserContext();
     const { reset: resetData, setGlobal: setGlobalData } = useDataContext();
 
     const [readyState, setReadyState] = useState(false);
@@ -43,9 +43,9 @@ export default ({ children }) => {
     const [filteredDateIntervalState, setFilteredDateIntervalState] = useState(defaultDateInterval);
 
     const context = {
-        account: userContext.defaultAccount.id,
+        account: user.defaultAccount.id,
         dateInterval: defaultDateInterval,
-        repos: userContext.defaultReposet.repos
+        repos: user.defaultReposet.repos
     };
 
     const reposSetters = {

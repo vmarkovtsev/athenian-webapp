@@ -37,7 +37,7 @@ export default ({ children }) => {
     }
 
     return (
-        <UserContext.Provider value={userState}>
+        <UserContext.Provider value={{user: userState, isAuthenticated}}>
           {
               userState && !userState.defaultAccount ? (
                   <Simple>

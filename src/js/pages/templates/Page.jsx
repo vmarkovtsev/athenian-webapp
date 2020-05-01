@@ -8,12 +8,12 @@ import Breadcrumbs from 'js/components/layout/Breadcrumbs';
 import Footer from 'js/components/layout/Footer';
 
 export default ({ children }) => {
-    const userContext = useUserContext();
+    const { user } = useUserContext();
     const breadcrumbs = useBreadcrumbsContext();
 
-    return userContext ? (
+    return user ? (
         <>
-          <Navbar user={userContext} />
+          <Navbar user={user} />
           <Breadcrumbs breadcrumbs={breadcrumbs} />
 
           <div className="container mt-4">
@@ -22,5 +22,5 @@ export default ({ children }) => {
 
           <Footer />
         </>
-    ) : <Navbar user={userContext} /> ;
+    ) : <Navbar user={user} /> ;
 };
