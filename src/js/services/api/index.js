@@ -47,7 +47,7 @@ export const getUserWithAccountRepos = async token => {
     Object.keys(user.accounts).map(accountID => getAccountRepos(accountID, user.accounts[accountID]))
   );
 
-  const defaultAccount = accounts[0] || { reposets: [] };
+  const defaultAccount = accounts[0];
   const defaultReposet = (defaultAccount && defaultAccount.reposets && defaultAccount.reposets[0]) || { repos: [] };
 
   return { ...user, accounts, defaultAccount, defaultReposet };
