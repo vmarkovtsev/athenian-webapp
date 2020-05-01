@@ -8,7 +8,7 @@ import Breadcrumbs from 'js/components/layout/Breadcrumbs';
 import Footer from 'js/components/layout/Footer';
 import Simple from 'js/pages/templates/Simple';
 
-export default ({ children }) => {
+export default ({ invitationDisabled, children }) => {
     const { user, isAuthenticated, logout } = useUserContext();
     const breadcrumbs = useBreadcrumbsContext();
 
@@ -25,7 +25,8 @@ export default ({ children }) => {
     }
 
     return (
-        <AuthenticatedWithUser user={user} breadcrumbs={breadcrumbs}>
+        <AuthenticatedWithUser user={user} breadcrumbs={breadcrumbs}
+                               invitationDisabled={invitationDisabled}>
           {children}
         </AuthenticatedWithUser>
     );
@@ -48,9 +49,9 @@ const AuthenticatedWithUserNoAccount = ({logout}) => (
     />
 );
 
-const AuthenticatedWithUser = ({user, breadcrumbs, children}) => (
+const AuthenticatedWithUser = ({user, breadcrumbs, invitationDisabled, children}) => (
     <>
-      <Navbar user={user} />
+      <Navbar user={user} invitationDisabled={invitationDisabled}/>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
 
       <div className="container mt-4">

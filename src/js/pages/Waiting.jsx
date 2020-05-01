@@ -122,7 +122,7 @@ const GhAppLink = ({ url, ...rest }) => (
 
 const Slide = ({ title, text, footer, children }) => {
   return (
-    <Page>
+      <Page invitationDisabled={true}>
       <div className="row h-100">
         <div className="col-12 my-auto">
           <div className="mt-3 mb-5 text-center">
