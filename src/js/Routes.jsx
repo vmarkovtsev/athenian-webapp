@@ -39,11 +39,6 @@ export default () => {
         analytics.page();
     }, [location]);
 
-    const devmode = (
-        process.env.NODE_ENV === 'development' ||
-            ['development', 'staging'].includes(window.ENV.environment)
-    );
-
     return (
         <Switch>
 
@@ -92,7 +87,7 @@ export default () => {
             <Settings />
           </ContextRoute>
 
-          {devmode && <Route path='/bearer'><Development.Bearer /></Route>}
+          <Route path='/bearer'><Development.Bearer /></Route>
 
           <ContextRoute context={UserContext} path='/waiting'>
             <Waiting />
