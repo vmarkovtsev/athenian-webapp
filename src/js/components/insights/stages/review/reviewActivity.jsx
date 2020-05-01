@@ -6,7 +6,7 @@ import BubbleChart from 'js/components/insights/charts/library/BubbleChart';
 import { UserReviewer } from 'js/components/charts/Tooltip';
 
 import { fetchDevsMetrics } from 'js/services/api/index';
-import { github } from 'js/services/format';
+import { github, number } from 'js/services/format';
 import { happened, authored, PR_EVENT as prEvent } from 'js/services/prHelpers';
 
 const reviewActivity = {
@@ -193,7 +193,7 @@ const reviewActivity = {
                             subtitle: {text: 'Per Developer'},
                             component: SimpleKPI,
                             params: {
-                                value: computed.firstBox.KPIsData.avgReviewedPRsPerDev.toFixed(2)
+                                value: number.fixed(computed.firstBox.KPIsData.avgReviewedPRsPerDev, 2),
                             }
                         },
                         {
@@ -249,7 +249,7 @@ const reviewActivity = {
                             component: SimpleKPI,
                             params: {
                                 value: computed.secondBox.KPIsData.topReviewer ?
-                                    computed.secondBox.KPIsData.topReviewer.prsCommentsPerc.toFixed(2) : '',
+                                    number.fixed(computed.secondBox.KPIsData.topReviewer.prsCommentsPerc,2) : '',
                                 unit: '%'
                             }
                         },

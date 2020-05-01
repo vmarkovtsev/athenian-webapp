@@ -73,6 +73,13 @@ export default ({ children }) => {
                     { repositories: apiContext.repositories, developers: apiContext.contributors }
                 );
 
+                if (!data.calculated?.[0]) {
+                    return {
+                        all: allMetrics.reduce((acc,v) => { acc[v] = null; return acc; }, {}),
+                        custom: allMetrics.reduce((acc,v) => { acc[v] = []; return acc; }, {}),
+                    };
+                }
+
                 let rawAllValues, rawCustomValues;
                 if (data.calculated[0].granularity === 'all') {
                     rawAllValues = data.calculated[0].values;
@@ -124,6 +131,10 @@ export default ({ children }) => {
                     interval, allMetrics,
                     { repositories: apiContext.repositories, developers: apiContext.contributors }
                 );
+
+                if (!data.calculated?.[0]?.values?.length) {
+                    return 0;
+                }
 
                 const calcVariation = (prev, curr) => prev > 0 ? (curr - prev) * 100 / prev : 0;
 

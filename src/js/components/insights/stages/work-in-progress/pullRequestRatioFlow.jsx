@@ -96,7 +96,7 @@ const pullRequestRatioFlow = {
                         subtitle: {text: 'Ratio Flow'},
                         component: SimpleKPI,
                         params: {
-                            value: computed.KPIsData.avgRatioFlow.toFixed(2)
+                            value: number.fixed(computed.KPIsData.avgRatioFlow, 2)
                         }
                     },
                     {
@@ -104,7 +104,7 @@ const pullRequestRatioFlow = {
                         subtitle: {text: 'Ratio Flow'},
                         component: SimpleKPI,
                         params: {
-                            value: `${computed.KPIsData.highestDay.day} (${computed.KPIsData.highestDay.value.toFixed(2)})`
+                            value: `${computed.KPIsData.highestDay.day} (${number.fixed(computed.KPIsData.highestDay.value, 2)})`
                         }
                     },
                 ]
