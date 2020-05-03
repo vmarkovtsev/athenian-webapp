@@ -1,6 +1,7 @@
 import React from 'react';
 import DataWidget from 'js/components/DataWidget';
 import Badge, { NEGATIVE_IS_BETTER, POSITIVE_IS_BETTER } from 'js/components/ui/Badge';
+import { StatusIndicator, READY } from 'js/components/ui/Spinner';
 import { BigNumber, SmallTitle } from 'js/components/ui/Typography';
 import Info from 'js/components/ui/Info';
 
@@ -10,8 +11,7 @@ import { useApi } from 'js/hooks';
 
 import { dateTime, number } from 'js/services/format';
 
-
-const MainMetrics = ({ data, loading, spinner }) => {
+const MainMetrics = ({ data, status }) => {
     return (
         <div className="row mb-4">
           <div className="col-md-3">
@@ -19,8 +19,7 @@ const MainMetrics = ({ data, loading, spinner }) => {
               title="Lead time"
               hint="Elapsed time between the creation of the 1st commit in a pull request and the code being used in production."
               dataGetter={() => [dateTime.human(data.leadTime.avg), data.leadTime.variation]}
-              spinner={spinner}
-              loading={loading}
+              status={status}
               negativeIsBetter
             />
           </div>
@@ -29,8 +28,7 @@ const MainMetrics = ({ data, loading, spinner }) => {
               title="Cycle time"
               hint="Sum of the average time required in each development stage."
               dataGetter={() => [dateTime.human(data.cycleTime.avg), data.cycleTime.variation]}
-              spinner={spinner}
-              loading={loading}
+              status={status}
               negativeIsBetter
             />
           </div>
@@ -39,8 +37,7 @@ const MainMetrics = ({ data, loading, spinner }) => {
               title="Pull requests"
               hint="Number of pull requests released, counting in the Lead Time."
               dataGetter={() => [data.releasedPRs.avg, data.releasedPRs.variation]}
-              spinner={spinner}
-              loading={loading}
+              status={status}
             />
           </div>
           <div className="col-md-3">
@@ -48,18 +45,17 @@ const MainMetrics = ({ data, loading, spinner }) => {
               title="Contributors"
               hint="Number of people involved in delivering software."
               dataGetter={() => [data.contribs.avg, data.contribs.variation]}
-              spinner={spinner}
-              loading={loading}
+              status={status}
             />
           </div>
         </div >
     );
 };
 
-const MainMetric = ({ title, hint, dataGetter, loading, spinner, negativeIsBetter = false }) => {
+const MainMetric = ({ title, hint, dataGetter, status, negativeIsBetter = false }) => {
     let content;
-    if (loading && spinner) {
-        content = spinner;
+    if (status !== READY) {
+        content = <StatusIndicator status={status} margin={0} textOnly />;
     } else {
         const [value, variation] = dataGetter();
         content = (
@@ -146,10 +142,6 @@ export default () => {
           id={`main-metrics`}
           component={MainMetrics} fetcher={fetcher} plumber={plumber}
           globalDataIDs={['filter.contribs', 'prs-metrics.values', 'prs-metrics.variations']}
-          config={{
-              margin: 0,
-              color: '#858796',
-          }}
           propagateSpinner={true}
         />
     );

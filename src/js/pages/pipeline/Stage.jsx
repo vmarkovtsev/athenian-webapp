@@ -1,29 +1,35 @@
 import React, {useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
+
 import { StageSummaryMetrics } from 'js/components/pipeline/StageMetrics';
 import Insights from 'js/components/insights/Insights';
 import Tabs from 'js/components/layout/Tabs';
 import PullRequests from 'js/components/pipeline/PullRequests';
+import { LOADING, READY, FAILED, EMPTY } from 'js/components/ui/Spinner';
 
 import { pipelineStagesConf, getStage } from 'js/pages/pipeline/Pipeline';
 import { useDataContext } from 'js/context/Data';
 
 export default () => {
     const { getGlobal: getGlobalData, globalDataReady } = useDataContext();
-    const [prsState, setPRsState] = useState(null);
-    const [prsLoadingState, setPRsLoadingState] = useState(false);
+    const [prsState, setPRsState] = useState({ prs: [], users: [] });
+    const [statusState, setStatusState] = useState(EMPTY);
 
     useEffect(() => {
         if (!globalDataReady) {
-            setPRsLoadingState(true);
+            setStatusState(LOADING);
             return;
         }
 
         (async () => {
-            setPRsLoadingState(true);
-            const prs = await getGlobalData('prs');
-            setPRsState(prs);
-            setPRsLoadingState(false);
+            setStatusState(LOADING);
+            try {
+                const prs = await getGlobalData('prs');
+                setPRsState(prs);
+                setStatusState(prs?.prs?.length ? READY : EMPTY);
+            } catch (err) {
+                setStatusState(FAILED);
+            }
         })();
     }, [globalDataReady, getGlobalData]);
 
@@ -54,7 +60,7 @@ export default () => {
                   content: <PullRequests
                       data={filteredPRs}
                       stage={activeStage.stageName}
-                      loading={prsLoadingState}
+                      status={statusState}
                   />
               }
           ]} />

@@ -9,8 +9,7 @@ import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses 
 
 import _ from 'lodash';
 
-import { NoData } from 'js/components/layout/Empty';
-import Spinner from 'js/components/ui/Spinner';
+import { StatusIndicator, READY } from 'js/components/ui/Spinner';
 
 const userImage = users => user => {
     if (users[user] && users[user].avatar) {
@@ -28,26 +27,22 @@ const userImage = users => user => {
 const tableContainerId = 'dataTable';
 const tableContainerSelector = `#${tableContainerId}`;
 
-export default ({ stage, data, loading }) => {
+export default ({ stage, data, status }) => {
     useEffect(() => {
-        if (loading || !data?.prs?.length) {
+        if (status !== READY) {
             return;
         }
+
         draw(stage, data);
         return () => {
             $.fn.DataTable.isDataTable(tableContainerSelector) && $(tableContainerSelector).DataTable().destroy();
             $(tableContainerSelector).empty();
         };
-    }, [stage, data, loading]);
+    }, [stage, data, status]);
 
     return (
         <>
-            {loading && (
-                <div className="text-center">
-                    <Spinner loading={loading} color="black" />
-                </div>
-            )}
-            {!loading && !data?.prs?.length && <NoData />}
+            <StatusIndicator status={status} textOnly={false} />
             <div className="table-responsive mb-4">
                 <table className="table table-bordered" id={tableContainerId} width="100%" cellSpacing="0" style={{ tableLayout: 'fixed' }} />
             </div>

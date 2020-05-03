@@ -1,16 +1,17 @@
 import React, {useEffect} from 'react';
 import { useParams } from "react-router-dom";
-
-import MainMetrics from 'js/components/pipeline/MainMetrics';
-import Thumbnails from 'js/components/pipeline/Thumbnails';
-import { useApi } from 'js/hooks';
-import { useDataContext } from 'js/context/Data';
-import { fetchFilteredPRs, fetchPRsMetrics, getPreviousInterval } from 'js/services/api';
 import _ from "lodash";
 import moment from 'moment';
 
-
+import MainMetrics from 'js/components/pipeline/MainMetrics';
+import Thumbnails from 'js/components/pipeline/Thumbnails';
 import { pipelineStagesConf, getStage } from 'js/pages/pipeline/Pipeline';
+
+import { useApi } from 'js/hooks';
+import { useDataContext } from 'js/context/Data';
+import { fetchFilteredPRs, fetchPRsMetrics, getPreviousInterval } from 'js/services/api';
+
+import { NoData } from 'js/components/layout/Empty';
 
 export default ({ children }) => {
     const { api, ready: apiReady, context: apiContext } = useApi();
@@ -155,6 +156,10 @@ export default ({ children }) => {
         fetchGlobalPRMetrics();
         fetchGlobalPRMetricsVariations();
     }, [apiReady, api, apiContext.account, apiContext.interval, apiContext.repositories, apiContext.contributors, setGlobalData]);
+
+    if (!apiContext?.repositories?.length) {
+        return <NoData />;
+    }
 
     return (
         <>
