@@ -23,7 +23,7 @@ const Thumbnails = ({ data, status, activeCard }) => (
                   const color = active ? '#FFFFFF' : card.color;
 
                   let [stageData, textValue, variationValue, completedPRs] = [null, null, null, null];
-                  if (status === READY) {debugger;
+                  if (status === READY) {
                       stageData = data.timeseries[card.metric];
                       textValue = dateTime.human(data.aggregated[card.metric] * 1000);
                       variationValue = data.variations[card.metric];
