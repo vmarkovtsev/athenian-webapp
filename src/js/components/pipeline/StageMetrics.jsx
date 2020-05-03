@@ -6,6 +6,7 @@ import { useApi } from 'js/hooks';
 import { BigNumber } from 'js/components/ui/Typography';
 import { pipelineStagesConf } from 'js/pages/pipeline/Pipeline';
 import { SmallTitle } from 'js/components/ui/Typography';
+import { StatusIndicator, READY } from 'js/components/ui/Spinner';
 import DataWidget from 'js/components/DataWidget';
 import { dateTime, number } from 'js/services/format';
 import { palette } from 'js/res/palette';
@@ -109,12 +110,7 @@ export const OverviewSummaryMetrics = ({name, metric}) => {
     );
 };
 
-const SummaryMetrics = ({ data, stage, KPIComponent, loading, spinnerBuilder, chartConfig }) => {
-    const spinner = spinnerBuilder({
-        margin: 5,
-        color: chartConfig.color
-    });
-
+const SummaryMetrics = ({ data, stage, KPIComponent, status, chartConfig }) => {
     return (
         <div className={classnames('summary-metric card mb-4 px-2', stage.stageName)}>
           <div className="card-body" style={{minHeight: '305px'}}>
@@ -122,7 +118,7 @@ const SummaryMetrics = ({ data, stage, KPIComponent, loading, spinnerBuilder, ch
               <div className="col-4">
                 <header className="font-weight-bold text-lg mt-2">{stage.summaryMetricTitle || stage.title}</header>
                 {
-                    !loading &&
+                    status === READY &&
                         <div className="pl-2">
                           <div className="font-weight-bold mt-4 mb-3 pb-2 border-bottom">
                             <BigNumber content={dateTime.human(data.average * 1000)} isXL />
@@ -135,14 +131,14 @@ const SummaryMetrics = ({ data, stage, KPIComponent, loading, spinnerBuilder, ch
                 }
               </div>
               {
-                  !loading &&
+                  status === READY &&
                       <div className="col-8 align-self-center">
                         <FilledAreaChart data={{timeseries: data.timeseries, average: data.average}} {...chartConfig}/>
                       </div>
               }
             </div>
 
-            {loading && spinner}
+            {status !== READY && <StatusIndicator status={status} color={chartConfig.color} />}
           </div>
         </div>
     );

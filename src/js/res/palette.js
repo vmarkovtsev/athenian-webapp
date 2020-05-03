@@ -4,6 +4,7 @@ const third = '#4DC7EE';
 const fourth = '#2FCC71';
 const alert = '#F37373';
 const alertStrong = '#EF3837';
+const grey = '#8889A1'; // $color-secondary
 
 export const palette = {
     stages: {
@@ -16,7 +17,8 @@ export const palette = {
         done: '#24C7CC',
     },
     schemes: {
-        primary: primary,
+        primary,
+        grey,
         trend: secondary,
         duoSimilar: [secondary, third],
         duoContrast: [primary, third],

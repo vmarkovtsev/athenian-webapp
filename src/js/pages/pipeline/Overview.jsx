@@ -1,35 +1,40 @@
 import React, {useState, useEffect} from 'react';
 
-import { pipelineStagesConf } from 'js/pages/pipeline/Pipeline';
-import PullRequests from 'js/components/pipeline/PullRequests';
 import { OverviewSummaryMetrics } from 'js/components/pipeline/StageMetrics';
 import Tabs from 'js/components/layout/Tabs';
+import PullRequests from 'js/components/pipeline/PullRequests';
+import { LOADING, READY, FAILED, EMPTY } from 'js/components/ui/Spinner';
 
+import { pipelineStagesConf } from 'js/pages/pipeline/Pipeline';
 import { useDataContext } from 'js/context/Data';
 
 export default () => {
     const { getGlobal: getGlobalData, globalDataReady } = useDataContext();
     const [prsState, setPRsState] = useState({ prs: [], users: [] });
-    const [prsLoadingState, setPRsLoadingState] = useState(true);
+    const [statusState, setStatusState] = useState(EMPTY);
 
     useEffect(() => {
         if (!globalDataReady) {
-            setPRsLoadingState(true);
+            setStatusState(LOADING);
             return;
         }
 
         (async () => {
-            setPRsLoadingState(true);
-            const prs = await getGlobalData('prs');
-            setPRsState(prs);
-            setPRsLoadingState(false);
+            setStatusState(LOADING);
+            try {
+                const prs = await getGlobalData('prs');
+                setPRsState(prs);
+                setStatusState(prs?.prs?.length ? READY : EMPTY);
+            } catch (err) {
+                setStatusState(FAILED);
+            }
         })();
     }, [globalDataReady, getGlobalData]);
 
     const tabs = [{
         title: 'Pull Requests',
         badge: prsState?.prs?.length,
-        content: <PullRequests data={prsState} stage="overview" loading={prsLoadingState} />
+        content: <PullRequests data={prsState} stage="overview" status={statusState} />
     }];
 
     return (
