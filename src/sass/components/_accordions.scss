@@ -26,4 +26,11 @@
             border-top: 1px solid $at-border-color;
         }
     }
+
+    &.w-dropdowns {
+
+        > .card {
+            overflow: visible;
+        }
+    }
 }
