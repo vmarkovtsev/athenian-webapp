@@ -56,8 +56,8 @@ export default () => {
                   </div>
                   <div className="dropdown-divider"></div>
                   <div className="bg-white font-weight-light d-flex align-items-center justify-content-end p-3">
-                    <a className="text-s text-secondary mr-3" href="">Cancel</a>
-                    <a href="" className="btn btn-orange">Add</a>
+                    <a className="text-s text-secondary mr-3" href>Cancel</a>
+                    <a href className="btn btn-orange">Add</a>
                   </div>
                 </form>
               </div>
@@ -82,10 +82,10 @@ export default () => {
                     </h5>
                     <div className="ml-auto d-flex mr-4">
                       <div className="mr-3">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" className="pr-user-avatar"/>
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" className="pr-user-avatar"/>
-                        <img src="https://randomuser.me/api/portraits/men/46.jpg" className="pr-user-avatar"/>
-                        <img src="https://randomuser.me/api/portraits/women/79.jpg" className="pr-user-avatar"/>
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" className="pr-user-avatar" alt="" />
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" className="pr-user-avatar" alt="" />
+                        <img src="https://randomuser.me/api/portraits/men/46.jpg" className="pr-user-avatar" alt="" />
+                        <img src="https://randomuser.me/api/portraits/women/79.jpg" className="pr-user-avatar" alt="" />
                       </div>
                       <div className="dropdown">
                         <button type="button" className="btn btn-small btn-transparent" data-toggle="dropdown"
@@ -93,8 +93,8 @@ export default () => {
                           <FontAwesomeIcon icon={faEllipsisH} />
                         </button>
                         <div className="dropdown-menu dropdown-menu-right">
-                          <a className="dropdown-item" href="#">Rename</a>
-                          <a className="dropdown-item" href="#">Remove</a>
+                          <a className="dropdown-item" href>Rename</a>
+                          <a className="dropdown-item" href>Remove</a>
                         </div>
                       </div>
                     </div>
@@ -105,7 +105,7 @@ export default () => {
                         <li className="list-group-item bg-white font-weight-normal">
                           <div className="row">
                             <div className="col-6 d-flex">
-                              <img src="https://randomuser.me/api/portraits/men/32.jpg" className="pr-user-avatar mr-2 ml-4"/>
+                              <img src="https://randomuser.me/api/portraits/men/32.jpg" className="pr-user-avatar mr-2 ml-4" alt="" />
                               <p className="text-dark text-truncate my-1">Dannie Kemmer</p>
                             </div>
                             <div className="col-6 d-flex align-items-center">
@@ -116,7 +116,7 @@ export default () => {
                         <li className="list-group-item bg-white font-weight-normal">
                           <div className="row">
                             <div className="col-6 d-flex">
-                              <img src="https://randomuser.me/api/portraits/women/44.jpg" className="pr-user-avatar mr-2 ml-4"/>
+                              <img src="https://randomuser.me/api/portraits/women/44.jpg" className="pr-user-avatar mr-2 ml-4" alt="" />
                               <p className="text-dark text-truncate my-1">Christine Balistreri</p>
                             </div>
                             <div className="col-6 d-flex align-items-center">
@@ -127,7 +127,7 @@ export default () => {
                         <li className="list-group-item bg-white font-weight-normal">
                           <div className="row">
                             <div className="col-6 d-flex">
-                              <img src="https://randomuser.me/api/portraits/men/46.jpg" className="pr-user-avatar mr-2 ml-4"/>
+                              <img src="https://randomuser.me/api/portraits/men/46.jpg" className="pr-user-avatar mr-2 ml-4" alt="" />
                               <p className="text-dark text-truncate my-1">Percy Marquardt</p>
                             </div>
                             <div className="col-6 d-flex align-items-center">
@@ -138,7 +138,7 @@ export default () => {
                         <li className="list-group-item bg-white font-weight-normal">
                           <div className="row">
                             <div className="col-6 d-flex">
-                              <img src="https://randomuser.me/api/portraits/women/79.jpg" className="pr-user-avatar mr-2 ml-4"/>
+                              <img src="https://randomuser.me/api/portraits/women/79.jpg" className="pr-user-avatar mr-2 ml-4" alt="" />
                               <p className="text-dark text-truncate my-1">Sonya Bogan</p>
                             </div>
                             <div className="col-6 d-flex align-items-center">
@@ -172,10 +172,10 @@ export default () => {
                     </h5>
                     <div className="ml-auto d-flex mr-4">
                       <div className="mr-3">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" className="pr-user-avatar"/>
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" className="pr-user-avatar"/>
-                        <img src="https://randomuser.me/api/portraits/men/46.jpg" className="pr-user-avatar"/>
-                        <img src="https://randomuser.me/api/portraits/women/79.jpg" className="pr-user-avatar"/>
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" className="pr-user-avatar" alt="" />
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" className="pr-user-avatar" alt="" />
+                        <img src="https://randomuser.me/api/portraits/men/46.jpg" className="pr-user-avatar" alt="" />
+                        <img src="https://randomuser.me/api/portraits/women/79.jpg" className="pr-user-avatar" alt="" />
                       </div>
                       <div className="dropdown">
                         <button type="button" className="btn btn-small btn-transparent" data-toggle="dropdown"
@@ -183,8 +183,8 @@ export default () => {
                           <FontAwesomeIcon icon={faEllipsisH} />
                         </button>
                         <div className="dropdown-menu dropdown-menu-right">
-                          <a className="dropdown-item" href="#">Rename</a>
-                          <a className="dropdown-item" href="#">Remove</a>
+                          <a className="dropdown-item" href>Rename</a>
+                          <a className="dropdown-item" href>Remove</a>
                         </div>
                       </div>
                     </div>
@@ -195,7 +195,7 @@ export default () => {
                         <li className="list-group-item bg-white font-weight-normal">
                           <div className="row">
                             <div className="col-6 d-flex">
-                              <img src="https://randomuser.me/api/portraits/men/32.jpg" className="pr-user-avatar mr-2 ml-4"/>
+                              <img src="https://randomuser.me/api/portraits/men/32.jpg" className="pr-user-avatar mr-2 ml-4" alt="" />
                               <p className="text-dark text-truncate my-1">Dannie Kemmer</p>
                             </div>
                             <div className="col-6 d-flex align-items-center">
@@ -206,7 +206,7 @@ export default () => {
                         <li className="list-group-item bg-white font-weight-normal">
                           <div className="row">
                             <div className="col-6 d-flex">
-                              <img src="https://randomuser.me/api/portraits/women/44.jpg" className="pr-user-avatar mr-2 ml-4"/>
+                              <img src="https://randomuser.me/api/portraits/women/44.jpg" className="pr-user-avatar mr-2 ml-4" alt="" />
                               <p className="text-dark text-truncate my-1">Christine Balistreri</p>
                             </div>
                             <div className="col-6 d-flex align-items-center">
@@ -217,7 +217,7 @@ export default () => {
                         <li className="list-group-item bg-white font-weight-normal">
                           <div className="row">
                             <div className="col-6 d-flex">
-                              <img src="https://randomuser.me/api/portraits/men/46.jpg" className="pr-user-avatar mr-2 ml-4"/>
+                              <img src="https://randomuser.me/api/portraits/men/46.jpg" className="pr-user-avatar mr-2 ml-4" alt="" />
                               <p className="text-dark text-truncate my-1">Percy Marquardt</p>
                             </div>
                             <div className="col-6 d-flex align-items-center">
@@ -228,7 +228,7 @@ export default () => {
                         <li className="list-group-item bg-white font-weight-normal">
                           <div className="row">
                             <div className="col-6 d-flex">
-                              <img src="https://randomuser.me/api/portraits/women/79.jpg" className="pr-user-avatar mr-2 ml-4"/>
+                              <img src="https://randomuser.me/api/portraits/women/79.jpg" className="pr-user-avatar mr-2 ml-4" alt="" />
                               <p className="text-dark text-truncate my-1">Sonya Bogan</p>
                             </div>
                             <div className="col-6 d-flex align-items-center">
@@ -262,10 +262,10 @@ export default () => {
                     </h5>
                     <div className="ml-auto d-flex mr-4">
                       <div className="mr-3">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" className="pr-user-avatar"/>
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" className="pr-user-avatar"/>
-                        <img src="https://randomuser.me/api/portraits/men/46.jpg" className="pr-user-avatar"/>
-                        <img src="https://randomuser.me/api/portraits/women/79.jpg" className="pr-user-avatar"/>
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" className="pr-user-avatar" alt="" />
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" className="pr-user-avatar" alt="" />
+                        <img src="https://randomuser.me/api/portraits/men/46.jpg" className="pr-user-avatar" alt="" />
+                        <img src="https://randomuser.me/api/portraits/women/79.jpg" className="pr-user-avatar" alt="" />
                       </div>
                       <div className="dropdown">
                         <button type="button" className="btn btn-small btn-transparent" data-toggle="dropdown"
@@ -273,8 +273,8 @@ export default () => {
                           <FontAwesomeIcon icon={faEllipsisH} />
                         </button>
                         <div className="dropdown-menu dropdown-menu-right">
-                          <a className="dropdown-item" href="#">Rename</a>
-                          <a className="dropdown-item" href="#">Remove</a>
+                          <a className="dropdown-item" href>Rename</a>
+                          <a className="dropdown-item" href>Remove</a>
                         </div>
                       </div>
                     </div>
@@ -285,7 +285,7 @@ export default () => {
                         <li className="list-group-item bg-white font-weight-normal">
                           <div className="row">
                             <div className="col-6 d-flex">
-                              <img src="https://randomuser.me/api/portraits/men/32.jpg" className="pr-user-avatar mr-2 ml-4"/>
+                              <img src="https://randomuser.me/api/portraits/men/32.jpg" className="pr-user-avatar mr-2 ml-4" alt="" />
                               <p className="text-dark text-truncate my-1">Dannie Kemmer</p>
                             </div>
                             <div className="col-6 d-flex align-items-center">
@@ -296,7 +296,7 @@ export default () => {
                         <li className="list-group-item bg-white font-weight-normal">
                           <div className="row">
                             <div className="col-6 d-flex">
-                              <img src="https://randomuser.me/api/portraits/women/44.jpg" className="pr-user-avatar mr-2 ml-4"/>
+                              <img src="https://randomuser.me/api/portraits/women/44.jpg" className="pr-user-avatar mr-2 ml-4" alt="" />
                               <p className="text-dark text-truncate my-1">Christine Balistreri</p>
                             </div>
                             <div className="col-6 d-flex align-items-center">
@@ -307,7 +307,7 @@ export default () => {
                         <li className="list-group-item bg-white font-weight-normal">
                           <div className="row">
                             <div className="col-6 d-flex">
-                              <img src="https://randomuser.me/api/portraits/men/46.jpg" className="pr-user-avatar mr-2 ml-4"/>
+                              <img src="https://randomuser.me/api/portraits/men/46.jpg" className="pr-user-avatar mr-2 ml-4" alt="" />
                               <p className="text-dark text-truncate my-1">Percy Marquardt</p>
                             </div>
                             <div className="col-6 d-flex align-items-center">
@@ -318,7 +318,7 @@ export default () => {
                         <li className="list-group-item bg-white font-weight-normal">
                           <div className="row">
                             <div className="col-6 d-flex">
-                              <img src="https://randomuser.me/api/portraits/women/79.jpg" className="pr-user-avatar mr-2 ml-4"/>
+                              <img src="https://randomuser.me/api/portraits/women/79.jpg" className="pr-user-avatar mr-2 ml-4" alt="" />
                               <p className="text-dark text-truncate my-1">Sonya Bogan</p>
                             </div>
                             <div className="col-6 d-flex align-items-center">
