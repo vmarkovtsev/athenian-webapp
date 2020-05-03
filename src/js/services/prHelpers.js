@@ -247,13 +247,13 @@ export const prLabel = stage => pr => {
         if (hasCompletedStage(PR_STAGE.REVIEW)) {
             if (pr.properties.includes(PR_EVENT.APPROVE)) {
                 return PR_LABELS.REVIEW_APPROVAL;
-            } else if (pr.properties.includes(PR_EVENT.REJECTION)) {
-                return PR_LABELS.REVIEW_REJECTED;
             } else if (!pr.properties.includes(PR_EVENT.REVIEW)) {
                 return PR_LABELS.REVIEW_SKIPPED;
-            } else {
-                return PR_LABELS.REVIEW_IGNORED;
             }
+            
+            return PR_LABELS.REVIEW_IGNORED;
+        } else if (pr.properties.includes(PR_EVENT.REJECTION)) {
+            return PR_LABELS.REVIEW_REJECTED;
         } else if (pr.properties.includes(PR_EVENT.REVIEW)) {
             return PR_LABELS.REVIEW_SUBMITTED;
         }
