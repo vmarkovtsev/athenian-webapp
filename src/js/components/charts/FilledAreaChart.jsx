@@ -46,7 +46,7 @@ export default ({ data, color = palette.schemes.primary, height = 300 }) => {
     <div style={{ background: 'white' }}>
       <FlexibleWidthXYPlot
         height={height}
-        margin={{ left: 100 }}
+        margin={{ left: 100, right: 20 }}
       >
         <XAxis
           tickValues={xTickValues}
