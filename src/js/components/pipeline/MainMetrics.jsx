@@ -35,8 +35,8 @@ const MainMetrics = ({ data, status }) => {
           <div className="col-md-3">
             <MainMetric
               title="Pull requests"
-              hint="Number of pull requests engaged during the time interval."
-              dataGetter={() => [data.allPRs.avg, data.allPRs.variation]}
+              hint="Number of pull requests released, counting in the Lead Time."
+              dataGetter={() => [data.releasedPRs.avg, data.releasedPRs.variation]}
               status={status}
             />
           </div>
@@ -126,9 +126,9 @@ export default () => {
                 avg: data.global['prs-metrics.values'].all['cycle-time'] * 1000,
                 variation: data.global['prs-metrics.variations']['cycle-time']
             },
-            allPRs: {
-                avg: data.global['prs-metrics.values'].all['all-count'],
-                variation: data.global['prs-metrics.variations']['all-count']
+            releasedPRs: {
+                avg: data.global['prs-metrics.values'].all['lead-count'],
+                variation: data.global['prs-metrics.variations']['lead-count']
             },
             contribs: {
                 avg: contribsCountCurr,
