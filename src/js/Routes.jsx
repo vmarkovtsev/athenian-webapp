@@ -23,7 +23,10 @@ import Development from 'js/components/development';
 import Callback from 'js/pages/auth/Callback';
 import Waiting from 'js/pages/Waiting';
 import NotFound404 from 'js/pages/NotFound404';
-import Settings from './pages/Settings';
+import Settings from 'js/pages/Settings';
+import SettingsProfile from 'js/pages/settings/Profile';
+import SettingsTeam from 'js/pages/settings/Team';
+import SettingsReleases from 'js/pages/settings/Releases';
 
 import Prototypes from 'js/pages/prototypes';
 import Charts from 'js/pages/prototypes/Charts';
@@ -31,8 +34,6 @@ import MetricGroups from 'js/pages/prototypes/MetricGroups';
 import Tooltips from 'js/pages/prototypes/Tooltips';
 import EmptyStates from 'js/pages/prototypes/EmptyStates';
 import WaitingProto from 'js/pages/prototypes/Waiting';
-import ReleaseSettingsProto from 'js/pages/prototypes/ReleaseSettings';
-import TeamsSettingsProto from 'js/pages/prototypes/TeamsSettings';
 
 export default () => {
     const location = useLocation();
@@ -89,8 +90,23 @@ export default () => {
             <Logout />
           </ContextRoute>
 
-          <ContextRoute context={UserContext} path='/settings'>
-            <Settings />
+          <ContextRoute context={UserContext} path='/settings/:name?'>
+            <Settings>
+              <Switch>
+                <Route exact path='/settings'>
+                  <Redirect to='/settings/profile' />
+                </Route>
+                <Route exact path='/settings/profile'>
+                  <SettingsProfile />
+                </Route>
+                <Route exact path='/settings/teams'>
+                  <SettingsTeam />
+                </Route>
+                <Route exact path='/settings/releases'>
+                  <SettingsReleases />
+                </Route>
+              </Switch>
+            </Settings>
           </ContextRoute>
 
           <Route path='/bearer'><Development.Bearer /></Route>
@@ -106,8 +122,6 @@ export default () => {
                 'tooltips': <Tooltips />,
                 'empty-states': <EmptyStates />,
                 'waiting': <WaitingProto />,
-                'release-settings': <ReleaseSettingsProto />,
-                'teams-settings': <TeamsSettingsProto />,
             }} />
           </ContextRoute>
 
