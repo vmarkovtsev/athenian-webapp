@@ -9,9 +9,6 @@ import { SettingsGroup, getOrg } from 'js/pages/Settings';
 
 export default () => {
   const { user } = useUserContext();
-
-  if (!user) return null;
-
   const org = getOrg(user);
 
   return (
@@ -34,7 +31,7 @@ export default () => {
             <div className="input-group-prepend">
               <FontAwesomeIcon icon={faGithub} />
             </div>
-            <input type="text" className="form-control" id="formGroupExampleInput" placeholder={org.name} disabled="true" />
+            <input type="text" className="form-control" id="formGroupExampleInput" placeholder={org.name} disabled={true} />
           </div>
         </div>
       </div>
@@ -45,7 +42,7 @@ export default () => {
             <div className="input-group-prepend">
               <FontAwesomeIcon icon={faGithub} />
             </div>
-            <input type="text" className="form-control" id="formGroupExampleInput" placeholder={org.handler} disabled="true" />
+            <input type="text" className="form-control" id="formGroupExampleInput" placeholder={org.handler} disabled={true} />
           </div>
         </div>
       </div>

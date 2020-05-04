@@ -72,8 +72,7 @@
     }
 }
 
-.dropdown-menu,
-.release-dropdown {
+.dropdown-menu {
     min-width: 14rem !important;
 
     .dropdown-item {
@@ -84,5 +83,15 @@
     &.dropdown-card {
         background-color: $at-main-bg !important;
         min-width: 45rem !important;
+    }
+}
+
+.simple-dropdown {
+    &.ucfirst *:first-letter {
+        text-transform: uppercase;
+    }
+
+    &.releases-dropdown {
+        width: 12rem;
     }
 }

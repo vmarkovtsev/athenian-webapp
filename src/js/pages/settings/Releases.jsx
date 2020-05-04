@@ -97,7 +97,7 @@ const RepoConfig = ({ config }) => {
           <div className="dropdown mr-5">
             <Select
               id={`type-${id}-true`}
-              className="release-dropdown"
+              className="releases-dropdown simple-dropdown ucfirst"
               placeholder={(typeOptions.filter(type => type.value === typeState))?.[0]?.label}
               value={typeState}
               options={typeOptions}
@@ -123,7 +123,7 @@ const RepoConfig = ({ config }) => {
               </label>
             </div>
           </div>
-          <div className="form-check d-flex align-items-center">
+          <div className="form-check d-flex align-items-center ml-auto">
             <div className="custom-control custom-radio">
               <input
                 className="custom-control-input"
