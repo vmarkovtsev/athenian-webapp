@@ -150,7 +150,12 @@ export default ({ children }) => {
                   noDataMsg="There are no contributors for the date interval and repositories filters"
                   options={allContribsState}
                   isReady={contribsReadyState}
-                  labelFormat={repo => (github.userName(repo) || 'ANONYMOUS')}
+                  labelFormat={({ realName, login }) => {
+                    const gituser = github.userName(login)
+                    const names = [gituser || 'ANONYMOUS']
+                    realName && gituser !== realName && names.push(`(${realName})`)
+                    return names.join(" ")
+                  }}
                   onChange={onContribsChange}
                 />
             }
