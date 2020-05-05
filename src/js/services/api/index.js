@@ -112,6 +112,8 @@ export const fetchContributors = async (
     dateInterval,
     filter = {repositories :[]}
 ) => {
+    filter.repositories = filter.repositories || [];
+
     const filter_ = new GenericFilterRequest(
         accountID, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to));
     filter_.in = filter.repositories;
@@ -125,7 +127,7 @@ export const fetchFilteredPRs = async (
     filter = { repositories: [], developers: [], properties: [] },
 ) => {
     filter.repositories = filter.repositories || [];
-    filter.developers = filter.developers || [];
+    filter.developers = _(filter.developers || []).map(v => v.login).value();
     filter.properties = filter.properties || [];
 
     const filter_ = new FilterPullRequestsRequest(
@@ -167,6 +169,9 @@ export const fetchPRsMetrics = async (
   filter = { repositories: [], developers: [] },
   groupBy
 ) => {
+  filter.repositories = filter.repositories || [];
+  filter.developers = _(filter.developers || []).map(v => v.login).value();
+
   const metricIDs = new PullRequestMetricID();
 
   if (!filter.repositories?.length) {
@@ -201,6 +206,9 @@ export const fetchDevsMetrics = async (
   filter = { repositories: [], developers: [] },
   groupBy
 ) => {
+  filter.repositories = filter.repositories || [];
+  filter.developers = _(filter.developers || []).map(v => v.login).value();
+
   const metricIDs = new DeveloperMetricID();
   const forSet = buildForSet(filter, groupBy);
   const body = new DeveloperMetricsRequest(
