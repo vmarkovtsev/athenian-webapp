@@ -212,7 +212,7 @@ const reviewActivity = {
                         params: {
                             title: 'Most Active Reviewers',
                             data: computed.secondBox.chartData,
-                            tickFormat: '%',
+                            tickFormat: (tick) => `${tick}%`,
                             extra: {
                                 yAxis: {
                                     imageMapping: computed.secondBox.avatarMapping,

@@ -19,7 +19,7 @@ export default ({title, data, extra, tickFormat }) => (
     </div >
 );
 
-const HorizontalBarChart = ({ title, data, extra, tickFormat }) => {
+const HorizontalBarChart = ({ title, data, extra, tickFormat = v => v }) => {
     const [currentHover, setCurrentHover] = useState(null);
 
     if (data.length === 0) {
@@ -60,7 +60,7 @@ const HorizontalBarChart = ({ title, data, extra, tickFormat }) => {
         <FlexibleWidthXYPlot height={data.length * 40} margin={{ left: 50 }} yType="ordinal">
           <DiscreteColorLegend className="chart-legend" items={legend} orientation="horizontal" />
           <VerticalGridLines />
-          <XAxis tickFormat={v => tickFormat ? `${v}${tickFormat}` : v }/>
+          <XAxis tickFormat={tickFormat}/>
 
           {extra && extra.yAxis && extra.yAxis.imageMapping ?
            <CircleMask id={`${extra.yAxis.imageMask}-mask`} maskProperties={{
