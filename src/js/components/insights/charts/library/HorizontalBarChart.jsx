@@ -13,13 +13,13 @@ import Tooltip, { onValueChange, onValueReset } from 'js/components/charts/Toolt
 
 import _ from 'lodash';
 
-export default ({title, data, extra}) => (
+export default ({title, data, extra, tickFormat }) => (
     <div style={{ background: 'white' }}>
-      <HorizontalBarChart title={title} data={data} extra={extra} />
+      <HorizontalBarChart title={title} data={data} extra={extra} tickFormat={tickFormat} />
     </div >
 );
 
-const HorizontalBarChart = ({ title, data, extra }) => {
+const HorizontalBarChart = ({ title, data, extra, tickFormat = v => v }) => {
     const [currentHover, setCurrentHover] = useState(null);
 
     if (data.length === 0) {
@@ -60,7 +60,7 @@ const HorizontalBarChart = ({ title, data, extra }) => {
         <FlexibleWidthXYPlot height={data.length * 40} margin={{ left: 50 }} yType="ordinal">
           <DiscreteColorLegend className="chart-legend" items={legend} orientation="horizontal" />
           <VerticalGridLines />
-          <XAxis />
+          <XAxis tickFormat={tickFormat}/>
 
           {extra && extra.yAxis && extra.yAxis.imageMapping ?
            <CircleMask id={`${extra.yAxis.imageMask}-mask`} maskProperties={{
