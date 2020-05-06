@@ -17,6 +17,8 @@ stages:
   - name: test-and-build
   - name: deploy
     if: (branch = master OR tag IS present) AND type != pull_request
+  - name: sentry
+    if: (branch = master OR tag IS present) AND type != pull_request
 
 before_insall:
   - curl -sL https://sentry.io/get-cli/ | bash
@@ -30,6 +32,11 @@ jobs:
         - docker build --target app-deps -t webapp-frontend-testing .
         - docker run -e CI=true webapp-frontend-testing make test
         - docker run -e CI=true webapp-frontend-testing make build
+    - stage: sentry
+      name: 'Prepare Sentry release'
+      script:
+        - docker build --target app-sentry-releaser -t webapp-frontend-sentry-releaser .
+        - docker run -e SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} -e SENTRY_RELEASE=${VERSION} webapp-frontend-sentry-releaser
     - stage: deploy
       name: 'Deploy App'
       script:
@@ -39,7 +46,5 @@ jobs:
             exit 0
           fi
         - IMAGE=${IMAGE_BRANCH_COMMIT} DOCKER_EXTRA_BUILD_FLAGS="--build-arg release=${VERSION}" make deploy
-        - docker build --target app-sentry-releaser -t webapp-frontend-sentry-releaser .
-        - docker run -e SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} -e SENTRY_RELEASE=${VERSION} webapp-frontend-sentry-releaser
         - docker tag ${IMAGE_BRANCH_COMMIT} ${GOOGLE_DOCKER_IMAGE}:latest
         - IMAGE=${GOOGLE_DOCKER_IMAGE}:latest make docker-push
