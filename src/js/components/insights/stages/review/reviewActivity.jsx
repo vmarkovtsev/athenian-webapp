@@ -13,9 +13,8 @@ const reviewActivity = {
     fetcher: async (api, context) => {
         const fetchFirstBox = async () => {
             const metrics = [
-                'reviews',
-                'prs-created',
                 'prs-reviewed',
+                'prs-created',
             ];
 
             return fetchDevsMetrics(
@@ -27,7 +26,7 @@ const reviewActivity = {
 
         const fetchSecondBox = async () => {
             const metrics = [
-                'reviews',
+                'prs-reviewed',
                 'pr-comments',
             ];
 
@@ -53,7 +52,7 @@ const reviewActivity = {
               .map(v => v.values[0][1])
               .sum();
         const totalReviewedPRs = _(data.firstBox.calculated)
-            .map(v => v.values[0][2])
+            .map(v => v.values[0][1])
             .sum();
         const totalReviewers = _(data.secondBox.calculated)
             .filter(v => v.values[0][0] > 0)
@@ -156,7 +155,6 @@ const reviewActivity = {
     factory: (computed) => {
         const createdPRs = computed.firstBox.KPIsData.createdPRs;
         const reviewedPRs = computed.firstBox.KPIsData.reviewedPRs;
-
         return {
             meta: {
                 title: 'Review Activity',
@@ -225,7 +223,7 @@ const reviewActivity = {
                                         color: '#FC1763',
                                     },
                                     reviewsPerc: {
-                                        name: '% Reviews',
+                                        name: '% PRs Reviewed',
                                         color: '#FFC507',
                                     }
                                 },

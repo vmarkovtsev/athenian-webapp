@@ -21,7 +21,6 @@ export default ({title, data, extra, tickFormat }) => (
 
 const HorizontalBarChart = ({ title, data, extra, tickFormat = v => v }) => {
     const [currentHover, setCurrentHover] = useState(null);
-
     if (data.length === 0) {
         return <></>;
     }
