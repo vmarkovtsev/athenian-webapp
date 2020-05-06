@@ -15,5 +15,8 @@ window.ENV = {
   segment: {
       "writeKey": ""
   },
+  sentry: {
+    "dsn": ""
+  },
   environment: "development"
 };
