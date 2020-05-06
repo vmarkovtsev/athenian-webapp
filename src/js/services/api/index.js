@@ -6,6 +6,7 @@ import {
   GenericFilterRequest,
   FilterPullRequestsRequest,
   CalculatedPullRequestMetrics,
+  ReleaseMatchRequest,
 } from 'js/services/api/openapi-client';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import PullRequestMetricID from 'js/services/api/openapi-client/model/PullRequestMetricID';
@@ -241,3 +242,16 @@ const buildForSet = (filter, groupBy) => {
 };
 
 const getOffset = () => moment().utcOffset();
+
+export const fetchReleaseSettings = async (api, accountID) => {
+  const config = await api.listReleaseMatchSettings(accountID);
+  return [config];
+};
+
+export const saveRepoSettings = async (api, accountId, repos, strategy, branchPattern, tagPattern) => {
+  const repoSettings = new ReleaseMatchRequest(accountId, repos, strategy);
+  repoSettings.branches = branchPattern;
+  repoSettings.tags = tagPattern;
+
+  return api.setReleaseMatch({ body: repoSettings });
+};
