@@ -6,6 +6,7 @@ import { SettingsGroup, Search, Accordion } from 'js/pages/Settings';
 import { useApi } from 'js/hooks';
 import { fetchReleaseSettings, saveRepoSettings } from 'js/services/api';
 import { github } from 'js/services/format';
+import log from 'js/services/logger';
 
 const BRANCH = 'branch';
 const TAG = 'tag';
@@ -282,15 +283,4 @@ const Strategy = ({ id, name, pattern, defaultText, onChange }) => {
       </div>
     </>
   );
-};
-
-const log = {
-  ok: (...msgs) => {
-    console.log(...msgs);
-  },
-  fatal: (...msgs) => {
-    // TODO(dpordomingo): this kind of errors are not caused by user input, so we should send them to sentry, for example.
-    // We could also use the chat to send feedback in real time.
-    console.error('FATAL', ...msgs);
-  },
 };
