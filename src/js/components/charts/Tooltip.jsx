@@ -4,8 +4,7 @@ import classnames from 'classnames';
 import moment from 'moment';
 import { Hint } from 'react-vis';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClock, faCommentAlt } from '@fortawesome/free-regular-svg-icons'
-import { faCodeBranch } from '@fortawesome/free-solid-svg-icons'
+import { faClock, faEye } from '@fortawesome/free-regular-svg-icons'
 
 import { github, number } from 'js/services/format';
 
@@ -225,9 +224,9 @@ export const UserAvatar = ({ name, src, middleText, size = 30 }) => (
 
 export const PRCommentsStats = ({ prs, comments }) => (
     <p className="user-info text-secondary font-weight-light m-0">
-        <Icon icon={faCodeBranch} />
+        <span className="icon-pull-request mr-1"></span>
         <span className="mr-3">{prs}</span>
-        <Icon icon={faCommentAlt} />
+        <Icon icon={faEye} />
         <span>{comments}</span>
     </p>
 );
