@@ -18,9 +18,13 @@ COPY / .
 # --------------------
 FROM app-deps AS app-builder
 
+ARG release
+
+ENV release=$release
+
 WORKDIR /app
 
-RUN make build
+RUN RELEASE=${release} make build
 
 # Build server
 # --------------------
