@@ -16,14 +16,11 @@ COPY / .
 
 # Build web app
 # --------------------
-FROM node:13.7-alpine AS app-builder
+FROM app-deps AS app-builder
 
 WORKDIR /app
-COPY --from=app-deps /app /app
 
-RUN apk update && \
-    apk add make bash && \
-    make build
+RUN make build
 
 # Build server
 # --------------------

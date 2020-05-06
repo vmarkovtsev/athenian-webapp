@@ -13,24 +13,19 @@ env:
     - IMAGE_BRANCH_COMMIT=${GOOGLE_DOCKER_IMAGE}:${TRAVIS_BRANCH}-${TRAVIS_COMMIT:0:7}
 
 stages:
-  - name: test
-  - name: build
+  - name: test-and-build
   - name: deploy
     if: (branch = master OR tag IS present) AND type != pull_request
 
 jobs:
   fast_finish: true
   include:
-    - stage: test
-      name: 'Frontend Tests'
+    - stage: test-and-build
+      name: 'Frontend Tests and Build'
       script:
         - docker build --target app-deps -t webapp-frontend-testing .
         - docker run -e CI=true webapp-frontend-testing make test
-    - stage: build
-      name: 'Frontend Build'
-      script:
-        - docker build --target app-builder -t webapp-frontend-building .
-        - docker run webapp-frontend-building make build
+        - docker run -e CI=true webapp-frontend-testing make build
     - stage: deploy
       name: 'Deploy App'
       script:
