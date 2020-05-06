@@ -22,7 +22,7 @@ if (window.ENV.sentry.dsn) {
     };
 
     const isDev = (
-        window.ENV.environment !== 'development' ||
+        window.ENV.environment === 'development' ||
             process.env.NODE_ENV === 'development'
     );
 
