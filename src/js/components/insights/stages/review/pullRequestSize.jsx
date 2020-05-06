@@ -59,7 +59,11 @@ const pullRequestSize = {
                 .take(20)
                 .value(),
             totalFiles: _(prs)
-                .map(pr => pr.files_changed)
+                .map(pr => {
+                    // count the files changed from not reviewed PRs
+                    const reviewed = pr.completedStages.includes(PR_STAGE.REVIEW)
+                    return !reviewed ? pr.files_changed : 0
+                })
                 .sum(),
             totalLoc: _(prs)
                 .map(pr => pr.size_added + pr.size_removed)
