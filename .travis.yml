@@ -35,7 +35,7 @@ jobs:
       script:
         - |
           if [ ! -z "$TRAVIS_TAG" ]; then
-            IMAGE=${GOOGLE_DOCKER_IMAGE}:${TRAVIS_TAG} make docker-build gcloud-login docker-push
+            IMAGE=${GOOGLE_DOCKER_IMAGE}:${TRAVIS_TAG} DOCKER_EXTRA_BUILD_FLAGS="--build-arg release=${VERSION}" make docker-build gcloud-login docker-push
             exit 0
           fi
         - IMAGE=${IMAGE_BRANCH_COMMIT} DOCKER_EXTRA_BUILD_FLAGS="--build-arg release=${VERSION}" make deploy
