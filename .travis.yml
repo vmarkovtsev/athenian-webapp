@@ -39,7 +39,7 @@ jobs:
             exit 0
           fi
         - IMAGE=${IMAGE_BRANCH_COMMIT} DOCKER_EXTRA_BUILD_FLAGS="--build-arg release=${VERSION}" make deploy
-        - docker build --target app-builder -t webapp-frontend-releaser .
-        - docker run -e SENTRY_RELEASE=${VERSION} webapp-frontend-releaser make sentry-release
+        - docker build --target app-sentry-releaser -t webapp-frontend-sentry-releaser .
+        - docker run -e SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} -e SENTRY_RELEASE=${VERSION} webapp-frontend-sentry-releaser
         - docker tag ${IMAGE_BRANCH_COMMIT} ${GOOGLE_DOCKER_IMAGE}:latest
         - IMAGE=${GOOGLE_DOCKER_IMAGE}:latest make docker-push
