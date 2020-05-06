@@ -116,6 +116,10 @@ export default ({ children }) => {
         setReadyState(false);
         resetData();
         console.info('Contributors selection changed', selectedContribs);
+        if (selectedContribs[0].login === "github.com/se7entyse7en") {
+            throw Error("Test Error");
+        }
+
         setFilteredContribsState(selectedContribs);
         setGlobalData('filter.repos', Promise.resolve(filteredReposState));
         setGlobalData('filter.contribs', Promise.resolve(selectedContribs));
