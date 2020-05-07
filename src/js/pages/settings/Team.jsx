@@ -1,17 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 import { SettingsGroup, Search, Accordion } from 'js/pages/Settings';
 
-const names = ['Mario', 'Alvaro', 'Charles', 'Miró', 'Bill', 'Ursula', 'Fran', 'Blas'];
+const names = ['Mario', 'Alvaro', 'Charles', 'Miro', 'Bill', 'Ursula', 'Fran', 'Blas'];
 const groups = [{ name: 'web', size: 7 }, { name: 'qa', size: 2 }, { name: 'backend', size: 12 }];
 
-const getRandomUser = () => ({
-  avatar: `https://randomuser.me/api/portraits/men/${1 + Math.round(10 * Math.random())}.jpg`,
-  name: names[Math.round(10 * Math.random()) % names.length],
-});
+const getRandomUser = () => {
+  const name = names[Math.round(10 * Math.random()) % names.length];
+  return {
+    avatar: `https://randomuser.me/api/portraits/men/${1 + Math.round(10 * Math.random())}.jpg`,
+    name,
+    handler: `hanndler_${name}_${Math.round(10000 * Math.random())}`,
+  };
+};
 
 const getRandomUsers = amount => Array.from(new Array(amount)).map(() => getRandomUser());
 
@@ -22,13 +26,24 @@ const getRandomGroups = groups => groups.map(group => (
   }
 ));
 
+const isFilteredIn = (user, term) => !term ||
+  user.name.toLowerCase().includes(term.toLowerCase()) ||
+  user.handler.toLowerCase().includes(term.toLowerCase());
+const teams = getRandomGroups(groups);
+
 export default () => {
-  const teams = getRandomGroups(groups);
+  const [filterTermState, setFilterTermState] = useState('');
   return (
     <SettingsGroup title="Teams" extra={<AddTeam />}>
       <p className="text-secondary mt-2 mb-3">Manage and add teams for your organization</p>
-      <Search placeholder="Find a team..." />
-      <Teams teams={teams} />
+      <Search
+        placeholder="Find a team..."
+        onFilter={setFilterTermState}
+      />
+      <Teams
+        teams={teams}
+        filterTerm={filterTermState}
+      />
     </SettingsGroup>
   );
 };
@@ -63,26 +78,26 @@ const AddTeam = () => {
   );
 };
 
-const Teams = ({ teams }) => {
+const Teams = ({ teams, filterTerm }) => {
   return (
     <Accordion
       id="accordion"
       items={teams.map(team => ({
         title: team.name,
-        description: `${team.size} members`,
-        extra: <TeamActions team={team} />,
-        content: <Team team={team} />,
+        description: `(${team.members.filter(user => isFilteredIn(user, filterTerm)).length} members)`,
+        extra: <TeamActions team={team} filterTerm={filterTerm} />,
+        content: <Team team={team} filterTerm={filterTerm} />,
       }))}
     />
   );
 };
 
-const TeamActions = ({ team }) => {
+const TeamActions = ({ team, filterTerm }) => {
   return (
     <>
       <div className="mr-3">
-        {team.members.map(user => (
-          <img src={user.avatar} className="pr-user-avatar" alt="" />
+        {team.members.map(user => isFilteredIn(user, filterTerm) && (
+          <img src={user.avatar} className="pr-user-avatar" key={user.handler} alt="" />
         ))}
       </div>
       <div className="dropdown">
@@ -104,15 +119,19 @@ const TeamActions = ({ team }) => {
   );
 };
 
-const Team = ({ team }) => {
+const Team = ({ team, filterTerm }) => {
   return (
     <ul className="list-group list-group-flush">
       {team.members.map(user => (
-        <li className="list-group-item bg-white font-weight-normal">
+        <li
+          className="list-group-item bg-white font-weight-normal"
+          style={{ display: isFilteredIn(user, filterTerm) ? 'block' : 'none' }}
+          key={user.handler}
+        >
           <div className="row">
             <div className="col-6 d-flex">
               <img src={user.avatar} className="pr-user-avatar mr-2 ml-4" alt="" />
-              <p className="text-dark text-truncate my-1">{user.name}</p>
+              <p className="text-dark text-truncate my-1">{user.name} ({user.handler})</p>
             </div>
             <div className="col-6 d-flex align-items-center">
               <span className="btn btn-transparent text-bright ml-auto"><FontAwesomeIcon icon={faTimes} /></span>
