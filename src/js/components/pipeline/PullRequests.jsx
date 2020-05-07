@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import $ from 'jquery';
 import 'datatables.net';
 import 'datatables.net-bs4';
 import 'datatables.net-bs4/css/dataTables.bootstrap4.css';
+import Select from 'react-select';
 
 import { dateTime, github, number } from 'js/services/format';
-import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses } from 'js/services/prHelpers'
+import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses, PR_LABELS } from 'js/services/prHelpers'
 
 import _ from 'lodash';
 
@@ -28,22 +29,55 @@ const tableContainerId = 'dataTable';
 const tableContainerSelector = `#${tableContainerId}`;
 
 export default ({ stage, data, status }) => {
+  const [selectValue, setSelectValue] = useState(null)
+
   useEffect(() => {
     if (status !== READY) {
       return;
     }
 
-    draw(stage, data);
+    const applyFilter = data => {
+      if (!selectValue) return data
+      return {
+        ...data,
+        prs: data.prs.filter(v => prLabel(stage)(v) === selectValue.value)
+      }
+    }
+
+    draw(stage, applyFilter(data));
+  
     return () => {
       $.fn.DataTable.isDataTable(tableContainerSelector) && $(tableContainerSelector).DataTable().destroy();
       $(tableContainerSelector).empty();
     };
-  }, [stage, data, status]);
+  }, [stage, data, status, selectValue]);
+
+  const filterOptions = [
+    { label: 'All', value: null },
+    ...Object.entries(PR_LABELS).map(([key, value]) => ({ label: value, value }))
+  ]
 
   return (
     <>
       <StatusIndicator status={status} textOnly={false} />
       <div className="table-responsive mb-4">
+        <div className="d-flex" style={{ marginBottom: '-34px', justifyContent: 'flex-end' }}>
+          <div style={{ zIndex: 3, flex: '0 0 170px' }}>
+            <Select
+              value={selectValue}
+              isClearable={false}
+              placeholder="Filter by status"
+              options={filterOptions}
+              onChange={value => {
+                if (value && !value.value) {
+                  setSelectValue(null)
+                  return
+                }
+                setSelectValue(value)
+              }}
+            />
+          </div>
+        </div>
         <table className="table table-bordered" id={tableContainerId} width="100%" cellSpacing="0" style={{ tableLayout: 'fixed' }} />
       </div>
     </>
@@ -89,7 +123,7 @@ const draw = (stage, data) => {
   const prLabelStage = prLabel(stage);
   const { prs, users } = data;
 
-  const $table = $(tableContainerSelector).DataTable({
+  $(tableContainerSelector).DataTable({
     dom: `
       <'row'<'col-12'f>>
       <'row'<'col-12'tr>>
