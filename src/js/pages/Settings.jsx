@@ -90,12 +90,18 @@ export const SettingsGroup = ({ title, extra, children }) => {
   );
 };
 
-export const Search = ({ placeholder }) => {
+export const Search = ({ placeholder, onFilter }) => {
   return (
     <div className="input-search mb-5">
       <label>
         <i className="field-icon fas fa-search" aria-hidden="true"></i>
-        <input type="search" className="form-control form-control-sm" placeholder={placeholder} aria-controls="dataTable" />
+        <input
+          type="search"
+          className="form-control form-control-sm"
+          placeholder={placeholder}
+          onChange={e => onFilter(e.target.value)}
+          aria-controls="dataTable"
+        />
       </label>
     </div>
   );
@@ -103,7 +109,13 @@ export const Search = ({ placeholder }) => {
 
 export const Accordion = ({ id, items }) => (
   <div id={id} className="accordion w-dropdowns">
-    {items.map((item, key) => <AccordionItem parentId={id} key={key} pos={key} shown={key === 0} item={item} />)}
+    {items.map((item, key) => <AccordionItem
+      parentId={id}
+      key={item.title}
+      pos={key}
+      shown={key === 0}
+      item={item}
+    />)}
   </div>
 );
 
