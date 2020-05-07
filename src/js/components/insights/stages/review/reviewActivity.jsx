@@ -1,4 +1,3 @@
-// @flow
 import _ from 'lodash';
 
 import { SimpleKPI } from 'js/components/insights/KPI';
