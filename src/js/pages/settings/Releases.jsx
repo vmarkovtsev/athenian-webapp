@@ -19,10 +19,14 @@ const defaultPatterns = {
   [TAG]: '.*',
 };
 
+const isFilteredIn = (conf, term) => !term ||
+  github.repoName(conf.url).toLowerCase().includes(term.toLowerCase());
+
 export default () => {
   const { api, ready: apiReady, context } = useApi(true, false);
 
   const [repoGroupsConfigsState, setRepoGroupsConfigsState] = useState([]);
+  const [filterTermState, setFilterTermState] = useState('');
   const [accountIdState, setAccountIdState] = useState();
 
   const accountId = context.account;
@@ -35,47 +39,63 @@ export default () => {
     (async () => {
       const releaseSettings = await fetchReleaseSettings(api, accountId);
       setAccountIdState(accountId);
-      setRepoGroupsConfigsState(releaseSettings);
+
+      const sortedSettings = releaseSettings.map(repoGroup => Object.keys(repoGroup)
+        .sort((url1, url2) => github.repoName(url1) > github.repoName(url2) ? 1 : -1)
+        .map(repoUrl => ({ url: repoUrl, ...repoGroup[repoUrl] }))
+      );
+
+      setRepoGroupsConfigsState(sortedSettings);
     })();
   }, [api, apiReady, accountId]);
 
   return (
     <SettingsGroup title="Releases">
       <p className="text-secondary mt-2 mb-3">Select your release workflow</p>
-      <Search placeholder="Find a repository..." />
-      <RepoGroups accountId={accountIdState} groups={repoGroupsConfigsState} />
+      <Search
+        placeholder="Find a repository..."
+        onFilter={setFilterTermState}
+      />
+      <RepoGroups
+        accountId={accountIdState}
+        groups={repoGroupsConfigsState}
+        filterTerm={filterTermState}
+      />
     </SettingsGroup>
   );
 };
 
-const RepoGroups = ({ accountId, groups }) => {
+const RepoGroups = ({ accountId, groups, filterTerm }) => {
   return (
     <Accordion
       id="accordion"
       items={groups.map(repoGroup => ({
-        title: github.repoOrg(Object.keys(repoGroup)?.[0]),
-        content: <RepoGroup accountId={accountId} configs={repoGroup} />,
+        title: github.repoOrg(repoGroup[0].url),
+        description: `(${repoGroup.filter(config => isFilteredIn(config, filterTerm)).length} repositories)`,
+        content: <RepoGroup
+          accountId={accountId}
+          configs={repoGroup}
+          filterTerm={filterTerm}
+        />,
       }))}
     />
   );
 }
 
-const RepoGroup = ({ accountId, configs }) => {
+const RepoGroup = ({ accountId, configs, filterTerm }) => {
   return (
     <ul className="list-group list-group-flush">
-      {Object.keys(configs)
-        .sort((url1, url2) => github.repoName(url1) > github.repoName(url2) ? 1 : -1)
-        .map((repoUrl, key) => <RepoConfig
-          key={key}
-          accountId={accountId}
-          config={{ url: repoUrl, ...configs[repoUrl] }}
-        />)
-      }
+      {configs.map((config, key) => <RepoConfig
+        key={config.url}
+        accountId={accountId}
+        config={config}
+        filterTerm={filterTerm}
+      />)}
     </ul>
   );
 };
 
-const RepoConfig = ({ accountId, config }) => {
+const RepoConfig = ({ accountId, config, filterTerm }) => {
   const { api, ready: apiReady } = useApi(true, false);
   const [matchState, setMatchState] = useState(config.match);
   const [branchState, setBranchState] = useState(config.branches);
@@ -136,7 +156,10 @@ const RepoConfig = ({ accountId, config }) => {
   };
 
   return (
-    <li className="list-group-item bg-white font-weight-normal">
+    <li
+      className="list-group-item bg-white font-weight-normal"
+      style={{ display: isFilteredIn(config, filterTerm) ? 'block' : 'none' }}
+    >
       <div className="row">
 
         <div className="col-3">
