@@ -17,6 +17,19 @@ import processPR from 'js/services/prHelpers';
 import _ from 'lodash';
 import moment from 'moment';
 
+class APIError extends Error {
+
+    constructor(message) {
+        super(message);
+
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, APIError);
+        }
+
+        this.name = 'APIError';
+    }
+}
+
 export const getPreviousInterval = (dateInterval) => {
     const diffDays = moment(dateInterval.to).diff(dateInterval.from, 'days');
     const prevTo = moment(dateInterval.from).subtract(1, 'days').endOf('day');
