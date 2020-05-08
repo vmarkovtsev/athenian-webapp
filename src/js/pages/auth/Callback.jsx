@@ -5,7 +5,7 @@ import Simple from 'js/pages/templates/Simple';
 import { FROM_REGISTRATION } from 'js/pages/Waiting';
 
 import { useApi } from 'js/hooks';
-import InvitationLink from 'js/services/api/openapi-client/model/InvitationLink';
+import { acceptInvite } from 'js/services/api/index';
 
 export default () => {
     const {api, ready: apiReady, auth} = useApi(false, false);
@@ -71,28 +71,4 @@ export default () => {
           {auth.isAuthenticated ? 'Authenticated' : 'Not authenticated'}
         </Simple>
     );
-};
-
-const acceptInvite = async (api, inviteLink) => {
-    const body = new InvitationLink(inviteLink);
-
-    let check;
-    try {
-        check = await api.checkInvitation(body);
-    } catch (err) {
-        throw new Error(`Error reading the invitation ${err.error.message}`);
-    }
-
-    if (!check.valid || !check.active) {
-        const cause = !check.valid ? 'valid' : 'active';
-        throw new Error(`Invitation is not ${cause}`);
-    }
-
-    try {
-        await api.acceptInvitation(body);
-    } catch (err) {
-        throw new Error(`Could not accept the invitation. Err#${err.body.status} ${err.body.type}. ${err.body.detail}`);
-    }
-
-    return check;
 };

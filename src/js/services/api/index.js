@@ -12,6 +12,7 @@ import * as Sentry from '@sentry/browser';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import PullRequestMetricID from 'js/services/api/openapi-client/model/PullRequestMetricID';
 import DeveloperMetricID from 'js/services/api/openapi-client/model/DeveloperMetricID';
+import InvitationLink from 'js/services/api/openapi-client/model/InvitationLink';
 import { dateTime } from 'js/services/format';
 import processPR from 'js/services/prHelpers';
 
@@ -110,6 +111,30 @@ const getDefaultAccountID = (accounts) => {
     const nonAdminAccoubnst = accounts_[false] || [];
 
     return adminAccounts[0] || nonAdminAccoubnst[0];
+};
+
+export const acceptInvite = async (api, inviteLink) => {
+    const body = new InvitationLink(inviteLink);
+
+    let check;
+    try {
+        check = await api.checkInvitation(body);
+    } catch (err) {
+        throw new Error(`Error reading the invitation ${err.error.message}`);
+    }
+
+    if (!check.valid || !check.active) {
+        const cause = !check.valid ? 'valid' : 'active';
+        throw new Error(`Invitation is not ${cause}`);
+    }
+
+    try {
+        await api.acceptInvitation(body);
+    } catch (err) {
+        throw new Error(`Could not accept the invitation. Err#${err.body.status} ${err.body.type}. ${err.body.detail}`);
+    }
+
+    return check;
 };
 
 export const getRepos = (token, userAccount, from, to, repos) => {
