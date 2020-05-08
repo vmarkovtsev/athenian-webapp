@@ -8,14 +8,54 @@ import {
   CalculatedPullRequestMetrics,
   ReleaseMatchRequest,
 } from 'js/services/api/openapi-client';
+import * as Sentry from '@sentry/browser';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import PullRequestMetricID from 'js/services/api/openapi-client/model/PullRequestMetricID';
 import DeveloperMetricID from 'js/services/api/openapi-client/model/DeveloperMetricID';
+import InvitationLink from 'js/services/api/openapi-client/model/InvitationLink';
 import { dateTime } from 'js/services/format';
 import processPR from 'js/services/prHelpers';
 
 import _ from 'lodash';
 import moment from 'moment';
+
+class APIError extends Error {
+
+    constructor(message) {
+        super(message);
+
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, APIError);
+        }
+
+        this.name = 'APIError';
+    }
+}
+
+export const reportToSentry = (error, context = {}) => Sentry.withScope(scope => {
+    scope.setTags(context.tags);
+    scope.setExtras(context.extra);
+    Sentry.captureException(error);
+});
+
+const withSentryCapture = (p, message) => p.catch(e => {
+    if (e instanceof Error) {
+        reportToSentry(e);
+    } else {
+        const err = new APIError(`${message}: ${e.status} - ${e.statusText}`);
+        const sentryCtx = {
+            extra: {
+                status: e.status,
+                statusText: e.statusText,
+                body: e.body,
+                response: e.response,
+                err: e.error
+            }
+        };
+
+        reportToSentry(err, sentryCtx);
+    }
+});
 
 export const getPreviousInterval = (dateInterval) => {
     const diffDays = moment(dateInterval.to).diff(dateInterval.from, 'days');
@@ -26,12 +66,14 @@ export const getPreviousInterval = (dateInterval) => {
 
 export const getUserWithAccountRepos = async token => {
   const api = buildApi(token);
-  const user = await api.getUser();
+  const user = await withSentryCapture(api.getUser(), "Cannot get user");
 
   const getAccountRepos = async (accountID, isAdmin) => {
     let reposets;
     try {
-      reposets = await api.listReposets(Number(accountID));
+      reposets = await withSentryCapture(
+        api.listReposets(Number(accountID)), "Cannot list reposets"
+      );
     } catch (err) {
       console.error(`Could not list reposets from account #${accountID}. Err#${err.body.status} ${err.body.type}. ${err.body.detail}`);
       return { id: Number(accountID), isAdmin, reposets: [] };
@@ -39,7 +81,7 @@ export const getUserWithAccountRepos = async token => {
 
     const reposetsContent = await Promise.all(reposets.map(async reposet => ({
       id: reposet.id,
-      repos: await api.getReposet(reposet.id),
+      repos: await withSentryCapture(api.getReposet(reposet.id), "Cannot get reposet"),
     })));
 
     return { id: Number(accountID), isAdmin, reposets: reposetsContent };
@@ -73,12 +115,42 @@ const getDefaultAccountID = (accounts) => {
     return adminAccounts[0] || nonAdminAccoubnst[0];
 };
 
+export const acceptInvite = async (api, inviteLink) => {
+    const body = new InvitationLink(inviteLink);
+
+    let check;
+    try {
+        check = await withSentryCapture(
+            api.checkInvitation(body), "Cannot check invitation"
+        );
+    } catch (err) {
+        throw new Error(`Error reading the invitation ${err.error.message}`);
+    }
+
+    if (!check.valid || !check.active) {
+        const cause = !check.valid ? 'valid' : 'active';
+        throw new Error(`Invitation is not ${cause}`);
+    }
+
+    try {
+        await withSentryCapture(api.acceptInvitation(body), "Cannot accept invitation");
+    } catch (err) {
+        throw new Error(`Could not accept the invitation. Err#${err.body.status} ${err.body.type}. ${err.body.detail}`);
+    }
+
+    return check;
+};
+
 export const getRepos = (token, userAccount, from, to, repos) => {
-  const api = buildApi(token);
-  const filter = new GenericFilterRequest(userAccount, from, to);
-  filter.in = repos;
-  filter.timezone = getOffset();
-  return api.filterRepositories({ body: filter }).then(repos => [...repos]);
+    const api = buildApi(token);
+    const filter = new GenericFilterRequest(userAccount, from, to);
+    filter.in = repos;
+    filter.timezone = getOffset();
+
+    return withSentryCapture(
+        api.filterRepositories({ body: filter }),
+        "Cannot fetch repos"
+    ).then(repos => [...repos]);
 };
 
 export const getContributors = (token, userAccount, from, to, repos) => {
@@ -95,7 +167,10 @@ export const getContributors = (token, userAccount, from, to, repos) => {
 
 export const getInvitation = async (token, accountID) => {
   const api = buildApi(token);
-  const invitation = await api.genInvitation(accountID);
+  const invitation = await withSentryCapture(
+    api.genInvitation(accountID),
+    "Cannot get invitation link"
+  );
   return invitation.url;
 };
 
@@ -119,7 +194,11 @@ export const fetchContributors = async (
         accountID, dateTime.ymd(dateInterval.from), dateTime.ymd(dateInterval.to));
     filter_.in = filter.repositories;
     filter_.timezone = getOffset();
-    return api.filterContributors({ body: filter_ });
+
+    return withSentryCapture(
+        api.filterContributors({ body: filter_ }),
+        "Cannot fetch contributors"
+    );
 };
 
 export const fetchFilteredPRs = async (
@@ -155,7 +234,11 @@ export const fetchFilteredPRs = async (
 
     filter_.timezone = getOffset();
 
-    const prs = await api.filterPrs({ filterPullRequestsRequest: filter_ });
+    const prs = await withSentryCapture(
+        api.filterPrs({ filterPullRequestsRequest: filter_ }),
+        "Cannot fetch filtered pull requests"
+    );
+
     return {
         prs: prs.data.map(processPR),
         users: prs?.include?.users || {},
@@ -197,7 +280,10 @@ export const fetchPRsMetrics = async (
   );
 
   body.timezone = getOffset();
-  return api.calcMetricsPrLinear(body);
+  return withSentryCapture(
+    api.calcMetricsPrLinear(body),
+    "Cannot fetch pull requests metrics"
+  );
 };
 
 export const fetchDevsMetrics = async (
@@ -220,7 +306,10 @@ export const fetchDevsMetrics = async (
   );
 
   body.timezone = getOffset();
-  return api.calcMetricsDeveloper(body);
+  return withSentryCapture(
+    api.calcMetricsDeveloper(body),
+    "Cannot fetch developers metrics"
+  );
 };
 
 
@@ -244,7 +333,10 @@ const buildForSet = (filter, groupBy) => {
 const getOffset = () => moment().utcOffset();
 
 export const fetchReleaseSettings = async (api, accountID) => {
-  const config = await api.listReleaseMatchSettings(accountID);
+  const config = await withSentryCapture(
+    api.listReleaseMatchSettings(accountID),
+    "Cannot fetch release settings"
+  );
   return [config];
 };
 
@@ -253,5 +345,8 @@ export const saveRepoSettings = async (api, accountId, repos, strategy, branchPa
   repoSettings.branches = branchPattern;
   repoSettings.tags = tagPattern;
 
-  return api.setReleaseMatch({ body: repoSettings });
+  return withSentryCapture(
+    api.setReleaseMatch({ body: repoSettings }),
+    "Cannot set release match"
+  );
 };
