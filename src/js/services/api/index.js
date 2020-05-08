@@ -8,6 +8,7 @@ import {
   CalculatedPullRequestMetrics,
   ReleaseMatchRequest,
 } from 'js/services/api/openapi-client';
+import * as Sentry from '@sentry/browser';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
 import PullRequestMetricID from 'js/services/api/openapi-client/model/PullRequestMetricID';
 import DeveloperMetricID from 'js/services/api/openapi-client/model/DeveloperMetricID';
@@ -29,6 +30,31 @@ class APIError extends Error {
         this.name = 'APIError';
     }
 }
+
+export const reportToSentry = (error, context = {}) => Sentry.withScope(scope => {
+    scope.setTags(context.tags);
+    scope.setExtras(context.extra);
+    Sentry.captureException(error);
+});
+
+const withSentryCapture = (p, message) => p.catch(e => {
+    if (e instanceof Error) {
+        reportToSentry(e);
+    } else {
+        const err = new APIError(`${message}: ${e.status} - ${e.statusText}`);
+        const sentryCtx = {
+            extra: {
+                status: e.status,
+                statusText: e.statusText,
+                body: e.body,
+                response: e.response,
+                err: e.error
+            }
+        };
+
+        reportToSentry(err, sentryCtx);
+    }
+});
 
 export const getPreviousInterval = (dateInterval) => {
     const diffDays = moment(dateInterval.to).diff(dateInterval.from, 'days');
