@@ -41,11 +41,13 @@ export default ({ stage, data, status }) => {
     ]
   }, [data.prs, stage])
 
+  const isReady = status => status === READY
+
   // reset filter when changing stage
   useEffect(() => setSelectValue(null), [stage])
 
   useEffect(() => {
-    if (status !== READY) {
+    if (!isReady(status)) {
       return;
     }
 
@@ -66,16 +68,13 @@ export default ({ stage, data, status }) => {
       $(tableContainerSelector).empty();
     };
   }, [stage, data, status, selectValue, options]);
-
-  const isTableReady = ({ prs, users }) => prs.length > 0 && users
-
   return (
     <>
       <StatusIndicator status={status} textOnly={false} />
       <div className="table-responsive mb-4">
         <div className="d-flex" style={{ marginBottom: '-34px', justifyContent: 'flex-end' }}>
           <div style={{ zIndex: 3, flex: '0 0 170px' }}>
-            {isTableReady(data) && <Select
+            {isReady(status) && <Select
               value={selectValue}
               isClearable={false}
               placeholder="Filter by status"
