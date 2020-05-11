@@ -44,7 +44,9 @@ export default ({ stage, data, status }) => {
   const isReady = status => status === READY
 
   // reset filter when changing stage
-  useEffect(() => setSelectValue(null), [stage])
+  useEffect(() => {
+    setSelectValue(null)
+  }, [stage])
 
   useEffect(() => {
     if (!isReady(status)) {
