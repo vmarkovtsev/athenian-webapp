@@ -58,7 +58,7 @@ const extractParts = item => {
 const errorParts = err => {
     let parts = [];
     const baseError = errMessage(err);
-    const causeError = errMessage(err.original);
+    const causeError = err.original && errMessage(err.original);
 
     if (baseError) {
         parts.push(baseError);
