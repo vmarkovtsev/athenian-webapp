@@ -43,13 +43,13 @@ const reviewActivity = {
       .sum();
 
     const totalReviewedPRs = _(metrics.calculated)
-      .map(v => v.values[0][prsCreated])
+      .map(v => v.values[0][prsReviewed])
       .sum();
 
     const totalReviewers = _(metrics.calculated)
       .filter(v => v.values[0][prsReviewed] > 0)
       .value()
-      .length;
+      .length
 
     const secondBoxChartData = _(metrics.calculated)
       .map(v => {
@@ -117,10 +117,10 @@ const reviewActivity = {
           .take(10)
           .value(),
         axisKeys: {
-            x: 'reviews',
-            y: 'prs',
-            size: 'size',
-            label: 'developer'
+          x: 'reviews',
+          y: 'prs',
+          size: 'size',
+          label: 'developer'
         },
         avatarMapping,
         KPIsData: {
@@ -132,7 +132,7 @@ const reviewActivity = {
             .filter(pr => {
                 return happened(pr, prEvent.REVIEW) || happened(pr, prEvent.REJECTION) || happened(pr, prEvent.APPROVE);
             }).length,
-          avgReviewedPRsPerDev: totalReviewedPRs / totalReviewers,
+          avgReviewedPRsPerDev: totalReviewedPRs / totalReviewers
         }
       },
       secondBox: {
