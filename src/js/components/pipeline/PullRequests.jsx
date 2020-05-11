@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import $ from 'jquery';
 import 'datatables.net';
 import 'datatables.net-bs4';
@@ -6,7 +6,7 @@ import 'datatables.net-bs4/css/dataTables.bootstrap4.css';
 import Select from 'react-select';
 
 import { dateTime, github, number } from 'js/services/format';
-import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses, PR_LABELS } from 'js/services/prHelpers'
+import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses } from 'js/services/prHelpers'
 
 import _ from 'lodash';
 
@@ -15,11 +15,11 @@ import { StatusIndicator, READY } from 'js/components/ui/Spinner';
 const userImage = users => user => {
   if (users[user] && users[user].avatar) {
     return `<img
-    src="${users[user].avatar}"
-    title="${github.userName(user)}"
-    alt="${github.userName(user)}"
-    class="pr-user-avatar"
-  />`;
+      src="${users[user].avatar}"
+      title="${github.userName(user)}"
+      alt="${github.userName(user)}"
+      class="pr-user-avatar"
+    />`;
 }
 
 return `<span title="${github.userName(user)}" class="pr-user-avatar pr-user-unknown">?</span>`;
@@ -30,12 +30,31 @@ const tableContainerSelector = `#${tableContainerId}`;
 
 export default ({ stage, data, status }) => {
   const [selectValue, setSelectValue] = useState(null)
+  const [selectOptions, setSelectOptions] = useState([{ label: 'All', value: null }])
+
+  const options = useMemo(() => {
+    const getLabel = prLabel(stage)
+    const labels = [...data.prs.reduce((acc, curr) => acc.add(getLabel(curr)), new Set())]
+    return [
+      { label: 'All' },
+      ...labels.map(value => ({ value, label: value }))
+    ]
+  }, [data.prs, stage])
+
+  const isReady = status => status === READY
+
+  // reset filter when changing stage
+  useEffect(() => {
+    setSelectValue(null)
+  }, [stage])
 
   useEffect(() => {
-    if (status !== READY) {
+    if (!isReady(status)) {
       return;
     }
 
+    setSelectOptions(options)
+  
     const applyFilter = data => {
       if (!selectValue) return data
       return {
@@ -50,24 +69,18 @@ export default ({ stage, data, status }) => {
       $.fn.DataTable.isDataTable(tableContainerSelector) && $(tableContainerSelector).DataTable().destroy();
       $(tableContainerSelector).empty();
     };
-  }, [stage, data, status, selectValue]);
-
-  const filterOptions = [
-    { label: 'All', value: null },
-    ...Object.entries(PR_LABELS).map(([key, value]) => ({ label: value, value }))
-  ]
-
+  }, [stage, data, status, selectValue, options]);
   return (
     <>
       <StatusIndicator status={status} textOnly={false} />
       <div className="table-responsive mb-4">
         <div className="d-flex" style={{ marginBottom: '-34px', justifyContent: 'flex-end' }}>
           <div style={{ zIndex: 3, flex: '0 0 170px' }}>
-            <Select
+            {isReady(status) && <Select
               value={selectValue}
               isClearable={false}
               placeholder="Filter by status"
-              options={filterOptions}
+              options={selectOptions}
               onChange={value => {
                 if (value && !value.value) {
                   setSelectValue(null)
@@ -75,7 +88,7 @@ export default ({ stage, data, status }) => {
                 }
                 setSelectValue(value)
               }}
-            />
+            />}
           </div>
         </div>
         <table className="table table-bordered" id={tableContainerId} width="100%" cellSpacing="0" style={{ tableLayout: 'fixed' }} />
