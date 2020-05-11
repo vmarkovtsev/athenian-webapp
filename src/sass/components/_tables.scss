@@ -158,7 +158,9 @@
         width: 100%;
     }
 }
-
+.table-responsive {
+    overflow-x: unset !important
+}
 div.dataTables_wrapper div{
 
     &.dataTables_length select {

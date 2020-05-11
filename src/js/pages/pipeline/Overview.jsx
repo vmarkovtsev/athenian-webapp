@@ -10,7 +10,7 @@ import { useDataContext } from 'js/context/Data';
 
 export default () => {
     const { getGlobal: getGlobalData, globalDataReady } = useDataContext();
-    const [prsState, setPRsState] = useState({ prs: [], users: [] });
+    const [prsState, setPRsState] = useState({ prs: [], users: null });
     const [statusState, setStatusState] = useState(EMPTY);
 
     useEffect(() => {
