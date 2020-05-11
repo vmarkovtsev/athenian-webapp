@@ -24,5 +24,51 @@ export default {
 };
 
 const Msgs = ({ msgs }) => {
-    return msgs.map((msg, key) => <div key={key}>{msg.toString()}</div>);
+    const messages = msgs.reduce((acc, item) => { acc.push(...extractParts(item)); return acc; }, []);
+    return messages.map((msg, key) => <div key={key}>{msg}</div>);
 }
+
+const extractParts = item => {
+    if (!item) {
+        return [];
+    }
+
+    if (['number', 'string'].includes(typeof item)) {
+        return [item];
+    }
+
+    if (item.body?.title && item.body?.type) {
+        // errors returned by the API, as proper HTTP response (see API errors schema)
+        const parts = [];
+        parts.push(item.body.detail);
+        parts.push(`${item.body.title}. ${item.body.type}`);
+        return parts.filter(v => !!v);
+    }
+
+    if (item.error) {
+        // e.g. when JSON response could not be parsed (e.g. API returning NaN for old go-git '/filter/pull_requests')
+        let parts = errorParts(item.error);
+        return parts.length ? parts : ['Unhandled error'];
+    }
+
+    // errors or error-like
+    return errorParts(item);
+};
+
+const errorParts = err => {
+    let parts = [];
+    const baseError = errMessage(err);
+    const causeError = err.original && errMessage(err.original);
+
+    if (baseError) {
+        parts.push(baseError);
+    }
+
+    if (causeError) {
+        parts.push(causeError);
+    }
+
+    return parts;
+}
+
+const errMessage = err => err instanceof Error ? err.toString() : err.message;

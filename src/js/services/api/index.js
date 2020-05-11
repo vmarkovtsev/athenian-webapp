@@ -38,7 +38,7 @@ export const reportToSentry = (error, context = {}) => Sentry.withScope(scope =>
     Sentry.captureException(error);
 });
 
-const withSentryCapture = (p, message) => p.catch(e => {
+const withSentryCapture = (p, message, rethrow = false) => p.catch(e => {
     if (e instanceof Error) {
         reportToSentry(e);
     } else {
@@ -54,6 +54,10 @@ const withSentryCapture = (p, message) => p.catch(e => {
         };
 
         reportToSentry(err, sentryCtx);
+    }
+
+    if (rethrow) {
+      throw e;
     }
 });
 
@@ -347,6 +351,7 @@ export const saveRepoSettings = async (api, accountId, repos, strategy, branchPa
 
   return withSentryCapture(
     api.setReleaseMatch({ body: repoSettings }),
-    "Cannot set release match"
+    "Cannot set release match",
+    true,
   );
 };
