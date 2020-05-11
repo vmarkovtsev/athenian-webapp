@@ -150,11 +150,16 @@ export default ({ children }) => {
                   noDataMsg="There are no contributors for the date interval and repositories filters"
                   options={allContribsState}
                   isReady={contribsReadyState}
-                  labelFormat={({ realName, login }) => {
+                  labelFormat={({ name, login, avatar }) => {
                     const gituser = github.userName(login)
                     const names = [gituser || 'ANONYMOUS']
-                    realName && gituser !== realName && names.push(`(${realName})`)
-                    return names.join(" ")
+                    // name && gituser !== name && names.push(`(${name})`)
+                    return (
+                        <div>
+                            <img src={avatar} alt={name} style={{ marginRight: '4px', width: '25px', height: '25px', borderRadius: '100%', border: '2px solid white', boxShadow: '0 0 2px #ccc' }} /> 
+                            {gituser || 'ANONYMOUS'}
+                        </div>
+                    )
                   }}
                   onChange={onContribsChange}
                 />
