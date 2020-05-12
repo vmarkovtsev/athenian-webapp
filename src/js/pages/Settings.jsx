@@ -25,7 +25,9 @@ export const getOrg = user => {
 export default ({ children }) => {
   const { user } = useUserContext();
 
-  const isDev = window.ENV.environment === 'development' || process.env.NODE_ENV === 'development';
+  const isDev = window.ENV.environment === 'development' || 
+        window.ENV.environment === 'staging' || 
+        process.env.NODE_ENV === 'development';
 
   if (!user) return <Page />;
 
