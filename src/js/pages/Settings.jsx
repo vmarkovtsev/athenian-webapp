@@ -25,6 +25,8 @@ export const getOrg = user => {
 export default ({ children }) => {
   const { user } = useUserContext();
 
+  const isDev = window.ENV.environment === 'development' || process.env.NODE_ENV === 'development';
+
   if (!user) return <Page />;
 
   return (
@@ -40,7 +42,7 @@ export default ({ children }) => {
             <div className="card-body p-0">
               <div className="list-group list-group-flush">
                 <NavLink className="list-group-item py-2" to="/settings/profile">Profile</NavLink>
-                <NavLink className="list-group-item py-2" to="/settings/teams">Teams</NavLink>
+                {isDev && <NavLink className="list-group-item py-2" to="/settings/teams">Teams</NavLink>}
                 <NavLink className="list-group-item py-2" to="/settings/releases">Releases</NavLink>
                 <Link to="/logout" className="list-group-item bg-light text-right py-2 rounded-bottom">Logout</Link>
               </div>
