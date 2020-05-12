@@ -4,7 +4,7 @@ import 'react-dates/initialize';
 import moment from 'moment';
 import { DateRangePicker } from 'react-dates';
 import { START_DATE, END_DATE } from 'react-dates/constants';
-import classnames from 'classnames';
+import { FilterFooter } from './FilterFooter'
 
 const isInRange = (candidate, lower, upper) => lower.isBefore(candidate) && upper.isAfter(candidate);
 
@@ -108,7 +108,7 @@ export default ({
                 showClearDates={true}
                 initialVisibleMonth={() => moment(dateIntervalState.endDate).subtract(1, 'month')}
                 renderCalendarInfo={() => (
-                    <CustomInfoPanel
+                    <FilterFooter
                         onCancel={cancel}
                         onAccept={() => setFocusedInputState(null)}
                         isAcceptable={validState}
@@ -136,16 +136,3 @@ export default ({
         </div>
     );
 };
-
-const CustomInfoPanel = ({ onCancel, onAccept, isAcceptable }) => (
-    <div className="bg-white border-top px-4 py-3 text-right">
-        <button onClick={onCancel} className="btn btn-link text-secondary px-3">Cancel</button>
-        <button
-            disabled={!isAcceptable}
-            onClick={onAccept}
-            className={classnames('btn btn-orange px-3', !isAcceptable && 'btn-disabled')}
-        >
-            Apply
-        </button>
-    </div>
-);

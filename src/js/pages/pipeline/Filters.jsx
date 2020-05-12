@@ -140,25 +140,27 @@ export default ({ children }) => {
                   isReady={reposReadyState}
                   labelFormat={repo => (github.repoName(repo) || 'UNKNOWN')}
                   onChange={onReposChange}
+                  getOptionValue={val => val}
                 />
             }
             contribsFilter={
                 <MultiSelect
                   id="contribsFilter"
                   className="filter"
-                  name="Contributors"
+                  name="Users"
                   noDataMsg="There are no contributors for the date interval and repositories filters"
                   options={allContribsState}
                   isReady={contribsReadyState}
+                  getOptionValue={val => val.name}
                   labelFormat={({ name, login, avatar }) => {
                     const gituser = github.userName(login)
-                    const names = [gituser || 'ANONYMOUS']
-                    // name && gituser !== name && names.push(`(${name})`)
+                    const user = gituser || 'ANONYMOUS'
                     return (
-                        <div>
-                            <img src={avatar} alt={name} style={{ marginRight: '4px', width: '25px', height: '25px', borderRadius: '100%', border: '2px solid white', boxShadow: '0 0 2px #ccc' }} /> 
-                            {gituser || 'ANONYMOUS'}
-                        </div>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <img src={avatar} alt={name} style={{ marginRight: '4px', width: '25px', height: '25px', borderRadius: '100%', border: '2px solid white', boxShadow: '0 0 2px #ccc' }} /> 
+                        { name && <span style={{ marginRight: '4px', wordBreak: 'keep-all', wordWrap: 'nowrap', textOverflow: 'ellipsis' }}>{name}</span> }
+                        { user !== name && <span style={{ color: '#C6C7D1' }}>{user}</span> }
+                      </div>
                     )
                   }}
                   onChange={onContribsChange}
