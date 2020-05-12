@@ -74,7 +74,7 @@ export default function MultiSelect({ name, options, isReady, id, className, noD
     return (
       <div ref={ref} {...restInnerProps} style={style}>
         <div
-          style={{ padding: '8px 12px', background: '#E7E7EC', display: 'flex', alignItems: 'center' }}
+          style={{ padding: '8px 12px', background: '#E7E7EC', display: 'flex', alignItems: 'center', cursor: 'pointer' }}
           onClick={() => {
             clearValue()
             if (!allSelected) {
