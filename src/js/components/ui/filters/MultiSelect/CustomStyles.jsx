@@ -1,3 +1,18 @@
+import SearchIcon from './SearchIcon.svg'
+
+const placeholder = name => ({
+  alignItems: 'center',
+  display: 'flex',
+  ':before': {
+    background: `url(${SearchIcon}) no-repeat`,
+    content: '" "',
+    display: 'block',
+    marginRight: 8,
+    height: 14,
+    width: 14,
+  }
+})
+
 export const customStyles = label => ({
   container: styles => ({
     ...styles,
@@ -32,5 +47,13 @@ export const customStyles = label => ({
   menuList: styles => ({
     ...styles,
     padding: 0
+  }),
+  input: styles => ({
+    ...styles,
+    ...placeholder(label)
+  }),
+  placeholder: styles => ({
+    ...styles,
+    ...placeholder(label)
   })
 })

@@ -4,7 +4,6 @@ import { FilterFooter} from '../FilterFooter'
 import { Checkbox } from './Checkbox'
 import { Dropdown } from './Dropdown'
 import { customStyles } from './CustomStyles'
-import SearchIcon from './SearchIcon'
 
 // It is not needed a more formal definition because the options passed to MultiSelect
 // in our case are arrays of primitives, or arrays of simple objects [{foo <primitive|array>,...}, ...]
@@ -28,15 +27,6 @@ export default function MultiSelect({ name, options, isReady, id, className, noD
 
   const [previousSelectionState, setPreviousSelectionState] = useState(deepCopy(options).sort())
 
-  const Search = name => {
-    return () => (
-      <div style={{ display: 'flex' }}>
-        <SearchIcon />
-        <span>Find {name.toLowerCase()}...</span>
-      </div>
-    )
-  }
-
   const Option = props => {
     const {
       getStyles,
@@ -51,6 +41,19 @@ export default function MultiSelect({ name, options, isReady, id, className, noD
       borderBottom: '1px solid #D6DBE4'
     }
     return (<div ref={ref} {...restInnerProps} style={style}><Checkbox isChecked={isSelected}/>{label}</div>)
+  }
+
+  const Placeholder = props => {
+    const { getStyles } = props
+    const style = {
+      ...getStyles('placeholder', props),
+      paddingLeft: 22
+    }
+    return (
+      <div style={style}>
+        Search {name.toLowerCase()}...
+      </div>
+    )
   }
 
   const Menu = props => {
@@ -82,7 +85,7 @@ export default function MultiSelect({ name, options, isReady, id, className, noD
             }
           }}
         >
-          <Checkbox isChecked={allSelected} /> <span style={{ color: '#121343' }}>All</span>
+          <Checkbox isChecked={allSelected} /> <span style={{ color: '#121343' }}>All <span style={{ marginLeft: '8px', background: '#24C7CC', color: 'white', fontSize: '11px', padding: '2px 7px', borderRadius: '5px' }}>{options.length}</span></span>
         </div>
         {children}
         <FilterFooter
@@ -114,8 +117,9 @@ export default function MultiSelect({ name, options, isReady, id, className, noD
           DropdownIndicator: () => null,
           Option,
           Menu,
-          Placeholder: Search(name)
+          Placeholder
         }}
+        backspaceRemovesValue={false}
         menuIsOpen={isOpen}
         isClearable={false}
         isSearchable
