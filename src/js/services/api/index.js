@@ -36,6 +36,7 @@ export const reportToSentry = (error, context = {}) => Sentry.withScope(scope =>
     scope.setTags(context.tags);
     scope.setExtras(context.extra);
     Sentry.captureException(error);
+    console.error('Reported to Sentry', error, context);
 });
 
 const withSentryCapture = (p, message, rethrow = false) => p.catch(e => {
