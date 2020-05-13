@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import { faClock, faUser } from '@fortawesome/free-regular-svg-icons'
 import { faCodeBranch } from '@fortawesome/free-solid-svg-icons'
 
@@ -15,14 +16,13 @@ import {
   TooltipContainer,
   Group,
   BigText,
-  SmallTitle,
-  SmallDate,
+  DateWeekDayMonth,
   PullRequestRepoTitle,
   Icon,
   UserAvatar,
   PRCommentsStats,
 } from 'js/components/charts/Tooltip';
-import moment from 'moment';
+import { AltTitle } from 'js/components/ui/Typography';
 
 const SmallText = ({ content }) => (
   <span className="font-weight-bold d-inline-block align-middle text-dark text-m">
@@ -65,7 +65,7 @@ export default () => {
 
           <TooltipContainer left>
             <Group>
-              <SmallTitle uppercase content="#458" />
+              <AltTitle uppercase content="#458" />
               <PullRequestRepoTitle repo="src-d/go-git" title="git: remove potentially duplicate check for unstaged files" />
             </Group>
             <Group>
@@ -77,7 +77,7 @@ export default () => {
 
           <TooltipContainer left>
             <Group>
-              <SmallTitle uppercase content="#458" />
+              <AltTitle uppercase content="#458" />
               <PullRequestRepoTitle repo="src-d/go-git" title="git: remove potentially duplicate check for unstaged files" />
             </Group>
             <Group className="text-orange">
@@ -93,7 +93,7 @@ export default () => {
 
           <TooltipContainer left>
             <Group>
-              <SmallTitle uppercase content="#458" />
+              <AltTitle uppercase content="#458" />
               <PullRequestRepoTitle repo="src-d/go-git" title="git: remove potentially duplicate check for unstaged files" />
             </Group>
             <Group className="text-turquoise">
@@ -132,7 +132,7 @@ export default () => {
               <UserAvatar src="https://randomuser.me/api/portraits/women/44.jpg" name="jennifer_38" />
             </Group>
             <Group>
-              <SmallTitle uppercase content="Reviews comments" />
+              <AltTitle uppercase content="Reviews comments" />
               <BigText content={23} extra="75%" />
             </Group>
           </TooltipContainer>
@@ -144,7 +144,7 @@ export default () => {
               <UserAvatar src="https://randomuser.me/api/portraits/women/44.jpg" name="jennifer_38" />
             </Group>
             <Group>
-              <SmallTitle uppercase content="Reviews" />
+              <AltTitle uppercase content="Reviews" />
               <BigText content={15} extra="35%" />
             </Group>
           </TooltipContainer>
@@ -171,7 +171,7 @@ export default () => {
 
           <TooltipContainer left>
             <Group>
-              <SmallTitle content={<SmallDate date={moment('2020-03-23')} />} />
+              <AltTitle content={<DateWeekDayMonth date={moment('2020-03-23')} uppercase />} />
               <BigText content="6 hours" />
             </Group>
           </TooltipContainer>
@@ -180,7 +180,7 @@ export default () => {
 
           <TooltipContainer left>
             <Group>
-              <SmallTitle content={<SmallDate date={moment('2020-03-23')} />} />
+              <AltTitle content={<DateWeekDayMonth date={moment('2020-03-23')} uppercase />} />
               <BigText content="35min" />
               <p className="align-middle text-dark text-m">6 pull requests</p>
             </Group>
@@ -198,7 +198,7 @@ export default () => {
 
           <TooltipContainer>
             <Group>
-              <SmallTitle content={<SmallDate date={moment('2020-03-23')} />} />
+              <AltTitle content={<DateWeekDayMonth date={moment('2020-03-23')} uppercase />} />
               <BigText content="7/5" extra={1.4} />
             </Group>
           </TooltipContainer>
@@ -215,7 +215,7 @@ export default () => {
 
           <TooltipContainer>
             <Group>
-              <SmallTitle uppercase content="Pull Requests" />
+              <AltTitle uppercase content="Pull Requests" />
               <BigText content={19} />
             </Group>
           </TooltipContainer>
@@ -255,7 +255,7 @@ export default () => {
 
           <TooltipContainer>
             <Group>
-              <SmallTitle uppercase content="PRs Created" />
+              <AltTitle uppercase content="PRs Created" />
               <BigText content={49} />
             </Group>
           </TooltipContainer>
@@ -264,11 +264,11 @@ export default () => {
 
           <TooltipContainer left>
             <Group>
-              <SmallTitle uppercase content="Average time to merge" />
+              <AltTitle uppercase content="Average time to merge" />
               <SmallText content="18 hours" />
             </Group>
             <Group>
-              <SmallTitle uppercase content="Developers with merge privileges" />
+              <AltTitle uppercase content="Developers with merge privileges" />
               <SmallText content={6} />
             </Group>
           </TooltipContainer>

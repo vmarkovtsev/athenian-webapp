@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock, faEye } from '@fortawesome/free-regular-svg-icons'
 
 import { github, number } from 'js/services/format';
+import { AltTitle } from 'js/components/ui/Typography';
 
 export default ({value, ...props}) => {
     if (!value) return null;
@@ -37,7 +38,7 @@ export const DateBigNumber = ({ value, renderBigFn = v => <BigText content={numb
         <Hint {...props} value={value}>
             <TooltipContainer left>
                 <Group>
-                    <SmallTitle content={<SmallDate date={moment(value.x)} />} />
+                    <AltTitle content={<DateWeekDayMonth date={moment(value.x)} uppercase />} />
                     {renderBigFn(value)}
                 </Group>
             </TooltipContainer>
@@ -53,7 +54,7 @@ export const PullRequestReview = ({ value, ...props }) => {
         <Hint {...props} value={value} style={{ pointerEvents: 'auto' }}>
             <TooltipContainer left>
                 <Group>
-                    <SmallTitle uppercase content={`#${tooltip.number}`} />
+                    <AltTitle uppercase content={`#${tooltip.number}`} />
                     <PullRequestRepoTitle repo={tooltip.repository} title={tooltip.title} number={tooltip.number} />
                 </Group>
                 {tooltip.timeWaiting && (
@@ -87,19 +88,19 @@ export const UserReviewer = ({ value, ...props }) => {
                 )}
                 {tooltip.prsCommentsPerc && (
                     <Group>
-                        <SmallTitle uppercase content="Reviews comments" />
+                        <AltTitle uppercase content="Reviews comments" />
                         <BigText content={tooltip.prsCommentsPerc.number} extra={number.percentage(tooltip.prsCommentsPerc.percentage)} />
                     </Group>
                 )}
                 {tooltip.reviewsPerc && (
                     <Group>
-                        <SmallTitle uppercase content="Reviews" />
+                        <AltTitle uppercase content="Reviews" />
                         <BigText content={tooltip.reviewsPerc.number} extra={number.percentage(tooltip.reviewsPerc.percentage)} />
                     </Group>
                 )}
                 {tooltip.x && (
                     <Group>
-                        <SmallTitle uppercase content="Pull Requests" />
+                        <AltTitle uppercase content="Pull Requests" />
                         <BigText content={tooltip.x.number} />
                     </Group>
                 )}
@@ -175,12 +176,6 @@ export const Group = ({ className, children }) => (
     </div>
 );
 
-export const SmallTitle = ({ uppercase = false, content }) => (
-    <p className={classnames('text-secondary text-xs mb-1', uppercase && 'text-uppercase')}>
-        {content}
-    </p>
-);
-
 export const BigText = ({ content, extra }) => (
     <span className="big-number font-weight-bold d-inline-block align-middle text-dark text-lg">
         <span>{content} </span>
@@ -188,12 +183,13 @@ export const BigText = ({ content, extra }) => (
     </span>
 );
 
-export const SmallDate = ({ date }) => (
+export const DateWeekDayMonth = ({date, uppercase }) => (
     <>
-        <span className="text-uppercase">{date.format('ddd')}</span>, {date.format('Do')} <span className="text-uppercase">{date.format('MMM')}</span>
+        <span className={uppercase && 'text-uppercase'}>{date.format('ddd')}</span>
+        <span>, {date.format('Do')} </span>
+        <span className={uppercase && 'text-uppercase'}>{date.format('MMM')}</span>
     </>
 );
-
 
 export const PullRequestRepoTitle = ({ repo, title, number }) => (
     <span className="text-s">
