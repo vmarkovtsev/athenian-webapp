@@ -126,4 +126,12 @@
             color: rgba($color-dark, 0.8);
         }
     }
+
+    &:empty {
+        display: none !important;
+
+        &.development-error-box {
+            display: inline-block !important;
+        }
+    }
 }

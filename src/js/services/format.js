@@ -130,7 +130,7 @@ const round = (n, decimals = 0) => {
     return Math.round(n * Math.pow(10, decimals)) / Math.pow(10, decimals);
 };
 
-const isNumber = n => typeof n === 'number' && isFinite(n);
+export const isNumber = n => typeof n === 'number' && isFinite(n);
 
 export const number = {
     si: n => {

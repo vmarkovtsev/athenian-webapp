@@ -66,7 +66,7 @@ const Stage = ({ data, status, title, text, hint, badge, variation, color, activ
             <>
             <div className="col-5">
                 <BigNumber content={text} className="mb-1 w-100" />
-                {text ? <Badge trend={NEGATIVE_IS_BETTER} value={number.round(variation)} /> : ''}
+                <Badge trend={NEGATIVE_IS_BETTER} value={number.round(variation)} />
             </div>
             <div className="col-7 pl-2" style={{ height: 55 }}>
                 <PipelineCardMiniChart data={data} config={{color}} />
@@ -82,7 +82,7 @@ const Stage = ({ data, status, title, text, hint, badge, variation, color, activ
                         <SmallTitle content={title} />
                         <Info content={hint} />
                     </span>
-                    {status === READY && badge && <Badge value={badge} />}
+                    {status === READY && <Badge value={badge} />}
                 </div>
                 <div className="row no-gutters card-text">
                   {content}
