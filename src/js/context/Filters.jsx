@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 
-const FiltersContext = React.createContext({ repositories: [], contributors: [], dateInterval: {} });
+const Context = React.createContext({ repositories: [], contributors: [], dateInterval: {} });
 
-export const useFiltersContext = () => useContext(FiltersContext);
+export const useFiltersContext = () => useContext(Context);
 
-export default ({ ready, repositories, contributors, dateInterval, children }) => {
-    return (
-        <FiltersContext.Provider value={{ ready, repositories, contributors, dateInterval }}>
-            {children}
-        </FiltersContext.Provider >
-    );
-};
+export default function FiltersContext({ ready, repositories, contributors, dateInterval, children }) {
+  return (
+    <Context.Provider value={{ ready, repositories, contributors, dateInterval }}>
+      {children}
+    </Context.Provider>
+  )
+}

@@ -6,28 +6,26 @@ import { ReactComponent as DropdownIndicator } from './DropdownIndicator.svg'
 
 /**
  * CustomComponents used to override react-select components
- * @param {function} render
+ * @param {function} children
  * @param {string} label
- * @param {number} count
- * @param {boolean} isReady
+ * @param {boolean} isLoading
  */
+const stopPropagation = ev => ev.stopPropagation()
+
 export const Dropdown = ({
-  render,
+  children,
   label,
-  count,
-  isReady,
+  isLoading,
   onApply,
-  options
+  value
 }) => {
-  const [isOpen, setOpen] = useState(false)
+  const [isMenuOpen, setMenuOpen] = useState(false)
   const ref = useRef(null)
-  const [selectOptions, setSelectOptions] = useState([])
-  const toggle = () => setOpen(!isOpen)
+
+  const toggle = () => setMenuOpen(!isMenuOpen)
 
   const closeAll = ev => {
-    if (!ref.current.contains(ev.target)) {
-      setOpen(false)
-    }
+    if (!ref.current.contains(ev.target)) setMenuOpen(false)
   }
 
   useEffect(() => {
@@ -37,35 +35,30 @@ export const Dropdown = ({
     }
   }, [])
 
-  useEffect(() => {
-    setSelectOptions(options)
-  }, [options])
+  const childrenProps = {
+    menuIsOpen: isMenuOpen,
+    components: {
+      Option,
+      Placeholder: placeholder(label),
+      Menu: menu({ setMenuOpen, onApply })
+    },
+    styles: customStyles(label)
+  }
 
   return (
-    <div onClick={ev => ev.stopPropagation()}>
+    <div onClick={stopPropagation}>
       <div ref={ref} onClick={toggle} className='filter-dropdown'>
         <div className="d-flex align-items-center">
           <span className="filter-dropdown-label">{label}</span>
           {
-            !isReady ?
-            <StatusIndicator size={5} status={LOADING} textOnly margin={0} /> :
-            <span className="filter-dropdown-pill">{selectOptions.length}</span>
+            !isLoading ?
+            <StatusIndicator size={5} status={LOADING} margin={0} /> :
+            <span className="filter-dropdown-pill">{value.length}</span>
           }
         </div>
         <DropdownIndicator />
       </div>
-      {render({
-        isOpen,
-        style: customStyles,
-        options,
-        selectedState: selectOptions,
-        onChange: setSelectOptions,
-        components: {
-          Option,
-          Placeholder: placeholder(label),
-          Menu: menu({ setOpen, onApply })
-        }
-      })}
+      {children(childrenProps)}
     </div>
   )
 }
@@ -116,17 +109,17 @@ export const Option = props => {
 
 /**
  * Placeholder,
- * @param {string} name
+ * @param {string} label
  * @return {function} 
  */
-export const placeholder = name => props => {
+export const placeholder = label => props => {
   const style = {
     ...props.getStyles('placeholder', props),
     paddingLeft: 22
   }
   return (
     <span style={style}>
-      Search {name.toLowerCase()}...
+      Search {label.toLowerCase()}...
     </span>
   )
 }
@@ -134,7 +127,7 @@ export const placeholder = name => props => {
 /**
  * Menu
  */
-export const menu = ({ setOpen, onApply }) => props => {
+export const menu = ({ setMenuOpen, onApply }) => props => {
   const {
     getStyles,
     innerProps: { ref, ...restInnerProps },
@@ -176,10 +169,10 @@ export const menu = ({ setOpen, onApply }) => props => {
       </div>
       {children}
       <FilterFooter
-        onCancel={() => setOpen(false)}
+        onCancel={() => setMenuOpen(false)}
         onAccept={() => {
           onApply(allValues)
-          setOpen(false)
+          setMenuOpen(false)
         }}
         isAcceptable={allValues.length > 0}
       />

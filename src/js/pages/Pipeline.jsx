@@ -7,7 +7,8 @@ import Filters from 'js/pages/pipeline/Filters';
 import BreadcrumbsContext from 'js/context/Breadcrumbs';
 import DataContext from 'js/context/Data';
 
-export default ({ children }) => (
+export default function Pipeline({ children }) {
+  return (
     <BreadcrumbsContext>
       <Page>
         <DataContext>
@@ -19,4 +20,5 @@ export default ({ children }) => (
         </DataContext>
       </Page>
     </BreadcrumbsContext>
-);
+  )
+};

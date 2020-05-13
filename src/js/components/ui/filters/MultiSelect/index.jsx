@@ -1,35 +1,53 @@
 import React from 'react'
 import Select from 'react-select'
-export { Dropdown } from './CustomComponents'
+import { Dropdown } from './CustomComponents'
 
-export default function MultiSelect({
-  options,
-  isReady,
-  className,
-  noDataMsg,
-  labelFormat,
-  getOptionValue,
-  selectedState,
-  onChange,
-  ...props
-}) {
+const formatMessage = message => () => <em>{message}</em>
+
+const defaultProps = {
+  backspaceRemovesValue: false,
+  closeMenuOnSelect: false,
+  isClearable: false,
+  openMenuOnClick: false,
+  isSearchable: true,
+  isMulti: true,
+  hideSelectedOptions: false,
+  controlShouldRenderValue: false
+}
+
+export default function MultiSelect(multiSelectProps) {
+  const {
+    label,
+    isLoading,
+    noDataMsg,
+    className,
+    name,
+    getOptionValue,
+    getOptionLabel,
+    options,
+    onChange,
+    onApply,
+    value
+  } = multiSelectProps
+
   return (
-    <Select
-      isSearchable
-      isMulti
-      closeMenuOnSelect={false}
-      hideSelectedOptions={false}
-      controlShouldRenderValue={false}
-      isLoading={!isReady}
-      className={className}
-      options={options}
-      value={selectedState}
-      onChange={onChange}
-      noOptionsMessage={() => <em>{noDataMsg}</em>}
-      loadingMessage={() => <em>loading...</em>}
-      getOptionLabel={labelFormat}
-      getOptionValue={getOptionValue}
-      {...props}
-    />
+    <Dropdown label={label} isLoading={isLoading} onApply={onApply} value={value}>
+      {ddProps => (
+        ddProps.menuIsOpen &&
+        <Select
+          options={options}
+          className={className}
+          name={name}
+          getOptionLabel={getOptionLabel}
+          getOptionValue={getOptionValue}
+          noOptionsMessage={formatMessage(noDataMsg)}
+          loadingMessage={formatMessage('loading...')}
+          onChange={onChange}
+          value={value}
+          {...defaultProps}
+          {...ddProps} // components
+        />
+      )}
+    </Dropdown>
   )
 }
