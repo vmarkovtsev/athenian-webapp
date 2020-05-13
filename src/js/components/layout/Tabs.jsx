@@ -22,9 +22,7 @@ export default ({ tabs }) => {
                         >
                             <div className="card-body px-0 py-3">
                                 <SmallTitle content={tab.title} isBlack={activeTabState === i && 'active'} />
-                                {tab.badge ? (
-                                    <Badge value={tab.badge} className="ml-3" />
-                                ) : null}
+                                <Badge value={tab.badge} className="ml-3" />
                             </div>
                         </div>
                     ))}

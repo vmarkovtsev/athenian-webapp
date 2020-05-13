@@ -61,11 +61,11 @@ const MainMetric = ({ title, hint, dataGetter, status, negativeIsBetter = false 
         content = (
             <>
               <BigNumber content={value} />
-              {value ? <Badge
-                         value={number.round(variation)}
-                         trend={negativeIsBetter ? NEGATIVE_IS_BETTER : POSITIVE_IS_BETTER}
-                         className="ml-4"
-                       /> : ''}
+              <Badge
+                value={number.round(variation)}
+                trend={negativeIsBetter ? NEGATIVE_IS_BETTER : POSITIVE_IS_BETTER}
+                className="ml-4"
+              />
             </>
         );
     }
