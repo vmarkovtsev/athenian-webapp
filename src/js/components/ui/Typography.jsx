@@ -10,3 +10,9 @@ export const BigNumber = ({ content, isXL, className }) => (
 export const SmallTitle = ({ content, isBlack, className }) => (
     <span className={classnames('small-title font-weight-bold text-xs text-uppercase align-middle', isBlack && 'text-gray-900', className)}>{content || nbsp}</span>
 );
+
+export const AltTitle = ({ uppercase = false, content }) => (
+    <p className={classnames('text-secondary text-xs mb-1', uppercase && 'text-uppercase')}>
+        {content}
+    </p>
+);
