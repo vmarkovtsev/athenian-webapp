@@ -9,6 +9,8 @@ import { ReactComponent as DropdownIndicator } from './DropdownIndicator.svg'
  * @param {function} children
  * @param {string} label
  * @param {boolean} isLoading
+ * @param {function} onApply
+ * @param {Array} value
  */
 const stopPropagation = ev => ev.stopPropagation()
 
@@ -83,7 +85,7 @@ const Checkbox = ({ isChecked }) => {
  * @param {boolean} isSelected
  * @param {string} label
 */
-export const Option = props => {
+const Option = props => {
   const {
     getStyles,
     innerProps: { ref, ...restInnerProps },
@@ -112,7 +114,7 @@ export const Option = props => {
  * @param {string} label
  * @return {function} 
  */
-export const placeholder = label => props => {
+const placeholder = label => props => {
   const style = {
     ...props.getStyles('placeholder', props),
     paddingLeft: 22
@@ -127,7 +129,7 @@ export const placeholder = label => props => {
 /**
  * Menu
  */
-export const menu = ({ setMenuOpen, onApply }) => props => {
+const menu = ({ setMenuOpen, onApply }) => props => {
   const {
     getStyles,
     innerProps: { ref, ...restInnerProps },
