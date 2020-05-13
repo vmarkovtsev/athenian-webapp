@@ -163,10 +163,7 @@ export const getContributors = (token, userAccount, from, to, repos) => {
         api, userAccount,
         {from: new Date(from), to: new Date(to)},
         {repositories:repos}
-    ).then(contribs => contribs.map(c => ({
-      login: c.login,
-      realName: c.name
-    })));
+    ).then(contribs => contribs.map(({ login, name, avatar }) => ({ login, name, avatar })));
 };
 
 export const getInvitation = async (token, accountID) => {
