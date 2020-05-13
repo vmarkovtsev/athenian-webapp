@@ -19,6 +19,11 @@ const defaultPatterns = {
   [TAG]: '.*',
 };
 
+const placeholderPatterns = {
+  [BRANCH]: 'branch_name',
+  [TAG]: '.*',
+};
+
 const isFilteredIn = (conf, term) => !term ||
   github.repoName(conf.url).toLowerCase().includes(term.toLowerCase());
 
@@ -298,7 +303,7 @@ const Strategy = ({ id, name, pattern, defaultText, onChange }) => {
           className="form-control d-inline-block w-200 ml-3"
           type="text"
           value={inputPatternState}
-          placeholder={defaultPatterns[name]}
+          placeholder={placeholderPatterns[name]}
           onFocus={() => setEdittingState(true)}
           onBlur={savePattern}
           onChange={e => dispatchInputPattern({ name, pattern: e.target.value })}
