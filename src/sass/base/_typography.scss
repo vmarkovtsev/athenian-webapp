@@ -100,6 +100,14 @@ html {
 
 .small-title {
     line-height: 2rem;
+
+    &:empty:after {
+        content: '\00a0';
+    }
+}
+
+.big-number:empty:after {
+    content: '\00a0';
 }
 
 // Link colors
