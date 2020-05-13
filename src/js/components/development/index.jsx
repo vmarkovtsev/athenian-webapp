@@ -59,5 +59,7 @@ export default {
       (async () => setToken(await getTokenSilently()))();
 
       return <Simple><pre className="bearer-token">{token}</pre></Simple>;
-    }
+    },
+
+    errorBoxClass: isNotProd && 'development-error-box',
 };
