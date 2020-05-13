@@ -7,7 +7,7 @@ import FiltersContext from 'js/context/Filters';
 
 import TopFilter from 'js/components/pipeline/TopFilter';
 
-import MultiSelect from 'js/components/ui/filters/MultiSelect';
+import MultiSelect, { Dropdown } from 'js/components/ui/filters/MultiSelect';
 import DateInterval, { EOD, YEAR_AGO, TWO_WEEKS_AGO } from 'js/components/ui/filters/DateInterval';
 
 import { getRepos, getContributors } from 'js/services/api';
@@ -40,8 +40,8 @@ export default ({ children }) => {
     const [allContribsState, setAllContribsState] = useState([]);
     const [filteredContribsState, setFilteredContribsState] = useState([]);
 
-    const [filteredDateIntervalState, setFilteredDateIntervalState] = useState(defaultDateInterval);
-
+    const [filteredDateIntervalState, setFilteredDateIntervalState] = useState(defaultDateInterval)
+  
     const context = {
         account: user.defaultAccount.id,
         dateInterval: defaultDateInterval,
@@ -121,7 +121,7 @@ export default ({ children }) => {
         setGlobalData('filter.contribs', Promise.resolve(selectedContribs));
         setReadyState(true);
     };
-
+  
     return (
         <FiltersContext
           ready={readyState}
@@ -131,40 +131,70 @@ export default ({ children }) => {
         >
           <TopFilter
             reposFilter={
-                <MultiSelect
-                  id="reposFilter"
-                  className="filter"
-                  name="Repositories"
-                  noDataMsg="There are no repositories for the date interval filter"
-                  options={allReposState}
-                  isReady={reposReadyState}
-                  labelFormat={repo => (github.repoName(repo) || 'UNKNOWN')}
-                  onChange={onReposChange}
-                  getOptionValue={val => val}
-                />
+              <Dropdown
+                label="Repositories"
+                isReady={reposReadyState}
+                options={allReposState}
+                onApply={onReposChange}
+                render={ ({ isOpen, style, components, options, selectedState, onChange }) => (
+                  isOpen &&
+                  <MultiSelect
+                    autoFocus
+                    components={components}
+                    backspaceRemovesValue={false}
+                    isClearable={false}
+                    className="filter"
+                    name="Repositories"
+                    noDataMsg="There are no repositories for the date interval filter"
+                    options={options}
+                    isReady={reposReadyState}
+                    openMenuOnClick={false}
+                    labelFormat={repo => (github.repoName(repo) || 'UNKNOWN')}
+                    getOptionValue={val => val}
+                    menuIsOpen={isOpen}
+                    onChange={onChange}
+                    selectedState={selectedState}
+                    styles={style('Repositories')}
+                  />
+                )}
+              />
             }
             contribsFilter={
-                <MultiSelect
-                  id="contribsFilter"
-                  className="filter"
-                  name="Users"
-                  noDataMsg="There are no contributors for the date interval and repositories filters"
-                  options={allContribsState}
-                  isReady={contribsReadyState}
-                  getOptionValue={val => val.name}
-                  labelFormat={({ name, login, avatar }) => {
-                    const gituser = github.userName(login)
-                    const user = gituser || 'ANONYMOUS'
-                    return (
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <img src={avatar} alt={name} style={{ marginRight: '4px', width: '25px', height: '25px', borderRadius: '100%', border: '2px solid white', boxShadow: '0 0 2px #ccc' }} /> 
-                        { name && <span style={{ marginRight: '4px', wordBreak: 'keep-all', wordWrap: 'nowrap', textOverflow: 'ellipsis' }}>{name}</span> }
-                        { user !== name && <span style={{ color: '#C6C7D1' }}>{user}</span> }
-                      </div>
-                    )
-                  }}
-                  onChange={onContribsChange}
-                />
+              <Dropdown
+                label="Users"
+                count={allContribsState.length}
+                onApply={onContribsChange}
+                options={allContribsState}
+                isReady={contribsReadyState}
+                render={ ({ isOpen, style, components, options, selectedState, onChange }) => (
+                  isOpen &&
+                  <MultiSelect
+                    autoFocus
+                    menuIsOpen={isOpen}
+                    components={components}
+                    className="filter"
+                    name="Users"
+                    noDataMsg="There are no users for the date interval and repositories filters"
+                    options={options}
+                    isReady={contribsReadyState}
+                    getOptionValue={val => `${val.name} ${val.login}`}
+                    labelFormat={({ name, login, avatar }) => {
+                      const gituser = github.userName(login)
+                      const user = gituser || 'ANONYMOUS'
+                      return (
+                        <div className="align-items-center filter-dropdown-option">
+                          <img src={avatar} alt={name} className="mr-2 filter-dropdown-option-img" /> 
+                          { name && <span className="filter-dropdown-option-name mr-1">{name}</span> }
+                          { user !== name && <span className="filter-dropdown-option-user filter-dropdown-option-name mr-2">{user}</span> }
+                        </div>
+                      )
+                    }}
+                    onChange={onChange}
+                    selectedState={selectedState}
+                    styles={style('Users')}
+                  />
+                )}
+              />
             }
             dateIntervalFilter={
                 <DateInterval

@@ -1,6 +1,8 @@
 import React from 'react';
+import { useFiltersContext } from 'js/context/Filters'
 
 export default ({ reposFilter, contribsFilter, dateIntervalFilter }) => {
+    console.log('useFiltersContext: ', useFiltersContext())
     return (
         <div className="filters row mb-4">
             <div className="col-12">

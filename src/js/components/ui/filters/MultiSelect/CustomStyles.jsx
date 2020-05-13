@@ -1,5 +1,8 @@
 import SearchIcon from './SearchIcon.svg'
 
+/**
+ * Overrides react-select components styles
+ */
 const placeholder = name => ({
   alignItems: 'center',
   display: 'flex',
@@ -25,10 +28,14 @@ export const customStyles = label => ({
     ...styles,
     backgroundColor: 'transparent',
   }),
-  option: (styles, state) => ({
+  indicatorsContainer: styles => ({
+    ...styles,
+    visibility: 'hidden'
+  }),
+  option: styles => ({
     ...styles,
     cursor: 'pointer',
-    background: 'transparent',
+    backgroundColor: 'transparent',
     color: '#121343'
   }),
   control: styles => ({

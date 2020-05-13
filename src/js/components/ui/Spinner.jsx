@@ -20,11 +20,11 @@ const Spinner = ({loading, size = DEFAULT_SIZE, color = DEFAULT_COLOR}) => (
 
 export default Spinner;
 
-export const StatusIndicator = ({ status, color = DEFAULT_COLOR, margin = 5, textOnly = false }) => {
+export const StatusIndicator = ({ status, color = DEFAULT_COLOR, margin = 5, textOnly = false, size }) => {
   let message;
   switch (status) {
       case LOADING:
-          message = <Spinner loading={true} color={color} />;
+          message = <Spinner loading={true} color={color} size={size} />;
           break;
       case FAILED:
           message = 'error loading data';
@@ -38,6 +38,6 @@ export const StatusIndicator = ({ status, color = DEFAULT_COLOR, margin = 5, tex
   };
 
   return (
-    <div className={classnames(`my-${margin}`, 'mx-auto align-middle text-center')}>{message}</div>
+    <div className={classnames(`my-${margin}`, 'mx-auto justify-content-center d-flex align-items-center')}>{message}</div>
   );
 };
