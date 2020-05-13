@@ -3,6 +3,10 @@ import { useAuth0 } from 'js/context/Auth0';
 import Simple from 'js/pages/templates/Simple';
 import 'js/components/development/index.scss';
 
+export const isDev = process.env.NODE_ENV === 'development';
+
+export const isNotProd = ['development', 'staging'].includes(window.ENV?.environment);
+
 export default {
     Breakpoints: () => (
         <div id="breakpoint-helper">
