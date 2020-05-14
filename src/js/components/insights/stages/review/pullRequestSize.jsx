@@ -56,15 +56,18 @@ const pullRequestSize = {
                     };
                 })
                 .orderBy(['age', 'loc'], ['desc', 'desc'])
-                .take(20)
+                // .take(20)
                 .value(),
             totalFiles: _(prs)
-                .map(pr => {
-                    // count the files changed from not reviewed PRs
-                    const reviewed = pr.completedStages.includes(PR_STAGE.REVIEW)
-                    return !reviewed ? pr.files_changed : 0
-                })
-                .sum(),
+              .map(({ files_changed }) => files_changed)
+              .sum(),
+            totalFilesWaiting: _(prs)
+              .map(pr => {
+                // count the files changed from not reviewed PRs
+                const reviewed = pr.completedStages.includes(PR_STAGE.REVIEW)
+                return !reviewed ? pr.files_changed : 0
+              })
+              .sum(),
             totalLoc: _(prs)
                 .map(pr => pr.size_added + pr.size_removed)
                 .sum(),
@@ -121,7 +124,7 @@ const pullRequestSize = {
                             subtitle: {text: 'Waiting for review'},
                             component: SimpleKPI,
                             params: {
-                                value: computed.totalFiles
+                                value: computed.totalFilesWaiting
                             }
                         },
                         {
