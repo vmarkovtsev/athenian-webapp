@@ -1,17 +1,9 @@
 import React from 'react';
 
-import VerticalBarChart from 'js/pages/prototypes/charts/VerticalBarChart'
-import HorizontalBarChart from 'js/pages/prototypes/charts/HorizontalBarChart'
-import ScatterPlot from 'js/pages/prototypes/charts/ScatterPlot'
-import BubbleChart from 'js/pages/prototypes/charts/BubbleChart'
 import PositiveNegativeBarChart from 'js/pages/prototypes/charts/PositiveNegativeBarChart'
 
 export default () => {
     const metrics = [
-        { title: 'Vertical Bar Chart', chart: VerticalBarChart, color: '#D80000' },
-        { title: 'Horizontal Bar Chart', chart: HorizontalBarChart, color: '#9900FF' },
-        { title: 'Scatter Plot', chart: ScatterPlot, color: '#FFFF00' },
-        { title: 'Bubble Chart', chart: BubbleChart, color: '#00FFFF' },
         { title: 'Positive Negative Bar Chart', chart: PositiveNegativeBarChart, color: '#800000' },
     ];
 

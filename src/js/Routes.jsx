@@ -30,10 +30,7 @@ import SettingsReleases from 'js/pages/settings/Releases';
 
 import Prototypes from 'js/pages/prototypes';
 import Charts from 'js/pages/prototypes/Charts';
-import MetricGroups from 'js/pages/prototypes/MetricGroups';
 import Tooltips from 'js/pages/prototypes/Tooltips';
-import EmptyStates from 'js/pages/prototypes/EmptyStates';
-import WaitingProto from 'js/pages/prototypes/Waiting';
 
 export default () => {
     const location = useLocation();
@@ -118,10 +115,7 @@ export default () => {
           <ContextRoute context={UserContext} path='/prototypes/:name?'>
             <Prototypes prototypes={{
                 'charts': <Charts />,
-                'metrics-groups': <MetricGroups />,
                 'tooltips': <Tooltips />,
-                'empty-states': <EmptyStates />,
-                'waiting': <WaitingProto />,
             }} />
           </ContextRoute>
 
