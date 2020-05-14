@@ -56,6 +56,7 @@ const pullRequestSize = {
                     };
                 })
                 .orderBy(['age', 'loc'], ['desc', 'desc'])
+		.take(20)
                 .value(),
             totalFiles: _(prs)
               .map(({ files_changed }) => files_changed)
