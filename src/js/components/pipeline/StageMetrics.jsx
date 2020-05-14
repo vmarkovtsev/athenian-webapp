@@ -64,9 +64,12 @@ export const StageSummaryMetrics = ({name, stage}) => {
 export const OverviewSummaryMetrics = ({name, metric}) => {
 
     const plumber = (data) => {
-        const cycleTime = data.global['prs-metrics.values'].all['cycle-time'];
-        const proportions = _(data.global['prs-metrics.values'].all)
+        const cycleTime = data.global['prs-metrics.values'].all['cycle-time'] * 1000;
+        const avgTimes = _(data.global['prs-metrics.values'].all)
               .pick(['wip-time', 'review-time', 'merging-time', 'release-time'])
+              .mapValues(v => v * 1000)
+              .value();
+        const proportions = _(avgTimes)
               .mapValues(v => v * 100 / cycleTime)
               .value();
         const fastest = _(proportions).values().max();
@@ -77,7 +80,9 @@ export const OverviewSummaryMetrics = ({name, metric}) => {
         return (
             {
                 kpisData: {
-                    normalizedProportions
+                    normalizedProportions,
+                    proportions,
+                    avgTimes,
                 },
                 average: data.global['prs-metrics.values'].all[metric],
                 variation: data.global['prs-metrics.variations'][metric],
@@ -161,18 +166,22 @@ const OverviewStageSummaryKPI = ({data}) => {
     const stages = pipelineStagesConf.slice(2, pipelineStagesConf.length);
     return (
         <>
-          {stages.map((stage, i) => (
-              <div key={i}>
-                <div><SmallTitle content={stage.title} /></div>
-                <span
-                  className={classnames('overall-proportion d-block mb-2', stage.stageName)}
-                  style={{ width: `${data.normalizedProportions[stage.metric]}%` }}
-                  data-toggle="tooltip"
-                  data-placement="right"
-                  title={`${dateTime.human(stage.avg)} (${number.percentage(stage.overallProportion)})`}
-                />
-              </div>
-          ))}
+          {stages.map((stage, i) => data.normalizedProportions[stage.metric] > 0 ?
+            (
+                <div key={i}>
+                  <div><SmallTitle content={stage.title} /></div>
+                  <span
+                    className={classnames('overall-proportion d-block mb-2', stage.stageName)}
+                    style={{ width: `${data.normalizedProportions[stage.metric]}%` }}
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title={`${dateTime.human(data.avgTimes[stage.metric])} (${number.percentage(data.proportions[stage.metric])})`}
+                  />
+                </div>
+            ) : (
+              null
+            )
+          )}
         </>
     );
 };
