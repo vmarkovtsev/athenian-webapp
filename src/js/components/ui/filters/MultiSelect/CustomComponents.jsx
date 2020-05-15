@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { customStyles } from './CustomStyles'
+import { customStyles as styles } from './CustomStyles'
 import { FilterFooter } from '../FilterFooter'
 import { StatusIndicator, LOADING } from 'js/components/ui/Spinner'
 import { ReactComponent as DropdownIndicator } from './DropdownIndicator.svg'
@@ -44,7 +44,7 @@ export const Dropdown = ({
       Placeholder: placeholder(label),
       Menu: menu({ setMenuOpen, onApply })
     },
-    styles: customStyles(label)
+    styles
   }
 
   return (

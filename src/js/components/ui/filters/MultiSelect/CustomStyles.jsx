@@ -3,7 +3,7 @@ import SearchIcon from './SearchIcon.svg'
 /**
  * Overrides react-select components styles
  */
-const placeholder = name => ({
+const placeholder = {
   alignItems: 'center',
   display: 'flex',
   ':before': {
@@ -14,9 +14,9 @@ const placeholder = name => ({
     height: 14,
     width: 14,
   }
-})
+}
 
-export const customStyles = label => ({
+export const customStyles = {
   container: styles => ({
     ...styles,
     position: 'absolute',
@@ -57,10 +57,10 @@ export const customStyles = label => ({
   }),
   input: styles => ({
     ...styles,
-    ...placeholder(label)
+    ...placeholder
   }),
   placeholder: styles => ({
     ...styles,
-    ...placeholder(label)
+    ...placeholder
   })
-})
+}
