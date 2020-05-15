@@ -189,7 +189,7 @@ const stageHappened = (pr, stage) => {
     const events = PR_STAGE_EVENTS[stage];
     return (
         _(pr.properties).includes(events.start) ||
-            _(pr.properties).intersection(events.others).length > 0
+            _(pr.properties).intersection(events.others).value().length > 0
     );
 };
 
