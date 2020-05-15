@@ -144,8 +144,7 @@ const menu = ({ setMenuOpen, onApply }) => props => {
     ...getStyles('menu', props),
     boxShadow: 'none',
     border: '1px solid #ccc',
-    borderTopWidth: 0,
-    cursor: 'pointer'
+    borderTopWidth: 0
   }
   const allValues = getValue()
   const allSelected = allValues.length === options.length
