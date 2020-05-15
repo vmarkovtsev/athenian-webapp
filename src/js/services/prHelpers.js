@@ -171,27 +171,10 @@ export const happened = (pr, event) => pr.properties.includes(event);
 export const authored = prs => prs.filter(pr => pr.participants.filter(dev => dev.status.includes('author')).length);
 
 export const isInStage = (pr, stage) => (
-    stageHappening(pr, stage) || stageHappened(pr, stage)
+    stageHappening(pr, stage) || stageCompleted(pr, stage)
 );
-const stageHappening = (pr, stage) => _(pr.properties)
-      .includes(stage);
-const stageCompleted = (pr, stage) => _(pr.properties)
-      .includes(PR_STAGE_EVENTS[stage].end);
-const stageHappened = (pr, stage) => {
-    if (stageCompleted(pr, stage)) {
-        return true;
-    }
-
-    if (stage === 'MERGE' && pr.status === PR_STATUS.CLOSED) {
-        return true;
-    }
-
-    const events = PR_STAGE_EVENTS[stage];
-    return (
-        _(pr.properties).includes(events.start) ||
-            _(pr.properties).intersection(events.others).value().length > 0
-    );
-};
+const stageHappening = (pr, stage) => _(pr.properties).includes(stage);
+const stageCompleted = (pr, stage) => _(pr.completedStages).includes(stage);
 
 const getCurrentStageHappening = (pr) => {
     for (const s of PR_STAGE_TIMELINE) {
@@ -203,29 +186,10 @@ const getCurrentStageHappening = (pr) => {
     throw Error("no stage happening");
 };
 
-const getFirstStageHappened = (pr) => {
-    for (const s of PR_STAGE_TIMELINE) {
-        if (stageHappened(pr, s)) {
-            return s;
-        }
-    };
-
-    // no events happened in current interval
-    return null;
-};
-
 const extractCompletedStages = pr => {
-    const firstStageHapened = getFirstStageHappened(pr);
-    if (!firstStageHapened) {
-        return [];
-    }
-
     const currentStage = getCurrentStageHappening(pr);
-
-    const firstStageIndex = _(PR_STAGE_TIMELINE).indexOf(firstStageHapened);
     const currentStageIndex = _(PR_STAGE_TIMELINE).indexOf(currentStage);
-
-    return PR_STAGE_TIMELINE.slice(firstStageIndex, currentStageIndex);
+    return PR_STAGE_TIMELINE.slice(0, currentStageIndex);
 };
 
 export const prLabel = stage => pr => {
