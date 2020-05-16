@@ -33,7 +33,12 @@ export default ({ invitationDisabled, children }) => {
 };
 
 
-const NotAuthenticated = () => <Navbar />;
+const NotAuthenticated = () => (
+  <>
+    <Navbar />
+    <Footer />
+  </>
+);
 
 const AuthenticatedWithoutUser = ({logout}) => (
     <AuthenticationError
