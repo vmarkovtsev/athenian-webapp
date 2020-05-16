@@ -14,19 +14,19 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The CreatedIdentifier model module.
- * @module model/CreatedIdentifier
+ * The Versions model module.
+ * @module model/Versions
  * @version 1.0.41
  */
-class CreatedIdentifier {
+class Versions {
     /**
-     * Constructs a new <code>CreatedIdentifier</code>.
-     * @alias module:model/CreatedIdentifier
-     * @param id {Number} Identifier of the created entity.
+     * Constructs a new <code>Versions</code>.
+     * @alias module:model/Versions
+     * @param api {String} 
      */
-    constructor(id) { 
+    constructor(api) { 
         
-        CreatedIdentifier.initialize(this, id);
+        Versions.initialize(this, api);
     }
 
     /**
@@ -34,23 +34,23 @@ class CreatedIdentifier {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, id) { 
-        obj['id'] = id;
+    static initialize(obj, api) { 
+        obj['api'] = api;
     }
 
     /**
-     * Constructs a <code>CreatedIdentifier</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>Versions</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/CreatedIdentifier} obj Optional instance to populate.
-     * @return {module:model/CreatedIdentifier} The populated <code>CreatedIdentifier</code> instance.
+     * @param {module:model/Versions} obj Optional instance to populate.
+     * @return {module:model/Versions} The populated <code>Versions</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new CreatedIdentifier();
+            obj = obj || new Versions();
 
-            if (data.hasOwnProperty('id')) {
-                obj['id'] = ApiClient.convertToType(data['id'], 'Number');
+            if (data.hasOwnProperty('api')) {
+                obj['api'] = ApiClient.convertToType(data['api'], 'String');
             }
         }
         return obj;
@@ -60,15 +60,14 @@ class CreatedIdentifier {
 }
 
 /**
- * Identifier of the created entity.
- * @member {Number} id
+ * @member {String} api
  */
-CreatedIdentifier.prototype['id'] = undefined;
+Versions.prototype['api'] = undefined;
 
 
 
 
 
 
-export default CreatedIdentifier;
+export default Versions;
 
