@@ -98,7 +98,7 @@ const Option = props => {
     display: 'grid',
     alignItems: 'center',
     borderBottom: '1px solid #D6DBE4',
-    gridTemplateColumns: '20px auto',
+    gridTemplateColumns: '20px calc(100% - 16px)',
     gridColumnGap: 8
   }
 
