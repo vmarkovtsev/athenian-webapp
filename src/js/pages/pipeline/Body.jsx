@@ -134,7 +134,7 @@ export default ({ children }) => {
           return 0
         }
                     
-        const calcVariation = (prev, curr) => prev > 0 ? (curr - prev) * 100 / prev : 0
+        const calcVariation = (prev, curr) => prev > 0 ? (curr - prev) * 100 / prev : null;
                     
         const prevValues = data.calculated[0].values[0].values
         const currValues = data.calculated[0].values[1].values
