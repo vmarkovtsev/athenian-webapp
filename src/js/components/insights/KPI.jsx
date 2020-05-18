@@ -39,7 +39,7 @@ import { number } from 'js/services/format';
 export const SimpleKPI = ({params}) => (
     <div className="font-weight-bold">
       <BigNumber content={buildContent(params.value, getUnit(params.value, params.unit))} />
-      <Badge value={number.round(params.variation)} trend={params.variationMeaning} className="ml-2" />
+      {typeof params.variation !== 'undefined' && <Badge value={number.round(params.variation)} trend={params.variationMeaning} className="ml-2" />}
     </div>
 );
 

@@ -32,6 +32,12 @@ if (window.ENV.sentry.dsn) {
     }
 
     Sentry.init(sentryConf);
+
+    if (window.ENV.sentry.developer) {
+        Sentry.configureScope(function(scope) {
+            scope.setTag('developer', window.ENV.sentry.developer);
+        });
+    }
 }
 
 toast.configure();
