@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { customStyles } from './CustomStyles'
+import { customStyles as styles } from './CustomStyles'
 import { FilterFooter } from '../FilterFooter'
 import { StatusIndicator, LOADING } from 'js/components/ui/Spinner'
 import { ReactComponent as DropdownIndicator } from './DropdownIndicator.svg'
@@ -44,7 +44,7 @@ export const Dropdown = ({
       Placeholder: placeholder(label),
       Menu: menu({ setMenuOpen, onApply })
     },
-    styles: customStyles(label)
+    styles
   }
 
   return (
@@ -71,7 +71,7 @@ export const Dropdown = ({
  */
 const Checkbox = ({ isChecked }) => {
   return (
-    <svg width="20px" height="20px" viewBox="0 0 20 20" className="mr-2">
+    <svg width="18px" height="18px" viewBox="0 0 18 18" className="mr-2">
       <rect stroke="#D6DBE4" strokeWidth="1" x="0" y="0" width="18" height="18" fill="#fff"></rect>
       { isChecked &&
         <polygon fill="#24C7CC" points="4.66692304 8.35872968 7.13673213 10.8903181 14.4025708 4 16 5.49137391 7.13673213 14 3 9.96982087"></polygon>
@@ -98,7 +98,7 @@ const Option = props => {
     display: 'grid',
     alignItems: 'center',
     borderBottom: '1px solid #D6DBE4',
-    gridTemplateColumns: '20px auto',
+    gridTemplateColumns: '20px calc(100% - 16px)',
     gridColumnGap: 8
   }
 
@@ -144,8 +144,7 @@ const menu = ({ setMenuOpen, onApply }) => props => {
     ...getStyles('menu', props),
     boxShadow: 'none',
     border: '1px solid #ccc',
-    borderTopWidth: 0,
-    cursor: 'pointer'
+    borderTopWidth: 0
   }
   const allValues = getValue()
   const allSelected = allValues.length === options.length
