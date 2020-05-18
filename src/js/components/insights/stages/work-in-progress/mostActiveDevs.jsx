@@ -90,8 +90,6 @@ const mostActiveDevs = {
                         params: {
                             value: computed.activeDevs.length > 0 ?
                                 number.fixed(computed.totalPRs / computed.activeDevs.length, 2) : 0,
-                                variation: NaN,
-                                variationMeaning: true,
                         }
                     },
                 ]
