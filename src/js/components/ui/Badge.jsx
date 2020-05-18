@@ -1,25 +1,31 @@
 import React from 'react';
+
 import classnames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 
 import { isNumber } from 'js/services/format';
-import { reportToSentry } from 'js/services/api';
 
-import development from 'js/components/development';
+import ErrorBoundary from 'js/smart-components/ErrorBoundary';
 
 export const POSITIVE_IS_BETTER = 'positive-variation-is-better'; // default
 export const NEGATIVE_IS_BETTER = 'negative-variation-is-better';
 
 export default ({ value, trend = false, className }) => {
+  return (
+    <ErrorBoundary>
+      <BadgeInternal value={value} trend={trend} className={className} />
+    </ErrorBoundary>
+  );
+};
+
+const BadgeInternal = ({ value, trend = false, className }) => {
   const commonClasses = ['badge', 'font-weight-normal', 'align-middle', 'd-inline-block'];
   let customClasses, icon;
   let suffix = '%';
 
   if (typeof value === 'number' && !isFinite(value)) {
-    const err = new Error(`Not a valid number in a Badge; got "${value}" instead`);
-    reportToSentry(err);
-    return  <span className={classnames(className, ...commonClasses, development.errorBoxClass)} />;
+    throw new Error(`Not a valid number in a Badge; got "${value}" instead`);
   }
 
   if (!isNumber(value) && (typeof value !== 'string' || value === '')) {
