@@ -43,34 +43,6 @@ export const PR_EVENT = {
   RELEASE: 'release_happened',
 };
 
-const PR_STAGE_EVENTS = {
-    [PR_STAGE.WIP]: {
-        start: PR_EVENT.COMMIT,
-        end: PR_EVENT.REVIEW_REQUEST,
-        others: [PR_EVENT.CREATION],
-    },
-    [PR_STAGE.REVIEW]: {
-        start: PR_EVENT.REVIEW_REQUEST,
-        end: PR_EVENT.APPROVE,
-        others: [PR_EVENT.REVIEW, PR_EVENT.REJECTION],
-    },
-    [PR_STAGE.MERGE]: {
-        start: PR_EVENT.APPROVE,
-        end: PR_EVENT.MERGE,
-        others: []
-    },
-    [PR_STAGE.RELEASE]: {
-        start: PR_EVENT.MERGE,
-        end: PR_EVENT.RELEASE,
-        others: []
-    },
-    [PR_STAGE.DONE]: {
-        start: null,
-        end: null,
-        others: []
-    },
-};
-
 // These are the PR labels that will appear in PR tables depending on pr status/stage/events
 // and depending from which stage the PR is analyzed (see: https://athenianco.atlassian.net/browse/ENG-325)
 export const PR_LABELS = {
