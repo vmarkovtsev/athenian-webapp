@@ -353,3 +353,13 @@ export const saveRepoSettings = async (api, accountId, repos, strategy, branchPa
     true,
   );
 };
+
+// Get the backend versions {key: value} from /v1/versions. Auth is not required.
+export const fetchVersions = async () => {
+  const api = buildApi(null);
+  const versions = await withSentryCapture(
+    api.getVersions(),
+    "Cannot fetch versions"
+  );
+  return versions;
+};

@@ -1,11 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import _ from 'lodash';
 
-export default () => (
-  <footer className="sticky-footer bg-white">
+import { fetchVersions } from 'js/services/api/index';
+
+export default () => {
+  const [versions, setVersions] = useState("");
+
+  useEffect(() => {
+    const getAndSetVersions = async () => {
+      const versions = _(await fetchVersions()).map((v, k) => `${k} v${v}`).join(" · ");
+      setVersions(versions);
+    };
+    getAndSetVersions();
+  });
+
+  return <footer className="sticky-footer bg-white">
     <div className="container my-auto">
       <div className="copyright text-center my-auto">
-        <span>Copyright &copy; Athenian.co 2020</span>
+        <span>Copyright &copy; Athenian.co 2020</span><br/><span>{versions}</span>
       </div>
     </div>
   </footer>
-);
+};
