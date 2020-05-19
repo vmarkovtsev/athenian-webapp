@@ -27,7 +27,8 @@
     color: $color-dark;
     font-size: 1.2rem;
     font-weight: 500;
-    padding: 7px 4px 5px;
+    padding: 10px 0px 8px;
+    text-align: center;
     cursor: pointer;
 }
 
@@ -36,7 +37,7 @@
 }
 
 .DateInput_fang {
-    top: 39px !important;
+    top: 41px !important;
 }
 
 .DateRangePickerInput_arrow {
@@ -45,6 +46,15 @@
 
 .DateRangePickerInput_calendarIcon {
     margin-left: 0;
+    margin-right: 0;
+}
+
+.DateRangePickerInput {
+    height: 40px;
+
+    &_clearDates {
+        margin: 0 5px 0 5px;
+    }
 }
 
 .CalendarDay__selected_span {
