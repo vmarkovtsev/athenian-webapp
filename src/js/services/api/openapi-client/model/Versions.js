@@ -14,18 +14,19 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The InvalidRequestErrorAllOf model module.
- * @module model/InvalidRequestErrorAllOf
+ * The Versions model module.
+ * @module model/Versions
  * @version 1.0.43
  */
-class InvalidRequestErrorAllOf {
+class Versions {
     /**
-     * Constructs a new <code>InvalidRequestErrorAllOf</code>.
-     * @alias module:model/InvalidRequestErrorAllOf
+     * Constructs a new <code>Versions</code>.
+     * @alias module:model/Versions
+     * @param api {String} 
      */
-    constructor() { 
+    constructor(api) { 
         
-        InvalidRequestErrorAllOf.initialize(this);
+        Versions.initialize(this, api);
     }
 
     /**
@@ -33,22 +34,23 @@ class InvalidRequestErrorAllOf {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, api) { 
+        obj['api'] = api;
     }
 
     /**
-     * Constructs a <code>InvalidRequestErrorAllOf</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>Versions</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/InvalidRequestErrorAllOf} obj Optional instance to populate.
-     * @return {module:model/InvalidRequestErrorAllOf} The populated <code>InvalidRequestErrorAllOf</code> instance.
+     * @param {module:model/Versions} obj Optional instance to populate.
+     * @return {module:model/Versions} The populated <code>Versions</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new InvalidRequestErrorAllOf();
+            obj = obj || new Versions();
 
-            if (data.hasOwnProperty('pointer')) {
-                obj['pointer'] = ApiClient.convertToType(data['pointer'], 'String');
+            if (data.hasOwnProperty('api')) {
+                obj['api'] = ApiClient.convertToType(data['api'], 'String');
             }
         }
         return obj;
@@ -58,15 +60,14 @@ class InvalidRequestErrorAllOf {
 }
 
 /**
- * Path to the offending request item.
- * @member {String} pointer
+ * @member {String} api
  */
-InvalidRequestErrorAllOf.prototype['pointer'] = undefined;
+Versions.prototype['api'] = undefined;
 
 
 
 
 
 
-export default InvalidRequestErrorAllOf;
+export default Versions;
 

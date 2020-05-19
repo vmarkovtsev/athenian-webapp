@@ -164,8 +164,35 @@ export const getContributors = (token, userAccount, from, to, repos) => {
         api, userAccount,
         {from: new Date(from), to: new Date(to)},
         {repositories:repos}
-    ).then(contribs => contribs.map(({ login, name, avatar }) => ({ login, name, avatar })));
+    )
+    .then(contribs => contribs.map(({ login, name, avatar }) => ({ login, name, avatar })));
 };
+
+export const getDevelopers = (token, userAccount) => {
+  const api = buildApi(token)
+  return api.getContributors(userAccount)
+}
+
+export const createTeam = ({ token, body }) => {
+  const api = buildApi(token)
+  return api.createTeam({ body })
+}
+
+export const removeTeam = (token, id) => {
+  const api = buildApi(token)
+  return api.deleteTeam(id)
+}
+
+export const updateTeam = (token, team) => {
+  const { id, ...body } = team
+  const api = buildApi(token)
+  return api.updateTeam(id, { body })
+}
+
+export const getTeams = (token, accountID) => {
+  const api = buildApi(token)
+  return api.listTeams(accountID)
+}
 
 export const getInvitation = async (token, accountID) => {
   const api = buildApi(token);

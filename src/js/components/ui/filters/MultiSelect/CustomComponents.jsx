@@ -41,7 +41,7 @@ export const Dropdown = ({
     menuIsOpen: isMenuOpen,
     components: {
       Option,
-      Placeholder: placeholder(label),
+      Placeholder,
       Menu: menu({ setMenuOpen, onApply })
     },
     styles
@@ -85,7 +85,7 @@ const Checkbox = ({ isChecked }) => {
  * @param {boolean} isSelected
  * @param {string} label
 */
-const Option = props => {
+export const Option = props => {
   const {
     getStyles,
     innerProps: { ref, ...restInnerProps },
@@ -114,14 +114,15 @@ const Option = props => {
  * @param {string} label
  * @return {function} 
  */
-const placeholder = label => props => {
+export const Placeholder = props => {
+  const { selectProps: { name } } = props
   const style = {
     ...props.getStyles('placeholder', props),
     paddingLeft: 22
   }
   return (
     <span style={style}>
-      Search {label.toLowerCase()}...
+      Search {name.toLowerCase()}...
     </span>
   )
 }
@@ -129,7 +130,7 @@ const placeholder = label => props => {
 /**
  * Menu
  */
-const menu = ({ setMenuOpen, onApply }) => props => {
+export const menu = ({ setMenuOpen, onApply }) => props => {
   const {
     getStyles,
     innerProps: { ref, ...restInnerProps },
@@ -169,14 +170,14 @@ const menu = ({ setMenuOpen, onApply }) => props => {
         </span>
       </div>
       {children}
-      <FilterFooter
+      { setMenuOpen && onApply && <FilterFooter
         onCancel={() => setMenuOpen(false)}
         onAccept={() => {
           onApply(allValues)
           setMenuOpen(false)
         }}
         isAcceptable={allValues.length > 0}
-      />
+      /> }
     </div>
   )
 }

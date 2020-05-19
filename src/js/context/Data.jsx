@@ -2,9 +2,9 @@ import React, { useCallback, useReducer, useContext } from 'react';
 
 import _ from "lodash";
 
-const DataContext = React.createContext({});
+const Context = React.createContext({});
 
-export const useDataContext = () => useContext(DataContext);
+export const useDataContext = () => useContext(Context);
 
 const globalKeysWhitelist = [
     'filter.repos',
@@ -44,7 +44,7 @@ const dataStateReducer = (state, action) => {
     return newState;
 };
 
-export default ({ children }) => {
+export default function DataContext({ children }) {
     const [dataState, dispatchDataState] = useReducer(
         dataStateReducer, {data: {}, globalReady: false});
 
@@ -55,8 +55,8 @@ export default ({ children }) => {
     const setGlobal = useCallback((id, data) => id ? dispatchDataState({id, data, global: true}) : null, []);
 
     return (
-        <DataContext.Provider value={{get, set, getGlobal, setGlobal, reset, globalDataReady: dataState.globalReady}}>
+        <Context.Provider value={{get, set, getGlobal, setGlobal, reset, globalDataReady: dataState.globalReady}}>
             {children}
-        </DataContext.Provider >
+        </Context.Provider >
     );
 };

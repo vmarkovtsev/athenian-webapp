@@ -15,19 +15,21 @@
 import ApiClient from "../ApiClient";
 import CreatedIdentifier from '../model/CreatedIdentifier';
 import GenericError from '../model/GenericError';
-import RepositorySetCreateRequest from '../model/RepositorySetCreateRequest';
-import RepositorySetListItem from '../model/RepositorySetListItem';
+import InvalidRequestError from '../model/InvalidRequestError';
+import Team from '../model/Team';
+import TeamCreateRequest from '../model/TeamCreateRequest';
+import TeamUpdateRequest from '../model/TeamUpdateRequest';
 
 /**
-* Reposet service.
-* @module api/ReposetApi
+* Team service.
+* @module api/TeamApi
 * @version 1.0.43
 */
-export default class ReposetApi {
+export default class TeamApi {
 
     /**
-    * Constructs a new ReposetApi. 
-    * @alias module:api/ReposetApi
+    * Constructs a new TeamApi. 
+    * @alias module:api/TeamApi
     * @class
     * @param {module:ApiClient} [apiClient] Optional API client implementation to use,
     * default to {@link module:ApiClient#instance} if unspecified.
@@ -39,12 +41,12 @@ export default class ReposetApi {
 
 
     /**
-     * Create a repository set.
+     * Create a team. Admin is not required.
      * @param {Object} opts Optional parameters
-     * @param {module:model/RepositorySetCreateRequest} opts.body 
+     * @param {module:model/TeamCreateRequest} opts.body 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/CreatedIdentifier} and HTTP response
      */
-    createReposetWithHttpInfo(opts) {
+    createTeamWithHttpInfo(opts) {
       opts = opts || {};
       let postBody = opts['body'];
 
@@ -62,20 +64,20 @@ export default class ReposetApi {
       let accepts = ['application/json'];
       let returnType = CreatedIdentifier;
       return this.apiClient.callApi(
-        '/reposet/create', 'POST',
+        '/team/create', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Create a repository set.
+     * Create a team. Admin is not required.
      * @param {Object} opts Optional parameters
-     * @param {module:model/RepositorySetCreateRequest} opts.body 
+     * @param {module:model/TeamCreateRequest} opts.body 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/CreatedIdentifier}
      */
-    createReposet(opts) {
-      return this.createReposetWithHttpInfo(opts)
+    createTeam(opts) {
+      return this.createTeamWithHttpInfo(opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -83,15 +85,15 @@ export default class ReposetApi {
 
 
     /**
-     * Delete a repository set. The user must be an admin of the account that owns the reposet.
-     * @param {Number} id Numeric identifier of the repository set to delete.
+     * Delete a team.
+     * @param {Number} id Numeric identifier of the team to delete.
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Object} and HTTP response
      */
-    deleteReposetWithHttpInfo(id) {
+    deleteTeamWithHttpInfo(id) {
       let postBody = null;
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling deleteReposet");
+        throw new Error("Missing the required parameter 'id' when calling deleteTeam");
       }
 
       let pathParams = {
@@ -109,19 +111,19 @@ export default class ReposetApi {
       let accepts = ['application/json'];
       let returnType = Object;
       return this.apiClient.callApi(
-        '/reposet/{id}', 'DELETE',
+        '/team/{id}', 'DELETE',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Delete a repository set. The user must be an admin of the account that owns the reposet.
-     * @param {Number} id Numeric identifier of the repository set to delete.
+     * Delete a team.
+     * @param {Number} id Numeric identifier of the team to delete.
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Object}
      */
-    deleteReposet(id) {
-      return this.deleteReposetWithHttpInfo(id)
+    deleteTeam(id) {
+      return this.deleteTeamWithHttpInfo(id)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -129,15 +131,15 @@ export default class ReposetApi {
 
 
     /**
-     * List a repository set. The user must be in the account that owns the reposet.
-     * @param {Number} id Numeric identifier of the repository set to list.
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<String>} and HTTP response
+     * List the team's members. The user must belong to the account that owns the team.
+     * @param {Number} id Numeric identifier of the team to list.
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/Team} and HTTP response
      */
-    getReposetWithHttpInfo(id) {
+    getTeamWithHttpInfo(id) {
       let postBody = null;
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling getReposet");
+        throw new Error("Missing the required parameter 'id' when calling getTeam");
       }
 
       let pathParams = {
@@ -153,21 +155,21 @@ export default class ReposetApi {
       let authNames = ['bearerAuth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = ['String'];
+      let returnType = Team;
       return this.apiClient.callApi(
-        '/reposet/{id}', 'GET',
+        '/team/{id}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * List a repository set. The user must be in the account that owns the reposet.
-     * @param {Number} id Numeric identifier of the repository set to list.
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<String>}
+     * List the team's members. The user must belong to the account that owns the team.
+     * @param {Number} id Numeric identifier of the team to list.
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/Team}
      */
-    getReposet(id) {
-      return this.getReposetWithHttpInfo(id)
+    getTeam(id) {
+      return this.getTeamWithHttpInfo(id)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -175,15 +177,15 @@ export default class ReposetApi {
 
 
     /**
-     * List the repository sets belonging to the current user.
+     * List the teams belonging to the current user.
      * @param {Number} id Numeric identifier of the account.
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/RepositorySetListItem>} and HTTP response
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/Team>} and HTTP response
      */
-    listReposetsWithHttpInfo(id) {
+    listTeamsWithHttpInfo(id) {
       let postBody = null;
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling listReposets");
+        throw new Error("Missing the required parameter 'id' when calling listTeams");
       }
 
       let pathParams = {
@@ -199,21 +201,21 @@ export default class ReposetApi {
       let authNames = ['bearerAuth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = [RepositorySetListItem];
+      let returnType = [Team];
       return this.apiClient.callApi(
-        '/reposets/{id}', 'GET',
+        '/teams/{id}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * List the repository sets belonging to the current user.
+     * List the teams belonging to the current user.
      * @param {Number} id Numeric identifier of the account.
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/RepositorySetListItem>}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/Team>}
      */
-    listReposets(id) {
-      return this.listReposetsWithHttpInfo(id)
+    listTeams(id) {
+      return this.listTeamsWithHttpInfo(id)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -221,18 +223,18 @@ export default class ReposetApi {
 
 
     /**
-     * Update a repository set. The user must be an admin of the account that owns the reposet.
-     * @param {Number} id Numeric identifier of the repository set to update.
+     * Update a team.
+     * @param {Number} id Numeric identifier of the team to update.
      * @param {Object} opts Optional parameters
-     * @param {Array.<String>} opts.body 
+     * @param {module:model/TeamUpdateRequest} opts.body 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Object} and HTTP response
      */
-    updateReposetWithHttpInfo(id, opts) {
+    updateTeamWithHttpInfo(id, opts) {
       opts = opts || {};
       let postBody = opts['body'];
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling updateReposet");
+        throw new Error("Missing the required parameter 'id' when calling updateTeam");
       }
 
       let pathParams = {
@@ -250,21 +252,21 @@ export default class ReposetApi {
       let accepts = ['application/json'];
       let returnType = Object;
       return this.apiClient.callApi(
-        '/reposet/{id}', 'PUT',
+        '/team/{id}', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Update a repository set. The user must be an admin of the account that owns the reposet.
-     * @param {Number} id Numeric identifier of the repository set to update.
+     * Update a team.
+     * @param {Number} id Numeric identifier of the team to update.
      * @param {Object} opts Optional parameters
-     * @param {Array.<String>} opts.body 
+     * @param {module:model/TeamUpdateRequest} opts.body 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Object}
      */
-    updateReposet(id, opts) {
-      return this.updateReposetWithHttpInfo(id, opts)
+    updateTeam(id, opts) {
+      return this.updateTeamWithHttpInfo(id, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
