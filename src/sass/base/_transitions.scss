@@ -1,0 +1,25 @@
+$transitionDuration: 200ms;
+
+.disposable-enter {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.disposable-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.disposable-exit {
+    opacity: 1;
+}
+
+.disposable-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.disposable-enter-active,
+.disposable-exit-active {
+    transition: opacity $transitionDuration, transform $transitionDuration;
+}
