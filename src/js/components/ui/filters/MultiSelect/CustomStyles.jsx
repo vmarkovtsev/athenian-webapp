@@ -36,7 +36,8 @@ export const customStyles = {
     ...styles,
     cursor: 'pointer',
     backgroundColor: 'transparent',
-    color: '#121343'
+    color: '#121343',
+    paddingLeft: 20
   }),
   control: styles => ({
     ...styles,
@@ -62,5 +63,19 @@ export const customStyles = {
   placeholder: styles => ({
     ...styles,
     ...placeholder
+  }),
+  group: styles => ({
+    ...styles,
+    padding: 0
+  }),
+  groupHeading: styles => ({
+    ...styles,
+    textTransform: 'none',
+    background: '#f3f3f3',
+    color: 'rgb(18, 19, 67)',
+    fontSize: 11,
+    padding: 12,
+    margin: 0,
+    borderBottom: '1px solid #ccc'
   })
 }

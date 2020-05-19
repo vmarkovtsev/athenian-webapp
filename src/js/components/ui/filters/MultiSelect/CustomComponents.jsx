@@ -1,8 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { customStyles as styles } from './CustomStyles'
 import { FilterFooter } from '../FilterFooter'
 import { StatusIndicator, LOADING } from 'js/components/ui/Spinner'
 import { ReactComponent as DropdownIndicator } from './DropdownIndicator.svg'
+import { components } from 'react-select'
+
+const stopPropagation = ev => ev.stopPropagation()
+
+var stringToColour = function(str) {
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  var colour = '#';
+  for (var i = 0; i < 3; i++) {
+    var value = (hash >> (i * 8)) & 0xFF;
+    colour += ('00' + value.toString(16)).substr(-2);
+  }
+  return colour;
+}
 
 /**
  * CustomComponents used to override react-select components
@@ -12,8 +28,6 @@ import { ReactComponent as DropdownIndicator } from './DropdownIndicator.svg'
  * @param {function} onApply
  * @param {Array} value
  */
-const stopPropagation = ev => ev.stopPropagation()
-
 export const Dropdown = ({
   children,
   label,
@@ -42,6 +56,8 @@ export const Dropdown = ({
     components: {
       Option,
       Placeholder,
+      // GroupHeading,
+      Group,
       Menu: menu({ setMenuOpen, onApply })
     },
     styles
@@ -62,6 +78,67 @@ export const Dropdown = ({
       </div>
       {children(childrenProps)}
     </div>
+  )
+}
+
+/**
+ * Create icon using the first letter
+ * @param {string} props.title
+ */
+const HeadingIcon = ({ title }) => {
+  const [letter] = title
+  const style = {
+    background: stringToColour(title)
+  }
+  return (
+    <div className="filter-dropdown-option-prefix" style={style}>
+      {letter.toUpperCase()}
+    </div>
+  )
+}
+
+/**
+ * Group Heading
+ * @param {*} param0 
+ */
+const GroupHeading = (onCheck, isChecked, onToggle, toggled) => props => {
+  const {
+    children,
+    ...rest
+  } = props
+  const style = {
+    ...props.getStyles('groupHeading', props),
+    display: 'flex',
+    alignItems: 'center'
+  }
+  return (
+    <components.GroupHeading onClick={() => onToggle(!toggled)} {...rest} style={style}>
+      <Checkbox isChecked={isChecked} onClick={e => {
+        e.stopPropagation()
+        onCheck(!isChecked)
+      }} />
+      <HeadingIcon title={children} />
+      {children}
+    </components.GroupHeading>
+  )
+}
+
+/**
+ * Group
+ * @param {*} param0 
+ */
+const Group = props => {
+  const [isSelected, setSelected] = useState(true)
+  const [isOpen, setOpen] = useState(false)
+  const {
+    children,
+    ...rest
+  } = props
+
+  return (
+    <components.Group {...rest} Heading={GroupHeading(setSelected, isSelected, setOpen, isOpen)}>
+      {isOpen && children}
+    </components.Group>
   )
 }
 
@@ -147,8 +224,17 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
     border: '1px solid #ccc',
     borderTopWidth: 0
   }
+
   const allValues = getValue()
-  const allSelected = allValues.length === options.length
+  const totalOptions = useMemo(() => {
+    return options.reduce((acc, curr) => {
+      const { options } = curr
+      if (options) return options.length + acc
+      return acc + 1
+    }, 0)
+  }, [options])
+
+  const allSelected = allValues.length === totalOptions
 
   return (
     <div ref={ref} {...restInnerProps} style={style}>

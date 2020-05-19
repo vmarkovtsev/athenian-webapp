@@ -183,7 +183,26 @@ export default function Filters({ children }) {
             isLoading={contribsReadyState}
             getOptionLabel={usersLabelFormat}
             getOptionValue={getOptionValueUsers}
-            options={allContribsState}
+            // options={allContribsState}
+            options={[{
+              label: 'Dogs',
+              options: [
+                { name: 'Lessy', avatar: 'https://placedog.net/80/80', login: 'github.com/navassouza'},
+                { name: 'Lindsay', avatar: 'https://placedog.net/80/80', login: 'github.com/navassouza'}
+              ]
+            }, {
+              label: 'Cats',
+              options: [
+                { name: 'Kitty', avatar: 'https://placekitten.com/80/80', login: 'github.com/navassouza'},
+                { name: 'Kat', avatar: 'https://placekitten.com/80/80', login: 'github.com/navassouza'}
+              ]
+            }, {
+              label: 'Team Web development',
+              options: [
+                { name: 'Tiger', avatar: 'https://placekitten.com/80/80', login: 'github.com/navassouza'},
+                { name: 'Lepard', avatar: 'https://placekitten.com/80/80', login: 'github.com/navassouza'}
+              ]
+            }]}
             onApply={onContribsChange}
             value={usersSelectState}
             onChange={setUsersSelectState}

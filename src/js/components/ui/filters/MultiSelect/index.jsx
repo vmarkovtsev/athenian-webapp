@@ -35,6 +35,7 @@ export default function MultiSelect(multiSelectProps) {
       {ddProps => (
         ddProps.menuIsOpen &&
         <Select
+          autoFocus
           options={options}
           className={className}
           name={name}
@@ -43,7 +44,7 @@ export default function MultiSelect(multiSelectProps) {
           noOptionsMessage={formatMessage(noDataMsg)}
           loadingMessage={formatMessage('loading...')}
           onChange={onChange}
-          value={value}
+          // value={value}
           {...defaultProps}
           {...ddProps} // components
         />
