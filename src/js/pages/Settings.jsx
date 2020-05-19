@@ -25,7 +25,7 @@ export const getOrg = user => {
   };
 };
 
-const welcomedKey = user => `settings.welcomed${user?.id ? '.user?.id' : ''}`;
+const welcomedKey = user => `settings.welcomed${user?.id ? '.' + user.id : ''}`;
 
 export default ({ children }) => {
   const { user } = useUserContext();
