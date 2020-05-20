@@ -235,7 +235,7 @@ const draw = (stage, data) => {
               </div>
             `;
           case 'filter':
-            return row.title + ` number:${row.number} ` + (row.authors.map(user => `author:${github.userName(user)}`).join(' '));
+            return `${row.title} ${row.repo} number:${row.number} ` + (row.authors.map(user => `author:${github.userName(user)}`).join(' '));
           case 'type':
           case 'sort':
           default:
