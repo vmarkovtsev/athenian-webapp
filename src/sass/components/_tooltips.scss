@@ -47,6 +47,13 @@
 
 // Info tooltips
 
+.athenian-tooltip {
+    b {
+        display: inline-block;
+        margin-top: 1em;
+    }
+}
+
 .tooltip.show {
     opacity: 1 !important;
 }

@@ -11,6 +11,7 @@ import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses 
 import _ from 'lodash';
 
 import { StatusIndicator, READY } from 'js/components/ui/Spinner';
+import Info, { tooltip_conf } from 'js/components/ui/Info';
 
 const userImage = users => user => {
   if (users[user] && users[user].avatar) {
@@ -136,7 +137,7 @@ const draw = (stage, data) => {
   const prLabelStage = prLabel(stage);
   const { prs, users } = data;
 
-  $(tableContainerSelector).DataTable({
+  const table = $(tableContainerSelector).DataTable({
     dom: `
       <'row'<'col-12'f>>
       <'row'<'col-12'tr>>
@@ -294,11 +295,15 @@ const draw = (stage, data) => {
         switch (type) {
           case 'display':
             const hint = '' +
-              `properties:[${row.properties.join(', ')}],\n` +
-              `events:[${row.properties.map(prop => prop.replace('_happened', '')).join(', ')}],\n` +
-              `stage-completes:[${row.completedStages.join(', ')}]`;
+              `<b>properties:</b> ${row.properties.join(', ')}<br />` +
+              `<b>events:</b> ${row.properties.map(prop => prop.replace('_happened', '')).join(', ')} <br />` +
+              `<b>stage-completes:</b> ${row.completedStages.join(', ')}`;
             return (
-              `<div title="${hint}" class="badge badge-outlined ${prLabelClasses[prLabelStage(row)]}">
+              `<div
+                title="${hint}"
+                class="badge badge-outlined ${prLabelClasses[prLabelStage(row)]}"
+                data-toggle="tooltip"
+              >
                   <span data-toggle="tooltip" data-placement="bottom" className="ml-2">
                     ${prLabelStage(row)}
                   </span>
@@ -313,4 +318,6 @@ const draw = (stage, data) => {
       },
     }],
   });
+
+  table.on('draw', () => $('[data-toggle="tooltip"]').tooltip(tooltip_conf));
 }
