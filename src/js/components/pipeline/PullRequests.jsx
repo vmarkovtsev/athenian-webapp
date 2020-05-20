@@ -11,6 +11,7 @@ import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses 
 import _ from 'lodash';
 
 import { StatusIndicator, READY } from 'js/components/ui/Spinner';
+import Info, { tooltip_conf } from 'js/components/ui/Info';
 
 const userImage = users => user => {
   if (users[user] && users[user].avatar) {
@@ -74,6 +75,17 @@ export default ({ stage, data, status }) => {
     <>
       <StatusIndicator status={status} textOnly={false} />
       <div className="table-responsive mb-4">
+        <div className="d-flex" style={{ marginBottom: '-28px', justifyContent: 'flex-start' }}>
+          <div style={{ zIndex: 4, marginLeft: '40.5rem', textAlign: 'right' }}>
+            {isReady(status) && <Info content={`You can search by PR title, repository or participant, or use this other syntax for these other filters:<br />
+              <b>by status:</b> <span class="code">status:merged</span>, <span class="code">status:closed</span>, <span class="code">status:opened</span><br />
+              <b>by number:</b> <span class="code">number:354</span><br />
+              <b>by author:</b> <span class="code">author:user_handler</span><br />
+              <b>by reviewer:</b> <span class="code">reviewer:user_handler</span>
+              `}
+            />}
+          </div>
+        </div>
         <div className="d-flex" style={{ marginBottom: '-34px', justifyContent: 'flex-end' }}>
           <div style={{ zIndex: 3, flex: '0 0 170px' }}>
             {isReady(status) && <Select
@@ -136,9 +148,9 @@ const draw = (stage, data) => {
   const prLabelStage = prLabel(stage);
   const { prs, users } = data;
 
-  $(tableContainerSelector).DataTable({
+  const table = $(tableContainerSelector).DataTable({
     dom: `
-      <'row'<'col-12'f>>
+      <'row'<'col-12 table-filter'f>>
       <'row'<'col-12'tr>>
       <'row mt-3 pr-pagination'<'d-flex align-items-center col-sm-12 col-md-5'<'pt-0'l><'pb-0 ml-3'i>><'col-sm-12 col-md-7'p>>
     `,
@@ -294,11 +306,15 @@ const draw = (stage, data) => {
         switch (type) {
           case 'display':
             const hint = '' +
-              `properties:[${row.properties.join(', ')}],\n` +
-              `events:[${row.properties.map(prop => prop.replace('_happened', '')).join(', ')}],\n` +
-              `stage-completes:[${row.completedStages.join(', ')}]`;
+              `<b>properties:</b> ${row.properties.join(', ')}<br />` +
+              `<b>events:</b> ${row.properties.map(prop => prop.replace('_happened', '')).join(', ')} <br />` +
+              `<b>stage-completes:</b> ${row.completedStages.join(', ')}`;
             return (
-              `<div title="${hint}" class="badge badge-outlined ${prLabelClasses[prLabelStage(row)]}">
+              `<div
+                title="${hint}"
+                class="badge badge-outlined ${prLabelClasses[prLabelStage(row)]}"
+                data-toggle="tooltip"
+              >
                   <span data-toggle="tooltip" data-placement="bottom" className="ml-2">
                     ${prLabelStage(row)}
                   </span>
@@ -313,4 +329,6 @@ const draw = (stage, data) => {
       },
     }],
   });
+
+  table.on('draw', () => $('[data-toggle="tooltip"]').tooltip(tooltip_conf));
 }
