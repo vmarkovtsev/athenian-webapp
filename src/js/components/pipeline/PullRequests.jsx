@@ -75,6 +75,17 @@ export default ({ stage, data, status }) => {
     <>
       <StatusIndicator status={status} textOnly={false} />
       <div className="table-responsive mb-4">
+        <div className="d-flex" style={{ marginBottom: '-28px', justifyContent: 'flex-start' }}>
+          <div style={{ zIndex: 4, marginLeft: '40.5rem', textAlign: 'right' }}>
+            {isReady(status) && <Info content={`You can search by PR title, repository or participant, or use this other syntax for these other filters:<br />
+              <b>by status:</b> <span class="code">status:merged</span>, <span class="code">status:closed</span>, <span class="code">status:opened</span><br />
+              <b>by number:</b> <span class="code">number:354</span><br />
+              <b>by author:</b> <span class="code">author:user_handler</span><br />
+              <b>by reviewer:</b> <span class="code">reviewer:user_handler</span>
+              `}
+            />}
+          </div>
+        </div>
         <div className="d-flex" style={{ marginBottom: '-34px', justifyContent: 'flex-end' }}>
           <div style={{ zIndex: 3, flex: '0 0 170px' }}>
             {isReady(status) && <Select
@@ -139,7 +150,7 @@ const draw = (stage, data) => {
 
   const table = $(tableContainerSelector).DataTable({
     dom: `
-      <'row'<'col-12'f>>
+      <'row'<'col-12 table-filter'f>>
       <'row'<'col-12'tr>>
       <'row mt-3 pr-pagination'<'d-flex align-items-center col-sm-12 col-md-5'<'pt-0'l><'pb-0 ml-3'i>><'col-sm-12 col-md-7'p>>
     `,

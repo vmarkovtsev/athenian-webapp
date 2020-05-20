@@ -158,9 +158,15 @@
         width: 100%;
     }
 }
+
+.table-filter .form-control {
+    width: 40rem !important;
+}
+
 .table-responsive {
     overflow-x: unset !important
 }
+
 div.dataTables_wrapper div{
 
     &.dataTables_length select {
