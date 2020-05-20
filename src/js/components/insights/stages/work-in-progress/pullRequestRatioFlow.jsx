@@ -30,11 +30,18 @@ const pullRequestRatioFlow = {
                     prsMetrics.closed,
                 )
             )
-                .map(v => ({
-                    day: v[0].date,
-                    value: v[0].value,
-                    legend: [v[1].value, v[2].value]
-                }))
+                .map(v => {
+                    const ratio = v[0].value;
+                    const opened = v[1].value;
+                    const closed = v[2].value;
+                    const trickedOpened = opened !== null || closed !== null ? opened + 1 : null;
+                    const trickedClosed = opened !== null || closed !== null ? closed + 1 : null;
+                    return {
+                        day: v[0].date,
+                        value: ratio,
+                        legend: {ratio, opened: trickedOpened, closed: trickedClosed},
+                    }
+                })
                 .value(),
             KPIsData: {
                 avgRatioFlow: data.global['prs-metrics.values'].all['flow-ratio'],
@@ -83,8 +90,8 @@ const pullRequestRatioFlow = {
                             color: '#41CED3',
                             tooltip: {
                                 renderBigFn: v => <BigText
-                                    content={`${v.legend[0] || 0}/${v.legend[1] || 0}`}
-                                    extra={number.round((v.legend[0] || 1) / (v.legend[1] || 1), 1)}
+                                    content={`${v.legend.opened }/${v.legend.closed}`}
+                                    extra={number.round(v.legend.ratio, 1)}
                                 />,
                             },
                         },
