@@ -100,7 +100,7 @@ export default ({ children }) => {
           .reduce((result, v) => {
             _(allMetrics).forEach((m, i) => {
               (result[m] || (result[m] = [])).push(
-                { date: v.date, value: v.values[i] || 0 }
+                { date: v.date, value: v.values[i] }
               )
             })
               
