@@ -16,6 +16,10 @@ const getAnalytics = () => {
     }
 
     const identify = (user) => {
+        if (!user) {
+            return;
+        }
+
         analytics.identify(user.id, {
             name: user.name,
             email: user.email,
