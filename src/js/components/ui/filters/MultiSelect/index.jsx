@@ -12,10 +12,11 @@ const defaultProps = {
   isSearchable: true,
   isMulti: true,
   hideSelectedOptions: false,
-  controlShouldRenderValue: false
+  controlShouldRenderValue: false,
+  tabSelectsValue: false
 }
 
-export default function MultiSelect(multiSelectProps) {
+const MultiSelect = React.memo((multiSelectProps) => {
   const {
     label,
     isLoading,
@@ -25,11 +26,13 @@ export default function MultiSelect(multiSelectProps) {
     getOptionValue,
     getOptionLabel,
     options,
-    onChange,
     onApply,
-    value
+    value,
+    onChange
   } = multiSelectProps
 
+  const noData = formatMessage(noDataMsg)
+  const loading= formatMessage('loading...')
   return (
     <Dropdown label={label} isLoading={isLoading} onApply={onApply} value={value}>
       {ddProps => (
@@ -41,14 +44,18 @@ export default function MultiSelect(multiSelectProps) {
           name={name}
           getOptionLabel={getOptionLabel}
           getOptionValue={getOptionValue}
-          noOptionsMessage={formatMessage(noDataMsg)}
-          loadingMessage={formatMessage('loading...')}
+          noOptionsMessage={noData}
+          loadingMessage={loading}
+          value={value}
           onChange={onChange}
-          // value={value}
           {...defaultProps}
           {...ddProps} // components
         />
       )}
     </Dropdown>
   )
-}
+}, (prev, next) => {
+  return prev.options === next.options && prev.isLoading === next.isLoading
+})
+
+export default MultiSelect

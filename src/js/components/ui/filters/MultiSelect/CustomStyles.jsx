@@ -1,4 +1,4 @@
-import SearchIcon from './SearchIcon.svg'
+import SearchIcon from './IconSearch.svg'
 
 /**
  * Overrides react-select components styles
@@ -32,13 +32,20 @@ export const customStyles = {
     ...styles,
     visibility: 'hidden'
   }),
-  option: styles => ({
-    ...styles,
-    cursor: 'pointer',
-    backgroundColor: 'transparent',
-    color: '#121343',
-    paddingLeft: 20
-  }),
+  option: (styles, state) => {
+    return {
+      ...styles,
+      cursor: 'pointer',
+      backgroundColor: 'transparent',
+      color: '#121343',
+      display: 'grid',
+      alignItems: 'center',
+      borderBottom: '1px solid #D6DBE4',
+      gridTemplateColumns: '20px calc(100% - 16px)',
+      gridColumnGap: 8,
+      padding: `${typeof state.data === 'string' ? '8px 12px' : '8px 12px 8px 24px' }`
+    }
+  },
   control: styles => ({
     ...styles,
     borderRadius: 0,
@@ -76,6 +83,10 @@ export const customStyles = {
     fontSize: 11,
     padding: 12,
     margin: 0,
-    borderBottom: '1px solid #ccc'
+    borderBottom: '1px solid #ccc',
+    display: 'grid',
+    gridTemplateColumns: '18px 25px  auto 18px',
+    alignItems: 'center',
+    gridColumnGap: 8
   })
 }
