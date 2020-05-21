@@ -111,9 +111,21 @@ const RepoConfig = ({ accountId, config, filterTerm }) => {
       if (!apiReady) {
         throw new Error('Could not obtain an API client');
       };
-      await saveRepoSettings(api, accountId, [config.url], strategy, branchState, tagState);
+
+      await saveRepoSettings(
+        api,
+        accountId,
+        [config.url],
+        strategy,
+        strategy === AUTOMATIC ? defaultPatterns[BRANCH] : branchState,
+        strategy === AUTOMATIC ? defaultPatterns[TAG] : tagState
+      );
+
       setMatchState(strategy);
+
       if (strategy === AUTOMATIC) {
+        setBranchState(defaultPatterns[BRANCH]);
+        setTagsState(defaultPatterns[TAG]);
         log.ok(`Releases from "${config.url}" will be guessed automatically from tags or default branch if there are no tags available`);
       } else {
         log.ok(`Releases from "${config.url}" will be read from "${strategy}"`);
