@@ -10,12 +10,16 @@ const getAnalytics = () => {
         analytics.page = window.analytics.page;
         analytics.track = window.analytics.track;
     } else {
-        analytics.identify = (...args) => {console.log(`dummy analytics: identify [${args}]`);};
-        analytics.page = (...args) => {console.log(`dummy analytics: page [${args}]`);};
-        analytics.track = (...args) => {console.log(`dummy analytics: track [${args}]`);};
+        analytics.identify = (...args) => {console.log(`dummy analytics: identify [${JSON.stringify(args)}]`);};
+        analytics.page = (...args) => {console.log(`dummy analytics: page [${JSON.stringify(args)}]`);};
+        analytics.track = (...args) => {console.log(`dummy analytics: track [${JSON.stringify(args)}]`);};
     }
 
     const identify = (user) => {
+        if (!user) {
+            return;
+        }
+
         analytics.identify(user.id, {
             name: user.name,
             email: user.email,

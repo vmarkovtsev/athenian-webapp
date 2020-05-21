@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect, useReducer, useContext } from 'react';
 import { useAuth0 } from 'js/context/Auth0';
 
 import { getUserWithAccountRepos } from 'js/services/api';
@@ -8,10 +8,24 @@ const UserContext = React.createContext(null);
 
 export const useUserContext = () => useContext(UserContext);
 
+const initialState = {loading: true};
+const reducer = (state, action) => {
+    switch (action.type) {
+    case 'set':
+        const state = {loading: false};
+        const { user, userWithRepos } = action;
+        const godMode = user.sub !== userWithRepos.id;
+        return {...state, user: userWithRepos, godMode};
+    case 'fail':
+        return {loading: false};
+    default:
+        throw new Error();
+    }
+};
+
 export default ({ children }) => {
-    const { logout, loading, isAuthenticated, getTokenSilently } = useAuth0();
-    const [userStateLoading, setUserStateLoading] = useState(true);
-    const [userState, setUserState] = useState(null);
+    const { logout, user, loading, isAuthenticated, getTokenSilently } = useAuth0();
+    const [state, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
         if (loading) {
@@ -19,7 +33,7 @@ export default ({ children }) => {
         }
 
         if (!isAuthenticated) {
-            setUserStateLoading(false);
+            dispatch({type: 'fail'});
             return;
         };
 
@@ -27,22 +41,24 @@ export default ({ children }) => {
             try {
                 const token = await getTokenSilently();
                 const userWithRepos = await getUserWithAccountRepos(token);
-                analytics.identify(userWithRepos);
-                setUserState(userWithRepos);
+                dispatch({type: 'set', user, userWithRepos});
             } catch(err) {
                 console.error('Could not get user with repos', err);
-            } finally {
-                setUserStateLoading(false);
+                dispatch({type: 'fail'});
             }
         })();
-    }, [loading, isAuthenticated, getTokenSilently]);
+    }, [loading, isAuthenticated, getTokenSilently, user]);
 
-    if (userStateLoading) {
+    if (state.loading) {
         return null;
     }
 
+    if (!state.godMode) {
+        analytics.identify(state.user);
+    }
+
     return (
-        <UserContext.Provider value={{user: userState, isAuthenticated, logout}}>
+        <UserContext.Provider value={{user: state.user, isAuthenticated, logout}}>
           {children}
         </UserContext.Provider >
     );
