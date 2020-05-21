@@ -17,7 +17,7 @@ import { dateTime, github } from 'js/services/format'
 import { useMountEffect } from 'js/hooks'
 
 import { filterReducer, defaultFilter, mapContribsToTeam } from './filterReducer'
-import { setRepos, setTeams, setReady, setDateInterval, setContribs, setSelectedRepos } from './actions'
+import { init, setRepos, setTeams, setReady, setDateInterval, setContribs, setSelectedRepos, setSelectedContribs } from './actions'
 
 const allowedDateInterval = {
   from: moment(YEAR_AGO).startOf('day').valueOf(),
@@ -55,12 +55,7 @@ export default function Filters({ children }) {
         [repos, contribs, teams]
       )
 
-      dispatchFilter(setRepos(repos))
-      dispatchFilter(setSelectedRepos(repos))
-
-      dispatchFilter(setContribs(contribs))
-      dispatchFilter(setTeams(teams))
-      dispatchFilter(setReady(true))
+      dispatchFilter(init({ repos, contribs, teams, ready: true }))
     })()
   }, [])
 
@@ -142,8 +137,15 @@ export default function Filters({ children }) {
   const onSelectRepo = selectedOptions =>
     dispatchFilter(setSelectedRepos(selectedOptions))
 
+  const onSelectContrib = selectedContrib =>
+    dispatchFilter(setSelectedContribs(selectedContrib))
+  
   const reposValue = filterData.repos.data.filter(repo =>
     ~filterData.repos.selected.indexOf(repo)
+  )
+
+  const contribsValue = filterData.contribs.data.filter(contrib => 
+    ~filterData.contribs.selected.indexOf(contrib)
   )
 
   return (
@@ -180,7 +182,8 @@ export default function Filters({ children }) {
             getOptionValue={getOptionValueUsers}
             options={teamsOptions}
             onApply={onContribsChange}
-            value={filterData.teams.data}
+            value={contribsValue}
+            onChange={onSelectContrib}
           />
         }
         dateIntervalFilter={

@@ -1,5 +1,25 @@
 export const filterReducer = (state, action) => {
   switch (action.type) {
+    case TYPE.INIT:
+      const { ready, repos, contribs, teams } = action.payload
+      return {
+        ...state,
+        ready,
+        repos: {
+          ready,
+          data: [...repos],
+          selected: [...repos]
+        },
+        contribs: {
+          ready,
+          data: [...contribs],
+          selected: [...contribs]
+        },
+        teams: {
+          ready,
+          data: [...teams]
+        }
+      }
     case TYPE.SET_INTERVAL:
       return {
         ...state, 
@@ -46,6 +66,15 @@ export const filterReducer = (state, action) => {
             selected: action.payload
           }
         }
+    case TYPE.SET_SELECTED_CONTRIBS:
+        console.log('PAYLOAD: ', action)
+        return {
+          ...state,
+          contribs: {
+            ...state.contribs,
+            selected: action.payload
+          }
+        }
     default:
       return state
   }
@@ -71,28 +100,48 @@ export const defaultFilter = {
 }
 
 export const TYPE = {
+  INIT: 'INIT',
   SET_REPOS: 'SET_REPOS',
   SET_INTERVAL: 'SET_INTERVAL',
   SET_TEAMS: 'SET_TEAMS',
   SET_READY: 'SET_READY',
   SET_CONTRIBS: 'SET_CONTRIBS',
-  SET_SELECTED_REPOS: 'SET_SELECTED_REPOS'
+  SET_SELECTED_REPOS: 'SET_SELECTED_REPOS',
+  SET_SELECTED_CONTRIBS: 'SET_SELECTED_CONTRIBS'
 }
 
+/**
+ * Merge and map contributors list and teams
+ * contributors without a team is left in the 'Other' team
+ * @param {Array} contribs 
+ * @param {Array} teams
+ */
 export const mapContribsToTeam = (contribs, teams) => {
-  return teams.reduce((acc, curr) => {
+  const contribsWithoutTeam = [...contribs]
+
+  const mapMember = ({ login, name, picture, avatar }) => ({
+    login, name, avatar: (picture || avatar)
+  })
+
+  const mappedTeams = teams.reduce((acc, curr) => {
     const team = {
       id: curr.id,
       label: curr.name,
-      options: curr.members.map(m => ({
-        login: m.login,
-        name: m.name,
-        avatar: m.picture
-      }))
+      options: curr.members.map(m => {
+        const removeIndex = contribsWithoutTeam.findIndex(c => c.login === m.login)
+        contribsWithoutTeam.splice(removeIndex, 1)
+        return mapMember(m)
+      })
     }
-    return [
-      ...acc,
-      team
-    ]
+    return [ ...acc, team ]
   }, [])
+
+  return [
+    ...mappedTeams,
+    {
+      id: 'other',
+      label: 'Other',
+      options: contribsWithoutTeam.map(mapMember)
+    }
+  ]
 }
