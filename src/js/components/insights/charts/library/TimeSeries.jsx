@@ -13,10 +13,12 @@ import {
     HorizontalGridLines,
     LineSeries,
     MarkSeries,
-    LineMarkSeries
+    LineMarkSeries,
+    AreaSeries,
 } from 'react-vis';
 
 import { DateBigNumber, onValueChange, onValueReset } from 'js/components/charts/Tooltip';
+import { NoData } from 'js/components/layout/Empty';
 
 export default ({title, data, extra}) => (
     <div style={{ background: 'white' }}>
@@ -44,7 +46,6 @@ const buildChartLabel = (text, which) => {
                 transform: 'rotate(-90)',
                 y: -60
             }
-
         }
     }[which];
 
@@ -72,7 +73,7 @@ const TimeSeries = ({ title, data, extra }) => {
     const [currentHover, setCurrentHover] = useState(null);
 
     if (data.length === 0) {
-        return <></>;
+        return <NoData textOnly />;
     }
 
     const formattedData = _(data)
@@ -112,20 +113,21 @@ const TimeSeries = ({ title, data, extra }) => {
     }
 
     return (
-        <FlexibleWidthXYPlot height={300} margin={{ left: 100, right: 30 }}>
+        <FlexibleWidthXYPlot height={extra.height || 300} margin={{ left: 100, right: 30 }}>
 
           <VerticalGridLines tickValues={tickValues} />
           <XAxis tickValues={tickValues} tickFormat={dateTime.monthDay} />
-          <HorizontalGridLines />
-          <YAxis />
+          <HorizontalGridLines tickTotal={3} />
+          <YAxis tickTotal={3} tickFormat={extra?.axisTickFormats?.y || (y => y)} />
           {extra.axisLabels && extra.axisLabels.y && buildChartLabel(extra.axisLabels.y, 'y')}
 
-          <LineSeries data={dataPoints} color={extra.color} animation="stiff" />
-          <MarkSeries
+          {extra.fillColor && <AreaSeries data={dataPoints} stroke="none" fill={extra.fillColor} animation="stiff" /> }
+          <LineMarkSeries
             sizeRange={[5, 15]}
-            stroke={extra.color}
             fill="white"
-            strokeWidth={3}
+            stroke={extra.color}
+            lineStyle={{strokeWidth:2}}
+            markStyle={{strokeWidth:3}}
             data={dataPoints}
             animation="stiff"
             onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
