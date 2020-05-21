@@ -198,20 +198,14 @@ export default function Filters({ children }) {
   )
 }
 
-const getDataForFilter = async (dataName, dataFetcherFn, token, accountID, dateInterval, inRepos = []) => {
-  try {
-    return await dataFetcherFn(
-      token,
-      accountID,
-      dateTime.ymd(dateInterval.from),
-      dateTime.ymd(dateInterval.to),
-      inRepos,
-    )
-  } catch (err) {
-    console.error(`could not fetch ${dataName} to filter`, err)
-    return []
-  }
-}
+const getDataForFilter = async (dataName, dataFetcherFn, token, accountID, dateInterval, inRepos = []) =>
+  dataFetcherFn(
+    token,
+    accountID,
+    dateTime.ymd(dateInterval.from),
+    dateTime.ymd(dateInterval.to),
+    inRepos,
+  )
 
 const getReposForFilter = (token, accountID, dateInterval, inRepos) => getDataForFilter(
   'repositories', getRepos, token, accountID, dateInterval, inRepos)

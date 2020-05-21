@@ -56,7 +56,7 @@ export const defaultFilter = {
   repos: {
     data: [],
     ready: false,
-    selected: new Set()
+    selected: []
   },
   teams: {
     data: [],
@@ -65,7 +65,7 @@ export const defaultFilter = {
   contribs: {
     data: [],
     ready: false,
-    selected: new Set()
+    selected: []
   },
   dateInterval: null
 }

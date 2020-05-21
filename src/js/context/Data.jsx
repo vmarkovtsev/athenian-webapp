@@ -8,7 +8,6 @@ export const useDataContext = () => useContext(Context)
 const globalKeysWhitelist = [
   'filter.repos',
   'filter.contribs',
-  'filter.teams',
   'prs',
   'prs-metrics.values',
   'prs-metrics.variations'
@@ -25,22 +24,31 @@ const dataStateReducer = (state, action) => {
 
   const ids = Array.prototype.concat(id)
   const dataArr = Array.prototype.concat(data)
-  const isIDArray = Array.isArray(id)
-  console.log('REsolved Promise: ', Promise.resolve(data))
-  return ids.reduce((reducedData, id, index) => {
+
+  /**
+   * Enable setGlobal to update reducer in batches avoiding sequential updates
+   * forcing re-renders
+   * 
+   * setGlobalData('filter.repos', updatedRepos)
+   * setGlobalData(['filter.repos', 'filter.contribs'],[updatedRepos, updatedContribs])
+   */
+  return ids.reduce((reducedData, key, index) => {
     if (global) {
-      if (!globalKeysWhitelist.includes(id)) {
-        throw Error(`Trying to use unrecognized global id: ${id}`)
-      } else if (reducedData.data[id]) {
-        throw Error(`Trying to override global data with id: ${id}`)
+      // 'filter.teams is whitelabled but not obrigatory
+      if (![...globalKeysWhitelist, 'filter.teams'].includes(key)) {
+        throw Error(`Trying to use unrecognized global id: ${key}`)
+      } else if (reducedData.data[key]) {
+        throw Error(`Trying to override global data with id: ${key}`)
       }
-    } else if (id.startsWith(globalKeyPrefix)) {
-      throw Error(`Non-global data cannot have id with prefix ${globalKeyPrefix}: ${id}`)
+    } else if (key.startsWith(globalKeyPrefix)) {
+      throw Error(`Non-global data cannot have id with prefix ${globalKeyPrefix}: ${key}`)
     }
     
     const prefix = global ? globalKeyPrefix : ''
-    console.log('ID: ', id, ' dataArr: ', dataArr)
-    reducedData.data[`${prefix}${id}`] = isIDArray ? dataArr[index] : dataArr
+    // if 'id' is an array of whitelabeled keys, get data for each id (line:33 commment)
+    reducedData.data[`${prefix}${key}`] = Array.isArray(id) ? dataArr[index] : data
+  
+    // filter.teams is skipped below
     reducedData.globalReady = _(globalKeysWhitelist).map(k => !!reducedData.data[`global.${k}`]).every()
 
     return reducedData
@@ -59,7 +67,7 @@ export default function DataContext({ children }) {
   
   return (
     <Context.Provider value={{get, set, getGlobal, setGlobal, reset, globalDataReady: dataState.globalReady}}>
-    {children}
+      {children}
     </Context.Provider >
   )
 }

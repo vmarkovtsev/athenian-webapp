@@ -29,7 +29,7 @@ export default ({ children }) => {
     
     const getAndSetPRs = async () => {
       try {
-        const prsAwaitable = fetchFilteredPRs(
+        const prsAwaitable = await fetchFilteredPRs(
           api,
           apiContext.account,
           apiContext.interval,
@@ -113,7 +113,7 @@ export default ({ children }) => {
           }
       } 
             
-      setGlobalData('prs-metrics.values', fetchValues())
+      setGlobalData('prs-metrics.values', await fetchValues())
     }
             
     const fetchGlobalPRMetricsVariations = async() => {
@@ -146,7 +146,7 @@ export default ({ children }) => {
           .value()
       }
                   
-      setGlobalData('prs-metrics.variations', fetchValues())
+      setGlobalData('prs-metrics.variations', await fetchValues())
     }
                 
     getAndSetPRs()
