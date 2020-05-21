@@ -67,7 +67,6 @@ export const filterReducer = (state, action) => {
           }
         }
     case TYPE.SET_SELECTED_CONTRIBS:
-        console.log('PAYLOAD: ', action)
         return {
           ...state,
           contribs: {
@@ -117,31 +116,54 @@ export const TYPE = {
  * @param {Array} teams
  */
 export const mapContribsToTeam = (contribs, teams) => {
-  const contribsWithoutTeam = [...contribs]
+  if (!teams.length) {
+    return contribs
+  }
+
+  const teamsBluePrint = teams.map(({ name, members, id }) => {
+    return {
+      id,
+      label: name,
+      membersSet: members.reduce((acc, curr) => {
+        acc.add(curr.login)
+        return acc
+      }, new Set()),
+      options: []
+    }
+  })
+
+  teamsBluePrint.push({
+    label: 'Other',
+    id: 'other',
+    options: [],
+    membersSet: new Set()
+  })
 
   const mapMember = ({ login, name, picture, avatar }) => ({
     login, name, avatar: (picture || avatar)
   })
 
-  const mappedTeams = teams.reduce((acc, curr) => {
-    const team = {
-      id: curr.id,
-      label: curr.name,
-      options: curr.members.map(m => {
-        const removeIndex = contribsWithoutTeam.findIndex(c => c.login === m.login)
-        contribsWithoutTeam.splice(removeIndex, 1)
-        return mapMember(m)
+  const otherTeam = teamsBluePrint.length - 1
+
+  const mappedTeams = contribs.reduce((acc, curr) => {
+    let found = false
+    teamsBluePrint.forEach((team, index, arr) => {
+      if (team.membersSet.has(curr.login)) {
+        found = true
+        team.options.push(mapMember(curr))
+      }
+    })
+
+    if (!found) {
+      teamsBluePrint[otherTeam].options.push({
+        name: curr.name,
+        login: curr.login,
+        avatar: curr.avatar || curr.picture,
+        id: curr.id
       })
     }
-    return [ ...acc, team ]
-  }, [])
+    return teamsBluePrint
+  }, teamsBluePrint)
 
-  return [
-    ...mappedTeams,
-    {
-      id: 'other',
-      label: 'Other',
-      options: contribsWithoutTeam.map(mapMember)
-    }
-  ]
+  return mappedTeams
 }

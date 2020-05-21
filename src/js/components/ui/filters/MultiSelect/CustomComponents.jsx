@@ -122,6 +122,7 @@ const GroupHeading = (onCheck, isChecked, onToggle, toggled) => props => {
     children,
     ...rest
   } = props
+  console.log('GROUPP Heading: ', props)
   const onClick = () => onToggle(!toggled)
   const onCheckboxClick = e => {
     e.stopPropagation()
@@ -148,6 +149,12 @@ const Group = props => {
     children,
     ...rest
   } = props
+
+  useEffect(() => {
+    const allSelected = props.options.map(op => op.isSelected).every(Boolean)
+    setSelected(allSelected)
+  }, [props.options])
+  
   const Heading = GroupHeading(setSelected, isSelected, setOpen, isOpen)
   return (
     <components.Group {...rest} Heading={Heading}>
@@ -218,10 +225,23 @@ export const Placeholder = React.memo(props => {
 /**
  * Menu
  */
+
+ /**
+  * Map options to flat array
+  * @param {Array} options 
+  */
+const extractOptions = options => {
+  const [option] = options
+  if (option && option.options) { //is a group
+    return options.reduce((acc, curr) => {
+      return [ ...acc, ...curr.options ]
+    }, [])
+  }
+  return options
+}
+
 export const menu = ({ setMenuOpen, onApply }) => props => {
   const {
-    getStyles,
-    innerProps: { ref, ...restInnerProps },
     children,
     clearValue,
     options,
@@ -229,32 +249,33 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
     getValue
   } = props
 
-  const style = {
-    ...getStyles('menu', props),
-    boxShadow: 'none',
-    border: '1px solid #ccc',
-    borderTopWidth: 0
-  }
-
   const allValues = getValue()
+  
+  const mappedOptions = extractOptions(options)
 
   const totalOptions = useMemo(
-    () => options.reduce((acc, { options }) => acc + (options ? options.length : 1), 0),
-    [options]
+    () => mappedOptions.reduce((acc, { options }) => acc + (options ? options.length : 1), 0),
+    [options, mappedOptions]
   )
 
-  const allSelected = allValues.length === totalOptions
+  console.log('ALLVALUES: ', allValues)
+  console.log('ALLVALUES: totalOptions: ', totalOptions)
 
+  const allSelected = allValues.length === totalOptions
+  console.log('allSelected: ', allSelected)
+  console.log('OPTIONS: ', options)
+  const toggleAll = () => {
+    clearValue()
+    if (!allSelected) {
+      console.log('SAVING:: ', mappedOptions)
+      setValue([...mappedOptions])
+    }
+  }
   return (
-    <div ref={ref} {...restInnerProps} style={style}>
+    <components.Menu {...props}>
       <div
         className="d-flex filter-dropdown-menu-all"
-        onClick={() => {
-          clearValue()
-          if (!allSelected) {
-            setValue(options)
-          }
-        }}
+        onClick={toggleAll}
       >
         <Checkbox isChecked={allSelected} />
         <span>
@@ -273,6 +294,6 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
         }}
         isAcceptable={allValues.length > 0}
       /> }
-    </div>
+    </components.Menu>
   )
 }

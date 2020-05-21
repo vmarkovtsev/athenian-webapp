@@ -97,10 +97,12 @@ export default function Filters({ children }) {
     )
 
     setGlobalData('filter.contribs', selectedContribs)
+    dispatchFilter(setContribs(selectedContribs))
+    dispatchFilter(setSelectedContribs(selectedContribs))
     dispatchFilter(setReady(true))
   }
 
-  const onContribsChange = async selectedContribs => {
+  const onContribsApplyChange = async selectedContribs => {
     dispatchFilter(setReady(false))
     resetData()
     
@@ -147,6 +149,7 @@ export default function Filters({ children }) {
   const contribsValue = filterData.contribs.data.filter(contrib => 
     ~filterData.contribs.selected.indexOf(contrib)
   )
+  console.log('contribsValue: ', contribsValue)
 
   return (
     <FiltersContext
@@ -181,7 +184,7 @@ export default function Filters({ children }) {
             getOptionLabel={usersLabelFormat}
             getOptionValue={getOptionValueUsers}
             options={teamsOptions}
-            onApply={onContribsChange}
+            onApply={onContribsApplyChange}
             value={contribsValue}
             onChange={onSelectContrib}
           />

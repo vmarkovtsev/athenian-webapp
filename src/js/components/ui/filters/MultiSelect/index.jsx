@@ -54,8 +54,6 @@ const MultiSelect = React.memo((multiSelectProps) => {
       )}
     </Dropdown>
   )
-}, (prev, next) => {
-  return prev.options === next.options && prev.isLoading === next.isLoading
 })
 
 export default MultiSelect
