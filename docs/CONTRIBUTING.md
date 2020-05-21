@@ -89,3 +89,13 @@ Update the [`config.js`](https://github.com/athenianco/athenian-webapp/blob/mast
 Configure your [Athenian API](https://github.com/athenianco/athenian-api) (using the `.env` file if you're running it locally):
 - `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET` with the corresponding values of your Auth0 Machine to Machine Application created in [#2](#2-create-a-machine-to-machine-application-in-auth0).
 - `AUTH0_AUDIENCE` will be the one for your "Auth0 Management API" (e.g. https://your-tenant.eu.auth0.com/api/v2/).
+
+## Testing
+It is possible to set up pre-staging environments to test certain branches, details [here](https://github.com/athenianco/athenian-webapp/blob/master/docs/testing.md)
+
+**Note:** to be able working with pre-staging environments you need to have a 
+- GCP account in our org
+- gcloud installed
+- certain amount of permissions
+
+If any problems appear with this, please contact infra.
