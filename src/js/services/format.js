@@ -16,6 +16,14 @@ const YEAR = 365 * DAY;
 
 const roundDecimals = (num, decimals) => Math.round((num + Number.EPSILON) * 10**decimals) / 10**decimals;
 
+export const getBestFitDurationUnit = data => {
+    const maxValue = _(data)
+        .map(v => v.y)
+        .max();
+
+    return getBestTimeUnit(maxValue);
+};
+
 export const getBestTimeUnit = (milliseconds) => {
     const units = [
         [SECOND, 'secs'],

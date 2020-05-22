@@ -31,15 +31,14 @@ export default ({value, ...props}) => {
     );
 };
 
-export const DateBigNumber = ({ value, renderBigFn = v => <BigText content={number.round(v.y)} />, ...props }) => {
-    if (!value) return null;
-
+export const DateBigNumber = ({ value, dataPoint, renderBigFn = v => <BigText content={number.round(v.y)} />, ...props }) => {
+    if (!value || !dataPoint) return null;
     return (
         <Hint {...props} value={value}>
             <TooltipContainer left>
                 <Group>
-                    <AltTitle content={<DateWeekDayMonth date={moment(value.x)} uppercase />} />
-                    {renderBigFn(value)}
+                    <AltTitle content={<DateWeekDayMonth date={moment(dataPoint.x)} uppercase />} />
+                    {renderBigFn(dataPoint)}
                 </Group>
             </TooltipContainer>
         </Hint>
