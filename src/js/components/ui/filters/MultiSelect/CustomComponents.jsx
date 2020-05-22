@@ -265,16 +265,16 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
   
   const mappedOptions = extractOptions(options)
 
-  const totalOptions = useMemo(
-    () => mappedOptions.reduce((acc, { options }) => acc + (options ? options.length : 1), 0),
-    [mappedOptions]
-  )
+  const totalOptions = mappedOptions.reduce((acc, curr) => {
+    acc.add(curr.login ? curr.login : curr)
+    return acc
+  }, new Set()).size
 
   const allSelected = allValues.length === totalOptions
   const toggleAll = () => {
     clearValue()
     if (!allSelected) {
-      setValue([...mappedOptions])
+      setValue(mappedOptions)
     }
   }
   return (
