@@ -115,7 +115,7 @@ export default function Teams() {
       setTeams(devTeams)
       setDevelopers(devs)
     })()
-  }, [getTokenSilently])
+  }, [getTokenSilently, user])
 
   return (
     <SettingsGroup

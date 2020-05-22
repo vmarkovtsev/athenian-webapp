@@ -29,7 +29,7 @@ export default ({ children }) => {
     
     const getAndSetPRs = async () => {
       try {
-        const prsAwaitable = fetchFilteredPRs(
+        const prsAwaitable = await fetchFilteredPRs(
           api,
           apiContext.account,
           apiContext.interval,
