@@ -134,11 +134,7 @@ const RepoConfig = ({ accountId, config, filterTerm }) => {
 
       log.ok(MESSAGES.SUCCESS);
     } catch (e) {
-      if (strategy === AUTOMATIC) {
-        log.fatal(`Could not save the new settings to automatically read new releases of "${config.url}"`, e);
-      } else {
-        log.fatal(`Could not save the new settings to read new releases of "${config.url}" from "${strategy}"`, e);
-      }
+      log.fatal(`Could not change release workflow`, e);
     }
   };
 
@@ -163,11 +159,7 @@ const RepoConfig = ({ accountId, config, filterTerm }) => {
       log.ok(MESSAGES.SUCCESS);
     } catch (e) {
       onError && onError();
-      if (strategy === AUTOMATIC) {
-        log.fatal(`Could not configure automatic releases of "${config.url}"`, e);
-      } else {
-        log.fatal(`Could not save the new pattern to read new releases of "${config.url}" from "${strategy}"`, e);
-      }
+      log.fatal(`Could not configure release workflow`, e);
     }
   };
 

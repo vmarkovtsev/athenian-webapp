@@ -47,15 +47,14 @@ const extractParts = item => {
 
     if (item.body?.title && item.body?.type) {
         // errors returned by the API, as proper HTTP response (see API errors schema)
-        const parts = [];
-        parts.push(item.body.detail);
-        parts.push(`${item.body.title}. ${item.body.type}`);
-        return parts.filter(v => !!v);
+        return [item.body.detail || item.body.title];
     }
 
     if (item.error) {
-        // e.g. when JSON response could not be parsed (e.g. API returning NaN for old go-git '/filter/pull_requests')
-        let parts = errorParts(item.error);
+        // e.g. when JSON response could not be parsed
+        // e.g. Request has been terminated (connectivity loss; no HTTP response)
+        let parts = errorParts(item.error)
+            .map(s => s.includes('Request has been terminated') ? 'Connectivity loss' : s);
         return parts.length ? parts : ['Unhandled error'];
     }
 

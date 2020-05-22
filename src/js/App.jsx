@@ -66,12 +66,12 @@ ReactDOM.render(<>
   <ToastContainer
       position="top-center"
       hideProgressBar
+      closeButton={false}
       closeOnClick
-      pauseOnFocusLoss={true}
       draggable={false}
+      pauseOnFocusLoss={true}
       pauseOnHover={true}
       transition={Slide}
-      closeButton={false}
   />
   {process.env.NODE_ENV === 'development' && <Development.Breakpoints />}
 </>,
