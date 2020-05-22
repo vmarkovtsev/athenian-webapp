@@ -63,23 +63,25 @@ export default function Filters({ children }) {
     dispatchFilter(setReady(false))
     resetData()
     
-    const updatedRepos = await getReposForFilter(
-      tokenRef.current, accountID, selectedDateInterval
-    )
+    const [updatedRepos, updatedTeams] = await Promise.all([
+      getReposForFilter(tokenRef.current, accountID, selectedDateInterval),
+      getTeamsForFilter(tokenRef.current, accountID)
+    ])
+
     const updatedContribs = await getContribsForFilter(
       tokenRef.current, accountID, selectedDateInterval, updatedRepos
     )
 
+    // TODO: Find a different approach to Teams
     setGlobalData(
-      ['filter.repos', 'filter.contribs'],
-      [updatedRepos, updatedContribs]
+      ['filter.repos', 'filter.contribs', 'filter.teams'],
+      [updatedRepos, updatedContribs, updatedTeams]
     )
 
     dispatchFilter(setDateInterval(selectedDateInterval))
-
-    dispatchFilter(setRepos(updatedRepos))
-    dispatchFilter(setContribs(updatedContribs))
-    dispatchFilter(setReady(true))
+    dispatchFilter(init({
+      repos: updatedRepos, contribs: updatedContribs, teams: updatedTeams, ready: true
+    }))
   }
 
   const onReposApplyChange = async (selectedRepos, dateInterval) => {
@@ -146,10 +148,9 @@ export default function Filters({ children }) {
     ~filterData.repos.selected.indexOf(repo)
   )
 
-  const contribsValue = filterData.contribs.data.filter(contrib => 
-    ~filterData.contribs.selected.indexOf(contrib)
+  const contribsValue = filterData.contribs.data.filter(c =>
+    filterData.contribs.selected.find(e => e.login === c.login)
   )
-  console.log('contribsValue: ', contribsValue)
 
   return (
     <FiltersContext

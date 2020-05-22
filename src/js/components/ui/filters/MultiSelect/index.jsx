@@ -16,7 +16,7 @@ const defaultProps = {
   tabSelectsValue: false
 }
 
-const MultiSelect = React.memo((multiSelectProps) => {
+const MultiSelect = multiSelectProps => {
   const {
     label,
     isLoading,
@@ -54,6 +54,6 @@ const MultiSelect = React.memo((multiSelectProps) => {
       )}
     </Dropdown>
   )
-})
+}
 
 export default MultiSelect

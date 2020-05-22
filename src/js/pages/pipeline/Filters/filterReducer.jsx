@@ -116,9 +116,7 @@ export const TYPE = {
  * @param {Array} teams
  */
 export const mapContribsToTeam = (contribs, teams) => {
-  if (!teams.length) {
-    return contribs
-  }
+  if (!teams.length) return contribs
 
   const teamsBluePrint = teams.map(({ name, members, id }) => {
     return {
@@ -149,8 +147,7 @@ export const mapContribsToTeam = (contribs, teams) => {
     let found = false
     teamsBluePrint.forEach((team, index, arr) => {
       if (team.membersSet.has(curr.login)) {
-        found = true
-        team.options.push(mapMember(curr))
+        found = team.options.push(mapMember(curr))
       }
     })
 

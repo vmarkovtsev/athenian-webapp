@@ -91,7 +91,7 @@ export const Dropdown = ({
  * Create icon using the first letter
  * @param {string} props.title
  */
-const HeadingIcon = React.memo(({ title }) => {
+const HeadingIcon = ({ title }) => {
   const [letter] = title
   const style = {
     background: stringToColour(title)
@@ -101,7 +101,7 @@ const HeadingIcon = React.memo(({ title }) => {
       {letter.toUpperCase()}
     </div>
   )
-}, (prev, next) => false)
+}
 
 const Chevron = ({ isOpen }) => {
   const style = {
@@ -122,12 +122,13 @@ const GroupHeading = (onCheck, isChecked, onToggle, toggled) => props => {
     children,
     ...rest
   } = props
-  console.log('GROUPP Heading: ', props)
+
   const onClick = () => onToggle(!toggled)
   const onCheckboxClick = e => {
     e.stopPropagation()
     onCheck(!isChecked)
   }
+
   return (
     <components.GroupHeading onClick={onClick} {...rest}>
       <Checkbox isChecked={isChecked} onClick={onCheckboxClick} />
@@ -143,19 +144,32 @@ const GroupHeading = (onCheck, isChecked, onToggle, toggled) => props => {
  * @param {*} param0 
  */
 const Group = props => {
-  const [isSelected, setSelected] = useState(true)
+  const [isChecked, setChecked] = useState(true)
   const [isOpen, setOpen] = useState(false)
-  const {
-    children,
-    ...rest
-  } = props
+
+  const { children, ...rest } = props
 
   useEffect(() => {
     const allSelected = props.options.map(op => op.isSelected).every(Boolean)
-    setSelected(allSelected)
+    setChecked(allSelected)
   }, [props.options])
-  
-  const Heading = GroupHeading(setSelected, isSelected, setOpen, isOpen)
+
+  const onCheckClick = check => {
+    setChecked(check)
+    const values = props.getValue()
+
+    const { data, setValue } = props
+    if (!check) {
+      const newvalue = values.filter(val => (
+        !data.options.find(op => op.login === val.login)
+      ))
+      setValue(newvalue)
+    } else {
+      setValue([...values, ...data.options])
+    }
+  }
+
+  const Heading = GroupHeading(onCheckClick, isChecked, setOpen, isOpen)
   return (
     <components.Group {...rest} Heading={Heading}>
       {isOpen && children}
@@ -167,16 +181,16 @@ const Group = props => {
  * Checkbox
  * @param {boolean} isChecked
  */
-const Checkbox = React.memo(({ isChecked }) => {
+const Checkbox = ({ isChecked, onClick }) => {
   return (
-    <svg width="18px" height="18px" viewBox="0 0 18 18" className="mr-2">
+    <svg width="18px" height="18px" viewBox="0 0 18 18" className="mr-2" onClick={onClick}>
       <rect stroke="#D6DBE4" strokeWidth="1" x="0" y="0" width="18" height="18" fill="#fff"></rect>
       { isChecked &&
         <polygon fill="#24C7CC" points="4.66692304 8.35872968 7.13673213 10.8903181 14.4025708 4 16 5.49137391 7.13673213 14 3 9.96982087"></polygon>
       }
     </svg>
   )
-}, (prev, next) => prev.isChecked === next.isChecked)
+}
 
 /**
  * Option
@@ -207,7 +221,7 @@ export const Option = props => {
  * @param {string} label
  * @return {function} 
  */
-export const Placeholder = React.memo(props => {
+export const Placeholder = props => {
   const { selectProps: { name } } = props
   const style = {
     ...props.getStyles('placeholder', props),
@@ -218,9 +232,7 @@ export const Placeholder = React.memo(props => {
       Search {name.toLowerCase()}...
     </span>
   )
-}, (prev, next) => {
-  return true
-})
+}
 
 /**
  * Menu
@@ -255,19 +267,13 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
 
   const totalOptions = useMemo(
     () => mappedOptions.reduce((acc, { options }) => acc + (options ? options.length : 1), 0),
-    [options, mappedOptions]
+    [mappedOptions]
   )
 
-  console.log('ALLVALUES: ', allValues)
-  console.log('ALLVALUES: totalOptions: ', totalOptions)
-
   const allSelected = allValues.length === totalOptions
-  console.log('allSelected: ', allSelected)
-  console.log('OPTIONS: ', options)
   const toggleAll = () => {
     clearValue()
     if (!allSelected) {
-      console.log('SAVING:: ', mappedOptions)
       setValue([...mappedOptions])
     }
   }
