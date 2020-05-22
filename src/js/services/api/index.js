@@ -77,7 +77,7 @@ export const getUserWithAccountRepos = async token => {
     let reposets;
     try {
       reposets = await withSentryCapture(
-        api.listReposets(Number(accountID)), "Cannot list reposets"
+        api.listReposets(Number(accountID)), "Cannot list reposets", true
       );
     } catch (err) {
       console.error(`Could not list reposets from account #${accountID}. Err#${err.body.status} ${err.body.type}. ${err.body.detail}`);
@@ -86,7 +86,7 @@ export const getUserWithAccountRepos = async token => {
 
     const reposetsContent = await Promise.all(reposets.map(async reposet => ({
       id: reposet.id,
-      repos: await withSentryCapture(api.getReposet(reposet.id), "Cannot get reposet"),
+      repos: await withSentryCapture(api.getReposet(reposet.id), "Cannot get reposet", true),
     })));
 
     return { id: Number(accountID), isAdmin, reposets: reposetsContent };
@@ -94,7 +94,7 @@ export const getUserWithAccountRepos = async token => {
 
   const defaultAccountID = getDefaultAccountID(user.accounts);
   if (!defaultAccountID) {
-      return null;
+    return null;
   }
 
   const defaultAccount = await getAccountRepos(defaultAccountID, user.accounts[defaultAccountID]);
