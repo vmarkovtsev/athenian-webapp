@@ -19,6 +19,15 @@ const defaultPatterns = {
   [TAG]: '.*',
 };
 
+const placeholderPatterns = {
+  [BRANCH]: 'branch_name',
+  [TAG]: '.*',
+};
+
+const MESSAGES = {
+  SUCCESS: 'Settings updated',
+};
+
 const isFilteredIn = (conf, term) => !term ||
   github.repoName(conf.url).toLowerCase().includes(term.toLowerCase());
 
@@ -106,19 +115,26 @@ const RepoConfig = ({ accountId, config, filterTerm }) => {
       if (!apiReady) {
         throw new Error('Could not obtain an API client');
       };
-      await saveRepoSettings(api, accountId, [config.url], strategy, branchState, tagState);
+
+      await saveRepoSettings(
+        api,
+        accountId,
+        [config.url],
+        strategy,
+        strategy === AUTOMATIC ? defaultPatterns[BRANCH] : branchState,
+        strategy === AUTOMATIC ? defaultPatterns[TAG] : tagState
+      );
+
       setMatchState(strategy);
+
       if (strategy === AUTOMATIC) {
-        log.ok(`Releases from "${config.url}" will be guessed automatically from tags or default branch if there are no tags available`);
-      } else {
-        log.ok(`Releases from "${config.url}" will be read from "${strategy}"`);
+        setBranchState(defaultPatterns[BRANCH]);
+        setTagsState(defaultPatterns[TAG]);
       }
+
+      log.ok(MESSAGES.SUCCESS);
     } catch (e) {
-      if (strategy === AUTOMATIC) {
-        log.fatal(`Could not save the new settings to automatically read new releases of "${config.url}"`, e);
-      } else {
-        log.fatal(`Could not save the new settings to read new releases of "${config.url}" from "${strategy}"`, e);
-      }
+      log.fatal(`Could not change release workflow`, e);
     }
   };
 
@@ -140,18 +156,10 @@ const RepoConfig = ({ accountId, config, filterTerm }) => {
           throw new Error('Automatic strategy does not support patterns');
       }
       onSuccess && onSuccess();
-      if (strategy === AUTOMATIC) {
-        log.ok(`Releases from "${config.url}" will be guessed automatically from tags or default branch if there are no tags available`);
-      } else {
-        log.ok(`Releases from "${config.url}" will be read from "${strategy}" using "${pattern}"`);
-      }
+      log.ok(MESSAGES.SUCCESS);
     } catch (e) {
       onError && onError();
-      if (strategy === AUTOMATIC) {
-        log.fatal(`Could not configure automatic releases of "${config.url}"`, e);
-      } else {
-        log.fatal(`Could not save the new pattern to read new releases of "${config.url}" from "${strategy}"`, e);
-      }
+      log.fatal(`Could not configure release workflow`, e);
     }
   };
 
@@ -298,7 +306,7 @@ const Strategy = ({ id, name, pattern, defaultText, onChange }) => {
           className="form-control d-inline-block w-200 ml-3"
           type="text"
           value={inputPatternState}
-          placeholder={defaultPatterns[name]}
+          placeholder={placeholderPatterns[name]}
           onFocus={() => setEdittingState(true)}
           onBlur={savePattern}
           onChange={e => dispatchInputPattern({ name, pattern: e.target.value })}

@@ -1,7 +1,9 @@
 import React from 'react';
+import { CSSTransition } from 'react-transition-group';
 import { Link, NavLink } from 'react-router-dom';
 import _ from 'lodash';
 import classnames from 'classnames';
+import { useLocalStorage } from '@rehooks/local-storage';
 
 import defaultImage from 'images/default-user-image.png';
 import welcome from 'images/settings-welcome.svg';
@@ -9,6 +11,7 @@ import welcome from 'images/settings-welcome.svg';
 import Page from 'js/pages/templates/Page';
 
 import { useUserContext } from 'js/context/User';
+import { isNotProd } from 'js/components/development';
 
 export const getOrg = user => {
   const orgName = _(user.defaultReposet.repos)
@@ -22,12 +25,11 @@ export const getOrg = user => {
   };
 };
 
+const welcomedKey = user => `settings.welcomed${user?.id ? '.' + user.id : ''}`;
+
 export default ({ children }) => {
   const { user } = useUserContext();
-
-  const isDev = window.ENV.environment === 'development' || 
-        window.ENV.environment === 'staging' || 
-        process.env.NODE_ENV === 'development';
+  const [welcomedStorage, setWelcomedStorage] = useLocalStorage(welcomedKey(user), false);
 
   if (!user) return <Page />;
 
@@ -44,7 +46,7 @@ export default ({ children }) => {
             <div className="card-body p-0">
               <div className="list-group list-group-flush">
                 <NavLink className="list-group-item py-2" to="/settings/profile">Profile</NavLink>
-                {isDev && <NavLink className="list-group-item py-2" to="/settings/teams">Teams</NavLink>}
+                {isNotProd && <NavLink className="list-group-item py-2" to="/settings/teams">Teams</NavLink>}
                 <NavLink className="list-group-item py-2" to="/settings/releases">Releases</NavLink>
                 <Link to="/logout" className="list-group-item bg-light text-right py-2 rounded-bottom">Logout</Link>
               </div>
@@ -52,7 +54,7 @@ export default ({ children }) => {
           </div>
         </div>
         <div className="col-10">
-          <Welcome />
+          <Welcome welcomed={welcomedStorage} dismissFn={() => { setWelcomedStorage(true) }} />
           {children}
         </div>
       </div>
@@ -60,23 +62,33 @@ export default ({ children }) => {
   );
 };
 
-const Welcome = () => {
+const Welcome = ({ welcomed, dismissFn }) => {
   return (
-    <div className="alert alert-default py-0 mb-4">
-      <div className="d-flex align-items-center">
-        <div className="p-4 w-50">
-          <h4 className="alert-heading h2 mb-2">Welcome to your personal settings area</h4>
-          <p className="font-weight-light">Here you can check your Athenian setup information and choose your
-          organization preferences</p>
+    <CSSTransition
+      in={!welcomed}
+      timeout={200}
+      classNames="disposable"
+      unmountOnExit
+    >
+      <div className="alert alert-default py-0 mb-4">
+        <div className="d-flex align-items-center">
+          <div className="p-4 w-50">
+            <h4 className="alert-heading h2 mb-2">
+              Welcome to your personal settings area
+            </h4>
+            <p className="font-weight-light">
+              Here you can check your Athenian setup information and choose your organization preferences
+            </p>
+          </div>
+          <div className="w-50 text-center mt-4">
+            <img src={welcome} alt="" width="220" />
+          </div>
         </div>
-        <div className="w-50 text-center mt-4">
-          <img src={welcome} alt="" width="220" />
-        </div>
+        <button type="button" className="close" aria-label="Close" onClick={dismissFn}>
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-      <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
+    </CSSTransition>
   );
 };
 

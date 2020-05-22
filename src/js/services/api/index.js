@@ -77,7 +77,7 @@ export const getUserWithAccountRepos = async token => {
     let reposets;
     try {
       reposets = await withSentryCapture(
-        api.listReposets(Number(accountID)), "Cannot list reposets"
+        api.listReposets(Number(accountID)), "Cannot list reposets", true
       );
     } catch (err) {
       console.error(`Could not list reposets from account #${accountID}. Err#${err.body.status} ${err.body.type}. ${err.body.detail}`);
@@ -86,7 +86,7 @@ export const getUserWithAccountRepos = async token => {
 
     const reposetsContent = await Promise.all(reposets.map(async reposet => ({
       id: reposet.id,
-      repos: await withSentryCapture(api.getReposet(reposet.id), "Cannot get reposet"),
+      repos: await withSentryCapture(api.getReposet(reposet.id), "Cannot get reposet", true),
     })));
 
     return { id: Number(accountID), isAdmin, reposets: reposetsContent };
@@ -94,7 +94,7 @@ export const getUserWithAccountRepos = async token => {
 
   const defaultAccountID = getDefaultAccountID(user.accounts);
   if (!defaultAccountID) {
-      return null;
+    return null;
   }
 
   const defaultAccount = await getAccountRepos(defaultAccountID, user.accounts[defaultAccountID]);
@@ -164,8 +164,35 @@ export const getContributors = (token, userAccount, from, to, repos) => {
         api, userAccount,
         {from: new Date(from), to: new Date(to)},
         {repositories:repos}
-    ).then(contribs => contribs.map(({ login, name, avatar }) => ({ login, name, avatar })));
+    )
+    .then(contribs => contribs.map(({ login, name, avatar }) => ({ login, name, avatar })));
 };
+
+export const getDevelopers = (token, userAccount) => {
+  const api = buildApi(token)
+  return api.getContributors(userAccount)
+}
+
+export const createTeam = ({ token, body }) => {
+  const api = buildApi(token)
+  return api.createTeam({ body })
+}
+
+export const removeTeam = (token, id) => {
+  const api = buildApi(token)
+  return api.deleteTeam(id)
+}
+
+export const updateTeam = (token, team) => {
+  const { id, ...body } = team
+  const api = buildApi(token)
+  return api.updateTeam(id, { body })
+}
+
+export const getTeams = (token, accountID) => {
+  const api = buildApi(token)
+  return api.listTeams(accountID)
+}
 
 export const getInvitation = async (token, accountID) => {
   const api = buildApi(token);
@@ -352,4 +379,14 @@ export const saveRepoSettings = async (api, accountId, repos, strategy, branchPa
     "Cannot set release match",
     true,
   );
+};
+
+// Get the backend versions {key: value} from /v1/versions. Auth is not required.
+export const fetchVersions = async () => {
+  const api = buildApi(null);
+  const versions = await withSentryCapture(
+    api.getVersions(),
+    "Cannot fetch versions"
+  );
+  return versions;
 };

@@ -13,10 +13,12 @@ import {
     HorizontalGridLines,
     LineSeries,
     MarkSeries,
-    LineMarkSeries
+    LineMarkSeries,
+    AreaSeries,
 } from 'react-vis';
 
 import { DateBigNumber, onValueChange, onValueReset } from 'js/components/charts/Tooltip';
+import { NoData } from 'js/components/layout/Empty';
 
 export default ({title, data, extra}) => (
     <div style={{ background: 'white' }}>
@@ -44,7 +46,6 @@ const buildChartLabel = (text, which) => {
                 transform: 'rotate(-90)',
                 y: -60
             }
-
         }
     }[which];
 
@@ -66,11 +67,13 @@ export const computeTickValues = (formattedData, maxNumberOfTicks) => {
     }
 };
 
+const filterEmptyValues = v => v !== null;
+
 const TimeSeries = ({ title, data, extra }) => {
     const [currentHover, setCurrentHover] = useState(null);
 
     if (data.length === 0) {
-        return <></>;
+        return <NoData textOnly />;
     }
 
     const formattedData = _(data)
@@ -80,6 +83,8 @@ const TimeSeries = ({ title, data, extra }) => {
               y: v[extra.axisKeys.y]
           }))
           .value();
+
+    const dataPoints = formattedData.filter(v => (extra.filterValuesFn || filterEmptyValues)(v.y));
 
     const tickValues = computeTickValues(formattedData, extra.maxNumberOfTicks);
 
@@ -108,21 +113,22 @@ const TimeSeries = ({ title, data, extra }) => {
     }
 
     return (
-        <FlexibleWidthXYPlot height={300} margin={{ left: 100, right: 30 }}>
+        <FlexibleWidthXYPlot height={extra.height || 300} margin={{ left: 100, right: 30 }}>
 
           <VerticalGridLines tickValues={tickValues} />
           <XAxis tickValues={tickValues} tickFormat={dateTime.monthDay} />
-          <HorizontalGridLines />
-          <YAxis />
+          <HorizontalGridLines tickTotal={3} />
+          <YAxis tickTotal={3} tickFormat={extra?.axisTickFormats?.y || (y => y)} />
           {extra.axisLabels && extra.axisLabels.y && buildChartLabel(extra.axisLabels.y, 'y')}
 
-          <LineSeries data={formattedData} color={extra.color} animation="stiff" />
-          <MarkSeries
+          {extra.fillColor && <AreaSeries data={dataPoints} stroke="none" fill={extra.fillColor} animation="stiff" /> }
+          <LineMarkSeries
             sizeRange={[5, 15]}
-            stroke={extra.color}
             fill="white"
-            strokeWidth={3}
-            data={formattedData}
+            stroke={extra.color}
+            lineStyle={{strokeWidth:2}}
+            markStyle={{strokeWidth:3}}
+            data={dataPoints}
             animation="stiff"
             onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
             onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}

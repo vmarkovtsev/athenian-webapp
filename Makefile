@@ -19,7 +19,7 @@ $(MAKEFILE):
 CI ?=
 yarn := EXTEND_ESLINT=true yarn
 
-API_VERSION ?= 1.0.37
+API_VERSION ?= 1.0.43
 
 RELEASE ?=
 SENTRY_RELEASE ?= $(RELEASE)
@@ -54,7 +54,7 @@ $(API_CLIENT_CODE_PATH)/index.js: $(OPENAPI_GENERATOR) $(API_SPEC_PATH)
 		--config=$(API_SERVICE_PATH)/.openapi-config.yml \
 		-DmodelTests=false,modelDocs=false,apiTests=false,apiDocs=false;
 	[ "$(OLD_API_SPEC)" != "$(API_SPEC_PATH)" ] && rm -f $(OLD_API_SPEC) || echo;
-	echo "Using API specs $(API_VERSION). See a copy at $(API_SPEC_PATH)";
+	@echo "Using API specs $(API_VERSION). See a copy at $(API_SPEC_PATH)";
 
 .PHONY: clean
 clean: clean-build clean-openapi

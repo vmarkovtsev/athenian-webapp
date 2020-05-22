@@ -93,7 +93,7 @@ export default ({
         setDateIntervalState(prevDateIntervalState);
         setFocusedInputState(null);
     };
-
+    const isOutside = day => !isInRange(day, minDate, maxDate) 
     return (
         <div style={{ float: 'right' }}>
             <DateRangePicker
@@ -131,7 +131,7 @@ export default ({
                 focusedInput={focusedInputState}
                 startDateId="dateIntervalFrom"
                 endDateId="dateIntervalTo"
-                isOutsideRange={day => !isInRange(day, minDate, maxDate)}
+                isOutsideRange={isOutside}
             />
         </div>
     );

@@ -12,10 +12,11 @@ const defaultProps = {
   isSearchable: true,
   isMulti: true,
   hideSelectedOptions: false,
-  controlShouldRenderValue: false
+  controlShouldRenderValue: false,
+  tabSelectsValue: false
 }
 
-export default function MultiSelect(multiSelectProps) {
+const MultiSelect = multiSelectProps => {
   const {
     label,
     isLoading,
@@ -25,25 +26,28 @@ export default function MultiSelect(multiSelectProps) {
     getOptionValue,
     getOptionLabel,
     options,
-    onChange,
     onApply,
-    value
+    value,
+    onChange
   } = multiSelectProps
 
+  const noData = formatMessage(noDataMsg)
+  const loading= formatMessage('loading...')
   return (
     <Dropdown label={label} isLoading={isLoading} onApply={onApply} value={value}>
       {ddProps => (
         ddProps.menuIsOpen &&
         <Select
+          autoFocus
           options={options}
           className={className}
           name={name}
           getOptionLabel={getOptionLabel}
           getOptionValue={getOptionValue}
-          noOptionsMessage={formatMessage(noDataMsg)}
-          loadingMessage={formatMessage('loading...')}
-          onChange={onChange}
+          noOptionsMessage={noData}
+          loadingMessage={loading}
           value={value}
+          onChange={onChange}
           {...defaultProps}
           {...ddProps} // components
         />
@@ -51,3 +55,5 @@ export default function MultiSelect(multiSelectProps) {
     </Dropdown>
   )
 }
+
+export default MultiSelect

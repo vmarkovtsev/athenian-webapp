@@ -6,28 +6,35 @@ import TimeSeries from 'js/components/insights/charts/library/TimeSeries';
 import { BigText } from 'js/components/charts/Tooltip';
 import { NEGATIVE_IS_BETTER } from 'js/components/ui/Badge';
 
-import { dateTime, number } from 'js/services/format';
+import { dateTime, number, isNumber } from 'js/services/format';
 
 const waitTimeFirstReview = {
     plumber: (data) => {
-        const waitFirstReviewVariation = data.global['prs-metrics.variations'][
-            'wait-first-review'];
+        const waitFirstReviewVariation = data.global['prs-metrics.variations']['wait-first-review'];
         const cycleTimeVariation = data.global['prs-metrics.variations']['cycle-time'];
 
-        const currWaitFirstReview = data.global['prs-metrics.values']
-              .all['wait-first-review'];
-        const currCycleTime = data.global['prs-metrics.values']
-              .all['cycle-time'];
+        const currWaitFirstReview = data.global['prs-metrics.values'].all['wait-first-review'];
+        const currCycleTime = data.global['prs-metrics.values'].all['cycle-time'];
 
-        const prevWaitFirstReview = (currWaitFirstReview * 100) /
-              (waitFirstReviewVariation + 100);
-        const prevCycleTime = (currCycleTime * 100) /
-              (cycleTimeVariation + 100);
+        let currOverallProportion = null;
+        if (currWaitFirstReview === 0) {
+            currOverallProportion = 0;
+        } else if (isNumber(currWaitFirstReview) && isNumber(currCycleTime) && currCycleTime !== 0) {
+            currOverallProportion = currWaitFirstReview * 100 / currCycleTime;
+        }
 
-        const currOverallProportion = currWaitFirstReview * 100 / currCycleTime;
-        const prevOverallProportion = prevWaitFirstReview * 100 / prevCycleTime;
-
-        const overallProportionVariation = currOverallProportion * 100 / prevOverallProportion;
+        let overallProportionVariation = null;
+        if (currWaitFirstReview === 0) {
+            overallProportionVariation = 0;
+        } else if (
+            isNumber(currWaitFirstReview) && isNumber(waitFirstReviewVariation) && waitFirstReviewVariation !== -100 &&
+            isNumber(currCycleTime) && isNumber(cycleTimeVariation) && cycleTimeVariation !== -100 && currCycleTime !== 0
+        ) {
+            const prevWaitFirstReview = (currWaitFirstReview * 100) / (waitFirstReviewVariation + 100);
+            const prevCycleTime = (currCycleTime * 100) / (cycleTimeVariation + 100);
+            const prevOverallProportion = prevWaitFirstReview * 100 / prevCycleTime;
+            overallProportionVariation = currOverallProportion * 100 / prevOverallProportion;
+        }
 
         return {
             chartData: _(data.global['prs-metrics.values'].custom['wait-first-review'])

@@ -1,62 +1,72 @@
-import React, { useCallback, useReducer, useContext } from 'react';
+import React, { useCallback, useReducer, useContext } from 'react'
+import _ from "lodash"
 
-import _ from "lodash";
+const Context = React.createContext({})
 
-const DataContext = React.createContext({});
-
-export const useDataContext = () => useContext(DataContext);
+export const useDataContext = () => useContext(Context)
 
 const globalKeysWhitelist = [
-    'filter.repos',
-    'filter.contribs',
-    'prs',
-    'prs-metrics.values',
-    'prs-metrics.variations'
-];
+  'filter.repos',
+  'filter.contribs',
+  'filter.teams',
+  'prs',
+  'prs-metrics.values',
+  'prs-metrics.variations'
+]
 
-const globalKeyPrefix = 'global.';
+const globalKeyPrefix = 'global.'
 
 const dataStateReducer = (state, action) => {
-    if (action.reset) {
-        console.log("Resetting all data");
-        return {data: {}, globalReady: false};
-    }
+  if (action.reset) {
+    return { data: {}, globalReady: false }
+  }
+  
+  const { id, data, global } = action
 
-    const { id, data, global } = action;
-    const newState = {...state};
+  const ids = Array.prototype.concat(id)
+  const dataArr = Array.prototype.concat(data)
 
-    console.log(`Setting ${global ? 'global ' : ''}data with id: ${id} | ${newState.data[id]}`);
+  /**
+   * Enable setGlobal to update reducer in batches avoiding sequential updates
+   * forcing re-renders
+   * 
+   * setGlobalData('filter.repos', updatedRepos)
+   * setGlobalData(['filter.repos', 'filter.contribs'],[updatedRepos, updatedContribs])
+   */
+  return ids.reduce((reducedData, key, index) => {
     if (global) {
-        if (!globalKeysWhitelist.includes(id)) {
-            throw Error(`Trying to use unrecognized global id: ${id}`);
-        } else if (newState.data[id]) {
-            throw Error(`Trying to override global data with id: ${id}`);
-        }
-    } else if (id.startsWith(globalKeyPrefix)) {
-        throw Error(`Non-global data cannot have id with prefix ${globalKeyPrefix}: ${id}`);
+      // 'filter.teams is whitelabled but not obrigatory
+      if (!globalKeysWhitelist.includes(key)) {
+        throw Error(`Trying to use unrecognized global id: ${key}`)
+      } else if (reducedData.data[key]) {
+        throw Error(`Trying to override global data with id: ${key}`)
+      }
+    } else if (key.startsWith(globalKeyPrefix)) {
+      throw Error(`Non-global data cannot have id with prefix ${globalKeyPrefix}: ${key}`)
     }
+    
+    const prefix = global ? globalKeyPrefix : ''
+    // if 'id' is an array of whitelabeled keys, get data for each id (line:33 commment)
+    reducedData.data[`${prefix}${key}`] = Array.isArray(id) ? dataArr[index] : data
+    reducedData.globalReady = _(globalKeysWhitelist).map(k => !!reducedData.data[`global.${k}`]).every()
 
-    const prefix = global ? globalKeyPrefix : '';
+    return reducedData
+  }, {...state})
+}
 
-    newState.data[`${prefix}${id}`] = data;
-    newState.globalReady = _(globalKeysWhitelist).map(k => !!newState.data[`global.${k}`]).every();
-    console.log('globalready', newState.globalReady);
-    return newState;
-};
-
-export default ({ children }) => {
-    const [dataState, dispatchDataState] = useReducer(
-        dataStateReducer, {data: {}, globalReady: false});
-
-    const reset = useCallback(() => dispatchDataState({reset: true}),[]);
-    const get = useCallback((id) => id ? dataState.data[id] : null, [dataState]);
-    const set = useCallback((id, data) => id ? dispatchDataState({id, data}) : null, []);
-    const getGlobal = useCallback((id) => id ? dataState.data[`global.${id}`] : null, [dataState]);
-    const setGlobal = useCallback((id, data) => id ? dispatchDataState({id, data, global: true}) : null, []);
-
-    return (
-        <DataContext.Provider value={{get, set, getGlobal, setGlobal, reset, globalDataReady: dataState.globalReady}}>
-            {children}
-        </DataContext.Provider >
-    );
-};
+export default function DataContext({ children }) {
+  const [dataState, dispatchDataState] = useReducer(
+    dataStateReducer, {data: {}, globalReady: false})
+    
+  const reset = useCallback(() => dispatchDataState({reset: true}),[])
+  const get = useCallback((id) => id ? dataState.data[id] : null, [dataState])
+  const set = useCallback((id, data) => id ? dispatchDataState({id, data}) : null, [])
+  const getGlobal = useCallback((id) => id ? dataState.data[`global.${id}`] : null, [dataState])
+  const setGlobal = useCallback((id, data) => id ? dispatchDataState({id, data, global: true}) : null, [])
+  
+  return (
+    <Context.Provider value={{get, set, getGlobal, setGlobal, reset, globalDataReady: dataState.globalReady}}>
+      {children}
+    </Context.Provider>
+  )
+}

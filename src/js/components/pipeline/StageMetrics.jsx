@@ -1,17 +1,23 @@
 import React from 'react';
+import _ from "lodash";
 import classnames from 'classnames';
-import FilledAreaChart from 'js/components/charts/FilledAreaChart';
-import Badge from 'js/components/ui/Badge';
+
 import { useApi } from 'js/hooks';
+
+import DataWidget from 'js/components/DataWidget';
+import { BigText } from 'js/components/charts/Tooltip';
+import TimeSeries from 'js/components/insights/charts/library/TimeSeries';
+import Badge from 'js/components/ui/Badge';
 import { BigNumber } from 'js/components/ui/Typography';
-import { pipelineStagesConf } from 'js/pages/pipeline/Pipeline';
 import { SmallTitle } from 'js/components/ui/Typography';
 import { StatusIndicator, READY } from 'js/components/ui/Spinner';
-import DataWidget from 'js/components/DataWidget';
-import { dateTime, number } from 'js/services/format';
-import { palette } from 'js/res/palette';
 import { NEGATIVE_IS_BETTER } from 'js/components/ui/Badge';
-import _ from "lodash";
+
+import { pipelineStagesConf } from 'js/pages/pipeline/Pipeline';
+
+import { dateTime, number, getBestTimeUnit } from 'js/services/format';
+import { hexToRGBA } from 'js/services/colors';
+import { palette } from 'js/res/palette';
 
 export const StageSummaryMetrics = ({name, stage}) => {
     const metric = stage.metric;
@@ -64,9 +70,12 @@ export const StageSummaryMetrics = ({name, stage}) => {
 export const OverviewSummaryMetrics = ({name, metric}) => {
 
     const plumber = (data) => {
-        const cycleTime = data.global['prs-metrics.values'].all['cycle-time'];
-        const proportions = _(data.global['prs-metrics.values'].all)
+        const cycleTime = data.global['prs-metrics.values'].all['cycle-time'] * 1000;
+        const avgTimes = _(data.global['prs-metrics.values'].all)
               .pick(['wip-time', 'review-time', 'merging-time', 'release-time'])
+              .mapValues(v => v * 1000)
+              .value();
+        const proportions = _(avgTimes)
               .mapValues(v => v * 100 / cycleTime)
               .value();
         const fastest = _(proportions).values().max();
@@ -77,7 +86,9 @@ export const OverviewSummaryMetrics = ({name, metric}) => {
         return (
             {
                 kpisData: {
-                    normalizedProportions
+                    normalizedProportions,
+                    proportions,
+                    avgTimes,
                 },
                 average: data.global['prs-metrics.values'].all[metric],
                 variation: data.global['prs-metrics.variations'][metric],
@@ -110,7 +121,37 @@ export const OverviewSummaryMetrics = ({name, metric}) => {
     );
 };
 
+
+const getBestFitDurationUnit = data => {
+    const maxValue = _(data)
+        .map(v => v.y * 1000)
+        .max();
+
+    return getBestTimeUnit(maxValue);
+};
+
 const SummaryMetrics = ({ data, stage, KPIComponent, status, chartConfig }) => {
+    let [conversionValue, durationUnit] = [];
+    let extra = {};
+    let timeseries = [];
+
+    if (status === READY) {
+      [conversionValue, durationUnit] = getBestFitDurationUnit(data.timeseries);
+
+      extra = {
+        color: chartConfig.color,
+        fillColor: hexToRGBA(chartConfig.color, .2),
+        height: chartConfig.height,
+        axisKeys: {x: 'x', y: 'y'},
+        axisTickFormats: {y: s => `${s} ${durationUnit}`},
+        maxNumberOfTicks: 6,
+        average: {value: data.average * 1000 / conversionValue, color: palette.schemes.trend},
+        tooltip: {renderBigFn: v => <BigText content={dateTime.bestTimeUnit(v.y * conversionValue)} />}
+      };
+
+      timeseries = data.timeseries.map(v => ({x: v.x, y: v.y === null ? null : v.y * 1000 / conversionValue}));
+    }
+
     return (
         <div className={classnames('summary-metric card mb-4 px-2', stage.stageName)}>
           <div className="card-body" style={{minHeight: '305px'}}>
@@ -133,7 +174,7 @@ const SummaryMetrics = ({ data, stage, KPIComponent, status, chartConfig }) => {
               {
                   status === READY &&
                       <div className="col-8 align-self-center">
-                        <FilledAreaChart data={{timeseries: data.timeseries, average: data.average}} {...chartConfig}/>
+                          <TimeSeries data={timeseries} extra={extra} />
                       </div>
               }
             </div>
@@ -161,18 +202,22 @@ const OverviewStageSummaryKPI = ({data}) => {
     const stages = pipelineStagesConf.slice(2, pipelineStagesConf.length);
     return (
         <>
-          {stages.map((stage, i) => (
-              <div key={i}>
-                <div><SmallTitle content={stage.title} /></div>
-                <span
-                  className={classnames('overall-proportion d-block mb-2', stage.stageName)}
-                  style={{ width: `${data.normalizedProportions[stage.metric]}%` }}
-                  data-toggle="tooltip"
-                  data-placement="right"
-                  title={`${dateTime.human(stage.avg)} (${number.percentage(stage.overallProportion)})`}
-                />
-              </div>
-          ))}
+          {stages.map((stage, i) => data.normalizedProportions[stage.metric] > 0 ?
+            (
+                <div key={i}>
+                  <div><SmallTitle content={stage.title} /></div>
+                  <span
+                    className={classnames('overall-proportion d-block mb-2', stage.stageName)}
+                    style={{ width: `${data.normalizedProportions[stage.metric]}%` }}
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title={`${dateTime.human(data.avgTimes[stage.metric])} (${number.percentage(data.proportions[stage.metric])})`}
+                  />
+                </div>
+            ) : (
+              null
+            )
+          )}
         </>
     );
 };

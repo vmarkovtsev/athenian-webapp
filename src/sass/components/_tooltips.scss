@@ -47,6 +47,17 @@
 
 // Info tooltips
 
+.athenian-tooltip {
+    b {
+        display: inline-block;
+        margin-top: 1em;
+    }
+
+    .code {
+        font-family: 'Courier New', Courier, monospace;
+    }
+}
+
 .tooltip.show {
     opacity: 1 !important;
 }

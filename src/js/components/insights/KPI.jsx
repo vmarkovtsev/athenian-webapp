@@ -3,7 +3,7 @@ import React from 'react';
 import Badge from 'js/components/ui/Badge';
 import { BigNumber } from 'js/components/ui/Typography';
 
-import { number } from 'js/services/format';
+import { number, isNumber } from 'js/services/format';
 
 /*
   Component that shows a simple KPI content insidea BoxKPI.
@@ -36,16 +36,22 @@ import { number } from 'js/services/format';
   </BoxKPI>
 
  */
-export const SimpleKPI = ({params}) => (
-    <div className="font-weight-bold">
-      <BigNumber content={buildContent(params.value, getUnit(params.value, params.unit))} />
-      <Badge value={number.round(params.variation)} trend={params.variationMeaning} className="ml-2" />
-    </div>
-);
+export const SimpleKPI = ({params}) => {
+    if (!isNumber(params.value) && typeof params.value !== 'string') {
+        return '';
+    }
+
+    return (
+        <div className="font-weight-bold">
+            <BigNumber content={buildContent(params.value, getUnit(params.value, params.unit))} />
+            {typeof params.variation !== 'undefined' && <Badge value={number.round(params.variation)} trend={params.variationMeaning} className="ml-2" />}
+        </div>
+    );
+};
 
 export const MultiKPI = ({params}) => (
     <div className="font-weight-bold">
-      {params.map((v, i) => (
+      {params.map((v, i) => ( (isNumber(params.value) || typeof params.value !== 'string') &&
           <BigNumber key={i} content={buildContent(v.value, getUnit(v.value, v.unit))}
                      className={i === params.length - 1 ? "" : "mr-3"} />
       ))}
@@ -55,6 +61,10 @@ export const MultiKPI = ({params}) => (
 const buildContent = (value, unit) => value + (unit ? ` ${unit}` : "");
 
 const getUnit = (value, unitConf) => {
+    if (!isNumber(value) && typeof value !== 'string') {
+        return '';
+    }
+
     let unit = '';
     if (typeof unitConf === 'string') {
         unit = unitConf;

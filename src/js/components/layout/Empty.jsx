@@ -1,6 +1,6 @@
 import React from 'react';
-import noData from 'js/pages/prototypes/empty-states/no-data.svg';
-import comingSoon from 'js/pages/prototypes/empty-states/coming-soon.svg';
+import noData from 'images/empty-states/no-data.svg';
+import comingSoon from 'images/empty-states/coming-soon.svg';
 
 const Empty = ({ background, children }) => {
     return (
@@ -15,7 +15,7 @@ const Empty = ({ background, children }) => {
 
 export default Empty;
 
-export const NoData = ({textOnly=null}) => {
+export const NoData = ({ textOnly = null }) => {
     if (textOnly) {
         return 'no data';
     }

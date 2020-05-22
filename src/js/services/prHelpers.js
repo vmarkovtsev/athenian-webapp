@@ -43,34 +43,6 @@ export const PR_EVENT = {
   RELEASE: 'release_happened',
 };
 
-const PR_STAGE_EVENTS = {
-    [PR_STAGE.WIP]: {
-        start: PR_EVENT.COMMIT,
-        end: PR_EVENT.REVIEW_REQUEST,
-        others: [PR_EVENT.CREATION],
-    },
-    [PR_STAGE.REVIEW]: {
-        start: PR_EVENT.REVIEW_REQUEST,
-        end: PR_EVENT.APPROVE,
-        others: [PR_EVENT.REVIEW, PR_EVENT.REJECTION],
-    },
-    [PR_STAGE.MERGE]: {
-        start: PR_EVENT.APPROVE,
-        end: PR_EVENT.MERGE,
-        others: []
-    },
-    [PR_STAGE.RELEASE]: {
-        start: PR_EVENT.MERGE,
-        end: PR_EVENT.RELEASE,
-        others: []
-    },
-    [PR_STAGE.DONE]: {
-        start: null,
-        end: null,
-        others: []
-    },
-};
-
 // These are the PR labels that will appear in PR tables depending on pr status/stage/events
 // and depending from which stage the PR is analyzed (see: https://athenianco.atlassian.net/browse/ENG-325)
 export const PR_LABELS = {
@@ -171,27 +143,10 @@ export const happened = (pr, event) => pr.properties.includes(event);
 export const authored = prs => prs.filter(pr => pr.participants.filter(dev => dev.status.includes('author')).length);
 
 export const isInStage = (pr, stage) => (
-    stageHappening(pr, stage) || stageHappened(pr, stage)
+    stageHappening(pr, stage) || stageCompleted(pr, stage)
 );
-const stageHappening = (pr, stage) => _(pr.properties)
-      .includes(stage);
-const stageCompleted = (pr, stage) => _(pr.properties)
-      .includes(PR_STAGE_EVENTS[stage].end);
-const stageHappened = (pr, stage) => {
-    if (stageCompleted(pr, stage)) {
-        return true;
-    }
-
-    if (stage === 'MERGE' && pr.status === PR_STATUS.CLOSED) {
-        return true;
-    }
-
-    const events = PR_STAGE_EVENTS[stage];
-    return (
-        _(pr.properties).includes(events.start) ||
-            _(pr.properties).intersection(events.others).length > 0
-    );
-};
+const stageHappening = (pr, stage) => _(pr.properties).includes(stage);
+const stageCompleted = (pr, stage) => _(pr.completedStages).includes(stage);
 
 const getCurrentStageHappening = (pr) => {
     for (const s of PR_STAGE_TIMELINE) {
@@ -203,29 +158,10 @@ const getCurrentStageHappening = (pr) => {
     throw Error("no stage happening");
 };
 
-const getFirstStageHappened = (pr) => {
-    for (const s of PR_STAGE_TIMELINE) {
-        if (stageHappened(pr, s)) {
-            return s;
-        }
-    };
-
-    // no events happened in current interval
-    return null;
-};
-
 const extractCompletedStages = pr => {
-    const firstStageHapened = getFirstStageHappened(pr);
-    if (!firstStageHapened) {
-        return [];
-    }
-
     const currentStage = getCurrentStageHappening(pr);
-
-    const firstStageIndex = _(PR_STAGE_TIMELINE).indexOf(firstStageHapened);
     const currentStageIndex = _(PR_STAGE_TIMELINE).indexOf(currentStage);
-
-    return PR_STAGE_TIMELINE.slice(firstStageIndex, currentStageIndex);
+    return PR_STAGE_TIMELINE.slice(0, currentStageIndex);
 };
 
 export const prLabel = stage => pr => {

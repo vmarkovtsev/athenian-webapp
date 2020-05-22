@@ -65,7 +65,9 @@ const human = milliseconds => {
         return '';
     }
 
-    if (milliseconds < MINUTE) {
+    if (milliseconds === 0) {
+        return '0 seconds';
+    } else if (milliseconds < MINUTE) {
         return '<1 min';
     } else if (milliseconds <= 1.75 * MINUTE) {
         return '~1 min';
