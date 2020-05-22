@@ -6,6 +6,8 @@ import { hexToRGBA } from 'js/services/colors';
 
 import { extent } from 'd3-array';
 
+const filterEmptyValues = v => v !== null;
+
 export default ({ fill, stroke, data }) => {
 
   const key = () => Math.random().toString(36).substring(2, 15);
@@ -32,13 +34,15 @@ export default ({ fill, stroke, data }) => {
   const [yMin, yMax] = extent(data, d => d.y);
   const newYMin = (yMin || 0) - ((yMax || 0) - (yMin || 0)) * .2
 
+  const dataPoints = data.filter(v => filterEmptyValues(v.y));
+
   return (
     <FlexibleXYPlot yDomain={[newYMin, yMax]} margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
       <GradientDefs>
         {gradients}
       </GradientDefs>
-      <LineSeries data={data} color={strokeColor} animation="stiff" />
-      <AreaSeries data={data} stroke="none" fill={fillColor} animation="stiff" />
+      <LineSeries data={dataPoints} color={strokeColor} animation="stiff" />
+      <AreaSeries data={dataPoints} stroke="none" fill={fillColor} animation="stiff" />
     </FlexibleXYPlot>
   );
 };
