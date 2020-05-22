@@ -113,7 +113,7 @@ export default ({ children }) => {
           }
       } 
             
-      setGlobalData('prs-metrics.values', await fetchValues())
+      setGlobalData('prs-metrics.values', fetchValues())
     }
             
     const fetchGlobalPRMetricsVariations = async() => {
@@ -146,7 +146,7 @@ export default ({ children }) => {
           .value()
       }
                   
-      setGlobalData('prs-metrics.variations', await fetchValues())
+      setGlobalData('prs-metrics.variations', fetchValues())
     }
                 
     getAndSetPRs()

@@ -1,4 +1,4 @@
-import React, { useReducer, useRef, useEffect } from 'react'
+import React, { useReducer, useRef } from 'react'
 import moment from 'moment'
 
 import { useAuth0 } from 'js/context/Auth0'
@@ -17,7 +17,15 @@ import { dateTime, github } from 'js/services/format'
 import { useMountEffect } from 'js/hooks'
 
 import { filterReducer, defaultFilter, mapContribsToTeam } from './filterReducer'
-import { init, setRepos, setTeams, setReady, setDateInterval, setContribs, setSelectedRepos, setSelectedContribs } from './actions'
+import {
+  init,
+  setReady,
+  setDateInterval,
+  setContribs,
+  setTeams,
+  setSelectedRepos,
+  setSelectedContribs
+} from './actions'
 
 const allowedDateInterval = {
   from: moment(YEAR_AGO).startOf('day').valueOf(),
@@ -40,7 +48,7 @@ export default function Filters({ children }) {
     { ...defaultFilter, dateInterval: defaultDateInterval }
   )
 
-  useEffect(() => {
+  useMountEffect(() => {
     (async () => {
       tokenRef.current = await getTokenSilently()
 
@@ -57,7 +65,7 @@ export default function Filters({ children }) {
 
       dispatchFilter(init({ repos, contribs, teams, ready: true }))
     })()
-  }, [])
+  })
 
   const onDateIntervalChange = async selectedDateInterval => {
     dispatchFilter(setReady(false))
@@ -90,17 +98,22 @@ export default function Filters({ children }) {
   
     selectedRepos = selectedRepos.length > 0 ? selectedRepos : contextRepos
     dateInterval = dateInterval || filterData.dateInterval
-  
-    setGlobalData('filter.repos', selectedRepos)
-    dispatchFilter(setSelectedRepos(selectedRepos))
-  
-    const selectedContribs = await getContribsForFilter(
-      tokenRef.current, accountID, dateInterval, selectedRepos
-    )
 
-    setGlobalData('filter.contribs', selectedContribs)
-    dispatchFilter(setContribs(selectedContribs))
-    dispatchFilter(setSelectedContribs(selectedContribs))
+    const [contribs, teams] = await Promise.all([
+      getContribsForFilter(tokenRef.current, accountID, dateInterval, selectedRepos),
+      getTeamsForFilter(tokenRef.current, accountID)
+    ])
+
+    setGlobalData(
+      ['filter.contribs', 'filter.teams', 'filter.repos'],
+      [contribs, teams, selectedRepos]
+    )
+    
+    dispatchFilter(setSelectedRepos(selectedRepos))
+
+    dispatchFilter(setContribs(contribs))
+    dispatchFilter(setSelectedContribs(contribs))
+    dispatchFilter(setTeams(teams))
     dispatchFilter(setReady(true))
   }
 
@@ -108,11 +121,14 @@ export default function Filters({ children }) {
     dispatchFilter(setReady(false))
     resetData()
     
-    dispatchFilter(setContribs(selectedContribs))
+    const teams = await getTeamsForFilter(tokenRef.current, accountID)
+
     setGlobalData(
-      ['filter.repos', 'filter.contribs'],
-      [filterData.repos.data, selectedContribs]
+      ['filter.repos', 'filter.contribs', 'filter.teams'],
+      [filterData.repos.data, selectedContribs, teams]
     )
+    dispatchFilter(setTeams(teams))
+    dispatchFilter(setSelectedContribs(selectedContribs))
     dispatchFilter(setReady(true))
   }
   
