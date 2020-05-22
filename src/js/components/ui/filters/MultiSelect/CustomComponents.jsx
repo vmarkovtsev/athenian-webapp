@@ -49,7 +49,7 @@ export const Dropdown = ({
 
   return (
     <div onClick={stopPropagation}>
-      <div ref={ref} onClick={toggle} className='filter-dropdown'>
+      <div ref={ref} onClick={toggle} className='filter-dropdown align-items-center'>
         <div className="d-flex align-items-center">
           <span className="filter-dropdown-label">{label}</span>
           {
@@ -71,10 +71,10 @@ export const Dropdown = ({
  */
 const Checkbox = ({ isChecked }) => {
   return (
-    <svg width="18px" height="18px" viewBox="0 0 18 18" className="mr-2">
-      <rect stroke="#D6DBE4" strokeWidth="1" x="0" y="0" width="18" height="18" fill="#fff"></rect>
+    <svg width="16px" height="16px" viewBox="0 0 16 16" className="mr-2">
+      <rect stroke="#D6DBE4" strokeWidth="1" x="0" y="0" width="16" height="16" fill="#fff"></rect>
       { isChecked &&
-        <polygon fill="#24C7CC" points="4.66692304 8.35872968 7.13673213 10.8903181 14.4025708 4 16 5.49137391 7.13673213 14 3 9.96982087"></polygon>
+        <polygon fill="#24C7CC" transform="translate(2.000000, 3.000000)" points="4.22898961 6.47146254 1.97497639 4.14922711 0.5 5.65814507 4.22898961 9.5 11.5 2.00891795 10.0354108 0.5"></polygon>
       }
     </svg>
   )
@@ -99,7 +99,8 @@ export const Option = props => {
     alignItems: 'center',
     borderBottom: '1px solid #D6DBE4',
     gridTemplateColumns: '20px calc(100% - 16px)',
-    gridColumnGap: 8
+    gridColumnGap: 4,
+    padding: "6px 12px"
   }
 
   return (
@@ -112,7 +113,7 @@ export const Option = props => {
 /**
  * Placeholder,
  * @param {string} label
- * @return {function} 
+ * @return {function}
  */
 export const Placeholder = props => {
   const { selectProps: { name } } = props
@@ -144,7 +145,7 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
   const style = {
     ...getStyles('menu', props),
     boxShadow: 'none',
-    border: '1px solid #ccc',
+    border: '1px solid #E7E7EC',
     borderTopWidth: 0
   }
   const allValues = getValue()

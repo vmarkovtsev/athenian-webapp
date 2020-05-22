@@ -42,7 +42,7 @@ export default function Filters({ children }) {
   const [filteredContribsState, setFilteredContribsState] = useState([])
 
   const [filteredDateIntervalState, setFilteredDateIntervalState] = useState(defaultDateInterval)
-  
+
   const [reposSelectState, setReposSelectState] = useState([])
   const [usersSelectState, setUsersSelectState] = useState([])
 
@@ -135,13 +135,13 @@ export default function Filters({ children }) {
     setGlobalData('filter.contribs', Promise.resolve(selectedContribs))
     setReadyState(true)
   }
-  
+
   const usersLabelFormat = ({ name, login, avatar }) => {
     const gituser = github.userName(login)
     const user = gituser || 'ANONYMOUS'
     return (
       <div className="align-items-center filter-dropdown-option">
-        <img src={avatar} alt={name} className="mr-2 filter-dropdown-option-img" /> 
+        <img src={avatar} alt={name} className="filter-dropdown-option-img" />
         { name && <span className="filter-dropdown-option-name mr-1">{name}</span> }
         { user && user !== name && <span className="filter-dropdown-option-user filter-dropdown-option-name mr-2">{user}</span> }
       </div>
