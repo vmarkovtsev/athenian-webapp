@@ -60,7 +60,7 @@ const bestTimeUnit = (milliseconds, decimals = 2) => {
  * @param {int} milliseconds
  * @return {string}
  */
-const human = milliseconds => {
+const human = (milliseconds, decimals = 0) => {
     if (isNaN(milliseconds)) {
         return '';
     }
@@ -72,17 +72,17 @@ const human = milliseconds => {
     } else if (milliseconds <= 1.75 * MINUTE) {
         return '~1 min';
     } else if (milliseconds <= 1.75 * HOUR) {
-        return Math.round(milliseconds / MINUTE) + ' mins';
+        return roundDecimals(milliseconds / MINUTE, decimals) + ' mins';
     } else if (milliseconds <= 1.75 * DAY) {
-        return Math.round(milliseconds / HOUR) + ' hours';
+        return roundDecimals(milliseconds / HOUR, decimals) + ' hours';
     } else if (milliseconds <= 12 * DAY) {
-        return Math.round(milliseconds / DAY) + ' days';
+        return roundDecimals(milliseconds / DAY, decimals) + ' days';
     } else if (milliseconds <= 8 * WEEK) {
-        return Math.round(milliseconds / WEEK) + ' weeks';
+        return roundDecimals(milliseconds / WEEK, decimals) + ' weeks';
     } else if (milliseconds <= 22 * MONTH) {
-        return Math.round(milliseconds / MONTH) + ' months';
+        return roundDecimals(milliseconds / MONTH, decimals) + ' months';
     } else if (milliseconds <= 5 * YEAR) {
-        return Math.round(milliseconds / YEAR) + ' years';
+        return roundDecimals(milliseconds / YEAR, decimals) + ' years';
     }
 
     return '>5 years';
