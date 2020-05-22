@@ -43,7 +43,7 @@ export const customStyles = {
     cursor: 'pointer',
     backgroundColor: 'transparent',
     color: '#121343',
-    minHeight: 36,
+    minHeight: 38,
   }),
   control: styles => ({
     ...styles,
