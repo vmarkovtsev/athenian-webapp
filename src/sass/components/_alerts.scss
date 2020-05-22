@@ -14,3 +14,53 @@
         }
     }
 }
+
+// Toastify Alerts
+
+.Toastify__toast {
+    border: 1px solid;
+    border-radius: 4px;
+    box-shadow: none;
+    font-family: "Cerebri", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    min-width: 150px;
+    min-height: 42px;
+    padding: 12px;
+
+    &--dark {
+        background-color: $color-dark;
+        border-color: $color-dark;
+        color: $white;
+    }
+
+    &--default {
+        background-color: $white;
+        border-color: $at-border-color;
+        color: $color-secondary;
+        box-shadow: 0 0 4px rgba(0,0,0,0.1);
+    }
+
+    &--info {
+        background-color: lighten($color-blue,40%);
+        color: $color-blue;
+    }
+
+    &--success {
+        background-color: lighten($color-turquoise,45%);
+        color: $color-turquoise;
+    }
+
+    &--warning {
+        background-color: lighten($color-light-orange,35%);
+        color: $color-light-orange;
+    }
+
+    &--error {
+        background-color: lighten($color-red,35%);
+        color: $color-red;
+    }
+
+    &-body {
+        margin: 0 !important;
+        text-align: center;
+    }
+}

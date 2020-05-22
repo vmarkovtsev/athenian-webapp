@@ -1,7 +1,7 @@
 /* global process */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 
 import {
     Router,
@@ -63,7 +63,16 @@ ReactDOM.render(<>
       </Router>
     </React.StrictMode>
   </Auth0Provider>
-  <ToastContainer />
+  <ToastContainer
+      position="top-center"
+      hideProgressBar
+      closeButton={false}
+      closeOnClick
+      draggable={false}
+      pauseOnFocusLoss={true}
+      pauseOnHover={true}
+      transition={Slide}
+  />
   {process.env.NODE_ENV === 'development' && <Development.Breakpoints />}
 </>,
   document.getElementById('root')

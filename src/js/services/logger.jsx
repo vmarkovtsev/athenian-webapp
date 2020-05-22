@@ -6,20 +6,28 @@ export default {
         console.log(...msgs);
     },
     info: (...msgs) => {
-        toast.info(<Msgs msgs={msgs} />);
+        toast.info(<Msgs msgs={msgs} />, {
+            autoClose: 5000,
+        });
     },
     ok: (...msgs) => {
-        toast.success(<Msgs msgs={msgs} />);
+        toast.success(<Msgs msgs={msgs} />, {
+            autoClose: 1000,
+        });
     },
     error: (...msgs) => {
         console.error(...msgs);
-        toast.error(<Msgs msgs={msgs} />);
+        toast.error(<Msgs msgs={msgs} />, {
+            autoClose: 5000,
+        });
     },
     fatal: (...msgs) => {
         // TODO(dpordomingo): this kind of errors are not caused by user input, so we should send them to sentry, for example.
         // We could also use the chat to send feedback in real time.
         console.error(...msgs);
-        toast.error(<Msgs msgs={msgs} />);
+        toast.error(<Msgs msgs={msgs} />, {
+            autoClose: 5000,
+        });
     },
 };
 
@@ -39,15 +47,14 @@ const extractParts = item => {
 
     if (item.body?.title && item.body?.type) {
         // errors returned by the API, as proper HTTP response (see API errors schema)
-        const parts = [];
-        parts.push(item.body.detail);
-        parts.push(`${item.body.title}. ${item.body.type}`);
-        return parts.filter(v => !!v);
+        return [item.body.detail || item.body.title];
     }
 
     if (item.error) {
-        // e.g. when JSON response could not be parsed (e.g. API returning NaN for old go-git '/filter/pull_requests')
-        let parts = errorParts(item.error);
+        // e.g. when JSON response could not be parsed
+        // e.g. Request has been terminated (connectivity loss; no HTTP response)
+        let parts = errorParts(item.error)
+            .map(s => s.includes('Request has been terminated') ? 'Connectivity loss' : s);
         return parts.length ? parts : ['Unhandled error'];
     }
 
