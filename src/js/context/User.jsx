@@ -14,7 +14,7 @@ const reducer = (state, action) => {
     case 'set':
         const state = {loading: false};
         const { user, userWithRepos } = action;
-        const godMode = user.sub !== userWithRepos.id;
+        const godMode = userWithRepos ? user.sub !== userWithRepos.id : false;
         return {...state, user: userWithRepos, godMode};
     case 'fail':
         return {loading: false};
