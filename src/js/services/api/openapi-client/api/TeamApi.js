@@ -41,7 +41,7 @@ export default class TeamApi {
 
 
     /**
-     * Create a team.
+     * Create a team. Admin is not required.
      * @param {Object} opts Optional parameters
      * @param {module:model/TeamCreateRequest} opts.body 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/CreatedIdentifier} and HTTP response
@@ -71,7 +71,7 @@ export default class TeamApi {
     }
 
     /**
-     * Create a team.
+     * Create a team. Admin is not required.
      * @param {Object} opts Optional parameters
      * @param {module:model/TeamCreateRequest} opts.body 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/CreatedIdentifier}

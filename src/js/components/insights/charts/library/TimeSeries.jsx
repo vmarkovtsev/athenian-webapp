@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { dateTime } from 'js/services/format';
+import { dateTime, getBestFitDurationUnit } from 'js/services/format';
 
 import _ from 'lodash';
 
@@ -20,9 +20,9 @@ import {
 import { DateBigNumber, onValueChange, onValueReset } from 'js/components/charts/Tooltip';
 import { NoData } from 'js/components/layout/Empty';
 
-export default ({title, data, extra}) => (
+export default ({title, data, extra, ...rest}) => (
     <div style={{ background: 'white' }}>
-      <TimeSeries title={title} data={data} extra={extra} />
+      <TimeSeries title={title} data={data} extra={extra} {...rest} />
     </div >
 );
 
@@ -44,7 +44,7 @@ const buildChartLabel = (text, which) => {
             style: {
                 textAnchor: 'middle',
                 transform: 'rotate(-90)',
-                y: -60
+                y: -80
             }
         }
     }[which];
@@ -69,7 +69,7 @@ export const computeTickValues = (formattedData, maxNumberOfTicks) => {
 
 const filterEmptyValues = v => v !== null;
 
-const TimeSeries = ({ title, data, extra }) => {
+const TimeSeries = ({ title, data, extra, timeMode }) => {
     const [currentHover, setCurrentHover] = useState(null);
 
     if (data.length === 0) {
@@ -84,7 +84,14 @@ const TimeSeries = ({ title, data, extra }) => {
           }))
           .value();
 
-    const dataPoints = formattedData.filter(v => (extra.filterValuesFn || filterEmptyValues)(v.y));
+    const [conversionValue, unit] = timeMode ? getBestFitDurationUnit(formattedData) : [1, ''];
+    const scaleY = y => y === null ? null : y / conversionValue;
+
+    const dataPoints = formattedData
+        .filter(v => (extra.filterValuesFn || filterEmptyValues)(v.y))
+        .map(v => ({...v, y: scaleY(v.y)}));
+
+    const tickFormatY = y => `${y} ${unit}`.trim();
 
     const tickValues = computeTickValues(formattedData, extra.maxNumberOfTicks);
 
@@ -104,11 +111,11 @@ const TimeSeries = ({ title, data, extra }) => {
     if (extra.average) {
         averagedData.push({
             x: formattedData[0].x,
-            y: extra.average.value
+            y: scaleY(extra.average.value),
         });
         averagedData.push({
             x: formattedData[formattedData.length - 1].x,
-            y: extra.average.value
+            y: scaleY(extra.average.value),
         });
     }
 
@@ -118,7 +125,7 @@ const TimeSeries = ({ title, data, extra }) => {
           <VerticalGridLines tickValues={tickValues} />
           <XAxis tickValues={tickValues} tickFormat={dateTime.monthDay} />
           <HorizontalGridLines tickTotal={3} />
-          <YAxis tickTotal={3} tickFormat={extra?.axisTickFormats?.y || (y => y)} />
+          <YAxis tickTotal={3} tickFormat={tickFormatY} />
           {extra.axisLabels && extra.axisLabels.y && buildChartLabel(extra.axisLabels.y, 'y')}
 
           {extra.fillColor && <AreaSeries data={dataPoints} stroke="none" fill={extra.fillColor} animation="stiff" /> }
@@ -159,7 +166,11 @@ const TimeSeries = ({ title, data, extra }) => {
              onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
            />}
 
-          <DateBigNumber value={currentHover} renderBigFn={extra?.tooltip?.renderBigFn} />
+          <DateBigNumber
+            value={currentHover}
+            dataPoint={currentHover && {...currentHover, y: currentHover.y === null ? null : currentHover.y / scaleY(1)}}
+            renderBigFn={ extra?.tooltip?.renderBigFn}
+          />
         </FlexibleWidthXYPlot>
     );
 };

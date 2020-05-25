@@ -13,6 +13,7 @@ const pullRequestSize = {
         const { prs, users } = data.global['prs'];
         return {
             chartData: _(prs)
+                .filter(pr => pr.completedStages.includes(PR_STAGE.WIP))
                 .map(pr => {
                     let endTime;
                     if (pr.closed instanceof Date && !isNaN(pr.closed)) {
@@ -25,7 +26,7 @@ const pullRequestSize = {
 
                     // TODO(dpordomingo): This Chart shows PRs in two groups: waiting for review or not.
                     //   Grouping criteria should be having review_happened or approve_happened or changes_request_happened or merge_happened or being closed.
-                    //   But API since the tooltip also needs to show the time waiting for being reviewed, and the events
+                    //   But since the tooltip also needs to show the time waiting for being reviewed, and the events
                     //   above do not expose it, we can only differentiate between being review-complete, or not.
                     const reviewed = pr.completedStages.includes(PR_STAGE.REVIEW);
 

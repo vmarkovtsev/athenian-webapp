@@ -1,7 +1,9 @@
 /* global process */
 import _ from 'lodash';
 
-const getAnalytics = () => {
+import { isNotProd } from 'js/components/development';
+
+const getAnalytics = (debug) => {
   const environment = window.ENV?.environment || process.env?.NODE_ENV || '';
 
   const wrapper = function(fn, fnName){
@@ -13,15 +15,16 @@ const getAnalytics = () => {
   };
 
   const analytics = {};
-  if (window.ENV?.segment?.writeKey) {
-    analytics.identify = wrapper(window.analytics.identify, 'identify');
-    analytics.page = wrapper(window.analytics.page, 'page');
-    analytics.track = wrapper(window.analytics.track, 'track');
-  } else {
-    analytics.identify = (...args) => {console.log(`dummy analytics: identify [${JSON.stringify(args)}]`);};
-    analytics.page = (...args) => {console.log(`dummy analytics: page [${JSON.stringify(args)}]`);};
-    analytics.track = (...args) => {console.log(`dummy analytics: track [${JSON.stringify(args)}]`);};
-  }
+  _(['page', 'identify', 'track', 'debug']).forEach(m => {
+    if (window.ENV?.segment?.writeKey) {
+      analytics[m] = wrapper(window.analytics[m], 'identify');
+      window.analytics.on(m, (event, properties, options) => {
+        console.log(`analytics emitter: ${m}`, event, properties, options);
+      });
+    } else {
+      analytics[m] = (...args) => {console.log(`dummy analytics: ${m} [${JSON.stringify(args)}]`);};
+    }
+  });
 
   const identify = (user) => {
     if (!user) {
@@ -45,6 +48,10 @@ const getAnalytics = () => {
   const page = (name, properties) => analytics.page(name, {...properties, environment});
   const track = (event, properties) => analytics.track(event, {...properties, environment});
 
+  if (debug) {
+    analytics.debug(true);
+  }
+
   return {
     identify,
     page,
@@ -52,4 +59,4 @@ const getAnalytics = () => {
   };
 };
 
-export const analytics = getAnalytics();
+export const analytics = getAnalytics(isNotProd);

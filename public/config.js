@@ -13,7 +13,7 @@ window.ENV = {
     "githubAppUri": "https://github.com/apps/development-athenian-owl"
   },
   segment: {
-      "writeKey": ""
+      "writeKey": "8P1BE2c3Ciz8SH1tu4ZplaYFhmcJH2Eh"
   },
   sentry: {
     "dsn": ""

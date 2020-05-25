@@ -38,11 +38,11 @@ const waitTimeFirstReview = {
 
         return {
             chartData: _(data.global['prs-metrics.values'].custom['wait-first-review'])
-                .map(v => ({day: v.date, value: v.value / 3600}))
+                .map(v => ({day: v.date, value: v.value === null ? null : v.value * 1000}))
                 .value(),
             KPIsData: {
                 avgWaitingTime: {
-                    value: Math.round(currWaitFirstReview / 3600),
+                    value: currWaitFirstReview * 1000,
                     variation: waitFirstReviewVariation
                 },
                 overallProportion: {
@@ -68,6 +68,7 @@ const waitTimeFirstReview = {
                         component: TimeSeries,
                         params: {
                             data: computed.chartData,
+                            timeMode: true,
                             extra: {
                                 average: {
                                     value: computed.KPIsData.avgWaitingTime.value,
@@ -83,7 +84,7 @@ const waitTimeFirstReview = {
                                 },
                                 color: '#41CED3',
                                 tooltip: {
-                                    renderBigFn: v => <BigText content={dateTime.human(v.y * 60 * 60 * 1000)} />,
+                                    renderBigFn: v => <BigText content={dateTime.human(v.y)} />,
                                 },
                             }
                         }
@@ -94,13 +95,9 @@ const waitTimeFirstReview = {
                             subtitle: {text: 'For 1st Review'},
                             component: SimpleKPI,
                             params: {
-                                value: computed.KPIsData.avgWaitingTime.value,
+                                value: dateTime.bestTimeUnit(computed.KPIsData.avgWaitingTime.value, 0),
                                 variation: computed.KPIsData.avgWaitingTime.variation,
                                 variationMeaning: NEGATIVE_IS_BETTER,
-                                unit: {
-                                    singular: 'hour',
-                                    plural: 'hours'
-                                }
                             }
                         },
                         {

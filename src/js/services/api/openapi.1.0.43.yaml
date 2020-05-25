@@ -1638,10 +1638,7 @@ components:
           description: Name of the team.
           type: string
         members:
-<<<<<<< HEAD:src/js/services/api/openapi.1.0.43.yaml
-=======
           description: Members of the team.
->>>>>>> d6b60fa6216453a4d6bdad672721dcc64178d468:src/js/services/api/openapi.1.0.41.yaml
           $ref: '#/components/schemas/DeveloperSet'
       required:
       - account
@@ -1665,10 +1662,7 @@ components:
           description: Name of the team.
           type: string
         members:
-<<<<<<< HEAD:src/js/services/api/openapi.1.0.43.yaml
-=======
           description: Members of the team.
->>>>>>> d6b60fa6216453a4d6bdad672721dcc64178d468:src/js/services/api/openapi.1.0.41.yaml
           $ref: '#/components/schemas/DeveloperSet'
       required:
       - id

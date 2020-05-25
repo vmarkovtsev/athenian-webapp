@@ -15,7 +15,7 @@ import { NEGATIVE_IS_BETTER } from 'js/components/ui/Badge';
 
 import { pipelineStagesConf } from 'js/pages/pipeline/Pipeline';
 
-import { dateTime, number, getBestTimeUnit } from 'js/services/format';
+import { dateTime, number } from 'js/services/format';
 import { hexToRGBA } from 'js/services/colors';
 import { palette } from 'js/res/palette';
 
@@ -121,35 +121,25 @@ export const OverviewSummaryMetrics = ({name, metric}) => {
     );
 };
 
-
-const getBestFitDurationUnit = data => {
-    const maxValue = _(data)
-        .map(v => v.y * 1000)
-        .max();
-
-    return getBestTimeUnit(maxValue);
-};
-
 const SummaryMetrics = ({ data, stage, KPIComponent, status, chartConfig }) => {
-    let [conversionValue, durationUnit] = [];
     let extra = {};
     let timeseries = [];
 
     if (status === READY) {
-      [conversionValue, durationUnit] = getBestFitDurationUnit(data.timeseries);
-
       extra = {
         color: chartConfig.color,
         fillColor: hexToRGBA(chartConfig.color, .2),
         height: chartConfig.height,
         axisKeys: {x: 'x', y: 'y'},
-        axisTickFormats: {y: s => `${s} ${durationUnit}`},
         maxNumberOfTicks: 6,
-        average: {value: data.average * 1000 / conversionValue, color: palette.schemes.trend},
-        tooltip: {renderBigFn: v => <BigText content={dateTime.bestTimeUnit(v.y * conversionValue)} />}
+        average: {value: data.average * 1000, color: palette.schemes.trend},
+        tooltip: {renderBigFn: v => <BigText content={dateTime.human(v.y, 1)} />}
       };
 
-      timeseries = data.timeseries.map(v => ({x: v.x, y: v.y === null ? null : v.y * 1000 / conversionValue}));
+      timeseries = data.timeseries.map(v => ({
+        ...v,
+        y: v.y === null ? null : v.y * 1000
+      }));
     }
 
     return (
@@ -174,7 +164,7 @@ const SummaryMetrics = ({ data, stage, KPIComponent, status, chartConfig }) => {
               {
                   status === READY &&
                       <div className="col-8 align-self-center">
-                          <TimeSeries data={timeseries} extra={extra} />
+                          <TimeSeries data={timeseries} extra={extra} timeMode={true} />
                       </div>
               }
             </div>
