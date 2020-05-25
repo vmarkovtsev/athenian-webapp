@@ -2,7 +2,30 @@ import React, { useState, useEffect, useRef } from 'react'
 import { customStyles as styles } from './CustomStyles'
 import { FilterFooter } from '../FilterFooter'
 import { StatusIndicator, LOADING } from 'js/components/ui/Spinner'
-import { ReactComponent as DropdownIndicator } from './DropdownIndicator.svg'
+import { ReactComponent as DropdownIndicator } from './IconDropdownIndicator.svg'
+import { components } from 'react-select'
+
+const stopPropagation = ev => ev.stopPropagation()
+
+/**
+ * Transform string into color
+ * @param {string} str 
+ */
+const stringToColour = (str = '') => {
+  const hash = str
+    .split('')
+    .reduce((acc, curr) =>
+      String.prototype.charCodeAt.call(curr) + ((acc << 5) - acc),
+      ''
+    )
+
+  return 'rgb'
+    .split('')
+    .reduce((color, curr, index) => {
+      const value = (hash >> (index * 8)) & 0xFF
+      return color += ('00' + value.toString(16)).substr(-2)
+    }, '#')
+}
 
 /**
  * CustomComponents used to override react-select components
@@ -12,8 +35,6 @@ import { ReactComponent as DropdownIndicator } from './DropdownIndicator.svg'
  * @param {function} onApply
  * @param {Array} value
  */
-const stopPropagation = ev => ev.stopPropagation()
-
 export const Dropdown = ({
   children,
   label,
@@ -42,6 +63,7 @@ export const Dropdown = ({
     components: {
       Option,
       Placeholder,
+      Group,
       Menu: menu({ setMenuOpen, onApply })
     },
     styles
@@ -66,10 +88,100 @@ export const Dropdown = ({
 }
 
 /**
+ * Create icon using the first letter
+ * @param {string} props.title
+ */
+const HeadingIcon = ({ title }) => {
+  const [letter] = title
+  const style = {
+    background: stringToColour(title)
+  }
+  return (
+    <div className="filter-dropdown-option-prefix" style={style}>
+      {letter.toUpperCase()}
+    </div>
+  )
+}
+
+const Chevron = ({ isOpen }) => {
+  const style = {
+    transform: `rotate(${isOpen ? '0deg' : '-90deg'})`
+  }
+  return (
+    <svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" style={style}>
+      <path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path>
+    </svg>
+  )
+}
+/**
+ * Group Heading
+ * @param {*} param0 
+ */
+const GroupHeading = (onCheck, isChecked, onToggle, toggled) => props => {
+  const {
+    children,
+    ...rest
+  } = props
+
+  const onClick = () => onToggle(!toggled)
+  const onCheckboxClick = e => {
+    e.stopPropagation()
+    onCheck(!isChecked)
+  }
+
+  return (
+    <components.GroupHeading onClick={onClick} {...rest}>
+      <Checkbox isChecked={isChecked} onClick={onCheckboxClick} />
+      <HeadingIcon title={children} />
+      {children}
+      <Chevron isOpen={toggled} />
+    </components.GroupHeading>
+  )
+}
+
+/**
+ * Group
+ * @param {*} param0 
+ */
+const Group = props => {
+  const [isChecked, setChecked] = useState(true)
+  const [isOpen, setOpen] = useState(false)
+
+  const { children, ...rest } = props
+
+  useEffect(() => {
+    const allSelected = props.options.map(op => op.isSelected).every(Boolean)
+    setChecked(allSelected)
+  }, [props.options])
+
+  const onCheckClick = check => {
+    setChecked(check)
+    const values = props.getValue()
+
+    const { data, setValue } = props
+    if (!check) {
+      const newvalue = values.filter(val => (
+        !data.options.find(op => op.login === val.login)
+      ))
+      setValue(newvalue)
+    } else {
+      setValue([...values, ...data.options])
+    }
+  }
+
+  const Heading = GroupHeading(onCheckClick, isChecked, setOpen, isOpen)
+  return (
+    <components.Group {...rest} Heading={Heading}>
+      {isOpen && children}
+    </components.Group>
+  )
+}
+
+/**
  * Checkbox
  * @param {boolean} isChecked
  */
-const Checkbox = ({ isChecked }) => {
+const Checkbox = ({ isChecked, onClick }) => {
   return (
     <svg width="16px" height="16px" viewBox="0 0 16 16" className="mr-2">
       <rect stroke="#D6DBE4" strokeWidth="1" x="0" y="0" width="16" height="16" fill="#fff"></rect>
@@ -87,26 +199,20 @@ const Checkbox = ({ isChecked }) => {
 */
 export const Option = props => {
   const {
-    getStyles,
-    innerProps: { ref, ...restInnerProps },
+    innerProps: { onMouseMove, onMouseOver, ...restInnerProps }, // remove mouse events
     label,
     isSelected
   } = props
 
-  const style = {
-    ...getStyles('option', props),
-    display: 'grid',
-    alignItems: 'center',
-    borderBottom: '1px solid #D6DBE4',
-    gridTemplateColumns: '20px calc(100% - 16px)',
-    gridColumnGap: 4,
-    padding: "6px 12px"
+  const newProps = {
+    ...props,
+    innerProps: { ...restInnerProps }
   }
 
   return (
-    <div ref={ref} style={style} {...restInnerProps}>
+    <components.Option {...newProps}>
       <Checkbox isChecked={isSelected} /> {label}
-    </div>
+    </components.Option>
   )
 }
 
@@ -131,10 +237,23 @@ export const Placeholder = props => {
 /**
  * Menu
  */
+
+ /**
+  * Map options to flat array
+  * @param {Array} options 
+  */
+const extractOptions = options => {
+  const [option] = options
+  if (option && option.options) { //is a group
+    return options.reduce((acc, curr) => {
+      return [ ...acc, ...curr.options ]
+    }, [])
+  }
+  return options
+}
+
 export const menu = ({ setMenuOpen, onApply }) => props => {
   const {
-    getStyles,
-    innerProps: { ref, ...restInnerProps },
     children,
     clearValue,
     options,
@@ -142,31 +261,33 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
     getValue
   } = props
 
-  const style = {
-    ...getStyles('menu', props),
-    boxShadow: 'none',
-    border: '1px solid #E7E7EC',
-    borderTopWidth: 0
-  }
   const allValues = getValue()
-  const allSelected = allValues.length === options.length
+  
+  const mappedOptions = extractOptions(options)
 
+  const totalOptions = mappedOptions.reduce((acc, curr) => {
+    acc.add(curr.login ? curr.login : curr)
+    return acc
+  }, new Set()).size
+
+  const allSelected = allValues.length === totalOptions
+  const toggleAll = () => {
+    clearValue()
+    if (!allSelected) {
+      setValue(mappedOptions)
+    }
+  }
   return (
-    <div ref={ref} {...restInnerProps} style={style}>
+    <components.Menu {...props}>
       <div
         className="d-flex filter-dropdown-menu-all"
-        onClick={() => {
-          clearValue()
-          if (!allSelected) {
-            setValue(options)
-          }
-        }}
+        onClick={toggleAll}
       >
         <Checkbox isChecked={allSelected} />
         <span>
           <span className="filter-dropdown-all">All</span>
           <span className="filter-dropdown-pill">
-            {options.length}
+            {totalOptions}
           </span>
         </span>
       </div>
@@ -179,6 +300,6 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
         }}
         isAcceptable={allValues.length > 0}
       /> }
-    </div>
+    </components.Menu>
   )
 }

@@ -7,7 +7,16 @@
 }
 
 .filter {
-  min-width: 250px;
+  min-width: 280px;
+}
+
+@mixin filter-avatar {
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+  border: 2px solid white;
+  box-shadow: 0 0 2px #ccc;
+  margin-right: 0.6rem;
 }
 
 .filter-dropdown {
@@ -56,12 +65,7 @@
   }
 
   &-option-img {
-    width: 25px;
-    height: 25px;
-    border-radius: 100%;
-    border: 2px solid white;
-    box-shadow: 0 0 2px #ccc;
-    margin-right: 0.6rem;
+    @include filter-avatar()
   }
 
   &-option-name {
@@ -73,6 +77,13 @@
 
   &-option-user {
     color: $color-secondary;
+  }
+  &-option-prefix {
+    @include filter-avatar();
+    color: white;
+    text-align: center;
+    line-height: 20px;
+    margin-right: 10px;
   }
 }
 
