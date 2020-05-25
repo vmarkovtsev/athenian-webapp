@@ -5,8 +5,10 @@ import { useApi } from 'js/hooks';
 
 import { InsightsError } from 'js/components/insights/Helper';
 
+import createdPRs from 'js/components/insights/stages/work-in-progress/createdPrs';
 import mostActiveDevs from 'js/components/insights/stages/work-in-progress/mostActiveDevs';
 import pullRequestRatioFlow from 'js/components/insights/stages/work-in-progress/pullRequestRatioFlow';
+import { isNotProd } from 'js/components/development';
 
 
 export default () => {
@@ -18,11 +20,15 @@ export default () => {
 
     const fetcher = async () => {
         return Promise.resolve({
+            createdPRs: await createdPRs.fetcher(api, apiContext),
             pullRequestRatioFlow: await pullRequestRatioFlow.fetcher(api, apiContext)
         });
     };
 
     const plumber = (data) => ({
+        createdPRs: createdPRs.plumber({
+            ...data.createdPRs, global: data.global
+        }),
         mostActiveDevs: mostActiveDevs.plumber({
             ...data.mostActiveDevs, global: data.global
         }),
@@ -46,10 +52,16 @@ const Inner = ({ data, error }) => {
         return <InsightsError/>;
     }
 
-    const insights = [
+    let insights = [];
+
+    if (isNotProd) {
+        insights.push(createdPRs.factory(data.createdPRs));
+    }
+
+    insights.push(
         mostActiveDevs.factory(data.mostActiveDevs),
         pullRequestRatioFlow.factory(data.pullRequestRatioFlow)
-    ];
+    );
 
     return (
         <>{insights.map((ins, i) => <Box meta={ins.meta} content={ins.content} key={i} />)}</>

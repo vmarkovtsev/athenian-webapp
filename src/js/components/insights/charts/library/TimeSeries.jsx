@@ -84,6 +84,11 @@ const TimeSeries = ({ title, data, extra, timeMode }) => {
           }))
           .value();
 
+    const xDomain = {
+        min: formattedData[0].x,
+        max: formattedData[formattedData.length - 1].x
+    };
+
     const [conversionValue, unit] = timeMode ? getBestFitDurationUnit(formattedData) : [1, ''];
     const scaleY = y => y === null ? null : y / conversionValue;
 
@@ -98,11 +103,11 @@ const TimeSeries = ({ title, data, extra, timeMode }) => {
     const referenceData = [];
     if (extra.reference) {
         referenceData.push({
-            x: formattedData[0].x,
+            x: xDomain.min,
             y: extra.reference.value
         });
         referenceData.push({
-            x: formattedData[formattedData.length - 1].x,
+            x: xDomain.max,
             y: extra.reference.value
         });
     }
@@ -110,17 +115,21 @@ const TimeSeries = ({ title, data, extra, timeMode }) => {
     const averagedData = [];
     if (extra.average) {
         averagedData.push({
-            x: formattedData[0].x,
+            x: xDomain.min,
             y: scaleY(extra.average.value),
         });
         averagedData.push({
-            x: formattedData[formattedData.length - 1].x,
+            x: xDomain.max,
             y: scaleY(extra.average.value),
         });
     }
 
     return (
-        <FlexibleWidthXYPlot height={extra.height || 300} margin={{ left: 100, right: 30 }}>
+        <FlexibleWidthXYPlot
+            height={extra.height || 300}
+            margin={{ left: 100, right: 30 }}
+            xDomain={[xDomain.min, xDomain.max]}
+        >
 
           <VerticalGridLines tickValues={tickValues} />
           <XAxis tickValues={tickValues} tickFormat={dateTime.monthDay} />

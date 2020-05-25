@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-
 import _ from 'lodash';
-
 import {
     FlexibleWidthXYPlot,
     XAxis,
@@ -11,15 +9,17 @@ import {
     ChartLabel,
 } from 'react-vis';
 
-import Tooltip, { onValueChange, onValueReset } from 'js/components/charts/Tooltip';
+import Tooltip, { onValueChange, onValueReset, DateBigNumber } from 'js/components/charts/Tooltip';
 
-export default ({title, data, extra}) => (
+import { dateTime } from 'js/services/format';
+
+export default ({title, data, extra, ...rest}) => (
     <div style={{ background: 'white' }}>
-      <VerticalBarChart title={title} data={data} extra={extra} />
+      <VerticalBarChart title={title} data={data} extra={extra} {...rest} />
     </div >
 );
 
-const VerticalBarChart = ({ title, data, extra }) => {
+const VerticalBarChart = ({ title, data, extra, timeMode }) => {
     const [currentHover, setCurrentHover] = useState(null);
 
     if (data.length === 0) {
@@ -28,7 +28,7 @@ const VerticalBarChart = ({ title, data, extra }) => {
 
     const formattedData = _(data)
           .map(v => ({
-              x: v[extra.axisKeys.x],
+              x: timeMode ? v[extra.axisKeys.x].getTime() : v[extra.axisKeys.x],
               y: v[extra.axisKeys.y],
               tooltip: v.tooltip,
           }))
@@ -36,14 +36,17 @@ const VerticalBarChart = ({ title, data, extra }) => {
 
     const color = extra.color;
 
-    const ChartTooltip = extra?.tooltip?.template || Tooltip;
+    const ChartTooltip = timeMode ? DateBigNumber : ( extra?.tooltip?.template || Tooltip );
 
     return (
         <FlexibleWidthXYPlot height={500} margin={{ left: 80, bottom: 100}} xType="ordinal">
-          <XAxis tickLabelAngle={-45} />
+          <XAxis
+            tickLabelAngle={-45}
+            tickFormat={timeMode ? dateTime.monthDay : v => v}
+          />
 
-          <HorizontalGridLines />
-          <YAxis />
+          <HorizontalGridLines tickTotal={3} />
+          <YAxis tickTotal={3} />
           {extra.axisLabels && extra.axisLabels.y && buildChartLabel(extra.axisLabels.y, 'y')}
 
           <VerticalBarSeries
@@ -54,7 +57,17 @@ const VerticalBarChart = ({ title, data, extra }) => {
             onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
           />
 
-          <ChartTooltip value={currentHover} />
+          {timeMode ?
+            (
+              <DateBigNumber
+                value={currentHover}
+                dataPoint={currentHover}
+                renderBigFn={ extra?.tooltip?.renderBigFn }
+              />
+            ) : (
+              <ChartTooltip value={currentHover} />
+            )
+        }
 
         </FlexibleWidthXYPlot>
     );
