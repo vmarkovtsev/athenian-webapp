@@ -32,29 +32,6 @@
              analytics.load(window.ENV.segment.writeKey);
          }}();
         </script>
-        <script>
-         (function(){
-             window.ATHENIAN = window.ATHENIAN || {};
-             var pollingInterval = 50;
-             window.ATHENIAN.intervalId = window.setInterval(function() {
-                 if (!Array.isArray(window.analytics)) {
-                     console.log('window.analytics has been injected', window.analytics);
-                     window.clearInterval(window.ATHENIAN.intervalId);
-                     return;
-                 }
-
-                 console.log('window.analytics', window.analytics);
-             }, pollingInterval);
-
-             var timeout = 5000
-             window.setTimeout(function() {
-                 if (Array.isArray(window.analytics)) {
-                     console.log('window.analytics has NOT been injected after ' + timeout + 'ms', window.analytics);
-                     window.clearInterval(window.ATHENIAN.intervalId);
-                 }
-             }, timeout);
-         })();
-        </script>
         <title>Athenian</title>
     </head>
     <body id="page-top">
