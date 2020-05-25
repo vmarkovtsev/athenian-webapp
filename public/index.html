@@ -28,32 +28,9 @@
         -->
         <!-- Segment -->
         <script>
-         !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t,e){var n=document.createElement("script");n.type="text/javascript";n.async=!0;n.src="https://cdn.segment.com/analytics.js/v1/"+t+"/analytics.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(n,a);analytics._loadOptions=e};analytics.SNIPPET_VERSION="4.1.0";
+         !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t,e){var n=document.createElement("script");n.type="text/javascript";n.async=!0;n.src="https://cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(n,a);analytics._loadOptions=e};analytics.SNIPPET_VERSION="4.1.0";
              analytics.load(window.ENV.segment.writeKey);
          }}();
-        </script>
-        <script>
-         (function(){
-             window.ATHENIAN = window.ATHENIAN || {};
-             var pollingInterval = 50;
-             window.ATHENIAN.intervalId = window.setInterval(function() {
-                 if (!Array.isArray(window.analytics)) {
-                     console.log('window.analytics has been injected', window.analytics);
-                     window.clearInterval(window.ATHENIAN.intervalId);
-                     return;
-                 }
-
-                 console.log('window.analytics', window.analytics);
-             }, pollingInterval);
-
-             var timeout = 5000
-             window.setTimeout(function() {
-                 if (Array.isArray(window.analytics)) {
-                     console.log('window.analytics has NOT been injected after ' + timeout + 'ms', window.analytics);
-                     window.clearInterval(window.ATHENIAN.intervalId);
-                 }
-             }, timeout);
-         })();
         </script>
         <title>Athenian</title>
     </head>
