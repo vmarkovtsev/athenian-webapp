@@ -13,6 +13,7 @@ const pullRequestSize = {
         const { prs, users } = data.global['prs'];
         return {
             chartData: _(prs)
+                .filter(pr => pr.completedStages.includes(PR_STAGE.WIP))
                 .map(pr => {
                     let endTime;
                     if (pr.closed instanceof Date && !isNaN(pr.closed)) {
