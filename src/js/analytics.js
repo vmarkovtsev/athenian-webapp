@@ -6,6 +6,7 @@ import { isNotProd } from 'js/components/development';
 const getAnalytics = (debug) => {
   const environment = window.ENV?.environment || process.env?.NODE_ENV || '';
 
+  window.analytics = window.analytics || {};
   _(['page', 'identify', 'track', 'debug']).forEach(m => {
     if (window.ENV?.segment?.writeKey) {
       window.analytics.on(m, (event, properties, options) => {
