@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import 'react-dates/initialize';
 import moment from 'moment';
 import { DateRangePicker } from 'react-dates';
 import { START_DATE, END_DATE } from 'react-dates/constants';
 import { FilterFooter } from './FilterFooter'
+import Checkbox from 'js/components/ui/Checkbox'
 
 const isInRange = (candidate, lower, upper) => lower.isBefore(candidate) && upper.isAfter(candidate);
 
@@ -93,7 +93,8 @@ export default ({
         setDateIntervalState(prevDateIntervalState);
         setFocusedInputState(null);
     };
-    const isOutside = day => !isInRange(day, minDate, maxDate) 
+    const isOutside = day => !isInRange(day, minDate, maxDate)
+
     return (
         <div style={{ float: 'right' }}>
             <DateRangePicker
@@ -109,6 +110,7 @@ export default ({
                 initialVisibleMonth={() => moment(dateIntervalState.endDate).subtract(1, 'month')}
                 renderCalendarInfo={() => (
                     <FilterFooter
+                        extra={<Checkbox label="Include inactive Pull Requests" />}
                         onCancel={cancel}
                         onAccept={() => setFocusedInputState(null)}
                         isAcceptable={validState}

@@ -115,7 +115,8 @@ export const defaultFilter = {
     selected: [],
     applied: []
   },
-  dateInterval: null
+  dateInterval: null,
+  exclude_inactive: false
 }
 
 export const TYPE = {

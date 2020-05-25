@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { brandColors } from './CustomStyles'
 import { FilterFooter } from '../FilterFooter'
+import Checkbox from 'js/components/ui/Checkbox'
 import { StatusIndicator, LOADING } from 'js/components/ui/Spinner'
 import { ReactComponent as DropdownIndicator } from './IconDropdownIndicator.svg'
 import { components } from 'react-select'
