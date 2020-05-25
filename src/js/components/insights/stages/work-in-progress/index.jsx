@@ -5,6 +5,7 @@ import { useApi } from 'js/hooks';
 
 import { InsightsError } from 'js/components/insights/Helper';
 
+import createdPRs from 'js/components/insights/stages/work-in-progress/createdPrs';
 import mostActiveDevs from 'js/components/insights/stages/work-in-progress/mostActiveDevs';
 import pullRequestRatioFlow from 'js/components/insights/stages/work-in-progress/pullRequestRatioFlow';
 
@@ -18,11 +19,15 @@ export default () => {
 
     const fetcher = async () => {
         return Promise.resolve({
+            createdPRs: await createdPRs.fetcher(api, apiContext),
             pullRequestRatioFlow: await pullRequestRatioFlow.fetcher(api, apiContext)
         });
     };
 
     const plumber = (data) => ({
+        createdPRs: createdPRs.plumber({
+            ...data.createdPRs, global: data.global
+        }),
         mostActiveDevs: mostActiveDevs.plumber({
             ...data.mostActiveDevs, global: data.global
         }),
@@ -47,6 +52,7 @@ const Inner = ({ data, error }) => {
     }
 
     const insights = [
+        createdPRs.factory(data.createdPRs),
         mostActiveDevs.factory(data.mostActiveDevs),
         pullRequestRatioFlow.factory(data.pullRequestRatioFlow)
     ];
