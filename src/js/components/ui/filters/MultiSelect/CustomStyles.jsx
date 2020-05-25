@@ -45,13 +45,13 @@ export const customStyles = {
       cursor: 'pointer',
       backgroundColor: 'transparent',
       color: '#121343',
+      minHeight: 38,
       display: 'grid',
       alignItems: 'center',
       borderBottom: '1px solid #D6DBE4',
       gridTemplateColumns: '20px calc(100% - 16px)',
-      minHeight: 36,
-      padding: `${option && option.options ? '6px 12px 6px 24px' : '6px 12px'}`,
-      gridColumnGap: 4
+      gridColumnGap: 4,
+      padding: `${option && option.options ? '6px 12px 6px 24px' : '6px 12px'}`
     }
   },
   control: styles => ({
