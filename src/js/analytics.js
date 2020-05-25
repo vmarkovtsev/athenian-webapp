@@ -6,32 +6,23 @@ import { isNotProd } from 'js/components/development';
 const getAnalytics = (debug) => {
   const environment = window.ENV?.environment || process.env?.NODE_ENV || '';
 
-  const wrapper = function(fn, fnName){
-    var wrappedFunction = function(...args){
-      console.log(`analytics: ${fnName} [${JSON.stringify(args)}]`);
-      return fn(args);
-    };
-    return wrappedFunction;
-  };
-
-  const analytics = {};
   _(['page', 'identify', 'track', 'debug']).forEach(m => {
     if (window.ENV?.segment?.writeKey) {
-      analytics[m] = wrapper(window.analytics[m], m);
       window.analytics.on(m, (event, properties, options) => {
         console.log(`analytics emitter: ${m}`, event, properties, options);
       });
     } else {
-      analytics[m] = (...args) => {console.log(`dummy analytics: ${m} [${JSON.stringify(args)}]`);};
+      window.analytics[m] = (...args) => {console.log(`dummy analytics: ${m} [${JSON.stringify(args)}]`);};
     }
   });
 
   const identify = (user) => {
-    if (!user) {
+    if (!user || window.ENV.segment.identifyCalled) {
       return;
     }
 
-    analytics.identify(user.id, {
+    window.ENV.segment.identifyCalled = true;
+    window.analytics.identify(user.id, {
       name: user.name,
       email: user.email,
       picture: user.picture,
@@ -45,11 +36,11 @@ const getAnalytics = (debug) => {
     });
   };
 
-  const page = (name, properties) => analytics.page(name, {...properties, environment});
-  const track = (event, properties) => analytics.track(event, {...properties, environment});
+  const page = (name, properties) => window.analytics.page(name, {...properties, environment});
+  const track = (event, properties) => window.analytics.track(event, {...properties, environment});
 
   if (debug) {
-    analytics.debug(true);
+    window.analytics.debug(true);
   }
 
   return {
