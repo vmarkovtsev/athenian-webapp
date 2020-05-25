@@ -16,17 +16,15 @@ export default ({value, ...props}) => {
     // `value` is a flat key-value object
     return (
         <Hint {...props} value={value}>
-          <div style={{background: 'black'}}>
-            <h4>Value of hint</h4>
-
-            {
-                _(value).map((v, k) => {
-                    // How each key-value is rendered
-                    return <p key={k}>{k}: {v.toString()}</p>;
-                }).value()
-            }
-
-          </div>
+            <TooltipContainer left>
+                <Group>
+                    { _(value)
+                        .map((v, k) => !!v && <p key={k}>{k}: {v.toString()}</p>)
+                        .filter(v => !!v)
+                        .value()
+                    }
+                </Group>
+            </TooltipContainer>
         </Hint>
     );
 };
