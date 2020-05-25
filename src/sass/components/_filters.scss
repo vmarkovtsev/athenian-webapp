@@ -16,22 +16,23 @@
   border-radius: 100%;
   border: 2px solid white;
   box-shadow: 0 0 2px #ccc;
+  margin-right: 0.6rem;
 }
 
 .filter-dropdown {
   cursor: pointer;
   background: white;
-  border: 1px solid #dbdbdb;
+  border: 1px solid $at-border-color;
   display: flex;
   padding: 8px 16px;
   position: relative;
-  width: 250px;
-  height: 38.61px;
+  width: 190px;
+  height: 40px;
   justify-content: space-between;
 
   &-label {
     font-size: 1.2rem;
-    color: #121343;
+    color: $color-dark;
     margin-right: 8px;
     font-weight: 500;
   }
@@ -41,19 +42,21 @@
   }
 
   &-pill {
-    background: #24C7CC;
-    color: white;
-    font-size: 11px;
-    padding: 2px 7px;
-    border-radius: 5px;
+    background: $color-turquoise;
+    color: $white;
+    font-size: 1rem;
+    padding: 0px 6px;
+    border-radius: 4px;
+    height: 1.5rem;
+    line-height: 1.5rem;
   }
 
   &-menu-all {
-    padding: 8px 12px;
-    background: #E7E7EC;
+    padding: 12px;
+    background: $at-border-color;
     display: flex;
     align-items: center;
-    color: #121343;
+    color: $color-dark;
     cursor: pointer;
   }
 
@@ -73,7 +76,7 @@
   }
 
   &-option-user {
-    color: #C6C7D1;
+    color: $color-secondary;
   }
   &-option-prefix {
     @include filter-avatar();
@@ -84,3 +87,6 @@
   }
 }
 
+.filter-buttons {
+  margin-top: -1px;
+}

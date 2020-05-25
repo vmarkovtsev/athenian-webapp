@@ -6,13 +6,15 @@ import SearchIcon from './IconSearch.svg'
 const placeholder = {
   alignItems: 'center',
   display: 'flex',
+  color: '#C3C4D0',
   ':before': {
     background: `url(${SearchIcon}) no-repeat`,
+    backgroundSize: '100%',
     content: '" "',
     display: 'block',
     marginRight: 8,
-    height: 14,
-    width: 14,
+    height: 12,
+    width: 12,
   }
 }
 
@@ -21,8 +23,12 @@ export const customStyles = {
     ...styles,
     position: 'absolute',
     background: '#e7e7ec',
-    border: '1px solid #cccccc',
+    border: '1px solid #E7E7EC',
     top: 'calc(100% + 8px)'
+  }),
+  valueContainer: styles => ({
+    ...styles,
+    marginTop: -7,
   }),
   indicatorSeparator: styles => ({
     ...styles,
@@ -39,19 +45,23 @@ export const customStyles = {
       cursor: 'pointer',
       backgroundColor: 'transparent',
       color: '#121343',
+      minHeight: 38,
       display: 'grid',
       alignItems: 'center',
       borderBottom: '1px solid #D6DBE4',
       gridTemplateColumns: '20px calc(100% - 16px)',
-      gridColumnGap: 8,
-      padding: `${option && option.options ? '8px 12px 8px 24px' : '8px 12px'}`
+      gridColumnGap: 4,
+      padding: `${option && option.options ? '6px 12px 6px 24px' : '6px 12px'}`
     }
   },
   control: styles => ({
     ...styles,
     borderRadius: 0,
+    borderColor: '#E7E7EC',
     paddingRight: '8px',
-    margin: '10px 10px 1px'
+    margin: '10px 10px 1px',
+    minHeight: 30,
+    height: 30
   }),
   menu: styles => ({
     ...styles,
@@ -60,7 +70,7 @@ export const customStyles = {
     boxSizing: 'content-box',
     left: '-1px',
     boxShadow: 'none',
-    border: '1px solid #ccc',
+    border: '1px solid #E7E7EC',
     borderTopWidth: 0
   }),
   menuList: styles => ({
@@ -69,6 +79,7 @@ export const customStyles = {
   }),
   input: styles => ({
     ...styles,
+    color: '#333',
     ...placeholder
   }),
   placeholder: styles => ({

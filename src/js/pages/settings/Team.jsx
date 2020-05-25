@@ -31,7 +31,7 @@ const usersLabelFormat = ({ name, login, picture }) => {
   const user = github.userName(login)
   return (
     <div className="align-items-center filter-dropdown-option">
-      <img src={picture} alt={name} className="mr-2 filter-dropdown-option-img" /> 
+      <img src={picture} alt={name} className="filter-dropdown-option-img" />
       { name && <span className="filter-dropdown-option-name mr-1">{name}</span> }
       { user && user !== name && <span className="filter-dropdown-option-user filter-dropdown-option-name mr-2">{user}</span> }
     </div>
@@ -84,7 +84,7 @@ export default function Teams() {
     const { token } = await getTokenSilently()
     const index = teams.findIndex(t => t.id === teamId)
     const team = teams[index]
-  
+
     const updatedTeam = {
       ...team,
       members: team
@@ -94,7 +94,7 @@ export default function Teams() {
     }
     try {
       await updateTeam(token, updatedTeam)
-      
+
       const newTeamsArray = [...teams]
       newTeamsArray[index] = {
         ...updatedTeam,
@@ -102,7 +102,7 @@ export default function Teams() {
           .members
           .filter(m => m.login !== devLogin)
       }
-  
+
       setTeams(newTeamsArray)
     } catch (err) {}
   }
