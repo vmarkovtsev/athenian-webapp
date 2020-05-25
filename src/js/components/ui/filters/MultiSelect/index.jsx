@@ -36,8 +36,7 @@ const MultiSelect = multiSelectProps => {
   return (
     <Dropdown label={label} isLoading={isLoading} onApply={onApply} value={value}>
       {ddProps => (
-        ddProps.menuIsOpen &&
-        <Select
+        ddProps.menuIsOpen && <Select
           autoFocus
           options={options}
           className={className}

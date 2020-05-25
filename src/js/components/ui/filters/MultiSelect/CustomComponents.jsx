@@ -1,30 +1,34 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { customStyles as styles } from './CustomStyles'
+import { customStyles as styles, brandColors } from './CustomStyles'
 import { FilterFooter } from '../FilterFooter'
 import { StatusIndicator, LOADING } from 'js/components/ui/Spinner'
 import { ReactComponent as DropdownIndicator } from './IconDropdownIndicator.svg'
 import { components } from 'react-select'
 
-const stopPropagation = ev => ev.stopPropagation()
-
 /**
  * Transform string into color
  * @param {string} str 
  */
-const stringToColour = (str = '') => {
-  const hash = str
-    .split('')
-    .reduce((acc, curr) =>
-      String.prototype.charCodeAt.call(curr) + ((acc << 5) - acc),
-      ''
-    )
+const hashCode = str => {
+  if (!str.length) return 0
 
-  return 'rgb'
-    .split('')
-    .reduce((color, curr, index) => {
-      const value = (hash >> (index * 8)) & 0xFF
-      return color += ('00' + value.toString(16)).substr(-2)
-    }, '#')
+  const hash = str.split('').reduce((hash, char) =>
+    (((hash << 5) - hash) + char.charCodeAt(0) | 0),
+    0
+  )
+  return hash >>> 0
+}
+
+const stringToColour = str => {
+  if (stringToColour[str]) return stringToColour[str]
+
+  const x = hashCode(str)
+  const b = x % brandColors.length
+  const l = 40 + (x % 40)
+
+  stringToColour[str] = `hsl(${brandColors[b][0]}, ${brandColors[b][1]}%, ${l}%)`
+
+  return stringToColour[str]
 }
 
 /**
@@ -45,10 +49,20 @@ export const Dropdown = ({
   const [isMenuOpen, setMenuOpen] = useState(false)
   const ref = useRef(null)
 
-  const toggle = () => setMenuOpen(!isMenuOpen)
+  const toggle = e => {
+    const menu = ref.current.querySelector('.filter')
+    // if click inside menu, skip toggle
+    if (menu && menu.contains(e.target)) {
+      e.stopPropagation()
+      return
+    }
+    setMenuOpen(!isMenuOpen)
+  }
 
-  const closeAll = ev => {
-    if (!ref.current.contains(ev.target)) setMenuOpen(false)
+  const closeAll = e => {
+    if (!ref.current.contains(e.target)) {
+      setMenuOpen(false)
+    }
   }
 
   useEffect(() => {
@@ -70,8 +84,8 @@ export const Dropdown = ({
   }
 
   return (
-    <div onClick={stopPropagation}>
-      <div ref={ref} onClick={toggle} className='filter-dropdown align-items-center'>
+    <div onClick={toggle} ref={ref}>
+      <div className='filter-dropdown align-items-center'>
         <div className="d-flex align-items-center">
           <span className="filter-dropdown-label">{label}</span>
           {
@@ -146,7 +160,6 @@ const GroupHeading = (onCheck, isChecked, onToggle, toggled) => props => {
 const Group = props => {
   const [isChecked, setChecked] = useState(true)
   const [isOpen, setOpen] = useState(false)
-
   const { children, ...rest } = props
 
   useEffect(() => {
@@ -223,14 +236,10 @@ export const Option = props => {
  */
 export const Placeholder = props => {
   const { selectProps: { name } } = props
-  const style = {
-    ...props.getStyles('placeholder', props),
-    paddingLeft: 22
-  }
   return (
-    <span style={style}>
+    <components.Placeholder {...props}>
       Search {name.toLowerCase()}...
-    </span>
+    </components.Placeholder>
   )
 }
 
@@ -262,7 +271,6 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
   } = props
 
   const allValues = getValue()
-  
   const mappedOptions = extractOptions(options)
 
   const totalOptions = mappedOptions.reduce((acc, curr) => {
@@ -277,6 +285,13 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
       setValue(mappedOptions)
     }
   }
+
+  const close = () => setMenuOpen(false)
+  const apply = () => {
+    onApply(allValues)
+    close()
+  }
+
   return (
     <components.Menu {...props}>
       <div
@@ -292,14 +307,11 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
         </span>
       </div>
       {children}
-      { setMenuOpen && onApply && <FilterFooter
-        onCancel={() => setMenuOpen(false)}
-        onAccept={() => {
-          onApply(allValues)
-          setMenuOpen(false)
-        }}
-        isAcceptable={allValues.length > 0}
-      /> }
+      <FilterFooter
+        onCancel={close}
+        onAccept={apply}
+        isAcceptable={allValues.length}
+      />
     </components.Menu>
   )
 }

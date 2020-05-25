@@ -1,8 +1,8 @@
 import SearchIcon from './IconSearch.svg'
 
 /**
- * Overrides react-select components styles
- */
+* Overrides react-select components styles
+*/
 const placeholder = {
   alignItems: 'center',
   display: 'flex',
@@ -106,3 +106,18 @@ export const customStyles = {
     gridColumnGap: 8
   })
 }
+
+// Color ranges used to generate new colors based on strings 
+// for teams select
+export const brandColors = [
+  [210.6, 85, 50.2],
+  [263.1, 69.1, 63.1],
+  [0.3, 85.2, 57.6],
+  [263.1, 69.1, 63.1],
+  [340.1, 97.4, 53.9],
+  [21.7, 81.3, 31.4],
+  [36.9, 100, 51.6],
+  [145.2, 62.5, 49.2],
+  [45.9, 100, 51.6],
+  [181.8, 70, 47.1]
+]
