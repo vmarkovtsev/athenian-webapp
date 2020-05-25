@@ -8,6 +8,8 @@ import { github, number } from 'js/services/format';
 
 const mostActiveDevs = {
     plumber: (data) => {
+        // TODO (dpordomingo): This chart should use /metrics/developers endpoint instead of PRs from /filter/pull_requests
+        // which could be eventually paginated because it's too heavy
         const prs = data.global.prs;
         const avatarMapping = github.userImageIndex(prs.users);
         return {
