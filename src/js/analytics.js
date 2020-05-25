@@ -17,7 +17,7 @@ const getAnalytics = (debug) => {
   const analytics = {};
   _(['page', 'identify', 'track', 'debug']).forEach(m => {
     if (window.ENV?.segment?.writeKey) {
-      analytics[m] = wrapper(window.analytics[m], 'identify');
+      analytics[m] = wrapper(window.analytics[m], m);
       window.analytics.on(m, (event, properties, options) => {
         console.log(`analytics emitter: ${m}`, event, properties, options);
       });
