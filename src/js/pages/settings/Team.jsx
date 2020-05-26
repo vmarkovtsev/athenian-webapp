@@ -187,7 +187,6 @@ const TeamActions = ({ team, filterTerm, removeTeam }) => {
           <FontAwesomeIcon icon={faEllipsisH} />
         </button>
         <div className="dropdown-menu dropdown-menu-right">
-          <button className="dropdown-item">Rename</button>
           <button className="dropdown-item" onClick={deleteTeam(team.id)}>Remove</button>
         </div>
       </div>
