@@ -9,7 +9,7 @@ import { getTeams, createTeam, getDevelopers, removeTeam, updateTeam } from 'js/
 import { useUserContext } from 'js/context/User'
 import { useAuth0 } from 'js/context/Auth0'
 import { github } from 'js/services/format'
-
+import { usersLabelFormat } from 'js/components/ui/filters/MultiSelect/CustomComponents'
 import { SettingsGroup, Search, Accordion } from 'js/pages/Settings'
 
 const defaultProps = {
@@ -26,17 +26,6 @@ const defaultProps = {
 const isFilteredIn = (user, term) => !term ||
   user.name.toLowerCase().includes(term.toLowerCase()) ||
   user.login.toLowerCase().includes(term.toLowerCase())
-
-const usersLabelFormat = ({ name, login, picture }) => {
-  const user = github.userName(login)
-  return (
-    <div className="align-items-center filter-dropdown-option">
-      <img src={picture} alt={name} className="filter-dropdown-option-img" />
-      { name && <span className="filter-dropdown-option-name mr-1">{name}</span> }
-      { user && user !== name && <span className="filter-dropdown-option-user filter-dropdown-option-name mr-2">{user}</span> }
-    </div>
-  )
-}
 
 const getOptionValueUsers = val => `${val.name} ${val.login}`
 

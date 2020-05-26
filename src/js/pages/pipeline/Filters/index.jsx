@@ -9,6 +9,7 @@ import FiltersContext from 'js/context/Filters'
 import TopFilter from 'js/components/pipeline/TopFilter'
 
 import MultiSelect from 'js/components/ui/filters/MultiSelect'
+import { usersLabelFormat } from 'js/components/ui/filters/MultiSelect/CustomComponents'
 import DateInterval, { EOD, YEAR_AGO, TWO_WEEKS_AGO } from 'js/components/ui/filters/DateInterval'
 
 import { getRepos, getContributors, getTeams } from 'js/services/api'
@@ -132,17 +133,6 @@ export default function Filters({ children }) {
     dispatchFilter(setReady(true))
   }
   
-  const usersLabelFormat = ({ name, login, avatar }) => {
-    const gituser = github.userName(login)
-    const user = gituser || 'ANONYMOUS'
-    return (
-      <div className="align-items-center filter-dropdown-option">
-        <img src={avatar} alt={name} className="mr-2 filter-dropdown-option-img" /> 
-        { name && <span className="filter-dropdown-option-name mr-1">{name}</span> }
-        { user && user !== name && <span className="filter-dropdown-option-user filter-dropdown-option-name mr-2">{user}</span> }
-      </div>
-    )
-  }
   const reposLabelFormat = repo => (github.repoName(repo) || 'UNKNOWN')
   const getOptionValueRepos = val => val
   const getOptionValueUsers = val => `${val.name} ${val.login}`
