@@ -55,25 +55,22 @@ export default ({ stage, data, status }) => {
     }
 
     setSelectOptions(options);
-
-    const applyFilter = data => {
-      if (!selectValue) {
-        return data;
-      }
-
-      return {
-        ...data,
-        prs: data.prs.filter(v => prLabel(stage)(v) === selectValue.value),
-      }
-    }
-
-    draw(stage, applyFilter(data));
+    initTable(stage, data.users);
 
     return () => {
       $.fn.DataTable.isDataTable(tableContainerSelector) && $(tableContainerSelector).DataTable().destroy();
       $(tableContainerSelector).empty();
     };
-  }, [stage, data, status, selectValue, options]);
+  }, [stage, data.users, status, options]);
+
+  useEffect(() => {
+    if (!isReady(status)) {
+      return;
+    }
+
+    fillTable(selectValue ? data.prs.filter(v => prLabel(stage)(v) === selectValue.value) : data.prs);
+
+  }, [stage, data.prs, status, selectValue]);
 
   if (!isReady(status)) {
     return  <StatusIndicator status={status} textOnly={false} />;
@@ -116,6 +113,18 @@ export default ({ stage, data, status }) => {
   );
 };
 
+const fillTable = prs => {
+  if (!$(tableContainerSelector).DataTable) {
+    return;
+  }
+
+  $(tableContainerSelector).DataTable()
+    .clear()
+    .rows
+    .add(prs)
+    .draw();
+};
+
 const cycleTimeColumnTitles = {
   overview: 'Lead Time',
   wip: 'WIP Time',
@@ -124,13 +133,12 @@ const cycleTimeColumnTitles = {
   release: 'Release >',
 };
 
-const draw = (stage, data) => {
+const initTable = (stage, users) => {
   if (!$(tableContainerSelector).DataTable) {
     return;
   }
 
   const prLabelStage = prLabel(stage);
-  const { prs, users } = data;
 
   const table = $(tableContainerSelector).DataTable({
     dom: `
@@ -158,7 +166,6 @@ const draw = (stage, data) => {
       search: "<i class='field-icon fas fa-search' aria-hidden='true'></i>",
     },
     fixedHeader: true,
-    data: prs,
     columnDefs: [
       { "width": "50px", "targets": 0, "orderable": false },  //status
       { "width": "130px", "targets": 2 }, //changes
