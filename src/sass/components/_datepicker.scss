@@ -44,6 +44,14 @@
     margin-right: 1rem;
 }
 
+.DateRangePickerInput__withBorder {
+    transition: ease-in-out border 0.3s;
+
+    &:hover {
+        border-color: #c0c1ce;
+    }
+}
+
 .DateRangePickerInput_calendarIcon {
     margin-left: 0;
     margin-right: 0;

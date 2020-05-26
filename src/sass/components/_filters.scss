@@ -32,10 +32,10 @@
   transition: ease-in-out border 0.3s;
 
   & svg {
-    fill: hsl(0,0%,70%);
+    fill: #c0c1ce;
   }
   &:hover, &.open {
-    border-color: hsl(0,0%,70%);
+    border-color: #c0c1ce;
     & svg {
       fill: $color-secondary;
     }
@@ -92,6 +92,10 @@
 
   &-option-user {
     color: $color-secondary;
+
+    .filter-dropdown-option:active & {
+      color: rgba($white,0.8);
+    }
   }
   &-option-prefix {
     @include filter-avatar();
