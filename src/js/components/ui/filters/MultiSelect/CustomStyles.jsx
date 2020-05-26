@@ -53,7 +53,7 @@ export const customStyles = {
       gridColumnGap: 4,
       padding: `${option && option.options ? '6px 12px 6px 24px' : '6px 12px'}`,
       ':active': {
-        backgroundColor: '#FF7427',
+        backgroundColor: '#FFA008',
         color: '#fff',
       }
     }
