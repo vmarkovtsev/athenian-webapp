@@ -14,10 +14,10 @@ export default () => {
     getAndSetVersions();
   });
 
-  return <footer className="sticky-footer bg-white">
+  return <footer className="sticky-footer bg-white border-top">
     <div className="container my-auto">
-      <div className="copyright text-center my-auto">
-        <span>Copyright &copy; Athenian.co 2020</span><br/><span>{versions}</span>
+      <div className="text-center my-auto">
+        <span>Copyright &copy; Athenian.co 2020</span><br/><span class="text-bright small">{versions}</span>
       </div>
     </div>
   </footer>
