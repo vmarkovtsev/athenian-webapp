@@ -5,7 +5,7 @@ import { StatusIndicator, LOADING } from 'js/components/ui/Spinner'
 import { ReactComponent as DropdownIndicator } from './IconDropdownIndicator.svg'
 import { components } from 'react-select'
 import { github } from 'js/services/format'
-
+import classNames from 'classnames'
 /**
  * Transform string into color
  * @param {string} str 
