@@ -24,7 +24,7 @@ export const customStyles = {
     position: 'absolute',
     background: '#e7e7ec',
     border: '1px solid #E7E7EC',
-    top: 'calc(100% + 8px)'
+    top: 'calc(100% + 8px)',
   }),
   valueContainer: styles => ({
     ...styles,
@@ -51,17 +51,28 @@ export const customStyles = {
       borderBottom: '1px solid #D6DBE4',
       gridTemplateColumns: '20px calc(100% - 16px)',
       gridColumnGap: 4,
-      padding: `${option && option.options ? '6px 12px 6px 24px' : '6px 12px'}`
+      padding: `${option && option.options ? '6px 12px 6px 24px' : '6px 12px'}`,
+      ':active': {
+        backgroundColor: '#FFA008',
+        color: '#fff',
+      }
     }
   },
-  control: styles => ({
-    ...styles,
+  control: (base, state) => ({
+    ...base,
     borderRadius: 0,
-    borderColor: '#E7E7EC',
+    borderColor: state.isFocused
+        ? '#ffd188'
+        : '#e7e7ec',
+    boxShadow: state.isFocused ? '0 0 0 0.2rem rgba(255, 160, 8, 0.25)' : 0,
     paddingRight: '8px',
-    margin: '10px 10px 1px',
+    margin: '10px 10px 4px',
     minHeight: 30,
-    height: 30
+    height: 30,
+    '&:hover': {
+      boxShadow: '0 0 0 0.2rem rgba(255, 160, 8, 0.25)',
+      borderColor: '#ffd188',
+    }
   }),
   menu: styles => ({
     ...styles,
@@ -107,7 +118,7 @@ export const customStyles = {
   })
 }
 
-// Color ranges used to generate new colors based on strings 
+// Color ranges used to generate new colors based on strings
 // for teams select
 export const brandColors = [
   [210.6, 85, 50.2],
