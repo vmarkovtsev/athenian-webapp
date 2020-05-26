@@ -207,7 +207,8 @@ const TeamForm = ({btnText, onSave, developers, team, options}) => {
                        .keyBy('login')
                        .mapValues(x => true)
                        .value()))
-        .value() : developers
+        .orderBy(['name'], ['asc'])
+        .value() : _(developers).sortBy(['name', 'login'], ['asc', 'asc'])
 
   const onChange = ev => {
     const { target: { value } } = ev
