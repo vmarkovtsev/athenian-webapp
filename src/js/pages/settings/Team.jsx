@@ -6,8 +6,7 @@ import Select from 'react-select'
 import { customStyles } from 'js/components/ui/filters/MultiSelect/CustomStyles'
 import { Option, Placeholder } from 'js/components/ui/filters/MultiSelect/CustomComponents'
 import { getTeams, createTeam, getDevelopers, removeTeam, updateTeam } from 'js/services/api'
-import { useUserContext } from 'js/context/User'
-import { useAuth0 } from 'js/context/Auth0'
+import { useApi } from 'js/hooks';
 import { github } from 'js/services/format'
 import { usersLabelFormat } from 'js/components/ui/filters/MultiSelect/CustomComponents'
 import { SettingsGroup, Search, Accordion } from 'js/pages/Settings'
@@ -36,23 +35,28 @@ const plusIcon = String.fromCharCode(43)
 const closeDropdown = () => document.body.click()
 
 export default function Teams() {
-  const { getTokenSilently } = useAuth0()
-  const { user } = useUserContext()
-
   const [filterTermState, setFilterTermState] = useState('')
   const [teams, setTeams] = useState([])
   const [developers, setDevelopers] = useState([])
+  const {api, ready: apiReady, context} = useApi(true, false);
+
+  useEffect(() => {
+    if (!apiReady) {
+      return
+    }
+
+    (async () => {
+      const [devTeams, devs] = await Promise.all(
+        [getTeams(api, context.account), getDevelopers(api, context.account)]
+      )
+      setTeams(devTeams)
+      setDevelopers(devs)
+    })()
+  }, [api, apiReady, context.account])
 
   const saveTeam = async ({ name, members }) => {
-    const { token } = await getTokenSilently()
-    const { defaultAccount: { id: account } } = user
-    const body = {
-      account,
-      name,
-      members: members.map(m => m.login)
-    }
     try {
-      const { id } = await createTeam({ token, body })
+      const { id } = await createTeam(api, context.account, name, members.map(m => m.login))
       setTeams([
         { id, members, name },
         ...teams,
@@ -62,51 +66,25 @@ export default function Teams() {
   }
 
   const deleteTeam = async id => {
-    const { token } = await getTokenSilently()
     try {
-      await removeTeam(token, id)
-      setTeams([
-        ...teams.filter(team => team.id !== id)
-      ])
+      await removeTeam(api, id)
+      setTeams([...teams.filter(team => team.id !== id)])
     } catch (err) {}
   }
 
   const removeDeveloper = async (teamId, devLogin) => {
-    const { token } = await getTokenSilently()
     const index = teams.findIndex(t => t.id === teamId)
     const team = teams[index]
-
-    const updatedTeam = {
-      ...team,
-      members: team
-        .members
-        .filter(m => m.login !== devLogin)
-        .map(tm => tm.login)
-    }
+    team.members = team.members.filter(m => m.login !== devLogin)
     try {
-      await updateTeam(token, updatedTeam)
-
-      const newTeamsArray = [...teams]
-      newTeamsArray[index] = {
-        ...updatedTeam,
-        members: team
-          .members
-          .filter(m => m.login !== devLogin)
-      }
-
-      setTeams(newTeamsArray)
+      await updateTeam(api, teamId, team.name, team.members.map(tm => tm.login))
+      setTeams([...teams])
     } catch (err) {}
   }
 
-  useEffect(() => {
-    (async () => {
-      const { token } = await getTokenSilently()
-      const { defaultAccount: { id } } = user
-      const [devTeams, devs] = await Promise.all([getTeams(token, id), getDevelopers(token, id)])
-      setTeams(devTeams)
-      setDevelopers(devs)
-    })()
-  }, [getTokenSilently, user])
+  if (!apiReady) {
+    return null
+  }
 
   return (
     <SettingsGroup
