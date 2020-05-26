@@ -8,12 +8,14 @@ export const filterReducer = (state, action) => {
         repos: {
           ready,
           data: [...repos],
-          selected: [...repos]
+          selected: [...repos],
+          applied: [...repos]
         },
         contribs: {
           ready,
           data: [...contribs],
-          selected: [...contribs]
+          selected: [...contribs],
+          applied: [...contribs]
         },
         teams: {
           ready,
@@ -74,6 +76,22 @@ export const filterReducer = (state, action) => {
             selected: action.payload
           }
         }
+    case TYPE.SET_APPLIED_CONTRIBS:
+        return {
+          ...state,
+          contribs: {
+            ...state.contribs,
+            applied: action.payload
+          }
+        }
+    case TYPE.SET_APPLIED_REPOS:
+      return {
+        ...state,
+        repos: {
+          ...state.repos,
+          applied: action.payload
+        }
+      }
     default:
       return state
   }
@@ -84,7 +102,8 @@ export const defaultFilter = {
   repos: {
     data: [],
     ready: false,
-    selected: []
+    selected: [],
+    applied: []
   },
   teams: {
     data: [],
@@ -93,7 +112,8 @@ export const defaultFilter = {
   contribs: {
     data: [],
     ready: false,
-    selected: []
+    selected: [],
+    applied: []
   },
   dateInterval: null
 }
@@ -106,7 +126,9 @@ export const TYPE = {
   SET_READY: 'SET_READY',
   SET_CONTRIBS: 'SET_CONTRIBS',
   SET_SELECTED_REPOS: 'SET_SELECTED_REPOS',
-  SET_SELECTED_CONTRIBS: 'SET_SELECTED_CONTRIBS'
+  SET_SELECTED_CONTRIBS: 'SET_SELECTED_CONTRIBS',
+  SET_APPLIED_REPOS: 'SET_APPLIED_REPOS',
+  SET_APPLIED_CONTRIBS: 'SET_APPLIED_CONTRIBS'
 }
 
 /**

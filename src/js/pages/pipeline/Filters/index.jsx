@@ -25,7 +25,9 @@ import {
   setContribs,
   setTeams,
   setSelectedRepos,
-  setSelectedContribs
+  setSelectedContribs,
+  setAppliedRepos,
+  setAppliedContribs
 } from './actions'
 
 const allowedDateInterval = {
@@ -110,10 +112,11 @@ export default function Filters({ children }) {
       [contribs, teams, selectedRepos]
     )
     
-    dispatchFilter(setSelectedRepos(selectedRepos))
+    dispatchFilter(setAppliedRepos(selectedRepos))
 
     dispatchFilter(setContribs(contribs))
     dispatchFilter(setSelectedContribs(contribs))
+
     dispatchFilter(setTeams(teams))
     dispatchFilter(setReady(true))
   }
@@ -128,8 +131,11 @@ export default function Filters({ children }) {
       ['filter.repos', 'filter.contribs', 'filter.teams'],
       [filterData.repos.data, selectedContribs, teams]
     )
-    dispatchFilter(setTeams(teams))
+    
+    dispatchFilter(setAppliedContribs(selectedContribs))
+
     dispatchFilter(setSelectedContribs(selectedContribs))
+    dispatchFilter(setTeams(teams))
     dispatchFilter(setReady(true))
   }
   
@@ -144,11 +150,13 @@ export default function Filters({ children }) {
     filterData.teams.data
   )
 
-  const onSelectRepo = selectedOptions =>
+  const onSelectRepo = selectedOptions => {
     dispatchFilter(setSelectedRepos(selectedOptions))
+  }
 
-  const onSelectContrib = selectedContrib =>
+  const onSelectContrib = (selectedContrib, ...rest) => {
     dispatchFilter(setSelectedContribs(selectedContrib))
+  }
   
   const reposValue = filterData.repos.data.filter(repo =>
     ~filterData.repos.selected.indexOf(repo)
@@ -158,11 +166,24 @@ export default function Filters({ children }) {
     filterData.contribs.selected.find(e => e.login === c.login)
   )
 
+  // revert previous values is close filter without apply
+  const onCloseRepos = applied => {
+    if (!applied) {
+      dispatchFilter(setSelectedRepos([...filterData.repos.applied]))
+    }
+  }
+
+  const onCloseContribs = applied => {
+    if (!applied) {
+      dispatchFilter(setSelectedContribs([...filterData.contribs.applied]))
+    }
+  }
+
   return (
     <FiltersContext
       ready={filterData.ready}
-      repositories={filterData.repos.data}
-      contributors={filterData.contribs.data}
+      repositories={filterData.repos.applied}
+      contributors={filterData.contribs.applied}
       dateInterval={filterData.dateInterval}
     >
       <TopFilter
@@ -179,6 +200,7 @@ export default function Filters({ children }) {
             onApply={onReposApplyChange}
             onChange={onSelectRepo}
             value={reposValue}
+            onClose={onCloseRepos}
           />
         }
         contribsFilter={
@@ -194,6 +216,7 @@ export default function Filters({ children }) {
             onApply={onContribsApplyChange}
             value={contribsValue}
             onChange={onSelectContrib}
+            onClose={onCloseContribs}
           />
         }
         dateIntervalFilter={

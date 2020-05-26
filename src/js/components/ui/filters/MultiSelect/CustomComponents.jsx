@@ -45,10 +45,18 @@ export const Dropdown = ({
   label,
   isLoading,
   onApply,
-  value
+  value,
+  onClose
 }) => {
-  const [isMenuOpen, setMenuOpen] = useState(false)
+  const [isMenuOpen, setMenuState] = useState(false)
   const ref = useRef(null)
+
+  const setMenuOpen = (bool, wasApplied = false) => {
+    setMenuState(bool)
+    if (!bool) {
+      onClose(wasApplied)
+    }
+  }
 
   const toggle = e => {
     const menu = ref.current.querySelector('.filter')
@@ -57,12 +65,12 @@ export const Dropdown = ({
       e.stopPropagation()
       return
     }
-    setMenuOpen(!isMenuOpen)
+    setMenuOpen(!isMenuOpen, false)
   }
 
   const closeAll = e => {
-    if (!ref.current.contains(e.target)) {
-      setMenuOpen(false)
+    if (!ref.current.contains(e.target) && ref.current.querySelector('.open')) {
+      setMenuOpen(false, true)
     }
   }
 
@@ -81,7 +89,8 @@ export const Dropdown = ({
       Group,
       Menu: menu({ setMenuOpen, onApply })
     },
-    styles
+    styles,
+    value
   }
 
   return (
@@ -287,10 +296,12 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
     }
   }
 
-  const close = () => setMenuOpen(false)
+  const close = wasApplied => {
+    setMenuOpen(false, wasApplied)
+  }
   const apply = () => {
     onApply(allValues)
-    close()
+    close(true)
   }
 
   return (
@@ -309,7 +320,7 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
       </div>
       {children}
       <FilterFooter
-        onCancel={close}
+        onCancel={() => close(false)}
         onAccept={apply}
         isAcceptable={allValues.length}
       />
