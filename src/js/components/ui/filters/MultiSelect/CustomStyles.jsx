@@ -22,7 +22,7 @@ export const customStyles = {
   container: styles => ({
     ...styles,
     position: 'absolute',
-    background: '#e7e7ec',
+    background: '#F3F3F5',
     border: '1px solid #E7E7EC',
     top: 'calc(100% + 8px)'
   }),
@@ -94,12 +94,12 @@ export const customStyles = {
   groupHeading: styles => ({
     ...styles,
     textTransform: 'none',
-    background: '#f4f4f7',
+    background: '#fafafb',
     color: 'rgb(18, 19, 67)',
     fontSize: 11,
-    padding: 12,
+    padding: '6px 12px 6px 12px',
     margin: 0,
-    borderBottom: '1px solid #ccc',
+    borderBottom: '1px solid #D6DBE4',
     display: 'grid',
     gridTemplateColumns: '18px 25px  auto 18px',
     alignItems: 'center',
@@ -107,7 +107,7 @@ export const customStyles = {
   })
 }
 
-// Color ranges used to generate new colors based on strings 
+// Color ranges used to generate new colors based on strings
 // for teams select
 export const brandColors = [
   [210.6, 85, 50.2],
