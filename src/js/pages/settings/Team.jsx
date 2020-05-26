@@ -9,7 +9,7 @@ import { getTeams, createTeam, getDevelopers, removeTeam, updateTeam } from 'js/
 import { useUserContext } from 'js/context/User'
 import { useAuth0 } from 'js/context/Auth0'
 import { github } from 'js/services/format'
-
+import { usersLabelFormat } from 'js/components/ui/filters/MultiSelect/CustomComponents'
 import { SettingsGroup, Search, Accordion } from 'js/pages/Settings'
 
 const defaultProps = {
@@ -26,17 +26,6 @@ const defaultProps = {
 const isFilteredIn = (user, term) => !term ||
   user.name.toLowerCase().includes(term.toLowerCase()) ||
   user.login.toLowerCase().includes(term.toLowerCase())
-
-const usersLabelFormat = ({ name, login, picture }) => {
-  const user = github.userName(login)
-  return (
-    <div className="align-items-center filter-dropdown-option">
-      <img src={picture} alt={name} className="filter-dropdown-option-img" />
-      { name && <span className="filter-dropdown-option-name mr-1">{name}</span> }
-      { user && user !== name && <span className="filter-dropdown-option-user filter-dropdown-option-name mr-2">{user}</span> }
-    </div>
-  )
-}
 
 const getOptionValueUsers = val => `${val.name} ${val.login}`
 
@@ -187,8 +176,8 @@ const AddTeam = ({ onSave, developers }) => {
               autoComplete='off'
             />
           </div>
-          <div style={{ marginBottom: 8 }}>
-            <span style={{ color: '#121343', fontSize: '12px' }}>Add users to your team:</span>
+          <div className="mt-4 mb-3">
+            <span className="text-dark h6">Add users to your team:</span>
           </div>
           <Select
             options={developers}
@@ -209,11 +198,20 @@ const AddTeam = ({ onSave, developers }) => {
                 background: '#E7E7EC',
                 paddingTop: 2
               }),
-              control: styles => ({
-                ...styles,
+              control: (base, state) => ({
+                ...base,
                 margin: 14,
+                minHeight: 30,
+                height: 30,
                 borderRadius: 0,
-                border: 0
+                borderColor: state.isFocused
+                    ? '#ffd188'
+                    : '#e7e7ec',
+                boxShadow: state.isFocused ? '0 0 0 0.2rem rgba(255, 160, 8, 0.25)' : 0,
+                '&:hover': {
+                  boxShadow: '0 0 0 0.2rem rgba(255, 160, 8, 0.25)',
+                  borderColor: '#ffd188',
+                }
               }),
               menu: styles => ({
                 ...styles,

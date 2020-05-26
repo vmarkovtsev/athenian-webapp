@@ -4,6 +4,7 @@ import { FilterFooter } from '../FilterFooter'
 import { StatusIndicator, LOADING } from 'js/components/ui/Spinner'
 import { ReactComponent as DropdownIndicator } from './IconDropdownIndicator.svg'
 import { components } from 'react-select'
+import { github } from 'js/services/format'
 import classNames from 'classnames'
 /**
  * Transform string into color
@@ -313,5 +314,17 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
         isAcceptable={allValues.length}
       />
     </components.Menu>
+  )
+}
+
+export const usersLabelFormat = ({ name, login, avatar, picture }) => {
+  const gituser = github.userName(login)
+  const user = gituser || 'ANONYMOUS'
+  return (
+    <div className="align-items-center filter-dropdown-option">
+      <img src={avatar || picture} alt={name} className="mr-2 filter-dropdown-option-img" />
+      { name && <span className="filter-dropdown-option-name mr-1">{name}</span> }
+      { user && user !== name && <span className={`filter-dropdown-option-user${!name ? '__dark' : ''} filter-dropdown-option-name mr-2`}>{user}</span> }
+    </div>
   )
 }
