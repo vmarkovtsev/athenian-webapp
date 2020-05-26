@@ -145,7 +145,7 @@ const AccordionItem = ({ parentId, pos, shown, item }) => {
             className="btn text-dark d-flex align-items-center w-100 py-3 pl-3"
             data-toggle="collapse"
             data-target={`#collapse-${itemId}`}
-            aria-expanded="true"
+            aria-expanded={shown}
             aria-controls={`collapse-${itemId}`}
           >
             <i className="fas fa-angle-right accordion-icon mr-3" />
