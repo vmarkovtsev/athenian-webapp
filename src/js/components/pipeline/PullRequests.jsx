@@ -116,35 +116,12 @@ export default ({ stage, data, status }) => {
   );
 };
 
-const cycleTimeColumn = stage => {
-  const title = {
-      overview: 'Lead Time',
-      wip: 'WIP Time',
-      review: 'Review Time',
-      merge: 'Merge Time',
-      release: 'Release >',
-  }[stage];
-
-  return {
-    title: title,
-    searchable: false,
-    className: 'pr-cycle-time',
-    render: (__, type, row) => {
-      const cycleTime = stage === 'overview' ?
-        _(row.stage_timings).values().compact().sum(): row.stage_timings[stage];
-
-      switch (type) {
-        case 'display':
-          return cycleTime === undefined ? '-' : dateTime.bestTimeUnit(cycleTime * 1000, 0);
-        case 'filter':
-          return '';
-        case 'type':
-        case 'sort':
-        default:
-          return cycleTime || 0;
-      }
-    },
-  };
+const cycleTimeColumnTitles = {
+  overview: 'Lead Time',
+  wip: 'WIP Time',
+  review: 'Review Time',
+  merge: 'Merge Time',
+  release: 'Release >',
 };
 
 const draw = (stage, data) => {
@@ -305,7 +282,29 @@ const draw = (stage, data) => {
         }
       },
     },
-    cycleTimeColumn(stage),
+    {
+      title: cycleTimeColumnTitles[stage],
+      searchable: false,
+      className: 'pr-cycle-time',
+      render: (__, type, row) => {
+        const cycleTime = stage === 'overview' ? (
+            _(row.stage_timings).values().compact().sum()
+          ) : (
+            row.stage_timings[stage]
+          );
+
+        switch (type) {
+          case 'display':
+            return cycleTime === undefined ? '-' : dateTime.bestTimeUnit(cycleTime * 1000, 0);
+          case 'filter':
+            return '';
+          case 'type':
+          case 'sort':
+          default:
+            return cycleTime || 0;
+        }
+      },
+    },
     {
       title: 'Stage',
       className: 'align-middle text-center',
