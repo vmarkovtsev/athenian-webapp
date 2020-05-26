@@ -198,13 +198,20 @@ const AddTeam = ({ onSave, developers }) => {
                 background: '#E7E7EC',
                 paddingTop: 2
               }),
-              control: styles => ({
-                ...styles,
+              control: (base, state) => ({
+                ...base,
                 margin: 14,
                 minHeight: 30,
                 height: 30,
                 borderRadius: 0,
-                border: 0
+                borderColor: state.isFocused
+                    ? '#ffd188'
+                    : '#e7e7ec',
+                boxShadow: state.isFocused ? '0 0 0 0.2rem rgba(255, 160, 8, 0.25)' : 0,
+                '&:hover': {
+                  boxShadow: '0 0 0 0.2rem rgba(255, 160, 8, 0.25)',
+                  borderColor: '#ffd188',
+                }
               }),
               menu: styles => ({
                 ...styles,
