@@ -176,8 +176,8 @@ const AddTeam = ({ onSave, developers }) => {
               autoComplete='off'
             />
           </div>
-          <div style={{ marginBottom: 8 }}>
-            <span style={{ color: '#121343', fontSize: '12px' }}>Add users to your team:</span>
+          <div className="mt-4 mb-3">
+            <span className="text-dark h6">Add users to your team:</span>
           </div>
           <Select
             options={developers}
@@ -201,6 +201,8 @@ const AddTeam = ({ onSave, developers }) => {
               control: styles => ({
                 ...styles,
                 margin: 14,
+                minHeight: 30,
+                height: 30,
                 borderRadius: 0,
                 border: 0
               }),
