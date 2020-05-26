@@ -4,7 +4,7 @@ import { FilterFooter } from '../FilterFooter'
 import { StatusIndicator, LOADING } from 'js/components/ui/Spinner'
 import { ReactComponent as DropdownIndicator } from './IconDropdownIndicator.svg'
 import { components } from 'react-select'
-
+import classNames from 'classnames'
 /**
  * Transform string into color
  * @param {string} str 
@@ -85,7 +85,7 @@ export const Dropdown = ({
 
   return (
     <div onClick={toggle} ref={ref}>
-      <div className='filter-dropdown align-items-center'>
+      <div className={`${classNames({ open: isMenuOpen })} filter-dropdown align-items-center`}>
         <div className="d-flex align-items-center">
           <span className="filter-dropdown-label">{label}</span>
           {

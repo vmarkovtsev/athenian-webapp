@@ -29,6 +29,17 @@
   width: 190px;
   height: 40px;
   justify-content: space-between;
+  transition: ease-in-out border 0.3s;
+
+  & svg {
+    fill: hsl(0,0%,70%);
+  }
+  &:hover, &.open {
+    border-color: hsl(0,0%,70%);
+    & svg {
+      fill: $color-secondary;
+    }
+  }
 
   &-label {
     font-size: 1.2rem;
