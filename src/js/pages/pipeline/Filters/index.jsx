@@ -12,7 +12,7 @@ import MultiSelect from 'js/components/ui/filters/MultiSelect'
 import { usersLabelFormat } from 'js/components/ui/filters/MultiSelect/CustomComponents'
 import DateInterval, { EOD, YEAR_AGO, TWO_WEEKS_AGO } from 'js/components/ui/filters/DateInterval'
 
-import { getRepos, getContributors, getTeams } from 'js/services/api'
+import { getRepos, getContributors, getTeams, buildApi } from 'js/services/api'
 import { dateTime, github } from 'js/services/format'
 
 import { useMountEffect } from 'js/hooks'
@@ -226,4 +226,4 @@ const getReposForFilter = (token, accountID, dateInterval, inRepos) => getDataFo
 const getContribsForFilter = (token, accountID, dateInterval, inRepos) => getDataForFilter(
   'contributors', getContributors, token, accountID, dateInterval, inRepos)
 
-const getTeamsForFilter = (token, accountID) => getTeams(token, accountID)
+const getTeamsForFilter = (token, accountID) => getTeams(buildApi(token), accountID)
