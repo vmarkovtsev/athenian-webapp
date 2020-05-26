@@ -7,6 +7,8 @@ import {
   FilterPullRequestsRequest,
   CalculatedPullRequestMetrics,
   ReleaseMatchRequest,
+  TeamCreateRequest,
+  TeamUpdateRequest,
 } from 'js/services/api/openapi-client';
 import * as Sentry from '@sentry/browser';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
@@ -168,29 +170,23 @@ export const getContributors = (token, userAccount, from, to, repos) => {
     .then(contribs => contribs.map(({ login, name, avatar }) => ({ login, name, avatar })));
 };
 
-export const getDevelopers = (token, userAccount) => {
-  const api = buildApi(token)
-  return api.getContributors(userAccount)
+export const getDevelopers = (api, accountID) => {
+  return api.getContributors(accountID)
 }
 
-export const createTeam = ({ token, body }) => {
-  const api = buildApi(token)
-  return api.createTeam({ body })
+export const createTeam = (api, accountID, name, members) => {
+  return api.createTeam({ body: new TeamCreateRequest(accountID, name, members)})
 }
 
-export const removeTeam = (token, id) => {
-  const api = buildApi(token)
+export const removeTeam = (api, id) => {
   return api.deleteTeam(id)
 }
 
-export const updateTeam = (token, team) => {
-  const { id, ...body } = team
-  const api = buildApi(token)
-  return api.updateTeam(id, { body })
+export const updateTeam = (api, id, name, members) => {
+  return api.updateTeam(id, { body: new TeamUpdateRequest(name, members)})
 }
 
-export const getTeams = (token, accountID) => {
-  const api = buildApi(token)
+export const getTeams = (api, accountID) => {
   return api.listTeams(accountID)
 }
 
