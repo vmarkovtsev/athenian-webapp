@@ -123,126 +123,35 @@ export default function Teams() {
         filterTerm={filterTermState}
         removeTeam={deleteTeam}
         removeDeveloper={removeDeveloper}
+        developers={developers}
+        onSave={saveTeam}
       />
     </SettingsGroup>
   )
 }
 
 const AddTeam = ({ onSave, developers }) => {
-  const [teamName, setTeamName] = useState('')
-  const [teamMembers, setTeamMembers] = useState([])
-
-  const onChange = ev => {
-    const { target: { value } } = ev
-    setTeamName(value)
-    setTeamMembers([])
-  }
-
-  const saveTeam = () => {
-    onSave({
-      name: teamName,
-      members: teamMembers
-    })
-    setTeamName('')
-    closeDropdown()
-    setTeamMembers([])
-  }
-
-  return (
-    <>
-      <button
-        type="button"
-        className="btn btn-orange"
-        data-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        {plusIcon} Add New Team
-      </button>
-      <form
-        className="dropdown-menu dropdown-card dropdown-menu-right p-0"
-        onSubmit={(e) => e.preventDefault()}
-      >
-        <div className="p-3">
-          <h3 className="text-dark h6">New team</h3>
-          <div className="form-group mt-3">
-            <input
-              type="text"
-              className="form-control"
-              name="teamName"
-              placeholder="Team name"
-              value={teamName}
-              onChange={onChange}
-              autoComplete='off'
-            />
-          </div>
-          <div className="mt-4 mb-3">
-            <span className="text-dark h6">Add users to your team:</span>
-          </div>
-          <Select
-            options={developers}
-            className='filter text-xs'
-            name='users'
-            getOptionLabel={usersLabelFormat}
-            getOptionValue={getOptionValueUsers}
-            onChange={setTeamMembers}
-            value={teamMembers}
-            menuIsOpen
-            components={{
-              Option, Placeholder
-            }}
-            styles={{
-              ...customStyles,
-              container: styles => ({
-                position: 'relative',
-                background: '#E7E7EC',
-                paddingTop: 2
-              }),
-              control: (base, state) => ({
-                ...base,
-                margin: 14,
-                minHeight: 30,
-                height: 30,
-                borderRadius: 0,
-                borderColor: state.isFocused
-                    ? '#ffd188'
-                    : '#e7e7ec',
-                boxShadow: state.isFocused ? '0 0 0 0.2rem rgba(255, 160, 8, 0.25)' : 0,
-                '&:hover': {
-                  boxShadow: '0 0 0 0.2rem rgba(255, 160, 8, 0.25)',
-                  borderColor: '#ffd188',
-                }
-              }),
-              menu: styles => ({
-                ...styles,
-                position: 'relative',
-                top: 0,
-                marginTop: 0,
-                borderRadius: 'none',
-                boxShadow: 'none',
-                border: '1px solid #d6dbe4'
-              })
-            }}
-            {...defaultProps}
-          />
-        </div>
-        <div className="dropdown-divider"></div>
-        <div className="bg-white font-weight-light d-flex align-items-center justify-content-end p-3">
-          <button className="btn text-s text-secondary mr-3" onClick={closeDropdown}>Cancel</button>
-          <button
-            className="btn btn-orange"
-            onClick={saveTeam}
-            disabled={!teamName.length || !teamMembers.length}
-          >
-            Add
-          </button>
-        </div>
-      </form>
-    </>
-  )
+  return <TeamForm btnText={"Add New Team"}
+                   onSave={onSave}
+                   developers={developers}
+                   options={{
+                     nameChangeEnabled: true,
+                     membersChangeEnabled: true
+                   }}
+         />
 }
 
-const TeamsList = ({ teams, filterTerm, removeTeam, removeDeveloper }) => {
+const AddMembers = ({ onSave, developers }) => {
+  return <TeamForm btnText={"Add user"}
+                   onSave={onSave}
+                   developers={developers}
+                   options={{
+                     membersChangeEnabled: true
+                   }}
+         />
+}
+
+const TeamsList = ({ teams, filterTerm, removeTeam, removeDeveloper, developers, saveTeam }) => {
   return (
     <Accordion
       id="accordion"
@@ -250,7 +159,13 @@ const TeamsList = ({ teams, filterTerm, removeTeam, removeDeveloper }) => {
         title: team.name,
         description: `(${team.members.filter(user => isFilteredIn(user, filterTerm)).length} members)`,
         extra: <TeamActions team={team} filterTerm={filterTerm} removeTeam={removeTeam} />,
-        content: <Team team={team} filterTerm={filterTerm} removeDeveloper={removeDeveloper} />,
+        content: <Team
+                   team={team}
+                   filterTerm={filterTerm}
+                   removeDeveloper={removeDeveloper}
+                   developers={developers}
+                   onSave={saveTeam}
+                 />,
       }))}
     />
   )
@@ -287,7 +202,139 @@ const TeamActions = ({ team, filterTerm, removeTeam }) => {
   )
 }
 
-const Team = ({ team, filterTerm, removeDeveloper}) => {
+const TeamForm = ({btnText, onSave, developers, options}) => {
+  const [teamName, setTeamName] = useState('')
+  const [teamMembers, setTeamMembers] = useState([])
+
+  const opts = options || {}
+  opts.nameChangeEnabled = opts.nameChangeEnabled || false;
+  opts.membersChangeEnabled = opts.membersChangeEnabled || false;
+
+  const onChange = ev => {
+    const { target: { value } } = ev
+    setTeamName(value)
+    setTeamMembers([])
+  }
+
+  const saveTeam = () => {
+    onSave({
+      name: teamName,
+      members: teamMembers
+    })
+    setTeamName('')
+    closeDropdown()
+    setTeamMembers([])
+  }
+
+  const applyDisabled = (opts.nameChangeEnabled && opts.membersChangeEnabled) ?
+        (!teamName.length || !teamMembers.length) :
+        (opts.nameChangeEnabled ? !teamName.length : !teamMembers.length)
+
+  return (
+    <>
+      <button
+        type="button"
+        className="btn btn-orange"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        {plusIcon} {btnText}
+      </button>
+      <form
+        className="dropdown-menu dropdown-card dropdown-menu-right p-0"
+        onSubmit={(e) => e.preventDefault()}
+      >
+        <div className="p-3">
+          {
+            opts.nameChangeEnabled &&
+              <div>
+                <h3 className="text-dark h6">New team</h3>
+                <div className="form-group mt-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="teamName"
+                    placeholder="Team name"
+                    value={teamName}
+                    onChange={onChange}
+                    autoComplete='off'
+                  />
+                </div>
+              </div>
+          }
+          {
+            opts.membersChangeEnabled &&
+              <div>
+                <div className="mt-4 mb-3">
+                  <span className="text-dark h6">Add users to your team:</span>
+                </div>
+                <Select
+                  options={developers}
+                  className='filter text-xs'
+                  name='users'
+                  getOptionLabel={usersLabelFormat}
+                  getOptionValue={getOptionValueUsers}
+                  onChange={setTeamMembers}
+                  value={teamMembers}
+                  menuIsOpen
+                  components={{
+                    Option, Placeholder
+                  }}
+                  styles={{
+                    ...customStyles,
+                    container: styles => ({
+                      position: 'relative',
+                      background: '#E7E7EC',
+                      paddingTop: 2
+                    }),
+                    control: (base, state) => ({
+                      ...base,
+                      margin: 14,
+                      minHeight: 30,
+                      height: 30,
+                      borderRadius: 0,
+                      borderColor: state.isFocused
+                        ? '#ffd188'
+                        : '#e7e7ec',
+                      boxShadow: state.isFocused ? '0 0 0 0.2rem rgba(255, 160, 8, 0.25)' : 0,
+                      '&:hover': {
+                        boxShadow: '0 0 0 0.2rem rgba(255, 160, 8, 0.25)',
+                        borderColor: '#ffd188',
+                      }
+                    }),
+                    menu: styles => ({
+                      ...styles,
+                      position: 'relative',
+                      top: 0,
+                      marginTop: 0,
+                      borderRadius: 'none',
+                      boxShadow: 'none',
+                      border: '1px solid #d6dbe4'
+                    })
+                  }}
+                  {...defaultProps}
+                />
+              </div>
+          }
+        </div>
+        <div className="dropdown-divider"></div>
+        <div className="bg-white font-weight-light d-flex align-items-center justify-content-end p-3">
+          <button className="btn text-s text-secondary mr-3" onClick={closeDropdown}>Cancel</button>
+          <button
+            className="btn btn-orange"
+            onClick={saveTeam}
+            disabled={applyDisabled}
+          >
+            Add
+          </button>
+        </div>
+      </form>
+    </>
+  )
+}
+
+const Team = ({ team, filterTerm, removeDeveloper, developers, saveTeam }) => {
   return (
     <ul className="list-group list-group-flush">
       {team.members.map(user => (
@@ -315,19 +362,7 @@ const Team = ({ team, filterTerm, removeDeveloper}) => {
 
       <li className="list-group-item bg-white font-weight-normal">
         <div className="dropdown ml-4">
-          <button
-            className="btn btn-orange"
-            type="button"
-            id="dropdownMenuButton"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            {plusIcon} Add user
-          </button>
-          <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            USERS
-          </div>
+          <AddMembers developers={developers} onSave={saveTeam} />
         </div>
       </li>
     </ul>
