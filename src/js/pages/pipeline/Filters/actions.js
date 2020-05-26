@@ -8,3 +8,5 @@ export const setDateInterval = interval => ({ type: TYPE.SET_INTERVAL, payload: 
 export const setContribs = contribs => ({ type: TYPE.SET_CONTRIBS, payload: contribs })
 export const setSelectedRepos = repos => ({ type: TYPE.SET_SELECTED_REPOS, payload: repos })
 export const setSelectedContribs = contribs => ({ type: TYPE.SET_SELECTED_CONTRIBS, payload: contribs })
+export const setAppliedRepos = repos => ({ type: TYPE.SET_APPLIED_REPOS, payload: repos })
+export const setAppliedContribs = contribs => ({ type: TYPE.SET_APPLIED_CONTRIBS, payload: contribs })

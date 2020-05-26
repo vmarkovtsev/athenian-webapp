@@ -28,28 +28,36 @@ const MultiSelect = multiSelectProps => {
     options,
     onApply,
     value,
-    onChange
+    onChange,
+    onClose
   } = multiSelectProps
 
   const noData = formatMessage(noDataMsg)
   const loading= formatMessage('loading...')
   return (
-    <Dropdown label={label} isLoading={isLoading} onApply={onApply} value={value}>
+    <Dropdown
+      label={label}
+      isLoading={isLoading}
+      onApply={onApply}
+      value={value}
+      onClose={onClose}
+    >
       {ddProps => (
-        ddProps.menuIsOpen && <Select
-          autoFocus
-          options={options}
-          className={className}
-          name={name}
-          getOptionLabel={getOptionLabel}
-          getOptionValue={getOptionValue}
-          noOptionsMessage={noData}
-          loadingMessage={loading}
-          value={value}
-          onChange={onChange}
-          {...defaultProps}
-          {...ddProps} // components
-        />
+        ddProps.menuIsOpen &&
+          <Select
+            autoFocus
+            options={options}
+            className={className}
+            name={name}
+            getOptionLabel={getOptionLabel}
+            getOptionValue={getOptionValue}
+            noOptionsMessage={noData}
+            loadingMessage={loading}
+            onChange={onChange}
+            value={value}
+            {...defaultProps}
+            {...ddProps} // components
+          />
       )}
     </Dropdown>
   )
