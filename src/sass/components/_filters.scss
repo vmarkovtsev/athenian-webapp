@@ -64,7 +64,8 @@
 
   &-menu-all {
     padding: 12px;
-    background: $at-border-color;
+    background: #F3F3F5;
+    border-bottom: 1px solid $at-border-color;
     display: flex;
     align-items: center;
     color: $color-dark;
@@ -92,6 +93,7 @@
 
   &-option-user {
     color: $color-secondary;
+    font-weight: 300;
 
     .filter-dropdown-option:active & {
       color: rgba($white,0.8);
