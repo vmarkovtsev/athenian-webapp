@@ -195,19 +195,19 @@ const TeamActions = ({ team, filterTerm, removeTeam }) => {
 }
 
 const TeamForm = ({btnText, onSave, developers, team, options}) => {
+  const [teamName, setTeamName] = useState(team ? team.name : "")
+  const [teamMembers, setTeamMembers] = useState([])
+
+  const opts = options || {}
+  opts.nameChangeEnabled = opts.nameChangeEnabled || false;
+  opts.membersChangeEnabled = opts.membersChangeEnabled || false;
+
   const membersOptions = team ? _(developers)
         .filter(v => !(v.login in _(team.members)
                        .keyBy('login')
                        .mapValues(x => true)
                        .value()))
         .value() : developers
-
-  const [teamName, setTeamName] = useState(team ? team.name : "")
-  const [teamMembers, setTeamMembers] = useState(team ? membersOptions : [])
-
-  const opts = options || {}
-  opts.nameChangeEnabled = opts.nameChangeEnabled || false;
-  opts.membersChangeEnabled = opts.membersChangeEnabled || false;
 
   const onChange = ev => {
     const { target: { value } } = ev
