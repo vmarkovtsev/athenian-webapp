@@ -6,7 +6,7 @@ import 'datatables.net-bs4/css/dataTables.bootstrap4.css';
 import Select from 'react-select';
 
 import { dateTime, github, number } from 'js/services/format';
-import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses } from 'js/services/prHelpers'
+import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses } from 'js/services/prHelpers';
 
 import _ from 'lodash';
 
@@ -30,42 +30,45 @@ const tableContainerId = 'dataTable';
 const tableContainerSelector = `#${tableContainerId}`;
 
 export default ({ stage, data, status }) => {
-  const [selectValue, setSelectValue] = useState(null)
-  const [selectOptions, setSelectOptions] = useState([{ label: 'All', value: null }])
+  const [selectValue, setSelectValue] = useState(null);
+  const [selectOptions, setSelectOptions] = useState([{ label: 'All', value: null }]);
 
   const options = useMemo(() => {
-    const getLabel = prLabel(stage)
-    const labels = [...data.prs.reduce((acc, curr) => acc.add(getLabel(curr)), new Set())]
+    const getLabel = prLabel(stage);
+    const labels = [...data.prs.reduce((acc, curr) => acc.add(getLabel(curr)), new Set())];
     return [
       { label: 'All' },
-      ...labels.map(value => ({ value, label: value }))
-    ]
-  }, [data.prs, stage])
+      ...labels.map(value => ({ value, label: value })),
+    ];
+  }, [data.prs, stage]);
 
-  const isReady = status => status === READY
+  const isReady = status => status === READY;
 
   // reset filter when changing stage
   useEffect(() => {
-    setSelectValue(null)
-  }, [stage])
+    setSelectValue(null);
+  }, [stage]);
 
   useEffect(() => {
     if (!isReady(status)) {
       return;
     }
 
-    setSelectOptions(options)
-  
+    setSelectOptions(options);
+
     const applyFilter = data => {
-      if (!selectValue) return data
+      if (!selectValue) {
+        return data;
+      }
+
       return {
         ...data,
-        prs: data.prs.filter(v => prLabel(stage)(v) === selectValue.value)
+        prs: data.prs.filter(v => prLabel(stage)(v) === selectValue.value),
       }
     }
 
     draw(stage, applyFilter(data));
-  
+
     return () => {
       $.fn.DataTable.isDataTable(tableContainerSelector) && $(tableContainerSelector).DataTable().destroy();
       $(tableContainerSelector).empty();
@@ -95,10 +98,10 @@ export default ({ stage, data, status }) => {
               options={selectOptions}
               onChange={value => {
                 if (value && !value.value) {
-                  setSelectValue(null)
-                  return
+                  setSelectValue(null);
+                  return;
                 }
-                setSelectValue(value)
+                setSelectValue(value);
               }}
             />}
           </div>
@@ -115,7 +118,7 @@ const cycleTimeColumn = stage => {
       wip: 'WIP Time',
       review: 'Review Time',
       merge: 'Merge Time',
-      release: 'Release >'
+      release: 'Release >',
   }[stage];
 
   return {
@@ -123,7 +126,7 @@ const cycleTimeColumn = stage => {
     searchable: false,
     className: 'pr-cycle-time',
     render: (__, type, row) => {
-      const cycleTime = stage === 'overview' ? 
+      const cycleTime = stage === 'overview' ?
         _(row.stage_timings).values().compact().sum(): row.stage_timings[stage];
 
       switch (type) {
@@ -160,7 +163,7 @@ const draw = (stage, data) => {
     language: {
       paginate: {
         next: "<i class='fas fa-angle-right'></i>",
-        previous: "<i class='fas fa-angle-left'></i>"
+        previous: "<i class='fas fa-angle-left'></i>",
       },
       lengthMenu: "Show rows: <select class='form-control'>" +
         "<option value='10'>10</option>" +
