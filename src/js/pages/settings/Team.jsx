@@ -65,6 +65,17 @@ export default function Teams() {
 
   }
 
+  const addDevelopers = async ({ teamId, members }) => {
+    const index = teams.findIndex(t => t.id === teamId)
+    const team = teams[index]
+    team.members = _(team.members).union(members).value()
+    try {
+      await updateTeam(api, teamId, team.name, team.members.map(m => m.login))
+      setTeams([...teams])
+    } catch (err) {}
+
+  }
+
   const deleteTeam = async id => {
     try {
       await removeTeam(api, id)
@@ -103,8 +114,8 @@ export default function Teams() {
         filterTerm={filterTermState}
         removeTeam={deleteTeam}
         removeDeveloper={removeDeveloper}
+        addDevelopers={addDevelopers}
         developers={developers}
-        onSave={saveTeam}
       />
     </SettingsGroup>
   )
@@ -132,7 +143,7 @@ const AddMembers = ({ onSave, developers, team }) => {
          />
 }
 
-const TeamsList = ({ teams, filterTerm, removeTeam, removeDeveloper, developers, saveTeam }) => {
+const TeamsList = ({ teams, filterTerm, removeTeam, removeDeveloper, addDevelopers, developers }) => {
   return (
     <Accordion
       id="accordion"
@@ -144,8 +155,9 @@ const TeamsList = ({ teams, filterTerm, removeTeam, removeDeveloper, developers,
                    team={team}
                    filterTerm={filterTerm}
                    removeDeveloper={removeDeveloper}
+                   addDevelopers={addDevelopers}
                    developers={developers}
-                   onSave={saveTeam}
+                   onSave={addDevelopers}
                  />,
       }))}
     />
@@ -206,6 +218,7 @@ const TeamForm = ({btnText, onSave, developers, team, options}) => {
 
   const saveTeam = () => {
     onSave({
+      teamId: team ? team.id : "",
       name: teamName,
       members: teamMembers
     })
@@ -322,7 +335,7 @@ const TeamForm = ({btnText, onSave, developers, team, options}) => {
   )
 }
 
-const Team = ({ team, filterTerm, removeDeveloper, developers, saveTeam }) => {
+const Team = ({ team, filterTerm, removeDeveloper, developers, addDevelopers }) => {
   return (
     <ul className="list-group list-group-flush">
       {team.members.map(user => (
@@ -350,7 +363,7 @@ const Team = ({ team, filterTerm, removeDeveloper, developers, saveTeam }) => {
 
       <li className="list-group-item bg-white font-weight-normal">
         <div className="dropdown ml-4">
-          <AddMembers developers={developers} onSave={saveTeam} team={team}/>
+          <AddMembers developers={developers} onSave={addDevelopers} team={team}/>
         </div>
       </li>
     </ul>
