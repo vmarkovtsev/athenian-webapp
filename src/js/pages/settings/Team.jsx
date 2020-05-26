@@ -12,6 +12,8 @@ import { github } from 'js/services/format'
 import { usersLabelFormat } from 'js/components/ui/filters/MultiSelect/CustomComponents'
 import { SettingsGroup, Search, Accordion } from 'js/pages/Settings'
 
+import _ from 'lodash';
+
 const defaultProps = {
   backspaceRemovesValue: false,
   closeMenuOnSelect: false,
@@ -141,10 +143,11 @@ const AddTeam = ({ onSave, developers }) => {
          />
 }
 
-const AddMembers = ({ onSave, developers }) => {
+const AddMembers = ({ onSave, developers, team }) => {
   return <TeamForm btnText={"Add user"}
                    onSave={onSave}
                    developers={developers}
+                   team={team}
                    options={{
                      membersChangeEnabled: true
                    }}
@@ -202,9 +205,16 @@ const TeamActions = ({ team, filterTerm, removeTeam }) => {
   )
 }
 
-const TeamForm = ({btnText, onSave, developers, options}) => {
-  const [teamName, setTeamName] = useState('')
-  const [teamMembers, setTeamMembers] = useState([])
+const TeamForm = ({btnText, onSave, developers, team, options}) => {
+  const membersOptions = team ? _(developers)
+        .filter(v => !(v.login in _(team.members)
+                       .keyBy('login')
+                       .mapValues(x => true)
+                       .value()))
+        .value() : developers
+
+  const [teamName, setTeamName] = useState(team ? team.name : "")
+  const [teamMembers, setTeamMembers] = useState(team ? membersOptions : [])
 
   const opts = options || {}
   opts.nameChangeEnabled = opts.nameChangeEnabled || false;
@@ -270,7 +280,7 @@ const TeamForm = ({btnText, onSave, developers, options}) => {
                   <span className="text-dark h6">Add users to your team:</span>
                 </div>
                 <Select
-                  options={developers}
+                  options={membersOptions}
                   className='filter text-xs'
                   name='users'
                   getOptionLabel={usersLabelFormat}
@@ -362,7 +372,7 @@ const Team = ({ team, filterTerm, removeDeveloper, developers, saveTeam }) => {
 
       <li className="list-group-item bg-white font-weight-normal">
         <div className="dropdown ml-4">
-          <AddMembers developers={developers} onSave={saveTeam} />
+          <AddMembers developers={developers} onSave={saveTeam} team={team}/>
         </div>
       </li>
     </ul>
