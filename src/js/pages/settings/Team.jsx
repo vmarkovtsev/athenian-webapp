@@ -212,7 +212,7 @@ const TeamForm = ({btnText, onSave, developers, team, options}) => {
   const onChange = ev => {
     const { target: { value } } = ev
     setTeamName(value)
-    setTeamMembers([])
+    setTeamMembers(teamMembers)
   }
 
   const saveTeam = () => {
@@ -229,7 +229,7 @@ const TeamForm = ({btnText, onSave, developers, team, options}) => {
   const applyDisabled = (opts.nameChangeEnabled && opts.membersChangeEnabled) ?
         (!teamName.length || !teamMembers.length) :
         (opts.nameChangeEnabled ? !teamName.length : !teamMembers.length)
-
+  
   return (
     <>
       <button
