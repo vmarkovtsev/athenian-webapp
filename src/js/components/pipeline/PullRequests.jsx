@@ -138,9 +138,15 @@ const initTable = (stage, users) => {
     return;
   }
 
-  const prLabelStage = prLabel(stage);
+  const tableDefinition = getTableDefinition(stage, users);
+  $(tableContainerSelector)
+    .DataTable(tableDefinition)
+    .on('draw', () => $('[data-toggle="tooltip"]').tooltip(tooltip_conf));
+};
 
-  const table = $(tableContainerSelector).DataTable({
+const getTableDefinition = (stage, users) => {
+  const prLabelStage = prLabel(stage);
+  return {
     dom: `
       <'row'<'col-12 table-filter'f>>
       <'row'<'col-12'tr>>
@@ -341,7 +347,5 @@ const initTable = (stage, users) => {
         }
       },
     }],
-  });
-
-  table.on('draw', () => $('[data-toggle="tooltip"]').tooltip(tooltip_conf));
-}
+  };
+};
