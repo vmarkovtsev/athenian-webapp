@@ -141,7 +141,11 @@ const initTable = (stage, users) => {
   const tableDefinition = getTableDefinition(stage, users);
   $(tableContainerSelector)
     .DataTable(tableDefinition)
-    .on('draw', () => $('[data-toggle="tooltip"]').tooltip(tooltip_conf));
+    .on('draw', () => {
+      $('.badge[data-toggle="tooltip"]').tooltip('dispose');
+      $('.athenian-tooltip').remove();
+      $('.badge[data-toggle="tooltip"]').tooltip(tooltip_conf);
+    });
 };
 
 const getTableDefinition = (stage, users) => {
