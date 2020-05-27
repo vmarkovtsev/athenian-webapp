@@ -6,7 +6,7 @@ import 'datatables.net-bs4/css/dataTables.bootstrap4.css';
 import Select from 'react-select';
 
 import { dateTime, github, number } from 'js/services/format';
-import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses } from 'js/services/prHelpers'
+import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses } from 'js/services/prHelpers';
 
 import _ from 'lodash';
 
@@ -30,77 +30,84 @@ const tableContainerId = 'dataTable';
 const tableContainerSelector = `#${tableContainerId}`;
 
 export default ({ stage, data, status }) => {
-  const [selectValue, setSelectValue] = useState(null)
-  const [selectOptions, setSelectOptions] = useState([{ label: 'All', value: null }])
+  const [selectValue, setSelectValue] = useState(null);
+  const [selectOptions, setSelectOptions] = useState([{ label: 'All', value: null }]);
 
   const options = useMemo(() => {
-    const getLabel = prLabel(stage)
-    const labels = [...data.prs.reduce((acc, curr) => acc.add(getLabel(curr)), new Set())]
+    const getLabel = prLabel(stage);
+    const labels = [...data.prs.reduce((acc, curr) => acc.add(getLabel(curr)), new Set())];
     return [
       { label: 'All' },
-      ...labels.map(value => ({ value, label: value }))
-    ]
-  }, [data.prs, stage])
+      ...labels.map(value => ({ value, label: value })),
+    ];
+  }, [data.prs, stage]);
 
-  const isReady = status => status === READY
+  const isReady = status => status === READY;
 
   // reset filter when changing stage
   useEffect(() => {
-    setSelectValue(null)
-  }, [stage])
+    setSelectValue(null);
+  }, [stage]);
 
   useEffect(() => {
     if (!isReady(status)) {
       return;
     }
 
-    setSelectOptions(options)
-  
-    const applyFilter = data => {
-      if (!selectValue) return data
-      return {
-        ...data,
-        prs: data.prs.filter(v => prLabel(stage)(v) === selectValue.value)
-      }
-    }
+    setSelectOptions(options);
+    initTable(stage, data.users);
+    fillTable(data.prs);
 
-    draw(stage, applyFilter(data));
-  
     return () => {
       $.fn.DataTable.isDataTable(tableContainerSelector) && $(tableContainerSelector).DataTable().destroy();
       $(tableContainerSelector).empty();
     };
-  }, [stage, data, status, selectValue, options]);
+  }, [stage, data.prs, data.users, status, options]);
+
+  useEffect(() => {
+    if (!$.fn.DataTable.isDataTable(tableContainerSelector)) {
+      return;
+    }
+
+    $(tableContainerSelector).DataTable()
+      .columns('label:name')
+      .search(selectValue?.value || '')
+      .draw();
+  }, [selectValue]);
+
+  if (!isReady(status)) {
+    return  <StatusIndicator status={status} textOnly={false} />;
+  }
+
   return (
     <>
-      <StatusIndicator status={status} textOnly={false} />
       <div className="table-responsive mb-4">
         <div className="d-flex" style={{ marginBottom: '-28px', justifyContent: 'flex-start' }}>
           <div style={{ zIndex: 4, marginLeft: '40.5rem', textAlign: 'right' }}>
-            {isReady(status) && <Info content={`You can search by PR title, repository or participant, or use this other syntax for these other filters:<br />
+            <Info content={`You can search by PR title, repository or participant, or use this other syntax for these other filters:<br />
               <b>by status:</b> <span class="code">status:merged</span>, <span class="code">status:closed</span>, <span class="code">status:opened</span><br />
               <b>by number:</b> <span class="code">number:354</span><br />
               <b>by author:</b> <span class="code">author:user_handler</span><br />
               <b>by reviewer:</b> <span class="code">reviewer:user_handler</span>
               `}
-            />}
+            />
           </div>
         </div>
         <div className="d-flex" style={{ marginBottom: '-34px', justifyContent: 'flex-end' }}>
           <div style={{ zIndex: 3, flex: '0 0 170px' }}>
-            {isReady(status) && <Select
+            <Select
               value={selectValue}
               isClearable={false}
               placeholder="Filter by status"
               options={selectOptions}
               onChange={value => {
                 if (value && !value.value) {
-                  setSelectValue(null)
-                  return
+                  setSelectValue(null);
+                  return;
                 }
-                setSelectValue(value)
+                setSelectValue(value);
               }}
-            />}
+            />
           </div>
         </div>
         <table className="table table-bordered" id={tableContainerId} width="100%" cellSpacing="0" style={{ tableLayout: 'fixed' }} />
@@ -109,46 +116,36 @@ export default ({ stage, data, status }) => {
   );
 };
 
-const cycleTimeColumn = stage => {
-  const title = {
-      overview: 'Lead Time',
-      wip: 'WIP Time',
-      review: 'Review Time',
-      merge: 'Merge Time',
-      release: 'Release >'
-  }[stage];
-
-  return {
-    title: title,
-    searchable: false,
-    className: 'pr-cycle-time',
-    render: (__, type, row) => {
-      const cycleTime = stage === 'overview' ? 
-        _(row.stage_timings).values().compact().sum(): row.stage_timings[stage];
-
-      switch (type) {
-        case 'display':
-          return cycleTime === undefined ? '-' : dateTime.bestTimeUnit(cycleTime * 1000, 0);
-        case 'filter':
-          return '';
-        case 'type':
-        case 'sort':
-        default:
-          return cycleTime || 0;
-      }
-    },
-  };
+const fillTable = prs => {
+  $(tableContainerSelector).DataTable()
+    .clear()
+    .rows
+    .add(prs)
+    .draw();
 };
 
-const draw = (stage, data) => {
-  if (!$(tableContainerSelector).DataTable) {
-    return;
-  }
+const cycleTimeColumnTitles = {
+  overview: 'Lead Time',
+  wip: 'WIP Time',
+  review: 'Review Time',
+  merge: 'Merge Time',
+  release: 'Release >',
+};
 
+const initTable = (stage, users) => {
+  const tableDefinition = getTableDefinition(stage, users);
+  $(tableContainerSelector)
+    .DataTable(tableDefinition)
+    .on('draw', () => {
+      $('.badge[data-toggle="tooltip"]').tooltip('dispose');
+      $('.athenian-tooltip').remove();
+      $('.badge[data-toggle="tooltip"]').tooltip(tooltip_conf);
+    });
+};
+
+const getTableDefinition = (stage, users) => {
   const prLabelStage = prLabel(stage);
-  const { prs, users } = data;
-
-  const table = $(tableContainerSelector).DataTable({
+  return {
     dom: `
       <'row'<'col-12 table-filter'f>>
       <'row'<'col-12'tr>>
@@ -160,7 +157,7 @@ const draw = (stage, data) => {
     language: {
       paginate: {
         next: "<i class='fas fa-angle-right'></i>",
-        previous: "<i class='fas fa-angle-left'></i>"
+        previous: "<i class='fas fa-angle-left'></i>",
       },
       lengthMenu: "Show rows: <select class='form-control'>" +
         "<option value='10'>10</option>" +
@@ -174,17 +171,17 @@ const draw = (stage, data) => {
       search: "<i class='field-icon fas fa-search' aria-hidden='true'></i>",
     },
     fixedHeader: true,
-    data: prs,
     columnDefs: [
       { "width": "50px", "targets": 0, "orderable": false },  //status
-      { "width": "130px", "targets": 2 }, //changes
+      { "width": "130px", "targets": 2 }, //size
       { "width": "90px", "targets": 3 },  //comments
-      { "width": "130px", "targets": 4 }, //participants
-      { "width": "100px", "targets": 5 },  //age
-      { "width": "150px", "targets": 6 }, //stage
+      { "width": "130px", "targets": 4 }, //reviewers
+      { "width": "100px", "targets": 5 }, //cycleTime
+      { "width": "150px", "targets": 6 }, //label
     ],
     columns: [{
       title: '',
+      name: 'status',
       className: 'pr-merged',
       render: (__, type, row) => {
         let pic, sort;
@@ -217,6 +214,7 @@ const draw = (stage, data) => {
     },
     {
       title: 'Pull Requests | Created',
+      name: 'name',
       className: 'pr-main',
       render: (__, type, row) => {
         switch (type) {
@@ -245,6 +243,7 @@ const draw = (stage, data) => {
     },
     {
       title: 'Size',
+      name: 'size',
       className: 'pr-size',
       searchable: false,
       render: (__, type, row) => {
@@ -267,6 +266,7 @@ const draw = (stage, data) => {
     },
     {
       title: 'Comments',
+      name: 'comments',
       className: 'pr-comments',
       searchable: false,
       render: (__, type, row) => {
@@ -284,6 +284,7 @@ const draw = (stage, data) => {
     },
     {
       title: 'Reviewers',
+      name: 'reviewers',
       className: 'pr-reviewers',
       render: (__, type, row) => {
         switch (type) {
@@ -298,9 +299,33 @@ const draw = (stage, data) => {
         }
       },
     },
-    cycleTimeColumn(stage),
+    {
+      title: cycleTimeColumnTitles[stage],
+      name: 'cycleTime',
+      searchable: false,
+      className: 'pr-cycle-time',
+      render: (__, type, row) => {
+        const cycleTime = stage === 'overview' ? (
+            _(row.stage_timings).values().compact().sum()
+          ) : (
+            row.stage_timings[stage]
+          );
+
+        switch (type) {
+          case 'display':
+            return cycleTime === undefined ? '-' : dateTime.bestTimeUnit(cycleTime * 1000, 0);
+          case 'filter':
+            return '';
+          case 'type':
+          case 'sort':
+          default:
+            return cycleTime || 0;
+        }
+      },
+    },
     {
       title: 'Stage',
+      name: 'label',
       className: 'align-middle text-center',
       render: (__, type, row) => {
         switch (type) {
@@ -328,7 +353,5 @@ const draw = (stage, data) => {
         }
       },
     }],
-  });
-
-  table.on('draw', () => $('[data-toggle="tooltip"]').tooltip(tooltip_conf));
-}
+  };
+};
