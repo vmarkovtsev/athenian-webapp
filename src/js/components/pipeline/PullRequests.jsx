@@ -178,14 +178,15 @@ const getTableDefinition = (stage, users) => {
     fixedHeader: true,
     columnDefs: [
       { "width": "50px", "targets": 0, "orderable": false },  //status
-      { "width": "130px", "targets": 2 }, //changes
+      { "width": "130px", "targets": 2 }, //size
       { "width": "90px", "targets": 3 },  //comments
-      { "width": "130px", "targets": 4 }, //participants
-      { "width": "100px", "targets": 5 },  //age
-      { "width": "150px", "targets": 6 }, //stage
+      { "width": "130px", "targets": 4 }, //reviewers
+      { "width": "100px", "targets": 5 }, //cycleTime
+      { "width": "150px", "targets": 6 }, //label
     ],
     columns: [{
       title: '',
+      name: 'status',
       className: 'pr-merged',
       render: (__, type, row) => {
         let pic, sort;
@@ -218,6 +219,7 @@ const getTableDefinition = (stage, users) => {
     },
     {
       title: 'Pull Requests | Created',
+      name: 'name',
       className: 'pr-main',
       render: (__, type, row) => {
         switch (type) {
@@ -246,6 +248,7 @@ const getTableDefinition = (stage, users) => {
     },
     {
       title: 'Size',
+      name: 'size',
       className: 'pr-size',
       searchable: false,
       render: (__, type, row) => {
@@ -268,6 +271,7 @@ const getTableDefinition = (stage, users) => {
     },
     {
       title: 'Comments',
+      name: 'comments',
       className: 'pr-comments',
       searchable: false,
       render: (__, type, row) => {
@@ -285,6 +289,7 @@ const getTableDefinition = (stage, users) => {
     },
     {
       title: 'Reviewers',
+      name: 'reviewers',
       className: 'pr-reviewers',
       render: (__, type, row) => {
         switch (type) {
@@ -301,6 +306,7 @@ const getTableDefinition = (stage, users) => {
     },
     {
       title: cycleTimeColumnTitles[stage],
+      name: 'cycleTime',
       searchable: false,
       className: 'pr-cycle-time',
       render: (__, type, row) => {
@@ -324,6 +330,7 @@ const getTableDefinition = (stage, users) => {
     },
     {
       title: 'Stage',
+      name: 'label',
       className: 'align-middle text-center',
       render: (__, type, row) => {
         switch (type) {
