@@ -56,21 +56,24 @@ export default ({ stage, data, status }) => {
 
     setSelectOptions(options);
     initTable(stage, data.users);
+    fillTable(data.prs);
 
     return () => {
       $.fn.DataTable.isDataTable(tableContainerSelector) && $(tableContainerSelector).DataTable().destroy();
       $(tableContainerSelector).empty();
     };
-  }, [stage, data.users, status, options]);
+  }, [stage, data.prs, data.users, status, options]);
 
   useEffect(() => {
-    if (!isReady(status)) {
+    if (!$.fn.DataTable.isDataTable(tableContainerSelector)) {
       return;
     }
 
-    fillTable(selectValue ? data.prs.filter(v => prLabel(stage)(v) === selectValue.value) : data.prs);
-
-  }, [stage, data.prs, status, selectValue]);
+    $(tableContainerSelector).DataTable()
+      .columns('label:name')
+      .search(selectValue?.value || '')
+      .draw();
+  }, [selectValue]);
 
   if (!isReady(status)) {
     return  <StatusIndicator status={status} textOnly={false} />;
@@ -114,10 +117,6 @@ export default ({ stage, data, status }) => {
 };
 
 const fillTable = prs => {
-  if (!$(tableContainerSelector).DataTable) {
-    return;
-  }
-
   $(tableContainerSelector).DataTable()
     .clear()
     .rows
@@ -134,10 +133,6 @@ const cycleTimeColumnTitles = {
 };
 
 const initTable = (stage, users) => {
-  if (!$(tableContainerSelector).DataTable) {
-    return;
-  }
-
   const tableDefinition = getTableDefinition(stage, users);
   $(tableContainerSelector)
     .DataTable(tableDefinition)
