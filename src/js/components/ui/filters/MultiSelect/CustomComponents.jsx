@@ -79,7 +79,7 @@ export const Dropdown = ({
     return () => {
       window.removeEventListener('click', closeAll)
     }
-  }, [])
+  }, [closeAll])
 
   const childrenProps = {
     menuIsOpen: isMenuOpen,
@@ -141,7 +141,7 @@ const Chevron = ({ isOpen }) => {
  * Group Heading
  * @param {*} param0
  */
-const GroupHeading = (onCheck, isChecked, onToggle, toggled) => props => {
+const GroupHeading = (onCheck, isChecked, isIndeterminate, onToggle, toggled) => props => {
   const {
     children,
     ...rest
@@ -155,7 +155,9 @@ const GroupHeading = (onCheck, isChecked, onToggle, toggled) => props => {
 
   return (
     <components.GroupHeading onClick={onClick} {...rest}>
-      <Checkbox isChecked={isChecked} onClick={onCheckboxClick} />
+      <Checkbox isChecked={isChecked}
+                isIndeterminate={isIndeterminate}
+                onClick={onCheckboxClick} />
       <HeadingIcon title={children} />
       {children}
       <Chevron isOpen={toggled} />
@@ -169,12 +171,16 @@ const GroupHeading = (onCheck, isChecked, onToggle, toggled) => props => {
  */
 const Group = props => {
   const [isChecked, setChecked] = useState(true)
+  const [isIndeterminate, setIndeterminate] = useState(false)
   const [isOpen, setOpen] = useState(false)
   const { children, ...rest } = props
 
   useEffect(() => {
     const allSelected = props.options.map(op => op.isSelected).every(Boolean)
-    setChecked(allSelected)
+    const someSelected = props.options.map(op => op.isSelected).some(Boolean)
+    const indeterminateSelection = !allSelected && someSelected
+    setChecked(someSelected)
+    setIndeterminate(indeterminateSelection)
   }, [props.options])
 
   const onCheckClick = check => {
@@ -192,7 +198,7 @@ const Group = props => {
     }
   }
 
-  const Heading = GroupHeading(onCheckClick, isChecked, setOpen, isOpen)
+  const Heading = GroupHeading(onCheckClick, isChecked, isIndeterminate, setOpen, isOpen)
   return (
     <components.Group {...rest} Heading={Heading}>
       {isOpen && children}
@@ -203,14 +209,20 @@ const Group = props => {
 /**
  * Checkbox
  * @param {boolean} isChecked
+ * @param {boolean} isIndeterminate
  */
-const Checkbox = ({ isChecked, onClick }) => {
+const Checkbox = ({ isChecked, isIndeterminate, onClick }) => {
+  const mark = isChecked ? (
+    isIndeterminate ?
+      <rect stroke="#24C7CC" stroke-width="1" x="3" y="7.375" width="10" height="1.25" fill="#24C7CC"></rect>
+      :
+      <polygon fill="#24C7CC" transform="translate(2.000000, 3.000000)" points="4.22898961 6.47146254 1.97497639 4.14922711 0.5 5.65814507 4.22898961 9.5 11.5 2.00891795 10.0354108 0.5"></polygon>
+  ) : null
+
   return (
     <svg width="16px" height="16px" viewBox="0 0 16 16" className="mr-2" onClick={onClick}>
       <rect stroke="#D6DBE4" strokeWidth="1" x="0" y="0" width="16" height="16" fill="#fff"></rect>
-      { isChecked &&
-        <polygon fill="#24C7CC" transform="translate(2.000000, 3.000000)" points="4.22898961 6.47146254 1.97497639 4.14922711 0.5 5.65814507 4.22898961 9.5 11.5 2.00891795 10.0354108 0.5"></polygon>
-      }
+      {mark}
     </svg>
   )
 }
