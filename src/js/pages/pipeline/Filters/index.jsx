@@ -1,4 +1,4 @@
-import React, { useReducer, useRef } from 'react'
+import React, { useReducer, useRef, useCallback } from 'react'
 import moment from 'moment'
 
 import { useAuth0 } from 'js/context/Auth0'
@@ -95,7 +95,7 @@ export default function Filters({ children }) {
     }))
   }
 
-  const onReposApplyChange = async (selectedRepos, dateInterval) => {
+  const onReposApplyChange = useCallback(async (selectedRepos, dateInterval) => {
     dispatchFilter(setReady(false))
     resetData()
   
@@ -119,9 +119,9 @@ export default function Filters({ children }) {
 
     dispatchFilter(setTeams(teams))
     dispatchFilter(setReady(true))
-  }
+  }, [accountID, contextRepos, filterData.dateInterval, resetData, setGlobalData])
 
-  const onContribsApplyChange = async selectedContribs => {
+  const onContribsApplyChange = useCallback(async selectedContribs => {
     dispatchFilter(setReady(false))
     resetData()
     
@@ -137,11 +137,11 @@ export default function Filters({ children }) {
     dispatchFilter(setSelectedContribs(selectedContribs))
     dispatchFilter(setTeams(teams))
     dispatchFilter(setReady(true))
-  }
+  }, [accountID, filterData.repos.data, resetData, setGlobalData])
   
   const reposLabelFormat = repo => (github.repoName(repo) || 'UNKNOWN')
   const getOptionValueRepos = val => val
-  const getOptionValueUsers = val => `${val.name} ${val.login}`
+  const getOptionValueUsers = val => `${val.id} ${val.name} ${val.login}`
 
   const reposOptions = [...filterData.repos.data]
 
@@ -167,17 +167,17 @@ export default function Filters({ children }) {
   )
 
   // revert previous values is close filter without apply
-  const onCloseRepos = applied => {
-    if (!applied) {
-      dispatchFilter(setSelectedRepos([...filterData.repos.applied]))
-    }
-  }
+  // const onCloseRepos = useCallback(applied => {
+  //   if (!applied) {
+  //     dispatchFilter(setSelectedRepos([...filterData.repos.applied]))
+  //   }
+  // }, [filterData.repos.applied])
 
-  const onCloseContribs = applied => {
-    if (!applied) {
-      dispatchFilter(setSelectedContribs([...filterData.contribs.applied]))
-    }
-  }
+  // const onCloseContribs = useCallback(applied => {
+  //   if (!applied) {
+  //     dispatchFilter(setSelectedContribs([...filterData.contribs.applied]))
+  //   }
+  // }, [filterData.contribs.applied])
 
   return (
     <FiltersContext
@@ -200,7 +200,7 @@ export default function Filters({ children }) {
             onApply={onReposApplyChange}
             onChange={onSelectRepo}
             value={reposValue}
-            onClose={onCloseRepos}
+            // onClose={onCloseRepos}
           />
         }
         contribsFilter={
@@ -216,7 +216,7 @@ export default function Filters({ children }) {
             onApply={onContribsApplyChange}
             value={contribsValue}
             onChange={onSelectContrib}
-            onClose={onCloseContribs}
+            // onClose={onCloseContribs}
           />
         }
         dateIntervalFilter={
