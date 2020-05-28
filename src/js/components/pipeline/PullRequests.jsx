@@ -6,7 +6,12 @@ import 'datatables.net-bs4/css/dataTables.bootstrap4.css';
 import Select from 'react-select';
 
 import { dateTime, github, number } from 'js/services/format';
-import { prLabel, PR_STATUS as prStatus, PR_LABELS_CLASSNAMES as prLabelClasses } from 'js/services/prHelpers';
+import {
+  prLabel,
+  PR_STATUS as prStatus,
+  PR_LABELS_CLASSNAMES as prLabelClasses,
+  PR_LABELS_ORDERS as prLabelOrders,
+} from 'js/services/prHelpers';
 
 import _ from 'lodash';
 
@@ -153,7 +158,7 @@ const getTableDefinition = (stage, users) => {
     `,
     searching: true,
     ordering: true,
-    order: [[1, 'desc']],
+    order: [[6, 'asc']],
     language: {
       paginate: {
         next: "<i class='fas fa-angle-right'></i>",
@@ -345,9 +350,10 @@ const getTableDefinition = (stage, users) => {
                   </span>
               </div>`
             );
-          case 'filter':
-          case 'sort':
           case 'type':
+          case 'sort':
+            return prLabelOrders[prLabelStage(row)];
+          case 'filter':
           default:
             return prLabelStage(row);
         }
