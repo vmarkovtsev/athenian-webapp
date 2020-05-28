@@ -49,8 +49,8 @@ export default {
     },
     factory: (computed) => ({
         meta: {
-            title: 'Pull Requests created through time',
-            description: 'Pull Request Ratio Flow.'
+            title: 'Pull Requests Created',
+            description: 'Pull Request throughput through time.'
         },
         content: [
             {
@@ -60,7 +60,7 @@ export default {
                         data: computed.chartData,
                         timeMode: true,
                         extra: {
-                            labels: {
+                            axisLabels: {
                                 y: 'number of PRs created'
                             },
                             maxNumberOfTicks: 5,
