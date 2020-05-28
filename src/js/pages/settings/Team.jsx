@@ -338,28 +338,34 @@ const TeamForm = ({btnText, onSave, developers, team, options}) => {
 const Team = ({ team, filterTerm, removeDeveloper, developers, addDevelopers }) => {
   return (
     <ul className="list-group list-group-flush">
-      {team.members.map(user => (
-        <li
-          className="list-group-item bg-white font-weight-normal"
-          style={{ display: isFilteredIn(user, filterTerm) ? 'block' : 'none' }}
-          key={user.login}
-        >
-          <div className="row">
-            <div className="col-6 d-flex">
-              <img src={user.picture} className="pr-user-avatar mr-2 ml-4" alt={user.name} />
-              <p className="text-dark text-truncate my-1">{user.name} <span className="text-secondary text-xs">{github.userName(user.login)}</span></p>
+      {team.members.map(member => {
+        const gituser = github.userName(member.login)
+        const user = gituser || 'ANONYMOUS'
+        return (
+          <li
+            className="list-group-item bg-white font-weight-normal"
+            style={{ display: isFilteredIn(user, filterTerm) ? 'block' : 'none' }}
+            key={member.login}
+          >
+            <div className="row">
+              <div className="col-6 d-flex">
+                <img src={member.picture} className="pr-user-avatar mr-2 ml-4" alt={member.name} />
+                <p className="text-dark text-truncate my-1">
+                  {member.name} <span className={`text-${!member.name ? 'dark' : 'secondary'} text-xs`}>{user}</span>
+                </p>
+              </div>
+              <div className="col-6 d-flex align-items-center">
+                <button
+                  onClick={() => removeDeveloper(team.id, member.login)}
+                  className="btn btn-transparent text-bright ml-auto"
+                >
+                  <FontAwesomeIcon icon={faTimes} />
+                </button>
+              </div>
             </div>
-            <div className="col-6 d-flex align-items-center">
-              <button
-                onClick={() => removeDeveloper(team.id, user.login)}
-                className="btn btn-transparent text-bright ml-auto"
-              >
-                <FontAwesomeIcon icon={faTimes} />
-              </button>
-            </div>
-          </div>
-        </li>
-      ))}
+          </li>
+        )
+      })}
 
       <li className="list-group-item bg-white font-weight-normal">
         <div className="dropdown ml-4">
