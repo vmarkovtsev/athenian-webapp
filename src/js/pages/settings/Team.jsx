@@ -347,7 +347,7 @@ const Team = ({ team, filterTerm, removeDeveloper, developers, addDevelopers }) 
           <div className="row">
             <div className="col-6 d-flex">
               <img src={user.picture} className="pr-user-avatar mr-2 ml-4" alt={user.name} />
-              <p className="text-dark text-truncate my-1">{user.name} ({github.userName(user.login)})</p>
+              <p className="text-dark text-truncate my-1">{user.name} <span className="text-secondary text-xs">{github.userName(user.login)}</span></p>
             </div>
             <div className="col-6 d-flex align-items-center">
               <button
