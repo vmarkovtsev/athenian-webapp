@@ -63,7 +63,7 @@ export default {
                             labels: {
                                 y: 'number of PRs created'
                             },
-                            maxNumberOfTicks: 10,
+                            maxNumberOfTicks: 5,
                             axisKeys: computed.axisKeys,
                             color: palette.schemes.trend,
                             tooltip: {
