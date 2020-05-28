@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 import _ from 'lodash';
 
 import { SimpleKPI } from 'js/components/insights/KPI';
@@ -27,7 +26,6 @@ export default {
         const createdPRs = data.global['prs-metrics.values'].all['opened'] || 0;
         const days = dayCreations.length || 1;
         const avgCreatedPRs = createdPRs / days;
-        const highestDay = _(dayCreations).maxBy(v => v.values[0]) || { day: '', values: [0] };
 
         return {
             chartData: openedMetrics.map(v => ({
@@ -36,10 +34,7 @@ export default {
             })),
             KPIsData: {
                 avgCreatedPRs,
-                highestDay: {
-                    day: moment(highestDay.date).format('dddd') ,
-                    value: highestDay.values[0],
-                },
+                createdPRs,
             },
             axisKeys: {
                 x: 'day',
@@ -49,8 +44,8 @@ export default {
     },
     factory: (computed) => ({
         meta: {
-            title: 'Pull Requests created through time',
-            description: 'Pull Request Ratio Flow.'
+            title: 'Pull Requests Created',
+            description: 'Pull Request throughput through time.'
         },
         content: [
             {
@@ -60,10 +55,10 @@ export default {
                         data: computed.chartData,
                         timeMode: true,
                         extra: {
-                            labels: {
+                            axisLabels: {
                                 y: 'number of PRs created'
                             },
-                            maxNumberOfTicks: 10,
+                            maxNumberOfTicks: 5,
                             axisKeys: computed.axisKeys,
                             color: palette.schemes.trend,
                             tooltip: {
@@ -82,11 +77,10 @@ export default {
                         }
                     },
                     {
-                        title: {text: 'Day with the Highest Pull Request', bold: true},
-                        subtitle: {text: 'Creation'},
+                        title: {text: 'Total Number of PRs', bold: true},
                         component: SimpleKPI,
                         params: {
-                            value: `${computed.KPIsData.highestDay.day} (${number.fixed(computed.KPIsData.highestDay.value, 2)})`
+                            value: computed.KPIsData.createdPRs,
                         }
                     },
                 ]
