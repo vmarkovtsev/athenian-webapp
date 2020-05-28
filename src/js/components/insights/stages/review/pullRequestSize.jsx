@@ -101,7 +101,6 @@ const pullRequestSize = {
                     chart: {
                         component: BubbleChart,
                         params: {
-                            title: 'Number of created pull requests',
                             data: computed.chartData,
                             extra: {
                                 grouper: computed.grouper,
