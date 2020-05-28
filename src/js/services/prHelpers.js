@@ -61,6 +61,23 @@ export const PR_LABELS = {
   CLOSED: 'Closed',
 };
 
+// This stablishes a chronological order for the PR labels (to be used as a sorting criterion, instead of alphabetical order)
+export const PR_LABELS_ORDERS = {
+  [PR_LABELS.WIP]: 0,
+  [PR_LABELS.WIP_DONE]: 1,
+  [PR_LABELS.REVIEW_PENDING]: 2,
+  [PR_LABELS.REVIEW_SUBMITTED]: 3,
+  [PR_LABELS.REVIEW_REJECTED]: 4,
+  [PR_LABELS.REVIEW_APPROVAL]: 5,
+  [PR_LABELS.REVIEW_SKIPPED]: 6,
+  [PR_LABELS.REVIEW_IGNORED]: 7,
+  [PR_LABELS.MERGE_PENDING]: 8,
+  [PR_LABELS.MERGE_COMPLETED]: 9,
+  [PR_LABELS.RELEASE_PENDING]: 10,
+  [PR_LABELS.RELEASE_COMPLETED]: 11,
+  [PR_LABELS.CLOSED]: 12,
+};
+
 export const PR_LABELS_CLASSNAMES = {
   [PR_LABELS.WIP]: 'label-wip',
   [PR_LABELS.WIP_DONE]: 'label-review-requested',
