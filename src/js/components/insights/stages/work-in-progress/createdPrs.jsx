@@ -24,7 +24,7 @@ export default {
         const openedMetrics = data.global['prs-metrics.values'].custom.opened;
         const dayCreations = data.dayCreations.calculated[0].values;
         const createdPRs = data.global['prs-metrics.values'].all['opened'] || 0;
-        const days = dayCreations.length || 1;
+        const days = _(dayCreations).reduce( (acc, day) => day.values[0] ? acc + 1 : acc, 0) || 1;
         const avgCreatedPRs = createdPRs / days;
 
         return {
@@ -69,8 +69,8 @@ export default {
                 },
                 kpis: [
                     {
-                        title: {text: 'Average Pull Request', bold: true},
-                        subtitle: {text: 'Creation'},
+                        title: {text: 'Average Number of Pull Requests', bold: true},
+                        subtitle: {text: 'Created per Day'},
                         component: SimpleKPI,
                         params: {
                             value: number.fixed(computed.KPIsData.avgCreatedPRs, 2)

@@ -17,7 +17,7 @@ export default () => {
   return <footer className="sticky-footer bg-white border-top">
     <div className="container my-auto">
       <div className="text-center my-auto">
-        <span>Copyright &copy; Athenian.co 2020</span><br/><span class="text-bright small">{versions}</span>
+        <span>Copyright &copy; Athenian.co 2020</span><br/><span className="text-bright small">{versions}</span>
       </div>
     </div>
   </footer>

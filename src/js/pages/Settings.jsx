@@ -11,7 +11,6 @@ import welcome from 'images/settings-welcome.svg';
 import Page from 'js/pages/templates/Page';
 
 import { useUserContext } from 'js/context/User';
-import { isNotProd } from 'js/components/development';
 
 export const getOrg = user => {
   const orgName = _(user.defaultReposet.repos)
