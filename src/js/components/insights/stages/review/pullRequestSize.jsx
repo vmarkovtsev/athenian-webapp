@@ -24,17 +24,13 @@ const pullRequestSize = {
                         endTime = moment();
                     }
 
-                    // TODO(dpordomingo): This Chart shows PRs in two groups: waiting for review or not.
-                    //   Grouping criteria should be having review_happened or approve_happened or changes_request_happened or merge_happened or being closed.
-                    //   But since the tooltip also needs to show the time waiting for being reviewed, and the events
-                    //   above do not expose it, we can only differentiate between being review-complete, or not.
-                    const reviewed = pr.completedStages.includes(PR_STAGE.REVIEW);
+                    const reviewed = !!pr.first_review || !!pr.closed;
 
                     const authorFullName = pr.authors[0];
                     const author = authorFullName ? github.userName(authorFullName) : 'none';
                     const timeWaiting = dateTime.interval(
                         pr.review_requested || pr.created,
-                        pr.approved || endTime
+                        pr.first_review || endTime
                     );
                     const tooltip = {
                         number: pr.number,
