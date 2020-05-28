@@ -46,7 +46,7 @@ export default ({ children }) => {
             <div className="card-body p-0">
               <div className="list-group list-group-flush">
                 <NavLink className="list-group-item py-2" to="/settings/profile">Profile</NavLink>
-                {isNotProd && <NavLink className="list-group-item py-2" to="/settings/teams">Teams</NavLink>}
+                <NavLink className="list-group-item py-2" to="/settings/teams">Teams</NavLink>
                 <NavLink className="list-group-item py-2" to="/settings/releases">Releases</NavLink>
                 <Link to="/logout" className="list-group-item bg-light text-right py-2 rounded-bottom">Logout</Link>
               </div>
