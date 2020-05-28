@@ -111,13 +111,6 @@ export default pr => {
     commentersReviewers,
     organization: github.repoOrg(pr.repository),
     repo: github.repoName(pr.repository),
-    created: new Date(pr.created),
-    updated: new Date(pr.updated),
-    closed: pr.closed && new Date(pr.closed),
-    review_requested: pr.review_requested && new Date(pr.review_requested),
-    approved: pr.approved && new Date(pr.approved),
-    merged: pr.merged && new Date(pr.merged),
-    released: pr.released && new Date(pr.released),
     stage_timings,
   };
 };
