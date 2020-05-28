@@ -42,7 +42,7 @@ const VerticalBarChart = ({ title, data, extra, timeMode }) => {
     const maxNumberOfTicks = (extra.maxNumberOfTicks || 10) > maxY?.y ? (maxY?.y || 0) : (extra.maxNumberOfTicks || 10);
 
     return (
-        <FlexibleWidthXYPlot height={500} margin={{ left: 80, bottom: 100}} xType="ordinal">
+        <FlexibleWidthXYPlot height={300} margin={{ left: 80, bottom: 100}} xType="ordinal">
           <XAxis
             tickLabelAngle={-45}
             tickFormat={timeMode ? dateTime.monthDay : v => v}
