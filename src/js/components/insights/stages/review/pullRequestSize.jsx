@@ -103,8 +103,8 @@ const pullRequestSize = {
                                 groups: computed.groups,
                                 axisKeys: computed.axisKeys,
                                 axisLabels: {
-                                    x: 'Lines of code',
-                                    y: 'Files'
+                                    x: 'lines of code',
+                                    y: 'files'
                                 },
                                 isLogScale: true,
                                 tooltip: {

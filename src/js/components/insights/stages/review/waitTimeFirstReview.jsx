@@ -79,9 +79,6 @@ const waitTimeFirstReview = {
                                 },
                                 maxNumberOfTicks: 10,
                                 axisKeys: computed.axisKeys,
-                                axisLabels: {
-                                    y: 'Wait Time, hours'
-                                },
                                 color: '#41CED3',
                                 tooltip: {
                                     renderBigFn: v => <BigText content={dateTime.human(v.y)} />,

@@ -87,7 +87,7 @@ const mergeDelays = {
     },
     factory: (computed) => ({
             meta: {
-                title: 'Merge Delays',
+                title: 'Merge Time',
                 description: 'Identify in which repositories pull requests take longest from review approval to being merged.'
             },
             content: [
@@ -95,12 +95,12 @@ const mergeDelays = {
                     chart: {
                         component: VerticalBarChart,
                         params: {
-                            title: 'Merge Delays',
+                            title: 'Merge Time',
                             data: computed.chartData,
                             extra: {
                                 axisKeys: computed.axisKeys,
                                 axisLabels: {
-                                    y: 'Time to Merge, Hours'
+                                    y: 'hours'
                                 },
                                 color: "#4EC7EE",
                                 tooltip: { template: TimeToMerge },
@@ -117,7 +117,7 @@ const mergeDelays = {
                             }
                         },
                         {
-                            title: {text: 'Average Time to Merge', bold: true},
+                            title: {text: 'Average Merge Time', bold: true},
                             subtitle: {text: 'Per Repository'},
                             component: SimpleKPI,
                             params: {

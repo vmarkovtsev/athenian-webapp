@@ -173,8 +173,8 @@ const reviewActivity = {
               groups: computed.firstBox.groups,
               axisKeys: computed.firstBox.axisKeys,
               axisLabels: {
-                x: 'Number of Reviews',
-                y: 'Number of PRs Created'
+                x: 'pull requests reviewed',
+                y: 'pull requests created'
               },
               color: '#41CED3',
               tooltip: { template: UserReviewer },
@@ -212,11 +212,11 @@ const reviewActivity = {
                 axisKeys: computed.secondBox.axisKeys,
                 series: {
                   prsCommentsPerc: {
-                    name: '% Reviews Comments',
+                    name: 'Review comments',
                     color: '#FC1763',
                   },
                   reviewsPerc: {
-                    name: '% PRs Reviewed',
+                    name: 'Pull Requests reviewed',
                     color: '#FFC507',
                   }
                 },
