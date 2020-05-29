@@ -152,9 +152,29 @@ export const happened = (pr, event) => pr.properties.includes(event);
 
 export const authored = prs => prs.filter(pr => pr.participants.filter(dev => dev.status.includes('author')).length);
 
-export const isInStage = (pr, stage) => (
-    stageHappening(pr, stage) || stageCompleted(pr, stage)
-);
+export const isInStage = (pr, stage) => {
+    if (extractStatus(pr) === PR_STATUS.CLOSED) {
+        switch (stage) {
+            case PR_STAGE.RELEASE:
+                return false;
+            case PR_STAGE.MERGE:
+                return pr.properties.includes(PR_EVENT.APPROVE);
+            case PR_STAGE.REVIEW:
+                return (
+                    pr.properties.includes(PR_EVENT.REVIEW_REQUEST) ||
+                    pr.properties.includes(PR_EVENT.REVIEW) ||
+                    pr.properties.includes(PR_EVENT.REJECTION) ||
+                    pr.properties.includes(PR_EVENT.APPROVE)
+                );
+            case PR_STAGE.WIP:
+            case PR_STAGE.DONE:
+                return true;
+        }
+    }
+
+    return stageHappening(pr, stage) || stageCompleted(pr, stage)
+};
+
 const stageHappening = (pr, stage) => _(pr.properties).includes(stage);
 const stageCompleted = (pr, stage) => _(pr.completedStages).includes(stage);
 
@@ -168,9 +188,26 @@ const getCurrentStageHappening = (pr) => {
     throw Error("no stage happening");
 };
 
+
 const extractCompletedStages = pr => {
-    const currentStage = getCurrentStageHappening(pr);
-    const currentStageIndex = _(PR_STAGE_TIMELINE).indexOf(currentStage);
+    let currentStageIndex;
+    if (extractStatus(pr) === PR_STATUS.CLOSED) {
+        if (pr.properties.includes(PR_EVENT.APPROVE)) {
+            currentStageIndex = PR_STAGE_TIMELINE.indexOf(PR_STAGE.MERGE);
+        } else if (
+            pr.properties.includes(PR_EVENT.REVIEW_REQUEST) ||
+            pr.properties.includes(PR_EVENT.REVIEW) ||
+            pr.properties.includes(PR_EVENT.REJECTION)
+        ) {
+            currentStageIndex = PR_STAGE_TIMELINE.indexOf(PR_STAGE.REVIEW);
+        } else {
+            currentStageIndex = PR_STAGE_TIMELINE.indexOf(PR_STAGE.WIP);
+        }
+    } else {
+        const currentStage = getCurrentStageHappening(pr);
+        currentStageIndex = _(PR_STAGE_TIMELINE).indexOf(currentStage);
+    }
+
     return PR_STAGE_TIMELINE.slice(0, currentStageIndex);
 };
 
