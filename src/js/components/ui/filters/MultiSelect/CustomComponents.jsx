@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { customStyles as styles, brandColors } from './CustomStyles'
+import React, { useState, useEffect } from 'react'
+import { brandColors } from './CustomStyles'
 import { FilterFooter } from '../FilterFooter'
 import { StatusIndicator, LOADING } from 'js/components/ui/Spinner'
 import { ReactComponent as DropdownIndicator } from './IconDropdownIndicator.svg'
@@ -34,79 +34,36 @@ const stringToColour = str => {
 
 /**
  * CustomComponents used to override react-select components
- * @param {function} children
- * @param {string} label
- * @param {boolean} isLoading
- * @param {function} onApply
- * @param {Array} value
+ * @param {string} props.label
+ * @param {boolean} props.isLoading
+ * @param {boolean} props.isOpen
+ * @param {number} props.count
+ * @param {function} props.setMenuOpen 
  */
 export const Dropdown = ({
-  children,
   label,
   isLoading,
-  onApply,
-  value,
-  onClose
+  isOpen,
+  count,
+  setMenuOpen,
+  // onClose
 }) => {
-  const [isMenuOpen, setMenuState] = useState(false)
-  const ref = useRef(null)
-
-  const setMenuOpen = (bool, wasApplied = false) => {
-    setMenuState(bool)
-    if (!bool) {
-      onClose(wasApplied)
-    }
-  }
-
-  const toggle = e => {
-    const menu = ref.current.querySelector('.filter')
-    // if click inside menu, skip toggle
-    if (menu && menu.contains(e.target)) {
-      e.stopPropagation()
-      return
-    }
-    setMenuOpen(!isMenuOpen, false)
-  }
-
-  const closeAll = e => {
-    if (!ref.current.contains(e.target) && ref.current.querySelector('.open')) {
-      setMenuOpen(false, true)
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('click', closeAll)
-    return () => {
-      window.removeEventListener('click', closeAll)
-    }
-  }, [closeAll])
-
-  const childrenProps = {
-    menuIsOpen: isMenuOpen,
-    components: {
-      Option,
-      Placeholder,
-      Group,
-      Menu: menu({ setMenuOpen, onApply })
-    },
-    styles,
-    value
+  const close = () => {
+    setMenuOpen(!isOpen)
+    // onClose(false)
   }
 
   return (
-    <div onClick={toggle} ref={ref}>
-      <div className={`${classNames({ open: isMenuOpen })} filter-dropdown align-items-center`}>
-        <div className="d-flex align-items-center">
-          <span className="filter-dropdown-label">{label}</span>
-          {
-            !isLoading ?
-            <StatusIndicator size={5} status={LOADING} margin={0} /> :
-            <span className="filter-dropdown-pill">{value.length}</span>
-          }
-        </div>
-        <DropdownIndicator />
+    <div className={`${classNames({ open: isOpen })} filter-dropdown align-items-center`} onClick={close}>
+      <div className="d-flex align-items-center">
+        <span className="filter-dropdown-label">{label}</span>
+        {
+          !isLoading ?
+          <StatusIndicator size={5} status={LOADING} margin={0} /> :
+          <span className="filter-dropdown-pill">{count}</span>
+        }
       </div>
-      {children(childrenProps)}
+      <DropdownIndicator />
     </div>
   )
 }
@@ -127,6 +84,9 @@ const HeadingIcon = ({ title }) => {
   )
 }
 
+/**
+ * @param {boolean} props.isOpen 
+ */
 const Chevron = ({ isOpen }) => {
   const style = {
     transform: `rotate(${isOpen ? '0deg' : '-90deg'})`
@@ -169,7 +129,7 @@ const GroupHeading = (onCheck, isChecked, isIndeterminate, onToggle, toggled) =>
  * Group
  * @param {*} param0
  */
-const Group = props => {
+export const Group = props => {
   const [isChecked, setChecked] = useState(true)
   const [isIndeterminate, setIndeterminate] = useState(false)
   const [isOpen, setOpen] = useState(false)
@@ -208,13 +168,14 @@ const Group = props => {
 
 /**
  * Checkbox
- * @param {boolean} isChecked
- * @param {boolean} isIndeterminate
+ * @param {boolean} props.isChecked
+ * @param {boolean} props.isIndeterminate
+ * @param {function} props.onClick
  */
 const Checkbox = ({ isChecked, isIndeterminate, onClick }) => {
   const mark = isChecked ? (
     isIndeterminate ?
-      <rect stroke="#24C7CC" stroke-width="1" x="3" y="7.375" width="10" height="1.25" fill="#24C7CC"></rect>
+      <rect stroke="#24C7CC" strokeWidth="1" x="3" y="7.375" width="10" height="1.25" fill="#24C7CC"></rect>
       :
       <polygon fill="#24C7CC" transform="translate(2.000000, 3.000000)" points="4.22898961 6.47146254 1.97497639 4.14922711 0.5 5.65814507 4.22898961 9.5 11.5 2.00891795 10.0354108 0.5"></polygon>
   ) : null
@@ -252,9 +213,7 @@ export const Option = props => {
 }
 
 /**
- * Placeholder,
- * @param {string} label
- * @return {function}
+ * Placeholder
  */
 export const Placeholder = props => {
   const { selectProps: { name } } = props
@@ -283,7 +242,7 @@ const extractOptions = options => {
   return options
 }
 
-export const menu = ({ setMenuOpen, onApply }) => props => {
+export const Menu = (onApply, setMenuOpen) => props => {
   const {
     children,
     clearValue,
@@ -309,8 +268,9 @@ export const menu = ({ setMenuOpen, onApply }) => props => {
   }
 
   const close = wasApplied => {
-    setMenuOpen(false, wasApplied)
+    setMenuOpen(false)
   }
+
   const apply = () => {
     onApply(allValues)
     close(true)
