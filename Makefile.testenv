@@ -1,0 +1,55 @@
+# testing
+
+TEST_BRANCH ?=
+TEST_SERVICE_ACCOUNT ?=
+TEST_GCE_IMAGE ?= test-web-app
+TEST_GCE_INSTANCE ?= branch-$(shell sh -c "echo -n $(TEST_BRANCH) | md5sum | cut -c -32")
+TEST_GCE_ZONE ?= us-east1-c
+
+.PHONY: check-test-branch
+check-test-branch:
+	@if [ -z "$(TEST_BRANCH)" ]; then \
+		echo "test branch has to be specified"; \
+		exit 1; \
+	fi;
+
+.PHONY: check-test-service-account
+check-test-service-account:
+	@if [ -z "$(TEST_SERVICE_ACCOUNT)" ]; then \
+		echo "test service account has to be specified, if you don't know what to enter please contact infra"; \
+		exit 1; \
+	fi;
+
+.PHONY: create-test-instance
+create-test-instance: check-test-branch check-test-service-account
+	gcloud compute instances create $(TEST_GCE_INSTANCE) \
+    	--image $(TEST_GCE_IMAGE) \
+    	--labels=purpose=testing \
+    	--service-account=$(TEST_SERVICE_ACCOUNT) \
+    	--zone $(TEST_GCE_ZONE)
+
+.PHONY: wait-test-instance
+wait-test-instance:
+	sleep 60
+
+.PHONY: init-test-env
+init-test-env: check-test-branch
+	gcloud compute ssh $(TEST_GCE_INSTANCE) --zone $(TEST_GCE_ZONE) -- '/home/ubuntu/initial.sh'
+
+.PHONY: create-test-env
+create-test-env: create-test-instance wait-test-instance init-test-env
+
+.PHONY: delete-test-env
+delete-test-env: check-test-branch
+	gcloud compute instances delete $(TEST_GCE_INSTANCE) --zone $(TEST_GCE_ZONE)
+
+.PHONY: port-forward-test-env
+port-forward-test-env: check-test-branch
+	@echo -e "\033[0;33mYour local :3000 and :8080 ports are being forwarded to gcloud ones.\e[0m"
+	@echo -e "\033[0;33mPress Ctrl+C to stop.\e[0m"
+	gcloud compute ssh $(TEST_GCE_INSTANCE) --zone $(TEST_GCE_ZONE) -- -NL 3000:localhost:3000 & \
+	gcloud compute ssh $(TEST_GCE_INSTANCE) --zone $(TEST_GCE_ZONE) -- -NL 8080:localhost:8080 && \
+	fg
+
+.PHONY: prepare-test-env
+prepare-test-env: create-test-env port-forward-test-env

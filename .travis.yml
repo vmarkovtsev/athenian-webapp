@@ -15,6 +15,8 @@ env:
 
 stages:
   - name: test-and-build
+  - name: branch-image
+    if: (branch != master) AND type != pull_request
   - name: deploy
     if: (branch = master OR tag IS present) AND type != pull_request
   - name: sentry
@@ -37,6 +39,10 @@ jobs:
       script:
         - docker build --target app-sentry-releaser -t webapp-frontend-sentry-releaser .
         - docker run -e SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} -e SENTRY_RELEASE=${VERSION} webapp-frontend-sentry-releaser
+    - stage: branch-image
+      name: 'Branch Image'
+      script:
+        - IMAGE=${GOOGLE_DOCKER_IMAGE}:branch-$(echo -n ${TRAVIS_BRANCH} | md5sum | cut -c -32) DOCKER_EXTRA_BUILD_FLAGS="--build-arg release=${VERSION}" make docker-build gcloud-login docker-push
     - stage: deploy
       name: 'Deploy App'
       script:
