@@ -19,6 +19,8 @@ export default ({title, data, extra, tickFormat }) => (
     </div >
 );
 
+const userImageSize = 30;
+
 const HorizontalBarChart = ({ title, data, extra, tickFormat = v => v }) => {
     const [currentHover, setCurrentHover] = useState(null);
     if (data.length === 0) {
@@ -55,8 +57,12 @@ const HorizontalBarChart = ({ title, data, extra, tickFormat = v => v }) => {
 
     const ChartTooltip = extra?.tooltip?.template || Tooltip;
 
+    const rowHeight =  extra.yAxis.imageMapping ? userImageSize + 15 : 40;
+    const xAxisHeight = 40;
+    const chartHeight = data.length * rowHeight + xAxisHeight;
+
     return (
-        <FlexibleWidthXYPlot height={data.length * 40} margin={{ left: 50 }} yType="ordinal">
+        <FlexibleWidthXYPlot height={chartHeight} margin={{ left: 50 }} yType="ordinal">
           <DiscreteColorLegend className="chart-legend" items={legend} orientation="horizontal" />
           <VerticalGridLines />
           <XAxis tickFormat={tickFormat}/>
@@ -86,7 +92,7 @@ const HorizontalBarChart = ({ title, data, extra, tickFormat = v => v }) => {
                            <image
                              href={extra.yAxis.imageMapping[value]}
                              clipPath={extra.yAxis.imageMask ? `url(#${extra.yAxis.imageMask}-mask)` : ""}
-                             width="30" height="30"
+                             width={userImageSize} height={userImageSize}
                              transform="translate(-40,-15)"
                            />
                            <UserHint name={value} />
@@ -130,7 +136,7 @@ const UserHint = ({ name }) => (
     //    and use it to handle the react-vis Hint passing the (x,y) position of the triggered event.
     <text
         className="userName"
-        x="0" y={30 + userFontSize * 1.3}
+        x="0" y={userImageSize + userFontSize * 1.3}
         transform="translate(-40,-15)"
         filter="url(#solid)"
         fill="black"
