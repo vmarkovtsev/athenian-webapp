@@ -31,7 +31,7 @@ const mostActiveDevs = {
                     };
                 })
                 .orderBy(['x'], ['desc'])
-                .take(10)
+                .take(7)
                 .value(),
             activeDevs: _(prs.prs)
                 .flatMap(pr => pr.participants)
