@@ -169,6 +169,8 @@ export const isInStage = (pr, stage) => {
             case PR_STAGE.WIP:
             case PR_STAGE.DONE:
                 return true;
+            default:
+                throw Error(`unexpected "${stage}" stage`);
         }
     }
 
