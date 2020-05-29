@@ -158,7 +158,7 @@ const getTableDefinition = (stage, users) => {
     `,
     searching: true,
     ordering: true,
-    order: [[6, 'asc']],
+    order: [[6, 'asc'], [1, 'desc']],
     language: {
       paginate: {
         next: "<i class='fas fa-angle-right'></i>",
