@@ -45,6 +45,8 @@ delete-test-env: check-test-branch
 
 .PHONY: port-forward-test-env
 port-forward-test-env: check-test-branch
+	@echo -e "\033[0;33mYour local :3000 and :8080 ports are being forwarded to gcloud ones.\e[0m"
+	@echo -e "\033[0;33mPress Ctrl+C to stop.\e[0m"
 	gcloud compute ssh $(TEST_GCE_INSTANCE) --zone $(TEST_GCE_ZONE) -- -NL 3000:localhost:3000 & \
 	gcloud compute ssh $(TEST_GCE_INSTANCE) --zone $(TEST_GCE_ZONE) -- -NL 8080:localhost:8080 && \
 	fg

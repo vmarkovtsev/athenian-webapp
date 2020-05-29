@@ -4,7 +4,9 @@ In order to enhance our testing workflow we agreed to have an ability to dynamic
 so Product team can verify web-app changes manually on the staging data.
 
 ## Before running test environment
-Make sure that Travis job `branch-image` completed successfully 
+Make sure that Travis job `branch-image` completed successfully
+
+You might also need to set up the project running `gcloud config set project athenian-1` in advance.
 
 ## Preparing test environment
 To create a test environment simply run  
@@ -24,4 +26,5 @@ TEST_BRANCH="your-branch" make delete-test-env
 **Note:** confirmation prompted
 
 ## Troubleshooting
-Permissions errors - contact infra 
+In the case you don't know what `TEST_SERVICE_ACCOUNT` to set or have other
+difficulties/permissions errors please contact infra 
