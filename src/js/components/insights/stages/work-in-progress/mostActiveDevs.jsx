@@ -56,7 +56,7 @@ const mostActiveDevs = {
                 chart: {
                     component: HorizontalBarChart,
                     params: {
-                        title: 'Number of Pull Requests created',
+                        title: 'Pull Requests created',
                         data: computed.chartData,
                         extra: {
                             yAxis: {
@@ -69,7 +69,7 @@ const mostActiveDevs = {
                             },
                             series: {
                                 x: {
-                                    name: 'Number of Pull Requests created',
+                                    name: 'Pull Requests created',
                                     color: "#FFA008",
                                 },
                             },

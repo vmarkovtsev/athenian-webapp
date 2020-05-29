@@ -56,7 +56,7 @@ export default {
                         timeMode: true,
                         extra: {
                             axisLabels: {
-                                y: 'number of PRs created'
+                                y: 'pull requests'
                             },
                             maxNumberOfTicks: 5,
                             axisKeys: computed.axisKeys,
@@ -77,7 +77,7 @@ export default {
                         }
                     },
                     {
-                        title: {text: 'Total Number of PRs', bold: true},
+                        title: {text: 'Total Number of Pull Requests', bold: true},
                         component: SimpleKPI,
                         params: {
                             value: computed.KPIsData.createdPRs,
