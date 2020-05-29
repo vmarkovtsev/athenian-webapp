@@ -78,7 +78,7 @@ const reviewActivity = {
       })
       .filter(v => v.reviewsPerc > 0 || v.prsCommentsPerc > 0)
       .orderBy(['prsCommentsPerc', 'reviewsPerc'], ['desc', 'desc'])
-      .take(10)
+      .take(7)
       .value();
 
     const topReviewer = _(metrics.calculated)
