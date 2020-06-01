@@ -69,10 +69,8 @@ const MultiSelect = multiSelectProps => {
   const Menu = useMemo(() => CustomMenu(
     (values) => {
       onApply(values)
-      // onClose(true)
     },
     (wasApplied) => {
-      // onClose(wasApplied)
       setMenuOpen()
     }), [onApply])
 

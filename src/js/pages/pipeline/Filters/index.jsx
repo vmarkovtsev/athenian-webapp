@@ -60,12 +60,12 @@ export default function Filters({ children }) {
         getContribsForFilter(tokenRef.current, accountID, filterData.dateInterval, contextRepos),
         getTeamsForFilter(tokenRef.current, accountID)
       ])
-
+  
       setGlobalData(
         ['filter.repos', 'filter.contribs', 'filter.teams'],
         [repos, contribs, teams]
       )
-
+    
       dispatchFilter(init({ repos, contribs, teams, ready: true }))
     })()
   })
@@ -113,11 +113,10 @@ export default function Filters({ children }) {
     )
     
     dispatchFilter(setAppliedRepos(selectedRepos))
-
+    dispatchFilter(setTeams(teams))
     dispatchFilter(setContribs(contribs))
     dispatchFilter(setSelectedContribs(contribs))
-
-    dispatchFilter(setTeams(teams))
+    dispatchFilter(setAppliedContribs(contribs))
     dispatchFilter(setReady(true))
   }, [accountID, contextRepos, filterData.dateInterval, resetData, setGlobalData])
 
@@ -141,7 +140,7 @@ export default function Filters({ children }) {
   
   const reposLabelFormat = repo => (github.repoName(repo) || 'UNKNOWN')
   const getOptionValueRepos = val => val
-  const getOptionValueUsers = val => `${val.id} ${val.name} ${val.login}`
+  const getOptionValueUsers = val => `${val.team} ${val.name} ${val.login}`
 
   const reposOptions = [...filterData.repos.data]
 
@@ -154,7 +153,7 @@ export default function Filters({ children }) {
     dispatchFilter(setSelectedRepos(selectedOptions))
   }
 
-  const onSelectContrib = (selectedContrib, ...rest) => {
+  const onSelectContrib = selectedContrib => {
     dispatchFilter(setSelectedContribs(selectedContrib))
   }
   
@@ -162,22 +161,9 @@ export default function Filters({ children }) {
     ~filterData.repos.selected.indexOf(repo)
   )
 
-  const contribsValue = filterData.contribs.data.filter(c =>
-    filterData.contribs.selected.find(e => e.login === c.login)
+  const teamsValue = filterData.contribs.data.filter(c =>
+    filterData.contribs.selected.find(e => e.login === c.login && e.team === c.team)
   )
-
-  // revert previous values is close filter without apply
-  // const onCloseRepos = useCallback(applied => {
-  //   if (!applied) {
-  //     dispatchFilter(setSelectedRepos([...filterData.repos.applied]))
-  //   }
-  // }, [filterData.repos.applied])
-
-  // const onCloseContribs = useCallback(applied => {
-  //   if (!applied) {
-  //     dispatchFilter(setSelectedContribs([...filterData.contribs.applied]))
-  //   }
-  // }, [filterData.contribs.applied])
 
   return (
     <FiltersContext
@@ -200,7 +186,6 @@ export default function Filters({ children }) {
             onApply={onReposApplyChange}
             onChange={onSelectRepo}
             value={reposValue}
-            // onClose={onCloseRepos}
           />
         }
         contribsFilter={
@@ -214,9 +199,8 @@ export default function Filters({ children }) {
             getOptionValue={getOptionValueUsers}
             options={teamsOptions}
             onApply={onContribsApplyChange}
-            value={contribsValue}
+            value={teamsValue}
             onChange={onSelectContrib}
-            // onClose={onCloseContribs}
           />
         }
         dateIntervalFilter={

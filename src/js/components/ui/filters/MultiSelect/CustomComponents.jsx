@@ -46,11 +46,9 @@ export const Dropdown = ({
   isOpen,
   count,
   setMenuOpen,
-  // onClose
 }) => {
   const close = () => {
     setMenuOpen(!isOpen)
-    // onClose(false)
   }
 
   return (
@@ -150,7 +148,7 @@ export const Group = props => {
     const { data, setValue } = props
     if (!check) {
       const newvalue = values.filter(val => (
-        !data.options.find(op => op.login === val.login)
+        !data.options.find(op => op.login === val.login && op.team === val.team)
       ))
       setValue(newvalue)
     } else {
@@ -253,13 +251,9 @@ export const Menu = (onApply, setMenuOpen) => props => {
 
   const allValues = getValue()
   const mappedOptions = extractOptions(options)
+  const allSelected = allValues.length === mappedOptions.length
+  const isIndeterminate = !allSelected && allValues.length > 0
 
-  const totalOptions = mappedOptions.reduce((acc, curr) => {
-    acc.add(curr.login ? curr.login : curr)
-    return acc
-  }, new Set()).size
-
-  const allSelected = allValues.length === totalOptions
   const toggleAll = () => {
     clearValue()
     if (!allSelected) {
@@ -282,11 +276,11 @@ export const Menu = (onApply, setMenuOpen) => props => {
         className="d-flex filter-dropdown-menu-all"
         onClick={toggleAll}
       >
-        <Checkbox isChecked={allSelected} />
+        <Checkbox isChecked={!!allValues.length} isIndeterminate={isIndeterminate} />
         <span>
           <span className="filter-dropdown-all">All</span>
           <span className="filter-dropdown-pill">
-            {totalOptions}
+            {mappedOptions.length}
           </span>
         </span>
       </div>
