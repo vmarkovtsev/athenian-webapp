@@ -16,7 +16,7 @@ const mergeDelays = {
             return await fetchPRsMetrics(
                 api, context.account, [granularity], context.interval,
                 metrics,
-                { repositories: context.repositories, developers: context.contributors},
+                { repositories: context.repositories, with: { author: context.contributors } },
                 'repositories'
             );
         };

@@ -14,18 +14,20 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The NoSourceDataErrorAllOf model module.
- * @module model/NoSourceDataErrorAllOf
+ * The ForSetDevelopers model module.
+ * @module model/ForSetDevelopers
  * @version 1.0.48
  */
-class NoSourceDataErrorAllOf {
+class ForSetDevelopers {
     /**
-     * Constructs a new <code>NoSourceDataErrorAllOf</code>.
-     * @alias module:model/NoSourceDataErrorAllOf
+     * Constructs a new <code>ForSetDevelopers</code>.
+     * Filter for &#x60;/metrics/developers&#x60;.
+     * @alias module:model/ForSetDevelopers
+     * @param repositories {Array.<String>} A set of repositories. An empty list results an empty response in contrary to DeveloperSet. Duplicates are automatically ignored.
      */
-    constructor() { 
+    constructor(repositories) { 
         
-        NoSourceDataErrorAllOf.initialize(this);
+        ForSetDevelopers.initialize(this, repositories);
     }
 
     /**
@@ -33,22 +35,26 @@ class NoSourceDataErrorAllOf {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, repositories) { 
+        obj['repositories'] = repositories;
     }
 
     /**
-     * Constructs a <code>NoSourceDataErrorAllOf</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>ForSetDevelopers</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/NoSourceDataErrorAllOf} obj Optional instance to populate.
-     * @return {module:model/NoSourceDataErrorAllOf} The populated <code>NoSourceDataErrorAllOf</code> instance.
+     * @param {module:model/ForSetDevelopers} obj Optional instance to populate.
+     * @return {module:model/ForSetDevelopers} The populated <code>ForSetDevelopers</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new NoSourceDataErrorAllOf();
+            obj = obj || new ForSetDevelopers();
 
             if (data.hasOwnProperty('repositories')) {
                 obj['repositories'] = ApiClient.convertToType(data['repositories'], ['String']);
+            }
+            if (data.hasOwnProperty('developers')) {
+                obj['developers'] = ApiClient.convertToType(data['developers'], ['String']);
             }
         }
         return obj;
@@ -61,12 +67,18 @@ class NoSourceDataErrorAllOf {
  * A set of repositories. An empty list results an empty response in contrary to DeveloperSet. Duplicates are automatically ignored.
  * @member {Array.<String>} repositories
  */
-NoSourceDataErrorAllOf.prototype['repositories'] = undefined;
+ForSetDevelopers.prototype['repositories'] = undefined;
+
+/**
+ * A set of developers. An empty list disables the filter and includes everybody. Duplicates are automatically ignored.
+ * @member {Array.<String>} developers
+ */
+ForSetDevelopers.prototype['developers'] = undefined;
 
 
 
 
 
 
-export default NoSourceDataErrorAllOf;
+export default ForSetDevelopers;
 

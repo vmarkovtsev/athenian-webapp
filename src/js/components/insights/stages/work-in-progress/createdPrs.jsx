@@ -16,7 +16,7 @@ export default {
         return {
             dayCreations: await fetchPRsMetrics(
                 api, account, ['day'], interval, ['opened'],
-                { repositories, developers: contributors}
+                { repositories, with: { author: contributors } }
             )
         };
     },

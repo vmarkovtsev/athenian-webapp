@@ -16,7 +16,7 @@ const pullRequestRatioFlow = {
         return {
             timeseries: await fetchPRsMetrics(
                 api, account, ['day'], interval, ['flow-ratio'],
-                { repositories, developers: contributors}
+                { repositories, with: { author: contributors } }
             )
         };
     },

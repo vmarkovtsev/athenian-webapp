@@ -73,7 +73,7 @@ export default ({ children }) => {
         const data = await fetchPRsMetrics(
           api, apiContext.account, ['all', customGranularity],
           apiContext.interval, allMetrics,
-          { repositories: apiContext.repositories, developers: apiContext.contributors }
+          { repositories: apiContext.repositories, with: { author: apiContext.contributors } }
         )
           
         if (!data.calculated?.[0]) {
@@ -127,7 +127,7 @@ export default ({ children }) => {
         const data = await fetchPRsMetrics(
           api, apiContext.account, [`${diffDays + 1} day`],
           interval, allMetrics,
-          { repositories: apiContext.repositories, developers: apiContext.contributors }
+          { repositories: apiContext.repositories, with: { author: apiContext.contributors } }
         )
                     
         if (!data.calculated?.[0]?.values?.length) {

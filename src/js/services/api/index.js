@@ -12,6 +12,7 @@ import {
 } from 'js/services/api/openapi-client';
 import * as Sentry from '@sentry/browser';
 import ForSet from 'js/services/api/openapi-client/model/ForSet';
+import ForSetDevelopers from 'js/services/api/openapi-client/model/ForSetDevelopers';
 import PullRequestMetricID from 'js/services/api/openapi-client/model/PullRequestMetricID';
 import DeveloperMetricID from 'js/services/api/openapi-client/model/DeveloperMetricID';
 import InvitationLink from 'js/services/api/openapi-client/model/InvitationLink';
@@ -249,11 +250,6 @@ export const fetchFilteredPRs = async (
     if (filter.developers.length) {
         filter_.with = {
             author: filter.developers,
-            reviewer: filter.developers,
-            commit_author: filter.developers,
-            commit_committer: filter.developers,
-            commenter: filter.developers,
-            merger: filter.developers,
         };
     }
 
@@ -275,11 +271,16 @@ export const fetchPRsMetrics = async (
   granularities,
   dateInterval,
   metrics = [],
-  filter = { repositories: [], developers: [] },
+  filter = { repositories: [], developers: [], with: {}},
   groupBy
 ) => {
   filter.repositories = filter.repositories || [];
   filter.developers = _(filter.developers || []).map(v => v.login).value();
+  filter.with = _(filter.with || {})
+    .transform((result, v, k) => {
+      result[k] = _(v).map(v => v.login).value();
+    })
+    .value();
 
   const metricIDs = new PullRequestMetricID();
 
@@ -322,7 +323,7 @@ export const fetchDevsMetrics = async (
   filter.developers = _(filter.developers || []).map(v => v.login).value();
 
   const metricIDs = new DeveloperMetricID();
-  const forSet = buildForSet(filter, groupBy);
+  const forSet = buildForSetDevelopers(filter, groupBy);
   const body = new DeveloperMetricsRequest(
     forSet, metrics.map(m => metricIDs[m]),
     dateTime.ymd(dateInterval.from),
@@ -337,18 +338,21 @@ export const fetchDevsMetrics = async (
   );
 };
 
+const buildForSet = (filter, groupBy) => _buildForSet(filter, groupBy, ForSet);
 
-const buildForSet = (filter, groupBy) => {
+const buildForSetDevelopers = (filter, groupBy) => _buildForSet(filter, groupBy, ForSetDevelopers);
+
+const _buildForSet = (filter, groupBy, type) => {
   const forSet = [];
   if (!groupBy) {
-    forSet.push(ForSet.constructFromObject(filter));
+    forSet.push(type.constructFromObject(filter));
   } else if (!['repositories', 'developers'].includes(groupBy)) {
     throw new Error('Invalid groupby');
   } else {
     for (const g of filter[groupBy]) {
       const f = _.clone(filter);
       f[groupBy] = [g];
-      forSet.push(ForSet.constructFromObject(f));
+      forSet.push(type.constructFromObject(f));
     }
   }
 
