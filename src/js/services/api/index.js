@@ -250,11 +250,6 @@ export const fetchFilteredPRs = async (
     if (filter.developers.length) {
         filter_.with = {
             author: filter.developers,
-            reviewer: filter.developers,
-            commit_author: filter.developers,
-            commit_committer: filter.developers,
-            commenter: filter.developers,
-            merger: filter.developers,
         };
     }
 
