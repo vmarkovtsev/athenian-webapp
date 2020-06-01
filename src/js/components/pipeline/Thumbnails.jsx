@@ -6,7 +6,7 @@ import _ from "lodash";
 import Badge, { NEGATIVE_IS_BETTER } from 'js/components/ui/Badge';
 import { BigNumber, SmallTitle } from 'js/components/ui/Typography';
 import { StatusIndicator, READY } from 'js/components/ui/Spinner';
-import Info from 'js/components/ui/Info';
+import Info, { Tooltip } from 'js/components/ui/Info';
 import PipelineCardMiniChart from 'js/components/pipeline/PipelineCardMiniChart';
 import DataWidget from 'js/components/DataWidget';
 
@@ -32,7 +32,7 @@ const Thumbnails = ({ data, status, activeCard }) => (
 
                   return (
                       <div className={classnames('col-md-3 pipeline-stage', card.stageName, active && 'active')} key={i}>
-                        <span data-toggle="tooltip" data-placement="bottom" title={card.event.before} className="event-before" />
+                        <Tooltip content={card.event.before} className="event-before" />
                         <Link to={'/stage/' + card.slug}>
                           <Stage
                             data={stageData}
@@ -46,7 +46,7 @@ const Thumbnails = ({ data, status, activeCard }) => (
                             badge={completedPRs}
                           />
                         </Link>
-                        <span data-toggle="tooltip" data-placement="bottom" title={card.event.after} className="event-after" />
+                        <Tooltip content={card.event.after} className="event-after" />
                       </div>
                   );
               }

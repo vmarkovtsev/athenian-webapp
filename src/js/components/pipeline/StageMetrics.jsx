@@ -12,6 +12,7 @@ import { BigNumber } from 'js/components/ui/Typography';
 import { SmallTitle } from 'js/components/ui/Typography';
 import { StatusIndicator, READY } from 'js/components/ui/Spinner';
 import { NEGATIVE_IS_BETTER } from 'js/components/ui/Badge';
+import { Tooltip } from 'js/components/ui/Info';
 
 import { pipelineStagesConf } from 'js/pages/pipeline/Pipeline';
 
@@ -196,12 +197,10 @@ const OverviewStageSummaryKPI = ({data}) => {
             (
                 <div key={i}>
                   <div><SmallTitle content={stage.title} /></div>
-                  <span
-                    className={classnames('overall-proportion d-block mb-2', stage.stageName)}
+                  <Tooltip
+                    content={`${dateTime.human(data.avgTimes[stage.metric])} (${number.percentage(data.proportions[stage.metric])})`}
                     style={{ width: `${data.normalizedProportions[stage.metric]}%` }}
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title={`${dateTime.human(data.avgTimes[stage.metric])} (${number.percentage(data.proportions[stage.metric])})`}
+                    className={classnames('overall-proportion d-block mb-2', stage.stageName)}
                   />
                 </div>
             ) : (

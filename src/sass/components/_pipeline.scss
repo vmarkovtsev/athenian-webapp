@@ -28,6 +28,7 @@
         &.active {
             z-index: 20;
             border-top-style: solid;
+            pointer-events: none;
 
             a .pipeline-thumbnail.active .text-secondary {
                 color: $white !important;

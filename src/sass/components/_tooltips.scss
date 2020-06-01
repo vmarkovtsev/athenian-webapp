@@ -1,22 +1,37 @@
+.athenian-tooltip {
+    width: fit-content !important;
+    max-width: 250px !important;
+    padding: 1rem 1.5rem !important;
+    box-shadow: 0 0 7px rgba(0,0,0,0.2) !important;
+    color: $color-dark !important;
+    background-color: $white !important;
+    font-size: 1.2rem !important;
+    text-align: left !important;
+    border-radius: 0 !important;
+
+    a {
+        pointer-events: auto !important;
+
+        &:hover {
+            text-decoration: underline !important;
+        }
+    }
+
+    b {
+        display: inline-block;
+        margin-top: 1em;
+    }
+
+    .code {
+        font-family: 'Courier New', Courier, monospace;
+    }
+}
+
+// Charts tooltips
+
 .chart-tooltip {
-    background: $white;
-    box-shadow: 0 0 7px rgba(0,0,0,0.2);
-    color: $dark;
-    border-radius: 0;
-    font-size: 1rem;
+    font-size: 1rem !important;
     font-weight: 300;
-    max-width: 250px;
-    padding: 1.5rem;
-    text-align: left;
-    width: fit-content;
-
-    a:hover {
-        text-decoration: underline !important;
-    }
-
-    .card {
-        border: none;
-    }
 
     .mb-2:last-child,
     p:last-child {
@@ -45,46 +60,24 @@
     line-height: 1.2rem;
 }
 
-// Info tooltips
+// PR table tooltips (bootstrap tooltips)
 
-.athenian-tooltip {
-    b {
-        display: inline-block;
-        margin-top: 1em;
-    }
-
-    .code {
-        font-family: 'Courier New', Courier, monospace;
-    }
-}
-
-.tooltip.show {
-    opacity: 1 !important;
-}
-
-.tooltip-inner {
-    max-width: 250px !important;
-    padding: 1rem 1.5rem !important;
-    box-shadow: 0 0 7px rgba(0,0,0,0.2) !important;
-    color: $color-dark !important;
-    background-color: $white !important;
-    font-size: 1.2rem !important;
-    opacity: 1 !important;
-    text-align: left !important;
-}
-
-.bs-tooltip-auto[x-placement^=bottom] .arrow::before, .bs-tooltip-bottom .arrow::before {
+.bs-tooltip-auto[x-placement^=bottom] .arrow::before,
+.bs-tooltip-bottom .arrow::before {
     border-bottom-color: $white !important;
 }
 
-.bs-tooltip-auto[x-placement^=top] .arrow::before, .bs-tooltip-top .arrow::before {
+.bs-tooltip-auto[x-placement^=top] .arrow::before,
+.bs-tooltip-top .arrow::before {
     border-top-color: $white !important;
 }
 
-.bs-tooltip-auto[x-placement^=left] .arrow::before, .bs-tooltip-left .arrow::before {
+.bs-tooltip-auto[x-placement^=left] .arrow::before,
+.bs-tooltip-left .arrow::before {
     border-left-color: $white !important;
 }
 
-.bs-tooltip-auto[x-placement^=right] .arrow::before, .bs-tooltip-right .arrow::before {
+.bs-tooltip-auto[x-placement^=right] .arrow::before,
+.bs-tooltip-right .arrow::before {
     border-right-color: $white !important;
 }
