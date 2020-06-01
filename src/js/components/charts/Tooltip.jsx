@@ -157,8 +157,8 @@ const getFilteredObject = (obj, blacklist) => _(obj).omit(blacklist).value();
 
 export const TooltipContainer = ({ left = false, children }) => {
     return (
-        <div className="chart-tooltip" onClick={event => event.stopPropagation()}>
-            <div className="card">
+        <div className="athenian-tooltip chart-tooltip" onClick={event => event.stopPropagation()}>
+            <div>
                 <div className={classnames('card-body p-1', left ? 'text-left' : 'text-center')}>
                     {children}
                 </div>
