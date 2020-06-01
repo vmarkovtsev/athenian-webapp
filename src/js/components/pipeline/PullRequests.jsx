@@ -143,7 +143,7 @@ const initTable = (stage, users) => {
     .DataTable(tableDefinition)
     .on('draw', () => {
       $('.badge[data-toggle="tooltip"]').tooltip('dispose');
-      $('.athenian-tooltip').remove();
+      $('.athenian-tooltip-table').remove();
       $('.badge[data-toggle="tooltip"]').tooltip(tooltip_conf);
     });
 };
@@ -345,9 +345,7 @@ const getTableDefinition = (stage, users) => {
                 class="badge badge-outlined ${prLabelClasses[prLabelStage(row)]}"
                 data-toggle="tooltip"
               >
-                  <span data-toggle="tooltip" data-placement="bottom" className="ml-2">
-                    ${prLabelStage(row)}
-                  </span>
+                ${prLabelStage(row)}
               </div>`
             );
           case 'type':

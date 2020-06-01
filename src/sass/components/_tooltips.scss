@@ -45,9 +45,19 @@
     line-height: 1.2rem;
 }
 
-// Info tooltips
-
 .athenian-tooltip {
+    max-width: 250px !important;
+    padding: 1rem 1.5rem !important;
+    box-shadow: 0 0 7px rgba(0,0,0,0.2) !important;
+    color: $color-dark !important;
+    background-color: $white !important;
+    font-size: 1.2rem !important;
+    text-align: left !important;
+
+    a {
+        pointer-events: auto !important;
+    }
+
     b {
         display: inline-block;
         margin-top: 1em;
@@ -58,33 +68,24 @@
     }
 }
 
-.tooltip.show {
-    opacity: 1 !important;
-}
+// PR table tooltips (bootstrap tooltips)
 
-.tooltip-inner {
-    max-width: 250px !important;
-    padding: 1rem 1.5rem !important;
-    box-shadow: 0 0 7px rgba(0,0,0,0.2) !important;
-    color: $color-dark !important;
-    background-color: $white !important;
-    font-size: 1.2rem !important;
-    opacity: 1 !important;
-    text-align: left !important;
-}
-
-.bs-tooltip-auto[x-placement^=bottom] .arrow::before, .bs-tooltip-bottom .arrow::before {
+.bs-tooltip-auto[x-placement^=bottom] .arrow::before,
+.bs-tooltip-bottom .arrow::before {
     border-bottom-color: $white !important;
 }
 
-.bs-tooltip-auto[x-placement^=top] .arrow::before, .bs-tooltip-top .arrow::before {
+.bs-tooltip-auto[x-placement^=top] .arrow::before,
+.bs-tooltip-top .arrow::before {
     border-top-color: $white !important;
 }
 
-.bs-tooltip-auto[x-placement^=left] .arrow::before, .bs-tooltip-left .arrow::before {
+.bs-tooltip-auto[x-placement^=left] .arrow::before,
+.bs-tooltip-left .arrow::before {
     border-left-color: $white !important;
 }
 
-.bs-tooltip-auto[x-placement^=right] .arrow::before, .bs-tooltip-right .arrow::before {
+.bs-tooltip-auto[x-placement^=right] .arrow::before,
+.bs-tooltip-right .arrow::before {
     border-right-color: $white !important;
 }
