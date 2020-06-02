@@ -60,18 +60,11 @@ const VerticalBarChart = ({ title, data, extra, timeMode }) => {
             onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
           />
 
-          {timeMode ?
-            (
-              <DateBigNumber
-                value={currentHover}
-                dataPoint={currentHover}
-                renderBigFn={ extra?.tooltip?.renderBigFn }
-              />
-            ) : (
-              <ChartTooltip value={currentHover} />
-            )
-        }
-
+          <ChartTooltip
+            value={currentHover}
+            dataPoint={currentHover}
+            {...extra?.tooltip}
+          />
         </FlexibleWidthXYPlot>
     );
 };
