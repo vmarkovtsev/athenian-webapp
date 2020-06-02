@@ -7,6 +7,8 @@ import {
     useLocation,
 } from 'react-router-dom';
 
+import { useCookies } from 'react-cookie';
+
 import { analytics } from 'js/analytics';
 
 import ContextRoute from 'js/ContextRoute';
@@ -16,6 +18,7 @@ import UserContext from 'js/context/User';
 import Pipeline from 'js/pages/Pipeline';
 import Stage from 'js/pages/pipeline/Stage';
 import Overview from 'js/pages/pipeline/Overview';
+import { Demo, Undemo, refreshCookie as refreshDemoCookie } from 'js/pages/Demo';
 import Login from 'js/pages/auth/Login';
 import SignUp from 'js/pages/auth/SignUp';
 import Logout from 'js/pages/auth/Logout';
@@ -37,6 +40,7 @@ export default () => {
 
     useEffect(() => {
         analytics.page();
+        refreshDemoCookie();
     }, [location]);
 
     return (
@@ -61,6 +65,14 @@ export default () => {
               </Switch>
             </Pipeline>
           </ContextRoute>
+
+          <Route path='/demo'>
+            <Demo />
+          </Route>
+
+          <Route path='/undemo'>
+            <Undemo />
+          </Route>
 
           <Route path='/i/:code(\w{8})'>
             <Redirect to={
