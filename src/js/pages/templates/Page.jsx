@@ -9,8 +9,16 @@ import Footer from 'js/components/layout/Footer';
 import Simple from 'js/pages/templates/Simple';
 
 export default ({ invitationDisabled, children }) => {
-    const { user, isAuthenticated, logout } = useUserContext();
+    const { user, isAuthenticated, logout, isDemo } = useUserContext();
     const breadcrumbs = useBreadcrumbsContext();
+
+    if (isDemo) {
+        return (
+            <DemoMode user={user} breadcrumbs={breadcrumbs} >
+              {children}
+            </DemoMode>
+        );
+    }
 
     if (!isAuthenticated) {
         return <NotAuthenticated/>;
@@ -54,19 +62,6 @@ const AuthenticatedWithUserNoAccount = ({logout}) => (
     />
 );
 
-const AuthenticatedWithUser = ({user, breadcrumbs, invitationDisabled, children}) => (
-    <>
-      <Navbar user={user} invitationDisabled={invitationDisabled}/>
-      <Breadcrumbs breadcrumbs={breadcrumbs} />
-
-      <div className="container mt-4">
-        {children}
-      </div>
-
-      <Footer />
-    </>
-);
-
 const AuthenticationError = ({message, logout}) => (
     <Simple>
       <p>{message}</p>
@@ -79,4 +74,25 @@ const AuthenticationError = ({message, logout}) => (
         Logout
       </button>
     </Simple>
+);
+
+const NoError = ({user, breadcrumbs, invitationDisabled, isDemo, children}) => (
+    <>
+      <Navbar user={user} invitationDisabled={invitationDisabled} isDemo={isDemo} />
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
+
+      <div className="container mt-4">
+        {children}
+      </div>
+
+      <Footer />
+    </>
+);
+
+const DemoMode = ({user, breadcrumbs, children}) => (
+  <NoError user={user} breadcrumbs={breadcrumbs} invitationDisabled={true} isDemo={true} children={children}/>
+);
+
+const AuthenticatedWithUser = ({user, breadcrumbs, invitationDisabled, children}) => (
+  <NoError user={user} breadcrumbs={breadcrumbs} invitationDisabled={invitationDisabled} isDemo={false} children={children}/>
 );
