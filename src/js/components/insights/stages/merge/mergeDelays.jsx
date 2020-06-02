@@ -7,7 +7,9 @@ import { TimeToMerge } from 'js/components/charts/Tooltip';
 import { fetchPRsMetrics, fetchDevsMetrics } from 'js/services/api/index';
 import { github, dateTime, number } from 'js/services/format';
 
-const mergeDelays = {
+import { palette } from 'js/res/palette';
+
+export default {
     fetcher: async (api, context) => {
         const fetchChartData = async () => {
             const granularity = 'all';
@@ -95,14 +97,13 @@ const mergeDelays = {
                     chart: {
                         component: VerticalBarChart,
                         params: {
-                            title: 'Merge Time',
                             data: computed.chartData,
                             extra: {
                                 axisKeys: computed.axisKeys,
                                 axisLabels: {
                                     y: 'hours'
                                 },
-                                color: "#4EC7EE",
+                                color: palette.schemes.trend,
                                 tooltip: { template: TimeToMerge },
                             }
                         }
@@ -133,5 +134,3 @@ const mergeDelays = {
             ]
     })
 };
-
-export default mergeDelays;

@@ -8,6 +8,7 @@ import { InsightsError } from 'js/components/insights/Helper';
 import createdPRs from 'js/components/insights/stages/work-in-progress/createdPrs';
 import mostActiveDevs from 'js/components/insights/stages/work-in-progress/mostActiveDevs';
 import pullRequestRatioFlow from 'js/components/insights/stages/work-in-progress/pullRequestRatioFlow';
+import pullRequestPerRepo from './pullRequestPerRepo';
 
 export default () => {
     const { api, ready: apiReady, context: apiContext } = useApi();
@@ -19,7 +20,7 @@ export default () => {
     const fetcher = async () => {
         return Promise.resolve({
             createdPRs: await createdPRs.fetcher(api, apiContext),
-            pullRequestRatioFlow: await pullRequestRatioFlow.fetcher(api, apiContext)
+            pullRequestRatioFlow: await pullRequestRatioFlow.fetcher(api, apiContext),
         });
     };
 
@@ -27,6 +28,9 @@ export default () => {
         createdPRs: createdPRs.plumber({
             ...data.createdPRs, global: data.global
         }),
+        pullRequestPerRepo: pullRequestPerRepo.plumber({
+            ...data.pullRequestPerRepo, global: data.global
+        }, apiContext),
         mostActiveDevs: mostActiveDevs.plumber({
             ...data.mostActiveDevs, global: data.global
         }),
@@ -52,6 +56,7 @@ const Inner = ({ data, error }) => {
 
     let insights = [
         createdPRs.factory(data.createdPRs),
+        pullRequestPerRepo.factory(data.pullRequestPerRepo),
         mostActiveDevs.factory(data.mostActiveDevs),
         pullRequestRatioFlow.factory(data.pullRequestRatioFlow),
     ];

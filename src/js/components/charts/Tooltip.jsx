@@ -29,17 +29,36 @@ export default ({value, ...props}) => {
     );
 };
 
-export const DateBigNumber = ({ value, dataPoint, renderBigFn = v => <BigText content={number.round(v.y)} />, ...props }) => {
-    if (!value || !dataPoint) return null;
+export const DefaultXYTooltip = ({
+    value,
+    dataPoint,
+    x = v => <AltTitle content={v.x} />,
+    y = v => <BigText content={v.y} />,
+    ...props
+}) => {
+    if (!value) return null;
     return (
         <Hint {...props} value={value}>
             <TooltipContainer left>
                 <Group>
-                    <AltTitle content={<DateWeekDayMonth date={moment(dataPoint.x)} uppercase />} />
-                    {renderBigFn(dataPoint)}
+                    {x(dataPoint || value)}
+                    {y(dataPoint || value)}
                 </Group>
             </TooltipContainer>
         </Hint>
+    );
+};
+
+export const DateBigNumber = ({ value, dataPoint, renderBigFn = v => <BigText content={number.round(v.y)} />, ...props }) => {
+    if (!value) return null;
+    return (
+        <DefaultXYTooltip
+            value={value}
+            dataPoint={dataPoint}
+            x={v => <AltTitle content={<DateWeekDayMonth date={moment(v.x)} uppercase />} />}
+            y={v => renderBigFn(v)}
+            {...props}
+        />
     );
 };
 
