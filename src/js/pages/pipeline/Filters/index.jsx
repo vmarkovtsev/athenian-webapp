@@ -1,5 +1,6 @@
 import React, { useReducer, useRef, useCallback } from 'react'
 import moment from 'moment'
+import _ from 'lodash'
 
 import { useAuth0 } from 'js/context/Auth0'
 import { useUserContext } from 'js/context/User'
@@ -165,6 +166,7 @@ export default function Filters({ children }) {
     filterData.contribs.selected.find(e => e.login === c.login && e.team === c.team)
   )
 
+  const totalCountContribs = _(teamsValue).uniqBy('login').value()
   return (
     <FiltersContext
       ready={filterData.ready}
@@ -186,6 +188,7 @@ export default function Filters({ children }) {
             onApply={onReposApplyChange}
             onChange={onSelectRepo}
             value={reposValue}
+            count={reposValue.length}
           />
         }
         contribsFilter={
@@ -201,6 +204,7 @@ export default function Filters({ children }) {
             onApply={onContribsApplyChange}
             value={teamsValue}
             onChange={onSelectContrib}
+            count={totalCountContribs.length}
           />
         }
         dateIntervalFilter={

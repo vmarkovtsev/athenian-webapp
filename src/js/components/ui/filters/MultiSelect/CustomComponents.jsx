@@ -6,6 +6,8 @@ import { ReactComponent as DropdownIndicator } from './IconDropdownIndicator.svg
 import { components } from 'react-select'
 import { github } from 'js/services/format'
 import classNames from 'classnames'
+import _ from 'lodash'
+
 /**
  * Transform string into color
  * @param {string} str
@@ -232,12 +234,15 @@ export const Placeholder = props => {
   */
 const extractOptions = options => {
   const [option] = options
-  if (option && option.options) { //is a group
-    return options.reduce((acc, curr) => {
-      return [ ...acc, ...curr.options ]
-    }, [])
-  }
-  return options
+  const isGroup = option && option.options
+
+  if (!isGroup) return [options, false]
+
+  const groupOptions = options.reduce((acc, curr) => {
+    return [ ...acc, ...curr.options ]
+  }, [])
+
+  return [groupOptions, isGroup]
 }
 
 export const Menu = (onApply, setMenuOpen) => props => {
@@ -250,8 +255,13 @@ export const Menu = (onApply, setMenuOpen) => props => {
   } = props
 
   const allValues = getValue()
-  const mappedOptions = extractOptions(options)
-  const allSelected = allValues.length === mappedOptions.length
+
+  const [mappedOptions, isGroup] = extractOptions(options)
+
+  const allUniqueOptions = isGroup ? _(mappedOptions).uniqBy('login').value() : mappedOptions
+  const allUniqSelect = isGroup ? _(allValues).uniqBy('login').value() : allValues
+  const allSelected = allUniqSelect.length === allUniqueOptions.length
+
   const isIndeterminate = !allSelected && allValues.length > 0
 
   const toggleAll = () => {
@@ -261,7 +271,7 @@ export const Menu = (onApply, setMenuOpen) => props => {
     }
   }
 
-  const close = wasApplied => {
+  const close = () => {
     setMenuOpen(false)
   }
 
@@ -280,7 +290,7 @@ export const Menu = (onApply, setMenuOpen) => props => {
         <span>
           <span className="filter-dropdown-all">All</span>
           <span className="filter-dropdown-pill">
-            {mappedOptions.length}
+            {allUniqueOptions.length}
           </span>
         </span>
       </div>

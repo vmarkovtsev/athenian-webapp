@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 const mapTeam = (contribs, teams) => {
   if (!teams.length) return contribs;
   return mapContribsToTeam(contribs, teams).reduce((acc, curr) => {
@@ -153,6 +155,8 @@ export const TYPE = {
 export const mapContribsToTeam = (contribs, teams) => {
   if (!teams.length) return contribs;
 
+  const contribsWithTeam = _(teams).flatMap('members').map('login').value()
+
   const mapMember = ({ login, name, picture, avatar }) => ({
     login,
     name,
@@ -162,38 +166,19 @@ export const mapContribsToTeam = (contribs, teams) => {
   const teamsBlueprint = teams.map(({ name: label, members }) => {
     return {
       label,
-      options: members
-        // remove contributors not in the date range
-        .filter(member => contribs.find(contrib => contrib.login === member.login))
-        .map(member => ({ ...mapMember(member), team: label })),
+      options: _(members)
+        .intersectionBy(contribs, 'login')
+        .map(member => ({ ...mapMember(member), team: label }))
+        .value(),
     };
   });
 
   teamsBlueprint.push({
     label: "Other",
-    options: [],
+    options: _(contribs)
+      .differenceWith(contribsWithTeam, (arr1, arr2) => arr1.login === arr2)
+      .value(),
   });
 
-  const otherTeam = teamsBlueprint.length - 1;
-
-  const mappedTeams = contribs.reduce((teams, contributor) => {
-    let isContributorAdded = false
-    for (let { options } of teams) {
-      const foundMember = options.find(member => member.login === contributor.login)
-      if (foundMember) {
-        isContributorAdded = true
-        break
-      }
-    }
-
-    if (!isContributorAdded) {
-      teams[otherTeam].options.push({
-        ...mapMember(contributor),
-        team: 'Other'
-      })
-    }
-    return teams
-  }, teamsBlueprint)
-
-  return mappedTeams;
+  return teamsBlueprint;
 };
