@@ -22,14 +22,14 @@ export default ({title, data, extra, ...rest}) => (
 const VerticalBarChart = ({ title, data, extra, timeMode }) => {
     const [currentHover, setCurrentHover] = useState(null);
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
         return <></>;
     }
 
     const formattedData = _(data)
           .map(v => ({
               x: timeMode ? v[extra.axisKeys.x].getTime() : v[extra.axisKeys.x],
-              y: v[extra.axisKeys.y],
+              y: v[extra.axisKeys.y] || 0,
               tooltip: v.tooltip,
           }))
           .value();
