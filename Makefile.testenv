@@ -3,7 +3,7 @@
 TEST_BRANCH ?=
 TEST_SERVICE_ACCOUNT ?=
 TEST_GCE_IMAGE ?= test-web-app
-TEST_GCE_INSTANCE ?= branch-$(shell sh -c "echo -n $(TEST_BRANCH) | md5sum | cut -c -32")
+TEST_GCE_INSTANCE ?= branch-$(shell sh -c "printf \"%s\" \"$(TEST_BRANCH)\" | md5sum | cut -c -32")
 TEST_GCE_ZONE ?= us-east1-c
 
 .PHONY: check-test-branch
