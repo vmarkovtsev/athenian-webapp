@@ -11,7 +11,6 @@ import { dateTime, number, isNumber } from 'js/services/format';
 const waitTimeFirstReview = {
     plumber: (data) => {
         const waitFirstReviewVariation = data.global['prs-metrics.variations']['wait-first-review'];
-        const cycleTimeVariation = data.global['prs-metrics.variations']['cycle-time'];
 
         const currWaitFirstReview = data.global['prs-metrics.values'].all['wait-first-review'];
         const currCycleTime = data.global['prs-metrics.values'].all['cycle-time'];
@@ -21,19 +20,6 @@ const waitTimeFirstReview = {
             currOverallProportion = 0;
         } else if (isNumber(currWaitFirstReview) && isNumber(currCycleTime) && currCycleTime !== 0) {
             currOverallProportion = currWaitFirstReview * 100 / currCycleTime;
-        }
-
-        let overallProportionVariation = null;
-        if (currWaitFirstReview === 0) {
-            overallProportionVariation = 0;
-        } else if (
-            isNumber(currWaitFirstReview) && isNumber(waitFirstReviewVariation) && waitFirstReviewVariation !== -100 &&
-            isNumber(currCycleTime) && isNumber(cycleTimeVariation) && cycleTimeVariation !== -100 && currCycleTime !== 0
-        ) {
-            const prevWaitFirstReview = (currWaitFirstReview * 100) / (waitFirstReviewVariation + 100);
-            const prevCycleTime = (currCycleTime * 100) / (cycleTimeVariation + 100);
-            const prevOverallProportion = prevWaitFirstReview * 100 / prevCycleTime;
-            overallProportionVariation = currOverallProportion * 100 / prevOverallProportion;
         }
 
         return {
@@ -47,7 +33,6 @@ const waitTimeFirstReview = {
                 },
                 overallProportion: {
                     value: currOverallProportion,
-                    variation: overallProportionVariation
                 }
             },
             axisKeys: {
