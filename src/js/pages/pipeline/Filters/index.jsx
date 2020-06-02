@@ -51,7 +51,7 @@ export default function Filters({ children }) {
     filterReducer,
     { ...defaultFilter, dateInterval: defaultDateInterval }
   )
-  const [excludeInactive, setExclude] = useState(false)
+  const [excludeInactive, setExclude] = useState(true)
 
   useMountEffect(() => {
     (async () => {

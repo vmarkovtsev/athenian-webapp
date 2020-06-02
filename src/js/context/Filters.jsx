@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-const Context = React.createContext({ repositories: [], contributors: [], dateInterval: {}, excludeInactive: false });
+const Context = React.createContext({ repositories: [], contributors: [], dateInterval: {}, excludeInactive: true });
 
 export const useFiltersContext = () => useContext(Context);
 
