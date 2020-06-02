@@ -27,10 +27,10 @@ export const getOrg = user => {
 const welcomedKey = user => `settings.welcomed${user?.id ? '.' + user.id : ''}`;
 
 export default ({ children }) => {
-  const { user } = useUserContext();
+  const { user, isDemo } = useUserContext();
   const [welcomedStorage, setWelcomedStorage] = useLocalStorage(welcomedKey(user), false);
 
-  if (!user) return <Page />;
+  if (!user || isDemo) return <Page />;
 
   return (
     <Page>
