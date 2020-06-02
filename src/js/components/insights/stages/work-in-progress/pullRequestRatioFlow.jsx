@@ -11,12 +11,14 @@ import { number } from 'js/services/format';
 
 const pullRequestRatioFlow = {
     fetcher: async (api, context) => {
-        const { account, interval, repositories, contributors } = context;
+        const { account, interval, repositories, contributors, excludeInactive } = context;
         // Cannot use global data as the KPI for PRs ratio flow needs `day` granularty
         return {
             timeseries: await fetchPRsMetrics(
                 api, account, ['day'], interval, ['flow-ratio'],
-                { repositories, with: { author: contributors } }
+                { repositories, with: { author: contributors } },
+                null,
+                excludeInactive,
             )
         };
     },

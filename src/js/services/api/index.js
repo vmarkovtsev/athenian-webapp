@@ -231,6 +231,7 @@ export const fetchFilteredPRs = async (
     api, accountID,
     dateInterval,
     filter = { repositories: [], developers: [], properties: [] },
+    exclude_inactive
 ) => {
     filter.repositories = filter.repositories || [];
     filter.developers = _(filter.developers || []).map(v => v.login).value();
@@ -252,8 +253,10 @@ export const fetchFilteredPRs = async (
             author: filter.developers,
         };
     }
-
+  
     filter_.timezone = getOffset();
+
+    filter_.exclude_inactive = exclude_inactive
 
     const prs = await withSentryCapture(
         api.filterPrs({ filterPullRequestsRequest: filter_ }),
@@ -272,7 +275,8 @@ export const fetchPRsMetrics = async (
   dateInterval,
   metrics = [],
   filter = { repositories: [], developers: [], with: {}},
-  groupBy
+  groupBy,
+  exclude_inactive,
 ) => {
   filter.repositories = filter.repositories || [];
   filter.developers = _(filter.developers || []).map(v => v.login).value();
@@ -306,6 +310,9 @@ export const fetchPRsMetrics = async (
   );
 
   body.timezone = getOffset();
+
+  body.exclude_inactive = exclude_inactive
+
   return withSentryCapture(
     api.calcMetricsPrLinear(body),
     "Cannot fetch pull requests metrics"

@@ -67,7 +67,8 @@ const useApiWithFilters = () => {
         ready: filtersReady,
         dateInterval,
         repositories,
-        contributors
+        contributors,
+        excludeInactive,
     } = useFiltersContext();
 
     const ready = apiReady && filtersReady;
@@ -75,7 +76,8 @@ const useApiWithFilters = () => {
         ...apiContext,
         interval: dateInterval,
         repositories: repositories,
-        contributors: contributors
+        contributors: contributors,
+        excludeInactive
     };
 
     return {

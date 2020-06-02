@@ -36,7 +36,8 @@ export default ({ children }) => {
           {
             repositories: apiContext.repositories,
             developers: apiContext.contributors,
-          }
+          },
+          apiContext.excludeInactive,
         )
         setGlobalData('prs', prsAwaitable)
       } catch (err) {
@@ -73,7 +74,9 @@ export default ({ children }) => {
         const data = await fetchPRsMetrics(
           api, apiContext.account, ['all', customGranularity],
           apiContext.interval, allMetrics,
-          { repositories: apiContext.repositories, with: { author: apiContext.contributors } }
+          { repositories: apiContext.repositories, with: { author: apiContext.contributors } },
+          null,
+          apiContext.excludeInactive
         )
           
         if (!data.calculated?.[0]) {
@@ -127,7 +130,9 @@ export default ({ children }) => {
         const data = await fetchPRsMetrics(
           api, apiContext.account, [`${diffDays + 1} day`],
           interval, allMetrics,
-          { repositories: apiContext.repositories, with: { author: apiContext.contributors } }
+          { repositories: apiContext.repositories, with: { author: apiContext.contributors } },
+          null,
+          apiContext.excludeInactive,
         )
                     
         if (!data.calculated?.[0]?.values?.length) {
@@ -152,7 +157,7 @@ export default ({ children }) => {
     getAndSetPRs()
     fetchGlobalPRMetrics()
     fetchGlobalPRMetricsVariations()
-  }, [apiReady, api, apiContext.account, apiContext.interval, apiContext.repositories, apiContext.contributors, setGlobalData])
+  }, [apiReady, api, apiContext.account, apiContext.interval, apiContext.repositories, apiContext.contributors, apiContext.excludeInactive, setGlobalData])
 
   if (!apiReady) {
     return <StatusIndicator status={LOADING} />

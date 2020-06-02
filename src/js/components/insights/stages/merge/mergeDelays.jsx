@@ -19,7 +19,8 @@ export default {
                 api, context.account, [granularity], context.interval,
                 metrics,
                 { repositories: context.repositories, with: { author: context.contributors } },
-                'repositories'
+                'repositories',
+                context.excludeInactive,
             );
         };
 

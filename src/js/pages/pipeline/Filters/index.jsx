@@ -1,4 +1,4 @@
-import React, { useReducer, useRef, useCallback } from 'react'
+import React, { useReducer, useRef, useCallback, useState } from 'react'
 import moment from 'moment'
 
 import { useAuth0 } from 'js/context/Auth0'
@@ -27,7 +27,8 @@ import {
   setSelectedRepos,
   setSelectedContribs,
   setAppliedRepos,
-  setAppliedContribs
+  setAppliedContribs,
+  setExcludeInactive,
 } from './actions'
 
 const allowedDateInterval = {
@@ -50,6 +51,7 @@ export default function Filters({ children }) {
     filterReducer,
     { ...defaultFilter, dateInterval: defaultDateInterval }
   )
+  const [excludeInactive, setExclude] = useState(false)
 
   useMountEffect(() => {
     (async () => {
@@ -89,6 +91,7 @@ export default function Filters({ children }) {
       [updatedRepos, updatedContribs, updatedTeams]
     )
 
+    dispatchFilter(setExcludeInactive(excludeInactive))
     dispatchFilter(setDateInterval(selectedDateInterval))
     dispatchFilter(init({
       repos: updatedRepos, contribs: updatedContribs, teams: updatedTeams, ready: true
@@ -166,18 +169,8 @@ export default function Filters({ children }) {
     filterData.contribs.selected.find(e => e.login === c.login)
   )
 
-  // revert previous values is close filter without apply
-  // const onCloseRepos = useCallback(applied => {
-  //   if (!applied) {
-  //     dispatchFilter(setSelectedRepos([...filterData.repos.applied]))
-  //   }
-  // }, [filterData.repos.applied])
-
-  // const onCloseContribs = useCallback(applied => {
-  //   if (!applied) {
-  //     dispatchFilter(setSelectedContribs([...filterData.contribs.applied]))
-  //   }
-  // }, [filterData.contribs.applied])
+  const onExcludeInactive = () =>
+    setExclude(!excludeInactive)
 
   return (
     <FiltersContext
@@ -185,6 +178,7 @@ export default function Filters({ children }) {
       repositories={filterData.repos.applied}
       contributors={filterData.contribs.applied}
       dateInterval={filterData.dateInterval}
+      excludeInactive={filterData.excludeInactive}
     >
       <TopFilter
         reposFilter={
@@ -200,7 +194,6 @@ export default function Filters({ children }) {
             onApply={onReposApplyChange}
             onChange={onSelectRepo}
             value={reposValue}
-            // onClose={onCloseRepos}
           />
         }
         contribsFilter={
@@ -216,7 +209,6 @@ export default function Filters({ children }) {
             onApply={onContribsApplyChange}
             value={contribsValue}
             onChange={onSelectContrib}
-            // onClose={onCloseContribs}
           />
         }
         dateIntervalFilter={
@@ -226,6 +218,8 @@ export default function Filters({ children }) {
             initialFrom={defaultDateInterval.from}
             initialTo={defaultDateInterval.to}
             onChange={onDateIntervalChange}
+            onExcludeInactive={onExcludeInactive}
+            isExcludeInactive={excludeInactive}
           />
         }
       />

@@ -11,12 +11,14 @@ import { palette } from 'js/res/palette';
 
 export default {
     fetcher: async (api, context) => {
-        const { account, interval, repositories, contributors } = context;
+        const { account, interval, repositories, contributors, excludeInactive } = context;
         // Cannot use global data as the KPI needs `day` granularty
         return {
             dayCreations: await fetchPRsMetrics(
                 api, account, ['day'], interval, ['opened'],
-                { repositories, with: { author: contributors } }
+                { repositories, with: { author: contributors } },
+                null,
+                excludeInactive,
             )
         };
     },

@@ -43,13 +43,15 @@ export const EOD = moment().endOf('day').valueOf();
 export const YEAR_AGO = moment().subtract(1, 'year').startOf('day').valueOf();
 export const TWO_WEEKS_AGO = moment().subtract(2, 'weeks').startOf('day').valueOf();
 
-export default ({
+export default function DateInterval({
     minDate = YEAR_AGO,
     maxDate = EOD,
     initialFrom = TWO_WEEKS_AGO,
     initialTo = EOD,
-    onChange = dateInteval => console.log('APPLY', dateInteval)
-}) => {
+    onChange = dateInteval => console.log('APPLY', dateInteval),
+    isExcludeInactive,
+    onExcludeInactive,
+}) {
     minDate = moment(minDate);
     maxDate = moment(maxDate);
     initialFrom = moment(initialFrom).startOf('day');
@@ -110,7 +112,11 @@ export default ({
                 initialVisibleMonth={() => moment(dateIntervalState.endDate).subtract(1, 'month')}
                 renderCalendarInfo={() => (
                     <FilterFooter
-                        extra={<Checkbox label="Include inactive Pull Requests" />}
+                        extra={<Checkbox
+                            label="Include inactive Pull Requests"
+                            isChecked={!isExcludeInactive}
+                            onClick={onExcludeInactive} />
+                        }
                         onCancel={cancel}
                         onAccept={() => setFocusedInputState(null)}
                         isAcceptable={validState}
