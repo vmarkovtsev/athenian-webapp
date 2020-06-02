@@ -9,6 +9,7 @@ import createdPRs from 'js/components/insights/stages/work-in-progress/createdPr
 import mostActiveDevs from 'js/components/insights/stages/work-in-progress/mostActiveDevs';
 import pullRequestRatioFlow from 'js/components/insights/stages/work-in-progress/pullRequestRatioFlow';
 import pullRequestPerRepo from './pullRequestPerRepo';
+import { isNotProd } from 'js/components/development';
 
 export default () => {
     const { api, ready: apiReady, context: apiContext } = useApi();
@@ -56,10 +57,14 @@ const Inner = ({ data, error }) => {
 
     let insights = [
         createdPRs.factory(data.createdPRs),
-        pullRequestPerRepo.factory(data.pullRequestPerRepo),
+    ]
+    if (isNotProd) {
+        insights.push(pullRequestPerRepo.factory(data.pullRequestPerRepo));
+    }
+    insights.push(
         mostActiveDevs.factory(data.mostActiveDevs),
         pullRequestRatioFlow.factory(data.pullRequestRatioFlow),
-    ];
+    );
 
     return (
         <>{insights.map((ins, i) => <Box meta={ins.meta} content={ins.content} key={i} />)}</>
