@@ -54,7 +54,7 @@ const VerticalBarChart = ({ title, data, extra, timeMode }) => {
           />
 
           <HorizontalGridLines tickTotal={maxNumberOfTicks} />
-          <YAxis tickTotal={maxNumberOfTicks} />
+          <YAxis tickTotal={maxNumberOfTicks} tickFormat={extra.axisFormat?.y || (y => y)} />
           {extra.axisLabels && extra.axisLabels.y && buildChartLabel(extra.axisLabels.y, 'y', marginLeft)}
 
           <VerticalBarSeries
