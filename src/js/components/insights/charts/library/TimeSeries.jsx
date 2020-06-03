@@ -102,7 +102,7 @@ const TimeSeries = ({ title, data, extra, timeMode }) => {
     const tickValues = computeTickValues(formattedData, extra.maxNumberOfTicks);
 
     const referenceData = [];
-    if (extra.reference) {
+    if (extra.reference && dataPoints.length) {
         referenceData.push({
             x: xDomain.min,
             y: extra.reference.value
@@ -114,7 +114,7 @@ const TimeSeries = ({ title, data, extra, timeMode }) => {
     }
 
     const averagedData = [];
-    if (extra.average) {
+    if (extra.average && dataPoints.length) {
         averagedData.push({
             x: xDomain.min,
             y: scaleY(extra.average.value),
