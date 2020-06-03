@@ -6,6 +6,8 @@ import { ReactComponent as DropdownIndicator } from './IconDropdownIndicator.svg
 import { components } from 'react-select'
 import { github } from 'js/services/format'
 import classNames from 'classnames'
+import _ from 'lodash'
+
 /**
  * Transform string into color
  * @param {string} str
@@ -46,11 +48,9 @@ export const Dropdown = ({
   isOpen,
   count,
   setMenuOpen,
-  // onClose
 }) => {
   const close = () => {
     setMenuOpen(!isOpen)
-    // onClose(false)
   }
 
   return (
@@ -150,7 +150,7 @@ export const Group = props => {
     const { data, setValue } = props
     if (!check) {
       const newvalue = values.filter(val => (
-        !data.options.find(op => op.login === val.login)
+        !data.options.find(op => op.login === val.login && op.team === val.team)
       ))
       setValue(newvalue)
     } else {
@@ -234,12 +234,15 @@ export const Placeholder = props => {
   */
 const extractOptions = options => {
   const [option] = options
-  if (option && option.options) { //is a group
-    return options.reduce((acc, curr) => {
-      return [ ...acc, ...curr.options ]
-    }, [])
-  }
-  return options
+  const isGroup = option && option.options
+
+  if (!isGroup) return [options, false]
+
+  const groupOptions = options.reduce((acc, curr) => {
+    return [ ...acc, ...curr.options ]
+  }, [])
+
+  return [groupOptions, isGroup]
 }
 
 export const Menu = (onApply, setMenuOpen) => props => {
@@ -252,14 +255,15 @@ export const Menu = (onApply, setMenuOpen) => props => {
   } = props
 
   const allValues = getValue()
-  const mappedOptions = extractOptions(options)
 
-  const totalOptions = mappedOptions.reduce((acc, curr) => {
-    acc.add(curr.login ? curr.login : curr)
-    return acc
-  }, new Set()).size
+  const [mappedOptions, isGroup] = extractOptions(options)
 
-  const allSelected = allValues.length === totalOptions
+  const allUniqueOptions = isGroup ? _(mappedOptions).uniqBy('login').value() : mappedOptions
+  const allUniqSelect = isGroup ? _(allValues).uniqBy('login').value() : allValues
+  const allSelected = allUniqSelect.length === allUniqueOptions.length
+
+  const isIndeterminate = !allSelected && allValues.length > 0
+
   const toggleAll = () => {
     clearValue()
     if (!allSelected) {
@@ -267,7 +271,7 @@ export const Menu = (onApply, setMenuOpen) => props => {
     }
   }
 
-  const close = wasApplied => {
+  const close = () => {
     setMenuOpen(false)
   }
 
@@ -282,11 +286,11 @@ export const Menu = (onApply, setMenuOpen) => props => {
         className="d-flex filter-dropdown-menu-all"
         onClick={toggleAll}
       >
-        <Checkbox isChecked={allSelected} />
+        <Checkbox isChecked={!!allValues.length} isIndeterminate={isIndeterminate} />
         <span>
           <span className="filter-dropdown-all">All</span>
           <span className="filter-dropdown-pill">
-            {totalOptions}
+            {allUniqueOptions.length}
           </span>
         </span>
       </div>

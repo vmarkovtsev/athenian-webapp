@@ -32,6 +32,7 @@ const MultiSelect = multiSelectProps => {
     isLoading,
     options,
     value,
+    count,
   } = multiSelectProps
 
   const [isMenuOpen, setMenuOpen] = useState(false)
@@ -69,19 +70,17 @@ const MultiSelect = multiSelectProps => {
   const Menu = useMemo(() => CustomMenu(
     (values) => {
       onApply(values)
-      // onClose(true)
     },
     (wasApplied) => {
-      // onClose(wasApplied)
       setMenuOpen()
     }), [onApply])
-
+  
   return (
     <div ref={ref} onClick={toggle}>
       <Dropdown
         label={label}
         isLoading={isLoading}
-        count={value.length}
+        count={count}
         setMenuOpen={setMenuOpen}
         isOpen={isMenuOpen}
         onClose={onClose}
