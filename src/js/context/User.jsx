@@ -60,7 +60,7 @@ export default ({ children }) => {
     }
 
     return (
-        <UserContext.Provider value={{user: state.user, isAuthenticated, isDemo, logout}}>
+        <UserContext.Provider value={{user: state.user, isAuthenticated, isDemo, logout, godMode: state.godMode}}>
           {children}
         </UserContext.Provider >
     );
