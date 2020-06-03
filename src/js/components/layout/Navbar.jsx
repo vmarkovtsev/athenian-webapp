@@ -8,20 +8,20 @@ import defaultImage from 'images/default-user-image.png';
 
 import InvitationCreator from 'js/smart-components/InvitationCreator';
 
-export default ({ user, invitationDisabled }) => (
+export default ({ user, invitationDisabled, isDemo }) => (
   <div className="navbar navbar-expand-sm navbar-light bg-white topbar static-top border-bottom">
     <div className="container d-flex justify-content-between align-items-center">
       <Link to="/">
         <img src={logo} className="app-logo" alt="athenian" />
       </Link>
-      <User user={user} invitationDisabled={invitationDisabled}/>
+      <User user={user} invitationDisabled={invitationDisabled} isDemo={isDemo} />
     </div>
   </div>
 );
 
-const User = ({ user, invitationDisabled }) => {
+const User = ({ user, invitationDisabled, isDemo }) => {
 
-  return user ? (
+  return user && !isDemo ? (
     <ul className="navbar-nav ml-auto pr-0">
       <li className="nav-item dropdown no-arrow">
         <span className="nav-link dropdown-toggle" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer, useContext } from 'react';
 import { useAuth0 } from 'js/context/Auth0';
 
+import { isDemo as isDemoMode } from 'js/pages/Demo';
 import { getUserWithAccountRepos } from 'js/services/api';
 import { analytics } from 'js/analytics';
 
@@ -14,7 +15,7 @@ const reducer = (state, action) => {
     case 'set':
         const state = {loading: false};
         const { user, userWithRepos } = action;
-        const godMode = userWithRepos ? user.sub !== userWithRepos.id : false;
+        const godMode = userWithRepos ? user && user.sub !== userWithRepos.id : false;
         return {...state, user: userWithRepos, godMode};
     case 'fail':
         return {loading: false};
@@ -26,20 +27,21 @@ const reducer = (state, action) => {
 export default ({ children }) => {
     const { logout, user, loading, isAuthenticated, getTokenSilently } = useAuth0();
     const [state, dispatch] = useReducer(reducer, initialState);
+    const isDemo = isDemoMode();
 
     useEffect(() => {
         if (loading) {
             return;
         }
 
-        if (!isAuthenticated) {
+        if (!isAuthenticated && !isDemo) {
             dispatch({type: 'fail'});
             return;
         };
 
         (async () => {
             try {
-                const token = await getTokenSilently();
+                const token = isDemo ? null : await getTokenSilently();
                 const userWithRepos = await getUserWithAccountRepos(token);
                 dispatch({type: 'set', user, userWithRepos});
             } catch(err) {
@@ -47,7 +49,7 @@ export default ({ children }) => {
                 dispatch({type: 'fail'});
             }
         })();
-    }, [loading, isAuthenticated, getTokenSilently, user]);
+    }, [loading, isAuthenticated, getTokenSilently, user, isDemo]);
 
     if (state.loading) {
         return null;
@@ -58,7 +60,7 @@ export default ({ children }) => {
     }
 
     return (
-        <UserContext.Provider value={{user: state.user, isAuthenticated, logout}}>
+        <UserContext.Provider value={{user: state.user, isAuthenticated, isDemo, logout}}>
           {children}
         </UserContext.Provider >
     );

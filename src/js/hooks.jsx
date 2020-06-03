@@ -6,6 +6,8 @@ import { useUserContext } from 'js/context/User';
 
 import { buildApi } from 'js/services/api';
 
+import { isDemo as isDemoMode } from 'js/pages/Demo';
+
 export const useMountEffect = (fun) => useEffect(fun, []);
 
 export const usePrevious = (value) => {
@@ -20,13 +22,15 @@ const useApiOnly = () => {
     const { loading, isAuthenticated, loginWithRedirect, logout, getTokenSilently } = useAuth0();
     const [apiState, setApiState] = useState(null);
 
+
     useEffect(() => {
-        if (!isAuthenticated) {
+        const isDemo = isDemoMode();
+        if (!isAuthenticated && !isDemo) {
             return;
         }
 
         const prepareApi = async () => {
-            const token = await getTokenSilently();
+            const token = isDemo ? null : await getTokenSilently();
             const api = buildApi(token);
 
             setApiState(api);
