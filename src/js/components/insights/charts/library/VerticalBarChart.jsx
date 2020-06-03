@@ -21,6 +21,7 @@ export default ({title, data, extra, ...rest}) => (
 
 const VerticalBarChart = ({ title, data, extra, timeMode }) => {
     const [currentHover, setCurrentHover] = useState(null);
+    const marginLeft = extra.margin?.left || extra.margin?.left === 0 ? extra.margin.left : 70;
 
     if (!data || data.length === 0) {
         return <></>;
@@ -42,7 +43,7 @@ const VerticalBarChart = ({ title, data, extra, timeMode }) => {
     const maxNumberOfTicks = (extra.maxNumberOfTicks || 10) > maxY?.y ? (maxY?.y || 0) : (extra.maxNumberOfTicks || 10);
 
     return (
-        <FlexibleWidthXYPlot height={300} margin={{ left: 80, bottom: 100}} xType="ordinal">
+        <FlexibleWidthXYPlot height={300} margin={{ left: marginLeft, bottom: 100}} xType="ordinal">
           <XAxis
             tickLabelAngle={-45}
             tickFormat={timeMode ? dateTime.monthDay : v => v}
@@ -50,7 +51,7 @@ const VerticalBarChart = ({ title, data, extra, timeMode }) => {
 
           <HorizontalGridLines tickTotal={maxNumberOfTicks} />
           <YAxis tickTotal={maxNumberOfTicks} />
-          {extra.axisLabels && extra.axisLabels.y && buildChartLabel(extra.axisLabels.y, 'y')}
+          {extra.axisLabels && extra.axisLabels.y && buildChartLabel(extra.axisLabels.y, 'y', marginLeft)}
 
           <VerticalBarSeries
             data={formattedData}
@@ -69,7 +70,7 @@ const VerticalBarChart = ({ title, data, extra, timeMode }) => {
     );
 };
 
-const buildChartLabel = (text, which) => {
+const buildChartLabel = (text, which, marginLeft) => {
     const labelParams = {
         x: {
             includeMargin: false,
@@ -87,7 +88,7 @@ const buildChartLabel = (text, which) => {
             style: {
                 textAnchor: 'middle',
                 transform: 'rotate(-90)',
-                y: -60
+                y: -(marginLeft - 20)
             }
 
         }
