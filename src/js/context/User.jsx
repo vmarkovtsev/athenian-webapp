@@ -55,7 +55,7 @@ export default ({ children }) => {
         return null;
     }
 
-    if (!state.godMode) {
+    if (!state.godMode && !isDemo) {
         analytics.identify(state.user);
     }
 
