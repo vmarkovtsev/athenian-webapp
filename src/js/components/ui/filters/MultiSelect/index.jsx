@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import Select from 'react-select'
 import { Dropdown, Group, Placeholder, Option, Menu as CustomMenu } from './CustomComponents'
 import { customStyles as styles } from './CustomStyles'
@@ -28,7 +28,6 @@ const MultiSelect = multiSelectProps => {
     getOptionLabel,
     onApply,
     onChange,
-    onClose,
     isLoading,
     options,
     value,
@@ -36,72 +35,52 @@ const MultiSelect = multiSelectProps => {
   } = multiSelectProps
 
   const [isMenuOpen, setMenuOpen] = useState(false)
-  const noData = formatMessage(noDataMsg)
-  const loading= formatMessage('loading...')
-  const ref = useRef()
-
-  const toggle = e => {
-    const menu = ref.current.querySelector('.filter')
-    // if click inside menu, skip toggle
-    if (menu && menu.contains(e.target)) {
-      e.stopPropagation()
-      return
-    }
-    setMenuOpen(!isMenuOpen)
-  }
-
-  const closeAll = e => {
-    if (!ref.current.contains(e.target)) {
-      setMenuOpen(false)
-    }
-  }
 
   useMountEffect(() => {
-    window.addEventListener('click', closeAll)
-    return () => {
-      window.removeEventListener('click', closeAll)
-    }
-  }, [])
+    const close = e => setMenuOpen(false)
+    window.addEventListener('click', close)
+    return () => window.removeEventListener('click', close)
+  })
 
-  /**
-   * @param {function} onApply
-   * @param {function} setMenuOpen
-   */
+  const toggle = () => setMenuOpen(!isMenuOpen)
+
   const Menu = useMemo(() => CustomMenu(
     (values) => {
       onApply(values)
+      setMenuOpen(false)
     },
-    (wasApplied) => {
-      setMenuOpen()
-    }), [onApply])
-  
+    () => setMenuOpen(false)
+  ), [onApply])
+
+  const noData = formatMessage(noDataMsg)
+  const loading= formatMessage('loading...')
+
   return (
-    <div ref={ref} onClick={toggle}>
+    <div onClick={(e) => e.stopPropagation()}>
       <Dropdown
         label={label}
         isLoading={isLoading}
         count={count}
-        setMenuOpen={setMenuOpen}
+        onClick={toggle}
         isOpen={isMenuOpen}
-        onClose={onClose}
       />
       {isMenuOpen &&
-        <Select
-          menuIsOpen
-          autoFocus
-          options={options}
-          className={className}
-          name={name}
-          getOptionLabel={getOptionLabel}
-          getOptionValue={getOptionValue}
-          noOptionsMessage={noData}
-          loadingMessage={loading}
-          onChange={onChange}
-          value={value}
-          components= {{ Option, Placeholder, Group, Menu }}
-          styles={styles}
-          {...defaultProps}
-        />
+       <Select
+         menuIsOpen={isMenuOpen}
+         autoFocus={isMenuOpen}
+         options={options}
+         className={className}
+         name={name}
+         getOptionLabel={getOptionLabel}
+         getOptionValue={getOptionValue}
+         noOptionsMessage={noData}
+         loadingMessage={loading}
+         onChange={onChange}
+         value={value}
+         components={{ Option, Placeholder, Group, Menu }}
+         styles={styles}
+         {...defaultProps}
+       />
       }
     </div>
   )
