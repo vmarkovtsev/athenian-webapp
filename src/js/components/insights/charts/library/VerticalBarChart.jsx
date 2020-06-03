@@ -7,6 +7,7 @@ import {
     HorizontalGridLines,
     VerticalBarSeries,
     ChartLabel,
+    LineMarkSeries,
 } from 'react-vis';
 
 import Tooltip, { onValueChange, onValueReset, DateBigNumber } from 'js/components/charts/Tooltip';
@@ -42,6 +43,18 @@ const VerticalBarChart = ({ title, data, extra, timeMode }) => {
     const maxY = _(formattedData).maxBy('y');
     const maxNumberOfTicks = (extra.maxNumberOfTicks || 10) > maxY?.y ? (maxY?.y || 0) : (extra.maxNumberOfTicks || 10);
 
+    const averagedData = [];
+    if (extra.average) {
+        averagedData.push({
+            x: formattedData[0].x,
+            y: extra.average.value,
+        });
+        averagedData.push({
+            x: formattedData[formattedData.length - 1].x,
+            y: extra.average.value,
+        });
+    }
+
     return (
       <div
         onMouseLeave={()=>onValueReset({}, "chart.mouseleave", currentHover, setCurrentHover)}
@@ -68,6 +81,16 @@ const VerticalBarChart = ({ title, data, extra, timeMode }) => {
               }
             }}
           />
+
+          {averagedData.length > 0 &&
+           <LineMarkSeries
+             data={averagedData}
+             strokeWidth={2}
+             stroke={extra.average.color}
+             strokeStyle="dashed"
+             fill="white"
+             animation="stiff"
+           />}
 
           <ChartTooltip
             value={currentHover}
