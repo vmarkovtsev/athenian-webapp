@@ -11,6 +11,7 @@ import { PR_STAGE } from 'js/services/prHelpers';
 const pullRequestSize = {
     plumber: (data) => {
         const { prs, users } = data.global['prs'];
+        const userImages = github.userImageIndex(users);
         return {
             chartData: _(prs)
                 .filter(pr => pr.completedStages.includes(PR_STAGE.WIP))
@@ -26,8 +27,7 @@ const pullRequestSize = {
 
                     const reviewed = !!pr.first_review || !!pr.closed;
 
-                    const authorFullName = pr.authors[0];
-                    const author = authorFullName ? github.userName(authorFullName) : 'none';
+                    const author = pr.authors[0] ? github.userName(pr.authors[0]) : undefined;
                     const timeWaiting = dateTime.interval(
                         pr.review_requested || pr.created,
                         pr.first_review || endTime
@@ -36,11 +36,9 @@ const pullRequestSize = {
                         number: pr.number,
                         repository: pr.organization + '/' + pr.repo,
                         title: pr.title,
-                        image: author === 'none' ?
-                            'https://avatars2.githubusercontent.com/u/10137':
-                            github.userImageIndex(users)[author],
+                        image: userImages[author],
                         reviewed,
-                        author,
+                        author: author || 'unknown',
                         timeWaiting,
                     };
 
