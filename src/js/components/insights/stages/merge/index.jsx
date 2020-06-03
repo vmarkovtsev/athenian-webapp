@@ -7,6 +7,7 @@ import { InsightsError } from 'js/components/insights/Helper';
 
 import mergeDelays from 'js/components/insights/stages/merge/mergeDelays';
 import abandonedWork from 'js/components/insights/stages/merge/abandonedWork';
+import { isNotProd } from 'js/components/development';
 
 
 export default () => {
@@ -48,8 +49,11 @@ const Inner = ({ data, error }) => {
 
     const insights = [
         mergeDelays.factory(data.mergeDelays),
-        abandonedWork.factory(data.abandonedWork),
     ];
+
+    if (isNotProd) {
+        insights.push(abandonedWork.factory(data.abandonedWork));
+    }
 
     return (
         <>{insights.map((ins, i) => <Box meta={ins.meta} content={ins.content} key={i} />)}</>
