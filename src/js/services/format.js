@@ -129,7 +129,7 @@ export const github = {
         .reduce((res, v, k) => {
             res[github.userName(k)] = v.avatar;
             return res;
-        }, {}),
+        }, {[undefined]: 'https://avatars2.githubusercontent.com/u/10137'}),
 };
 
 const KILO = 1000;
