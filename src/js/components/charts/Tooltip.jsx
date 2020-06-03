@@ -79,6 +79,12 @@ export const PullRequestReview = ({ value, ...props }) => {
                         <span>{tooltip.reviewed ? 'Waited' : 'Waiting'} review for {tooltip.timeWaiting}</span>
                     </Group>
                 )}
+                {tooltip.lifetime && (
+                    <Group className="text-orange">
+                        <Icon icon={faClock} />
+                        <span>Opened during {tooltip.lifetime}</span>
+                    </Group>
+                )}
                 <Group>
                     <UserAvatar src={tooltip.image} name={tooltip.author} middleText="Created by" size="18" />
                 </Group>
