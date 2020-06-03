@@ -43,6 +43,10 @@ const VerticalBarChart = ({ title, data, extra, timeMode }) => {
     const maxNumberOfTicks = (extra.maxNumberOfTicks || 10) > maxY?.y ? (maxY?.y || 0) : (extra.maxNumberOfTicks || 10);
 
     return (
+      <div
+        onMouseLeave={()=>onValueReset({}, "chart.mouseleave", currentHover, setCurrentHover)}
+        onClick={()=>onValueReset({}, "chart.mouseclick", currentHover, setCurrentHover)}
+      >
         <FlexibleWidthXYPlot height={300} margin={{ left: marginLeft, bottom: 100}} xType="ordinal">
           <XAxis
             tickLabelAngle={-45}
@@ -58,7 +62,11 @@ const VerticalBarChart = ({ title, data, extra, timeMode }) => {
             color={color}
             barWidth={0.5}
             onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
-            onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
+            onValueMouseOut={(datapoint, event) => {
+              if (!extra?.tooltip?.persistent) {
+                onValueReset(datapoint, "mouseout", currentHover, setCurrentHover);
+              }
+            }}
           />
 
           <ChartTooltip
@@ -67,6 +75,7 @@ const VerticalBarChart = ({ title, data, extra, timeMode }) => {
             {...extra?.tooltip}
           />
         </FlexibleWidthXYPlot>
+      </div>
     );
 };
 
