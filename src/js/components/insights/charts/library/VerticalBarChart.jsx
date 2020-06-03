@@ -7,6 +7,7 @@ import {
     HorizontalGridLines,
     VerticalBarSeries,
     ChartLabel,
+    LineMarkSeries,
 } from 'react-vis';
 
 import Tooltip, { onValueChange, onValueReset, DateBigNumber } from 'js/components/charts/Tooltip';
@@ -21,6 +22,7 @@ export default ({title, data, extra, ...rest}) => (
 
 const VerticalBarChart = ({ title, data, extra, timeMode }) => {
     const [currentHover, setCurrentHover] = useState(null);
+    const marginLeft = extra.margin?.left || extra.margin?.left === 0 ? extra.margin.left : 70;
 
     if (!data || data.length === 0) {
         return <></>;
@@ -41,24 +43,54 @@ const VerticalBarChart = ({ title, data, extra, timeMode }) => {
     const maxY = _(formattedData).maxBy('y');
     const maxNumberOfTicks = (extra.maxNumberOfTicks || 10) > maxY?.y ? (maxY?.y || 0) : (extra.maxNumberOfTicks || 10);
 
+    const averagedData = [];
+    if (extra.average) {
+        averagedData.push({
+            x: formattedData[0].x,
+            y: extra.average.value,
+        });
+        averagedData.push({
+            x: formattedData[formattedData.length - 1].x,
+            y: extra.average.value,
+        });
+    }
+
     return (
-        <FlexibleWidthXYPlot height={300} margin={{ left: 80, bottom: 100}} xType="ordinal">
+      <div
+        onMouseLeave={()=>onValueReset({}, "chart.mouseleave", currentHover, setCurrentHover)}
+        onClick={()=>onValueReset({}, "chart.mouseclick", currentHover, setCurrentHover)}
+      >
+        <FlexibleWidthXYPlot height={300} margin={{ left: marginLeft, bottom: 100}} xType="ordinal">
           <XAxis
             tickLabelAngle={-45}
             tickFormat={timeMode ? dateTime.monthDay : v => v}
           />
 
           <HorizontalGridLines tickTotal={maxNumberOfTicks} />
-          <YAxis tickTotal={maxNumberOfTicks} />
-          {extra.axisLabels && extra.axisLabels.y && buildChartLabel(extra.axisLabels.y, 'y')}
+          <YAxis tickTotal={maxNumberOfTicks} tickFormat={extra.axisFormat?.y || (y => y)} />
+          {extra.axisLabels && extra.axisLabels.y && buildChartLabel(extra.axisLabels.y, 'y', marginLeft)}
 
           <VerticalBarSeries
             data={formattedData}
             color={color}
             barWidth={0.5}
             onValueMouseOver={(datapoint, event) => onValueChange(datapoint, "mouseover", currentHover, setCurrentHover)}
-            onValueMouseOut={(datapoint, event) => onValueReset(datapoint, "mouseout", currentHover, setCurrentHover)}
+            onValueMouseOut={(datapoint, event) => {
+              if (!extra?.tooltip?.persistent) {
+                onValueReset(datapoint, "mouseout", currentHover, setCurrentHover);
+              }
+            }}
           />
+
+          {averagedData.length > 0 &&
+           <LineMarkSeries
+             data={averagedData}
+             strokeWidth={2}
+             stroke={extra.average.color}
+             strokeStyle="dashed"
+             fill="white"
+             animation="stiff"
+           />}
 
           <ChartTooltip
             value={currentHover}
@@ -66,10 +98,11 @@ const VerticalBarChart = ({ title, data, extra, timeMode }) => {
             {...extra?.tooltip}
           />
         </FlexibleWidthXYPlot>
+      </div>
     );
 };
 
-const buildChartLabel = (text, which) => {
+const buildChartLabel = (text, which, marginLeft) => {
     const labelParams = {
         x: {
             includeMargin: false,
@@ -87,7 +120,7 @@ const buildChartLabel = (text, which) => {
             style: {
                 textAnchor: 'middle',
                 transform: 'rotate(-90)',
-                y: -60
+                y: -(marginLeft - 20)
             }
 
         }

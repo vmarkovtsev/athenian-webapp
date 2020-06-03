@@ -397,3 +397,20 @@ export const fetchVersions = async () => {
   );
   return versions;
 };
+
+export const becomeUser = async (api, id) => {
+  return await withSentryCapture(
+    api.becomeUser({id}),
+    `Cannot become user ${id}`,
+    true,
+  );
+};
+
+export const testGodUser = async api => {
+  try {
+    await api.becomeUser();
+    return true;
+  } catch (e) {
+    return false;
+  }
+};

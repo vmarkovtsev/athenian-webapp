@@ -1,5 +1,6 @@
 import React, { useReducer, useRef, useCallback, useState } from 'react'
 import moment from 'moment'
+import _ from 'lodash'
 
 import { useAuth0 } from 'js/context/Auth0'
 import { useUserContext } from 'js/context/User'
@@ -45,7 +46,7 @@ export default function Filters({ children }) {
   const { getTokenSilently } = useAuth0()
   const tokenRef = useRef(null)
 
-  const { user: { defaultAccount: { id: accountID, repos: contextRepos }} } = useUserContext()
+  const { user: { defaultAccount: { id: accountID, repos: contextRepos }}, isDemo } = useUserContext()
   const { reset: resetData, setGlobal: setGlobalData } = useDataContext()
   const [filterData, dispatchFilter] = useReducer(
     filterReducer,
@@ -55,19 +56,19 @@ export default function Filters({ children }) {
 
   useMountEffect(() => {
     (async () => {
-      tokenRef.current = await getTokenSilently()
+      tokenRef.current = isDemo ? null : await getTokenSilently()
 
       const [repos, contribs, teams] = await Promise.all([
         getReposForFilter(tokenRef.current, accountID, filterData.dateInterval, contextRepos),
         getContribsForFilter(tokenRef.current, accountID, filterData.dateInterval, contextRepos),
         getTeamsForFilter(tokenRef.current, accountID)
       ])
-
+  
       setGlobalData(
         ['filter.repos', 'filter.contribs', 'filter.teams'],
         [repos, contribs, teams]
       )
-
+    
       dispatchFilter(init({ repos, contribs, teams, ready: true }))
     })()
   })
@@ -75,7 +76,7 @@ export default function Filters({ children }) {
   const onDateIntervalChange = async selectedDateInterval => {
     dispatchFilter(setReady(false))
     resetData()
-    
+
     const [updatedRepos, updatedTeams] = await Promise.all([
       getReposForFilter(tokenRef.current, accountID, selectedDateInterval),
       getTeamsForFilter(tokenRef.current, accountID)
@@ -101,7 +102,7 @@ export default function Filters({ children }) {
   const onReposApplyChange = useCallback(async (selectedRepos, dateInterval) => {
     dispatchFilter(setReady(false))
     resetData()
-  
+
     selectedRepos = selectedRepos.length > 0 ? selectedRepos : contextRepos
     dateInterval = dateInterval || filterData.dateInterval
 
@@ -114,37 +115,36 @@ export default function Filters({ children }) {
       ['filter.contribs', 'filter.teams', 'filter.repos'],
       [contribs, teams, selectedRepos]
     )
-    
-    dispatchFilter(setAppliedRepos(selectedRepos))
 
+    dispatchFilter(setAppliedRepos(selectedRepos))
+    dispatchFilter(setTeams(teams))
     dispatchFilter(setContribs(contribs))
     dispatchFilter(setSelectedContribs(contribs))
-
-    dispatchFilter(setTeams(teams))
+    dispatchFilter(setAppliedContribs(contribs))
     dispatchFilter(setReady(true))
   }, [accountID, contextRepos, filterData.dateInterval, resetData, setGlobalData])
 
   const onContribsApplyChange = useCallback(async selectedContribs => {
     dispatchFilter(setReady(false))
     resetData()
-    
+
     const teams = await getTeamsForFilter(tokenRef.current, accountID)
 
     setGlobalData(
       ['filter.repos', 'filter.contribs', 'filter.teams'],
       [filterData.repos.data, selectedContribs, teams]
     )
-    
+
     dispatchFilter(setAppliedContribs(selectedContribs))
 
     dispatchFilter(setSelectedContribs(selectedContribs))
     dispatchFilter(setTeams(teams))
     dispatchFilter(setReady(true))
   }, [accountID, filterData.repos.data, resetData, setGlobalData])
-  
+
   const reposLabelFormat = repo => (github.repoName(repo) || 'UNKNOWN')
   const getOptionValueRepos = val => val
-  const getOptionValueUsers = val => `${val.id} ${val.name} ${val.login}`
+  const getOptionValueUsers = val => `${val.team} ${val.name} ${val.login}`
 
   const reposOptions = [...filterData.repos.data]
 
@@ -157,20 +157,22 @@ export default function Filters({ children }) {
     dispatchFilter(setSelectedRepos(selectedOptions))
   }
 
-  const onSelectContrib = (selectedContrib, ...rest) => {
+  const onSelectContrib = selectedContrib => {
     dispatchFilter(setSelectedContribs(selectedContrib))
   }
-  
+
   const reposValue = filterData.repos.data.filter(repo =>
     ~filterData.repos.selected.indexOf(repo)
   )
 
-  const contribsValue = filterData.contribs.data.filter(c =>
-    filterData.contribs.selected.find(e => e.login === c.login)
+  const teamsValue = filterData.contribs.data.filter(c =>
+    filterData.contribs.selected.find(e => e.login === c.login && e.team === c.team)
   )
-
+ 
   const onExcludeInactive = () =>
     setExclude(!excludeInactive)
+         
+  const totalCountContribs = _(teamsValue).uniqBy('login').value();
 
   return (
     <FiltersContext
@@ -194,6 +196,7 @@ export default function Filters({ children }) {
             onApply={onReposApplyChange}
             onChange={onSelectRepo}
             value={reposValue}
+            count={reposValue.length}
           />
         }
         contribsFilter={
@@ -207,8 +210,9 @@ export default function Filters({ children }) {
             getOptionValue={getOptionValueUsers}
             options={teamsOptions}
             onApply={onContribsApplyChange}
-            value={contribsValue}
+            value={teamsValue}
             onChange={onSelectContrib}
+            count={totalCountContribs.length}
           />
         }
         dateIntervalFilter={

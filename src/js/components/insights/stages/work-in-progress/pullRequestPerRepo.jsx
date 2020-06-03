@@ -22,12 +22,11 @@ export default {
             .map((v, k) => ({
                 repo: k,
                 count: v.length,
-            }))
-            .value();
-        const average = prsPerRepo.length ? _(prsPerRepo).meanBy('count') : 0;
+            }));
+        const average = prsPerRepo.meanBy('count') || 0;
 
         return {
-            chartData: _(prsPerRepo)
+            chartData: prsPerRepo
                 .orderBy(['count'], ['desc'])
                 .take(firstNRepos)
                 .value(),

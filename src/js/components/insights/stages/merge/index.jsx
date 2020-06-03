@@ -6,6 +6,8 @@ import { useApi } from 'js/hooks';
 import { InsightsError } from 'js/components/insights/Helper';
 
 import mergeDelays from 'js/components/insights/stages/merge/mergeDelays';
+import abandonedWork from 'js/components/insights/stages/merge/abandonedWork';
+import { isNotProd } from 'js/components/development';
 
 
 export default () => {
@@ -25,12 +27,16 @@ export default () => {
         mergeDelays: mergeDelays.plumber({
             ...data.mergeDelays, global: data.global
         }),
+        abandonedWork: abandonedWork.plumber({
+            ...data.abandonedWork, global: data.global
+        }),
     });
 
     return (
         <DataWidget
           id={`merge-insights`}
           component={Inner} fetcher={fetcher} plumber={plumber}
+          globalDataIDs={['prs', 'prs-metrics.values']}
         />
     );
 
@@ -44,6 +50,10 @@ const Inner = ({ data, error }) => {
     const insights = [
         mergeDelays.factory(data.mergeDelays),
     ];
+
+    if (isNotProd) {
+        insights.push(abandonedWork.factory(data.abandonedWork));
+    }
 
     return (
         <>{insights.map((ins, i) => <Box meta={ins.meta} content={ins.content} key={i} />)}</>

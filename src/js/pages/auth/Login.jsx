@@ -3,10 +3,12 @@ import { Redirect } from 'react-router-dom';
 
 import { useAuth0 } from 'js/context/Auth0';
 import Simple from 'js/pages/templates/Simple';
+import { removeCookie as removeDemoCookie } from 'js/pages/Demo';
 
 export default () => {
     const { loading, isAuthenticated, loginWithRedirect } = useAuth0();
 
+    removeDemoCookie();
     if (loading) {
         return (
             <Simple>

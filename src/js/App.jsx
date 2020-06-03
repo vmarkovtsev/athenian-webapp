@@ -9,6 +9,8 @@ import {
 
 import * as Sentry from '@sentry/browser';
 
+import { CookiesProvider } from 'react-cookie';
+
 import Routes from 'js/Routes';
 
 import * as serviceWorker from 'js/services/serviceWorker';
@@ -57,11 +59,13 @@ ReactDOM.render(<>
     audience={window.ENV.auth.audience}
     onRedirectCallback={onRedirectCallback}
   >
-    <React.StrictMode>
-      <Router history={history}>
-        <Routes />
-      </Router>
-    </React.StrictMode>
+    <CookiesProvider>
+      <React.StrictMode>
+        <Router history={history}>
+          <Routes />
+        </Router>
+      </React.StrictMode>
+    </CookiesProvider>
   </Auth0Provider>
   <ToastContainer
       position="top-center"
