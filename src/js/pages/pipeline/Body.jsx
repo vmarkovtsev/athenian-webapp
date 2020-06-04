@@ -28,21 +28,24 @@ export default ({ children }) => {
     }
     
     const getAndSetPRs = async () => {
-      try {
-        const prsAwaitable = await fetchFilteredPRs(
-          api,
-          apiContext.account,
-          apiContext.interval,
-          {
-            repositories: apiContext.repositories,
-            developers: apiContext.contributors,
-          },
-          apiContext.excludeInactive,
-        )
-        setGlobalData('prs', prsAwaitable)
-      } catch (err) {
-        console.error('Could not get pull requests', err)
-      }
+      const fetchValues = async () => {
+        try {
+          return await fetchFilteredPRs(
+            api,
+            apiContext.account,
+            apiContext.interval,
+            {
+              repositories: apiContext.repositories,
+              developers: apiContext.contributors,
+            },
+            apiContext.excludeInactive,
+          );
+        } catch (err) {
+          return new Error(`Could not fetch pull requests; ${err.body?.detail || err.body?.type || err.error.message || err}`);
+        }
+      };
+
+      setGlobalData('prs', fetchValues());
     }
       
     const allMetrics = [
@@ -71,14 +74,20 @@ export default ({ children }) => {
     const fetchGlobalPRMetrics = async () => {
       const fetchValues = async () => {
         const customGranularity = calculateGranularity(apiContext.interval)
-        const data = await fetchPRsMetrics(
-          api, apiContext.account, ['all', customGranularity],
-          apiContext.interval, allMetrics,
-          { repositories: apiContext.repositories, with: { author: apiContext.contributors } },
-          null,
-          apiContext.excludeInactive
-        )
-          
+
+        let data = {};
+        try {
+          data = await fetchPRsMetrics(
+            api, apiContext.account, ['all', customGranularity],
+            apiContext.interval, allMetrics,
+            { repositories: apiContext.repositories, with: { author: apiContext.contributors } },
+            null,
+            apiContext.excludeInactive,
+          );
+        } catch (err) {
+          return new Error(`Could not fetch metrics; ${err.body?.detail || err.body?.type || err.error.message || err}`);
+        }
+
         if (!data.calculated?.[0]) {
           return {
             all: allMetrics.reduce((acc,v) => { acc[v] = null; return acc }, {}),
@@ -126,15 +135,20 @@ export default ({ children }) => {
                 
         const diffDays = moment(currInterval.to).diff(currInterval.from, 'days')
         const interval = { from: prevInterval.from, to: currInterval.to }
-                  
-        const data = await fetchPRsMetrics(
-          api, apiContext.account, [`${diffDays + 1} day`],
-          interval, allMetrics,
-          { repositories: apiContext.repositories, with: { author: apiContext.contributors } },
-          null,
-          apiContext.excludeInactive,
-        )
-                    
+
+        let data = {};
+        try {
+          data = await fetchPRsMetrics(
+            api, apiContext.account, [`${diffDays + 1} day`],
+            interval, allMetrics,
+            { repositories: apiContext.repositories, with: { author: apiContext.contributors } },
+            null,
+            apiContext.excludeInactive,
+          )
+        } catch (err) {
+          return new Error(`Could not fetch metric variations; ${err.body?.detail || err.body?.type || err.error.message || err}`);
+        }
+
         if (!data.calculated?.[0]?.values?.length) {
           return 0
         }
