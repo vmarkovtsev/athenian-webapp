@@ -1,8 +1,10 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import Select from 'react-select'
 import { Dropdown, Group, Placeholder, Option, Menu as CustomMenu } from './CustomComponents'
 import { customStyles as styles } from './CustomStyles'
 import { useMountEffect } from 'js/hooks'
+
+import _ from 'lodash'
 
 const formatMessage = message => () => <em>{message}</em>
 
@@ -27,40 +29,52 @@ const MultiSelect = multiSelectProps => {
     getOptionValue,
     getOptionLabel,
     onApply,
-    onChange,
     isLoading,
     options,
-    value,
-    count,
+    initialValues,
+    uniquenessKey
   } = multiSelectProps
 
   const [isMenuOpen, setMenuOpen] = useState(false)
-
-  useMountEffect(() => {
-    const close = e => setMenuOpen(false)
-    window.addEventListener('click', close)
-    return () => window.removeEventListener('click', close)
-  })
+  const initialCount = useRef(multiSelectSelectedCount(initialValues, uniquenessKey))
+  const [currentCount, setCurrentCount] = useState(initialCount.current)
 
   const toggle = () => setMenuOpen(!isMenuOpen)
+  const closeMenu = () =>{
+    setCurrentCount(initialCount.current)
+    setMenuOpen(false)
+  }
+
+  useMountEffect(() => {
+    window.addEventListener('click', closeMenu)
+    return () => window.removeEventListener('click', closeMenu)
+  })
+
+  useEffect(() => {
+    initialCount.current = multiSelectSelectedCount(initialValues, uniquenessKey)
+    setCurrentCount(initialCount.current)
+  }, [uniquenessKey, initialValues])
 
   const Menu = useMemo(() => CustomMenu(
     (values) => {
       onApply(values)
       setMenuOpen(false)
-    },
-    () => setMenuOpen(false)
+    }, closeMenu
   ), [onApply])
 
   const noData = formatMessage(noDataMsg)
-  const loading= formatMessage('loading...')
+  const loading = formatMessage('loading...')
+
+  const onSelectionChange = (values) => {
+    setCurrentCount(multiSelectSelectedCount(values, uniquenessKey))
+  }
 
   return (
     <div onClick={(e) => e.stopPropagation()}>
       <Dropdown
         label={label}
         isLoading={isLoading}
-        count={count}
+        count={currentCount}
         onClick={toggle}
         isOpen={isMenuOpen}
       />
@@ -75,8 +89,8 @@ const MultiSelect = multiSelectProps => {
          getOptionValue={getOptionValue}
          noOptionsMessage={noData}
          loadingMessage={loading}
-         onChange={onChange}
-         value={value}
+         onChange={onSelectionChange}
+         defaultValue={initialValues}
          components={{ Option, Placeholder, Group, Menu }}
          styles={styles}
          {...defaultProps}
@@ -84,6 +98,14 @@ const MultiSelect = multiSelectProps => {
       }
     </div>
   )
+}
+
+const multiSelectSelectedCount = (values, uniquenessKey) => {
+  if (!uniquenessKey) {
+    return values.length;
+  }
+
+  return _(values).uniqBy(uniquenessKey).value().length;
 }
 
 export default MultiSelect
