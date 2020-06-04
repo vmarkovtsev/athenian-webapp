@@ -24,8 +24,6 @@ import {
   setDateInterval,
   setContribs,
   setTeams,
-  setSelectedRepos,
-  setSelectedContribs,
   setAppliedRepos,
   setAppliedContribs,
   setExcludeInactive,
@@ -115,12 +113,10 @@ export default function Filters({ children }) {
       [contribs, teams, selectedRepos]
     )
 
-    dispatchFilter(setSelectedRepos(selectedRepos))
     dispatchFilter(setAppliedRepos(selectedRepos))
     dispatchFilter(setTeams(teams))
     dispatchFilter(setContribs(contribs))
     dispatchFilter(setAppliedContribs(contribs))
-    dispatchFilter(setSelectedContribs(contribs))
     dispatchFilter(setReady(true))
   }, [accountID, contextRepos, filterData.dateInterval, resetData, setGlobalData])
 
@@ -135,7 +131,6 @@ export default function Filters({ children }) {
       [filterData.repos.data, selectedContribs, teams]
     )
 
-    dispatchFilter(setSelectedContribs(selectedContribs))
     dispatchFilter(setAppliedContribs(selectedContribs))
     dispatchFilter(setTeams(teams))
     dispatchFilter(setReady(true))
@@ -153,11 +148,11 @@ export default function Filters({ children }) {
   )
 
   const reposValue = filterData.repos.data.filter(repo =>
-    ~filterData.repos.selected.indexOf(repo)
+    ~filterData.repos.applied.indexOf(repo)
   )
 
   const teamsValue = filterData.contribs.data.filter(c =>
-    filterData.contribs.selected.find(e => e.login === c.login && e.team === c.team)
+    filterData.contribs.applied.find(e => e.login === c.login && e.team === c.team)
   )
 
   const onExcludeInactive = () => setExclude(!excludeInactive)
