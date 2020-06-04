@@ -96,6 +96,12 @@ const TimeSeries = ({ title, data, extra, timeMode }) => {
         .filter(v => (extra.filterValuesFn || filterEmptyValues)(v.y))
         .map(v => ({...v, y: scaleY(v.y)}));
 
+
+    const yDomain = {
+        min: 0,
+        max: dataPoints.reduce((acc, v) => v.y > acc ? v.y : acc, 0) || 1,
+    };
+
     const tickFormatY = y => `${y} ${unit}`.trim();
 
     const tickValues = computeTickValues(formattedData, extra.maxNumberOfTicks);
@@ -129,6 +135,7 @@ const TimeSeries = ({ title, data, extra, timeMode }) => {
             height={extra.height || 300}
             margin={{ left: 100, right: 30 }}
             xDomain={[xDomain.min, xDomain.max]}
+            yDomain={[yDomain.min, yDomain.max]}
         >
 
           <VerticalGridLines tickValues={tickValues} />
