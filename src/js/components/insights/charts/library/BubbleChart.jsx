@@ -155,6 +155,9 @@ const BubbleChart = ({ title, data, extra }) => {
           .map(v => ({ title: v.title, color: v.color, strokeWidth: 10 }))
           .value();
 
+    const maxValueX = _.maxBy(formattedData, 'x')['x'] || 1;
+    const maxValueY = _.maxBy(formattedData, 'y')['y'] || 1;
+
     const ChartTooltip = extra?.tooltip?.template || Tooltip;
 
     return (
@@ -162,7 +165,8 @@ const BubbleChart = ({ title, data, extra }) => {
           onMouseLeave={()=>onValueReset({}, "chart.mouseleave", currentHover, setCurrentHover)}
           onClick={()=>onValueReset({}, "chart.mouseclick", currentHover, setCurrentHover)}
         >
-          <FlexibleWidthXYPlot height={300} margin={{ top: 20, left: 50, right: 30, bottom: 50 }}>
+          <FlexibleWidthXYPlot height={300} margin={{ top: 20, left: 50, right: 30, bottom: 50 }}
+                             xDomain={[0, maxValueX]} yDomain={[0, maxValueY]} >
 
             <DiscreteColorLegend className="chart-legend" items={legend} orientation="horizontal" />
 
