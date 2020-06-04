@@ -55,7 +55,7 @@ export const Dropdown = ({
       <div className="d-flex align-items-center">
         <span className="filter-dropdown-label">{label}</span>
         {
-          !isLoading ?
+          isLoading ?
           <StatusIndicator size={5} status={LOADING} margin={0} /> :
           <span className="filter-dropdown-pill">{count}</span>
         }
