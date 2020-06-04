@@ -260,7 +260,8 @@ export const fetchFilteredPRs = async (
 
     const prs = await withSentryCapture(
         api.filterPrs({ filterPullRequestsRequest: filter_ }),
-        "Cannot fetch filtered pull requests"
+        "Cannot fetch filtered pull requests",
+        true,
     );
 
     return {
@@ -315,7 +316,8 @@ export const fetchPRsMetrics = async (
 
   return withSentryCapture(
     api.calcMetricsPrLinear(body),
-    "Cannot fetch pull requests metrics"
+    "Cannot fetch pull requests metrics",
+    true,
   );
 };
 

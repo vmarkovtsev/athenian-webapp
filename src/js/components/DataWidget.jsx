@@ -30,7 +30,13 @@ export default ({id, component, fetcher, plumber, globalDataIDs, config, propaga
                         throw Error(`Missing global data with id ${gid} for data widget with id ${id}`);
                     }
 
-                    globalData[gid] = await d;
+                    const globalDataResolved = await d;
+                    const err = asError(globalDataResolved)
+                    if (err) {
+                        throw err;
+                    }
+
+                    globalData[gid] = globalDataResolved;
                 }
 
                 const plumbedData = plumber({...fetched, global: globalData});
@@ -87,7 +93,7 @@ export default ({id, component, fetcher, plumber, globalDataIDs, config, propaga
     return <Component data={dataState} error={errorState} status={statusState} {...conf} />;
 };
 
-const asError = something => {
+export const asError = something => {
     if (!something) {
         return null;
     }
