@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'react-dates/initialize';
 import moment from 'moment';
 import { DateRangePicker } from 'react-dates';
@@ -67,6 +67,7 @@ export default function DateInterval({
 
     const [focusedInputState, setFocusedInputState] = useState(null);
     const [validState, setValidState] = useState(true);
+    const excludeInactive = useRef(isExcludeInactive)
 
     const validateOrFix = validateOrFixFn(() => setDateIntervalState(initialDateInterval), setFocusedInputState);
 
@@ -79,17 +80,19 @@ export default function DateInterval({
         }
 
         if (!validateOrFix(dateIntervalState) || // the date interval lacks of any field (e.g. the calendar is closed after choosing start and end dates)
-            isSameDateInterval(dateIntervalState, prevDateIntervalState) // when the date interval has not changed
+            (isSameDateInterval(dateIntervalState, prevDateIntervalState) // when the date interval has not changed
+            && excludeInactive.current === isExcludeInactive) // enable/disable stalled PRs
         ) {
             return;
         };
+        excludeInactive.current = isExcludeInactive;
 
         setPrevDateIntervalState(dateIntervalState);
         onChange({
             from: dateIntervalState.startDate.startOf('day').valueOf(),
             to: dateIntervalState.endDate.endOf('day').valueOf(),
         });
-    }, [dateIntervalState, prevDateIntervalState, validateOrFix, focusedInputState, onChange]);
+    }, [dateIntervalState, prevDateIntervalState, validateOrFix, focusedInputState, onChange, isExcludeInactive]);
 
     const cancel = () => {
         setDateIntervalState(prevDateIntervalState);
