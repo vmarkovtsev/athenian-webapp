@@ -1,10 +1,10 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'react-dates/initialize';
 import moment from 'moment';
 import { DateRangePicker } from 'react-dates';
 import { START_DATE, END_DATE } from 'react-dates/constants';
 import { FilterFooter } from './FilterFooter'
+import Checkbox from 'js/components/ui/Checkbox'
 
 const isInRange = (candidate, lower, upper) => lower.isBefore(candidate) && upper.isAfter(candidate);
 
@@ -43,13 +43,15 @@ export const EOD = moment().endOf('day').valueOf();
 export const YEAR_AGO = moment().subtract(1, 'year').startOf('day').valueOf();
 export const TWO_WEEKS_AGO = moment().subtract(2, 'weeks').startOf('day').valueOf();
 
-export default ({
+export default function DateInterval({
     minDate = YEAR_AGO,
     maxDate = EOD,
     initialFrom = TWO_WEEKS_AGO,
     initialTo = EOD,
-    onChange = dateInteval => console.log('APPLY', dateInteval)
-}) => {
+    onChange = dateInteval => console.log('APPLY', dateInteval),
+    isExcludeInactive,
+    onExcludeInactive,
+}) {
     minDate = moment(minDate);
     maxDate = moment(maxDate);
     initialFrom = moment(initialFrom).startOf('day');
@@ -65,6 +67,7 @@ export default ({
 
     const [focusedInputState, setFocusedInputState] = useState(null);
     const [validState, setValidState] = useState(true);
+    const excludeInactive = useRef(isExcludeInactive)
 
     const validateOrFix = validateOrFixFn(() => setDateIntervalState(initialDateInterval), setFocusedInputState);
 
@@ -77,23 +80,26 @@ export default ({
         }
 
         if (!validateOrFix(dateIntervalState) || // the date interval lacks of any field (e.g. the calendar is closed after choosing start and end dates)
-            isSameDateInterval(dateIntervalState, prevDateIntervalState) // when the date interval has not changed
+            (isSameDateInterval(dateIntervalState, prevDateIntervalState) // when the date interval has not changed
+            && excludeInactive.current === isExcludeInactive) // enable/disable stalled PRs
         ) {
             return;
         };
+        excludeInactive.current = isExcludeInactive;
 
         setPrevDateIntervalState(dateIntervalState);
         onChange({
             from: dateIntervalState.startDate.startOf('day').valueOf(),
             to: dateIntervalState.endDate.endOf('day').valueOf(),
         });
-    }, [dateIntervalState, prevDateIntervalState, validateOrFix, focusedInputState, onChange]);
+    }, [dateIntervalState, prevDateIntervalState, validateOrFix, focusedInputState, onChange, isExcludeInactive]);
 
     const cancel = () => {
         setDateIntervalState(prevDateIntervalState);
         setFocusedInputState(null);
     };
-    const isOutside = day => !isInRange(day, minDate, maxDate) 
+    const isOutside = day => !isInRange(day, minDate, maxDate)
+
     return (
         <div style={{ float: 'right' }}>
             <DateRangePicker
@@ -109,6 +115,11 @@ export default ({
                 initialVisibleMonth={() => moment(dateIntervalState.endDate).subtract(1, 'month')}
                 renderCalendarInfo={() => (
                     <FilterFooter
+                        extra={<Checkbox
+                            label="Include inactive Pull Requests"
+                            isChecked={!isExcludeInactive}
+                            onClick={onExcludeInactive} />
+                        }
                         onCancel={cancel}
                         onAccept={() => setFocusedInputState(null)}
                         isAcceptable={validState}

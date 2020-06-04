@@ -1,4 +1,4 @@
-import React, { useReducer, useRef, useCallback } from 'react'
+import React, { useReducer, useRef, useCallback, useState } from 'react'
 import moment from 'moment'
 import _ from 'lodash'
 
@@ -28,7 +28,8 @@ import {
   setSelectedRepos,
   setSelectedContribs,
   setAppliedRepos,
-  setAppliedContribs
+  setAppliedContribs,
+  setExcludeInactive,
 } from './actions'
 
 const allowedDateInterval = {
@@ -51,6 +52,7 @@ export default function Filters({ children }) {
     filterReducer,
     { ...defaultFilter, dateInterval: defaultDateInterval }
   )
+  const [excludeInactive, setExclude] = useState(true)
 
   useMountEffect(() => {
     (async () => {
@@ -90,6 +92,7 @@ export default function Filters({ children }) {
       [updatedRepos, updatedContribs, updatedTeams]
     )
 
+    dispatchFilter(setExcludeInactive(excludeInactive))
     dispatchFilter(setDateInterval(selectedDateInterval))
     dispatchFilter(init({
       repos: updatedRepos, contribs: updatedContribs, teams: updatedTeams, ready: true
@@ -165,14 +168,19 @@ export default function Filters({ children }) {
   const teamsValue = filterData.contribs.data.filter(c =>
     filterData.contribs.selected.find(e => e.login === c.login && e.team === c.team)
   )
+ 
+  const onExcludeInactive = () =>
+    setExclude(!excludeInactive)
+         
+  const totalCountContribs = _(teamsValue).uniqBy('login').value();
 
-  const totalCountContribs = _(teamsValue).uniqBy('login').value()
   return (
     <FiltersContext
       ready={filterData.ready}
       repositories={filterData.repos.applied}
       contributors={filterData.contribs.applied}
       dateInterval={filterData.dateInterval}
+      excludeInactive={filterData.excludeInactive}
     >
       <TopFilter
         reposFilter={
@@ -214,6 +222,8 @@ export default function Filters({ children }) {
             initialFrom={defaultDateInterval.from}
             initialTo={defaultDateInterval.to}
             onChange={onDateIntervalChange}
+            onExcludeInactive={onExcludeInactive}
+            isExcludeInactive={excludeInactive}
           />
         }
       />

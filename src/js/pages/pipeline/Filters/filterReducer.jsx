@@ -103,9 +103,14 @@ export const filterReducer = (state, action) => {
         ...state,
         repos: {
           ...state.repos,
-          applied: action.payload,
-        },
-      };
+          applied: action.payload
+        }
+      }
+    case TYPE.EXCLUDE_INACTIVE: 
+      return {
+        ...state,
+        excludeInactive: action.payload,
+      }
     default:
       return state;
   }
@@ -130,6 +135,7 @@ export const defaultFilter = {
     applied: [],
   },
   dateInterval: null,
+  excludeInactive: true,
 };
 
 export const TYPE = {
@@ -143,7 +149,8 @@ export const TYPE = {
   SET_SELECTED_CONTRIBS: "SET_SELECTED_CONTRIBS",
   SET_APPLIED_REPOS: "SET_APPLIED_REPOS",
   SET_APPLIED_CONTRIBS: "SET_APPLIED_CONTRIBS",
-  READY: 'READY'
+  READY: 'READY',
+  EXCLUDE_INACTIVE: 'EXCLUDE_INACTIVE',
 };
 
 /**
