@@ -53,6 +53,7 @@ const mostActiveDevs = {
         },
         content: [
             {
+                empty: computed.chartData.length === 0,
                 chart: {
                     component: HorizontalBarChart,
                     params: {

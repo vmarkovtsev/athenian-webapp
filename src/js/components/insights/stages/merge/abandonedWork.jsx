@@ -73,6 +73,7 @@ export default {
         },
         content: [
             {
+                empty: computed.chartData.length === 0,
                 chart: {
                     component: VerticalBarChart,
                     params: {

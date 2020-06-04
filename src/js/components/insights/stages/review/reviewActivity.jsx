@@ -152,99 +152,108 @@ const reviewActivity = {
   factory: computed => {
     const createdPRs = computed.firstBox.KPIsData.createdPRs;
     const reviewedPRs = computed.firstBox.KPIsData.reviewedPRs;
-    return {
-      meta: {
-        title: 'Review Activity',
-        description: 'Understand the role of each team member in the review process.'
+
+    const content = [{
+      empty: computed.firstBox.chartData.length === 0,
+      chart: {
+        component: BubbleChart,
+        params: {
+          title: 'Number of Pull Requests created',
+          data: computed.firstBox.chartData,
+          extra: {
+            useImages: true,
+            yAxis: {
+              imageMapping: computed.secondBox.avatarMapping,
+              imageMask: 'circle'
+            },
+            grouper: computed.firstBox.grouper,
+            groups: computed.firstBox.groups,
+            axisKeys: computed.firstBox.axisKeys,
+            axisLabels: {
+              x: 'pull requests reviewed',
+              y: 'pull requests created'
+            },
+            color: '#41CED3',
+            tooltip: { template: UserReviewer },
+          }
+        }
       },
-      content: [{
-        chart: {
-          component: BubbleChart,
+      kpis: [{
+        title: { text: 'Average Pull Requests Reviewed', bold: true },
+        subtitle: { text: 'Per Developer' },
+        component: SimpleKPI,
+        params: {
+          value: number.fixed(computed.firstBox.KPIsData.avgReviewedPRsPerDev, 2),
+        }
+        }, {
+          title: {text: 'Ratio of Pull Requests', bold: true},
+          subtitle: { text: 'Reviewed/Created'},
+          component: SimpleKPI,
           params: {
-            title: 'Number of Pull Requests created',
-            data: computed.firstBox.chartData,
+            value: `${reviewedPRs}/${createdPRs}`
+          }
+        }]
+      },
+      {
+        empty: computed.secondBox.chartData.length === 0,
+        chart: {
+          component: HorizontalBarChart,
+          params: {
+            title: 'Most Active Reviewers',
+            data: computed.secondBox.chartData,
+            tickFormat: tick => `${tick}%`,
             extra: {
-              useImages: true,
               yAxis: {
                 imageMapping: computed.secondBox.avatarMapping,
                 imageMask: 'circle'
               },
-              grouper: computed.firstBox.grouper,
-              groups: computed.firstBox.groups,
-              axisKeys: computed.firstBox.axisKeys,
-              axisLabels: {
-                x: 'pull requests reviewed',
-                y: 'pull requests created'
+              axisKeys: computed.secondBox.axisKeys,
+              series: {
+                prsCommentsPerc: {
+                  name: 'Review comments',
+                  color: '#FC1763',
+                },
+                reviewsPerc: {
+                  name: 'Pull Requests reviewed',
+                  color: '#FFC507',
+                }
               },
-              color: '#41CED3',
               tooltip: { template: UserReviewer },
             }
           }
         },
         kpis: [{
-          title: { text: 'Average Pull Requests Reviewed', bold: true },
-          subtitle: { text: 'Per Developer' },
+          title: {text: 'Total Number of Reviewers', bold: true},
           component: SimpleKPI,
           params: {
-            value: number.fixed(computed.firstBox.KPIsData.avgReviewedPRsPerDev, 2),
+            value: computed.secondBox.KPIsData.reviewers,
           }
-          }, {
-            title: {text: 'Ratio of Pull Requests', bold: true},
-            subtitle: { text: 'Reviewed/Created'},
-            component: SimpleKPI,
-            params: {
-              value: `${reviewedPRs}/${createdPRs}`
-            }
-          }]
         },
         {
-          chart: {
-            component: HorizontalBarChart,
-            params: {
-              title: 'Most Active Reviewers',
-              data: computed.secondBox.chartData,
-              tickFormat: tick => `${tick}%`,
-              extra: {
-                yAxis: {
-                  imageMapping: computed.secondBox.avatarMapping,
-                  imageMask: 'circle'
-                },
-                axisKeys: computed.secondBox.axisKeys,
-                series: {
-                  prsCommentsPerc: {
-                    name: 'Review comments',
-                    color: '#FC1763',
-                  },
-                  reviewsPerc: {
-                    name: 'Pull Requests reviewed',
-                    color: '#FFC507',
-                  }
-                },
-                tooltip: { template: UserReviewer },
-              }
-            }
+          title: {text: 'Proportion of Reviews Comments Made By', bold: true},
+          subtitle: {
+            text: computed.secondBox.KPIsData.topReviewer ?
+            computed.secondBox.KPIsData.topReviewer.developer : ''
           },
-          kpis: [{
-            title: {text: 'Total Number of Reviewers', bold: true},
-            component: SimpleKPI,
-            params: {
-              value: computed.secondBox.KPIsData.reviewers,
-            }
-          },
-          {
-            title: {text: 'Proportion of Reviews Comments Made By', bold: true},
-            subtitle: {
-              text: computed.secondBox.KPIsData.topReviewer ?
-              computed.secondBox.KPIsData.topReviewer.developer : ''
-            },
-            component: SimpleKPI,
-            params: {
-              value: computed.secondBox.KPIsData.topReviewer ?
-              number.fixed(computed.secondBox.KPIsData.topReviewer.prsCommentsPerc,2) : '',
-              unit: '%'
-            }
-          }]
-      }]
+          component: SimpleKPI,
+          params: {
+            value: computed.secondBox.KPIsData.topReviewer ?
+            number.fixed(computed.secondBox.KPIsData.topReviewer.prsCommentsPerc,2) : '',
+            unit: '%'
+          }
+        }]
+    }];
+
+    if (content.filter(c => !c.empty).length === 0) {
+      content.empty = true;
+    }
+
+    return {
+      meta: {
+        title: 'Review Activity',
+        description: 'Understand the role of each team member in the review process.'
+      },
+      content
     };
   }
 };
