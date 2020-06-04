@@ -93,7 +93,7 @@ export default ({id, component, fetcher, plumber, globalDataIDs, config, propaga
     return <Component data={dataState} error={errorState} status={statusState} {...conf} />;
 };
 
-const asError = something => {
+export const asError = something => {
     if (!something) {
         return null;
     }

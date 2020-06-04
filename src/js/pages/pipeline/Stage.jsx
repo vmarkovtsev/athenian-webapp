@@ -9,10 +9,11 @@ import { LOADING, READY, FAILED, EMPTY } from 'js/components/ui/Spinner';
 
 import { pipelineStagesConf, getStage } from 'js/pages/pipeline/Pipeline';
 import { useDataContext } from 'js/context/Data';
+import { asError } from 'js/components/DataWidget';
 
 export default () => {
     const { getGlobal: getGlobalData, globalDataReady } = useDataContext();
-    const [prsState, setPRsState] = useState({ prs: [], users: [] });
+    const [prsState, setPRsState] = useState({ prs: [], users: {} });
     const [statusState, setStatusState] = useState(EMPTY);
 
     useEffect(() => {
@@ -25,6 +26,11 @@ export default () => {
             setStatusState(LOADING);
             try {
                 const prs = await getGlobalData('prs');
+                const err = asError(prs);
+                if (err) {
+                    throw err;
+                }
+
                 setPRsState(prs);
                 setStatusState(prs?.prs?.length ? READY : EMPTY);
             } catch (err) {
