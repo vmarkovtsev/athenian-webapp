@@ -45,14 +45,6 @@ export const filterReducer = (state, action) => {
           data: action.payload,
         },
       };
-    case TYPE.SET_TEAMS:
-      return {
-        ...state,
-        teams: {
-          ready: true,
-          data: action.payload,
-        },
-      };
     case TYPE.READY:
       return {
         ...state,
@@ -117,7 +109,6 @@ export const TYPE = {
   INIT: "INIT",
   SET_REPOS: "SET_REPOS",
   SET_INTERVAL: "SET_INTERVAL",
-  SET_TEAMS: "SET_TEAMS",
   SET_READY: "SET_READY",
   SET_CONTRIBS: "SET_CONTRIBS",
   SET_APPLIED_REPOS: "SET_APPLIED_REPOS",
