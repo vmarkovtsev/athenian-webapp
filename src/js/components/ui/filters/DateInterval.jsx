@@ -121,7 +121,7 @@ export default function DateInterval({
                             onClick={onExcludeInactive} />
                         }
                         onCancel={cancel}
-                        onAccept={() => setFocusedInputState(null)}
+                        onApply={() => setFocusedInputState(null)}
                         isAcceptable={validState}
                     />
                 )}
