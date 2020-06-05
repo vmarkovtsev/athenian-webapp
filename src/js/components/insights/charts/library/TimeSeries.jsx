@@ -18,7 +18,6 @@ import {
 } from 'react-vis';
 
 import { DateBigNumber, onValueChange, onValueReset } from 'js/components/charts/Tooltip';
-import { NoData } from 'js/components/layout/Empty';
 
 export default ({title, data, extra, ...rest}) => (
     <div style={{ background: 'white' }}>
@@ -71,10 +70,6 @@ const filterEmptyValues = v => v !== null;
 
 const TimeSeries = ({ title, data, extra, timeMode }) => {
     const [currentHover, setCurrentHover] = useState(null);
-
-    if (data.length === 0) {
-        return <NoData textOnly />;
-    }
 
     const formattedData = _(data)
           .map(v => ({
