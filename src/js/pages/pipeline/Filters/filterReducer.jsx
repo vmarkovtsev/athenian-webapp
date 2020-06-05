@@ -19,13 +19,11 @@ export const filterReducer = (state, action) => {
         repos: {
           ready,
           data: repos,
-          selected: repos,
           applied: repos,
         },
         contribs: {
           ready,
           data: initTeamsContribs,
-          selected: initTeamsContribs,
           applied: initTeamsContribs,
         },
         teams: {
@@ -45,7 +43,6 @@ export const filterReducer = (state, action) => {
           ...state.repos,
           ready: true,
           data: action.payload,
-          selected: [],
         },
       };
     case TYPE.SET_TEAMS:
@@ -70,26 +67,6 @@ export const filterReducer = (state, action) => {
           data: mapTeam(action.payload, state.teams.data)
         },
       };
-    case TYPE.SET_SELECTED_REPOS:
-      return {
-        ...state,
-        repos: {
-          ...state.repos,
-          selected: action.payload,
-        },
-      };
-    case TYPE.SET_SELECTED_CONTRIBS:
-      const [contrib] = action.payload
-      // if action.payload was not formatted yet use mapTeam
-      // contrib && contrib.team - value comes from onChange of select
-      const selected = contrib && contrib.team ? action.payload : mapTeam(action.payload, state.teams.data)
-      return {
-        ...state,
-        contribs: {
-          ...state.contribs,
-          selected
-        },
-      };
     case TYPE.SET_APPLIED_CONTRIBS:
       return {
         ...state,
@@ -106,7 +83,7 @@ export const filterReducer = (state, action) => {
           applied: action.payload
         }
       }
-    case TYPE.EXCLUDE_INACTIVE: 
+    case TYPE.EXCLUDE_INACTIVE:
       return {
         ...state,
         excludeInactive: action.payload,
@@ -121,7 +98,6 @@ export const defaultFilter = {
   repos: {
     data: [],
     ready: false,
-    selected: [],
     applied: [],
   },
   teams: {
@@ -131,7 +107,6 @@ export const defaultFilter = {
   contribs: {
     data: [],
     ready: false,
-    selected: [],
     applied: [],
   },
   dateInterval: null,
@@ -145,8 +120,6 @@ export const TYPE = {
   SET_TEAMS: "SET_TEAMS",
   SET_READY: "SET_READY",
   SET_CONTRIBS: "SET_CONTRIBS",
-  SET_SELECTED_REPOS: "SET_SELECTED_REPOS",
-  SET_SELECTED_CONTRIBS: "SET_SELECTED_CONTRIBS",
   SET_APPLIED_REPOS: "SET_APPLIED_REPOS",
   SET_APPLIED_CONTRIBS: "SET_APPLIED_CONTRIBS",
   READY: 'READY',

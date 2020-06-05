@@ -41,25 +41,21 @@ const stringToColour = str => {
  * @param {boolean} props.isLoading
  * @param {boolean} props.isOpen
  * @param {number} props.count
- * @param {function} props.setMenuOpen 
+ * @param {function} props.onClick
  */
 export const Dropdown = ({
   label,
   isLoading,
   isOpen,
   count,
-  setMenuOpen,
+  onClick
 }) => {
-  const close = () => {
-    setMenuOpen(!isOpen)
-  }
-
   return (
-    <div className={`${classNames({ open: isOpen })} filter-dropdown align-items-center`} onClick={close}>
+    <div className={`${classNames({ open: isOpen })} filter-dropdown align-items-center`} onClick={onClick}>
       <div className="d-flex align-items-center">
         <span className="filter-dropdown-label">{label}</span>
         {
-          !isLoading ?
+          isLoading ?
           <StatusIndicator size={5} status={LOADING} margin={0} /> :
           <span className="filter-dropdown-pill">{count}</span>
         }
@@ -224,7 +220,7 @@ const extractOptions = options => {
   return [groupOptions, isGroup]
 }
 
-export const Menu = (onApply, setMenuOpen) => props => {
+export const Menu = (onApply, onCancel) => props => {
   const {
     children,
     clearValue,
@@ -250,15 +246,6 @@ export const Menu = (onApply, setMenuOpen) => props => {
     }
   }
 
-  const close = () => {
-    setMenuOpen(false)
-  }
-
-  const apply = () => {
-    onApply(allValues)
-    close(true)
-  }
-
   return (
     <components.Menu {...props}>
       <div
@@ -275,8 +262,8 @@ export const Menu = (onApply, setMenuOpen) => props => {
       </div>
       {children}
       <FilterFooter
-        onCancel={() => close(false)}
-        onAccept={apply}
+        onCancel={onCancel}
+        onApply={() => onApply(allValues)}
         isAcceptable={allValues.length}
       />
     </components.Menu>
