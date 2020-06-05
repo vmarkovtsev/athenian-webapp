@@ -23,7 +23,6 @@ import {
   setDateInterval,
   setContribs,
   setRepos,
-  setTeams,
   setAppliedRepos,
   setAppliedContribs,
   setExcludeInactive,
@@ -72,27 +71,14 @@ export default function Filters({ children }) {
 
   const onDateIntervalChange = async selectedDateInterval => {
     dispatchFilter(setReady(false))
-    resetData()
-
-    const [updatedRepos, updatedTeams] = await Promise.all([
-      getReposForFilter(tokenRef.current, accountID, selectedDateInterval),
-      getTeamsForFilter(tokenRef.current, accountID)
-    ])
-
+    const updatedRepos = await getReposForFilter(
+      tokenRef.current, accountID, selectedDateInterval)
     const updatedContribs = await getContribsForFilter(
-      tokenRef.current, accountID, selectedDateInterval, updatedRepos
-    )
-
-    // TODO: Find a different approach to Teams
-    setGlobalData(
-      ['filter.repos', 'filter.contribs', 'filter.teams'],
-      [filterData.repos.applied, filterData.contribs.applied, filterData.teams.data]
-    )
+      tokenRef.current, accountID, selectedDateInterval, updatedRepos)
 
     dispatchFilter(setExcludeInactive(excludeInactive))
     dispatchFilter(setDateInterval(selectedDateInterval))
     dispatchFilter(setRepos(updatedRepos))
-    dispatchFilter(setTeams(updatedTeams))
     dispatchFilter(setContribs(updatedContribs))
     dispatchFilter(setReady(true))
   }
@@ -104,37 +90,31 @@ export default function Filters({ children }) {
     selectedRepos = selectedRepos.length > 0 ? selectedRepos : contextRepos
     dateInterval = dateInterval || filterData.dateInterval
 
-    const [contribs, teams] = await Promise.all([
-      getContribsForFilter(tokenRef.current, accountID, dateInterval, selectedRepos),
-      getTeamsForFilter(tokenRef.current, accountID)
-    ])
+    const contribs = await getContribsForFilter(
+      tokenRef.current, accountID, dateInterval, selectedRepos)
 
     setGlobalData(
       ['filter.contribs', 'filter.teams', 'filter.repos'],
-      [filterData.contribs.applied, teams, selectedRepos]
+      [filterData.contribs.applied, filterData.teams.data, selectedRepos]
     )
 
     dispatchFilter(setAppliedRepos(selectedRepos))
-    dispatchFilter(setTeams(teams))
     dispatchFilter(setContribs(contribs))
     dispatchFilter(setReady(true))
-  }, [accountID, contextRepos, filterData.contribs.applied, filterData.dateInterval, resetData, setGlobalData])
+  }, [accountID, contextRepos, filterData.contribs.applied, filterData.dateInterval, filterData.teams.data, resetData, setGlobalData])
 
   const onContribsApplyChange = useCallback(async selectedContribs => {
     dispatchFilter(setReady(false))
     resetData()
 
-    const teams = await getTeamsForFilter(tokenRef.current, accountID)
-
     setGlobalData(
       ['filter.repos', 'filter.contribs', 'filter.teams'],
-      [filterData.repos.applied, selectedContribs, teams]
+      [filterData.repos.applied, selectedContribs, filterData.teams.data]
     )
 
     dispatchFilter(setAppliedContribs(selectedContribs))
-    dispatchFilter(setTeams(teams))
     dispatchFilter(setReady(true))
-  }, [accountID, filterData.repos.applied, resetData, setGlobalData])
+  }, [filterData.repos.applied, filterData.teams.data, resetData, setGlobalData])
 
   const reposOptions = [...filterData.repos.data]
 
