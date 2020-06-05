@@ -5,8 +5,8 @@ import comingSoon from 'images/empty-states/coming-soon.svg';
 const Empty = ({ background, children }) => {
     return (
         <div className="row">
-            <div className="col-12 text-center my-5 py-5">
-                <img className="mb-5" src={background} alt="" width="300" />
+            <div className="empty-container col-12 text-center my-5 py-5">
+                <img className="empty-image mb-5" src={background} alt="" width="300" />
                 {children}
             </div>
         </div>

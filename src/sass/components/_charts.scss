@@ -22,3 +22,34 @@
     margin-left: 10px !important;
     vertical-align: middle;
 }
+
+// DataWidget having no data
+
+.insight-card,
+.summary-metric {
+    .empty-container {
+        margin-top: auto !important;
+        margin-bottom: auto !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+
+        .empty-image {
+            width: auto;
+            height: 150px;
+        }
+
+        h3.text-secondary {
+            font-size: 1.2em;
+            font-weight: 400 !important;
+        }
+
+        p.text-secondary {
+            font-size: 1em;
+            margin-bottom: 0;
+        }
+    }
+}
+
+.summary-metric .empty-container {
+    margin-top: -40px !important;
+}

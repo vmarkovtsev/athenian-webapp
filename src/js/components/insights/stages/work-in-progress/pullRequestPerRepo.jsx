@@ -46,6 +46,7 @@ export default {
             },
             content: [
                 {
+                    empty: computed.chartData.filter(v => v[computed.axisKeys.y] !== 0).length === 0,
                     chart: {
                         component: VerticalBarChart,
                         params: {

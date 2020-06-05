@@ -34,14 +34,16 @@ export const StageSummaryMetrics = ({name, stage}) => {
                 data.global['prs-metrics.values'].all['cycle-time'] * 100
         );
 
+        const timeseries= _(data.global['prs-metrics.values'].custom[metric])
+          .map(d => ({x: d.date, y: d.value}));
+
         return (
             {
                 kpisData: stage.summary(proportion, data.global.prs.prs, apiContext.interval),
                 average: data.global['prs-metrics.values'].all[metric],
                 variation: data.global['prs-metrics.variations'][metric],
-                timeseries: _(data.global['prs-metrics.values'].custom[metric])
-                    .map(d => ({x: d.date, y: d.value}))
-                    .value()
+                timeseries: timeseries.value(),
+                empty: timeseries.filter(v => v.y !== null).size() === 0,
             }
         );
     };
@@ -84,6 +86,9 @@ export const OverviewSummaryMetrics = ({name, metric}) => {
               .mapValues(v => v / fastest * 100)
               .value();
 
+        const timeseries = _(data.global['prs-metrics.values'].custom[metric])
+              .map(d => ({x: d.date, y: d.value}));
+
         return (
             {
                 kpisData: {
@@ -93,9 +98,8 @@ export const OverviewSummaryMetrics = ({name, metric}) => {
                 },
                 average: data.global['prs-metrics.values'].all[metric],
                 variation: data.global['prs-metrics.variations'][metric],
-                timeseries: _(data.global['prs-metrics.values'].custom[metric])
-                    .map(d => ({x: d.date, y: d.value}))
-                    .value()
+                timeseries: timeseries.value(),
+                empty: timeseries.filter(v => v.y !== null).size() === 0,
             }
         );
     };
@@ -144,7 +148,7 @@ const SummaryMetrics = ({ data, stage, KPIComponent, status, chartConfig }) => {
     }
 
     return (
-        <div className={classnames('summary-metric card mb-4 px-2', stage.stageName)}>
+        <div className={classnames('card summary-metric mb-4 px-2', stage.stageName)}>
           <div className="card-body" style={{minHeight: '305px'}}>
             <div className="row">
               <div className="col-4">

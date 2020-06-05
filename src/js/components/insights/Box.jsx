@@ -2,6 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 
 import Info from 'js/components/ui/Info';
+import { NoData } from '../layout/Empty';
 /*
   Component for the boxes in the "Insights" tab of each stage of the pipeline.
 
@@ -37,9 +38,17 @@ import Info from 'js/components/ui/Info';
 
  */
 export default ({meta, content}) => (
-    <div className="card mb-4">
+    <div className="card insight-card mb-4">
       <BoxHeader meta={meta}/>
-      <BoxBody content={content} />
+      {content?.empty ?
+        (
+          <div className="card-body py-5 px-4">
+            <NoData />
+          </div>
+        ) : (
+          <BoxBody content={content} />
+        )
+      }
     </div >
 );
 
@@ -53,13 +62,20 @@ const BoxHeader = ({meta}) => (
 const BoxBody = ({content}) =>  (
     <>{
         content.map((row, i) => (
-            <div key={i} className="card-body py-5 px-4">{
-                row.kpis.length > 0 ? (
-                    <WithKPIBoxBodyRow chart={row.chart} kpis={row.kpis} />
-                ) : (
-                    <SimpleBoxBodyRow chart={row.chart} />
-                )
-            }</div>
+            <div key={i} className="card-body py-5 px-4">
+                {row?.empty ?
+                    (
+                        <NoData />
+                    ) : (
+                        row.kpis.length > 0 ?
+                            (
+                                <WithKPIBoxBodyRow chart={row.chart} kpis={row.kpis} />
+                            ) : (
+                                <SimpleBoxBodyRow chart={row.chart} />
+                            )
+                    )
+                }
+            </div>
         ))
     }</>
 );

@@ -18,7 +18,6 @@ import {
 } from 'react-vis';
 
 import { DateBigNumber, onValueChange, onValueReset } from 'js/components/charts/Tooltip';
-import { NoData } from 'js/components/layout/Empty';
 
 export default ({title, data, extra, ...rest}) => (
     <div style={{ background: 'white' }}>
@@ -72,10 +71,6 @@ const filterEmptyValues = v => v !== null;
 const TimeSeries = ({ title, data, extra, timeMode }) => {
     const [currentHover, setCurrentHover] = useState(null);
 
-    if (data.length === 0) {
-        return <NoData textOnly />;
-    }
-
     const formattedData = _(data)
           .map(v => ({
               ...v.legend && { legend: v.legend },
@@ -107,7 +102,7 @@ const TimeSeries = ({ title, data, extra, timeMode }) => {
     const tickValues = computeTickValues(formattedData, extra.maxNumberOfTicks);
 
     const referenceData = [];
-    if (extra.reference) {
+    if (extra.reference && dataPoints.length) {
         referenceData.push({
             x: xDomain.min,
             y: extra.reference.value
@@ -119,7 +114,7 @@ const TimeSeries = ({ title, data, extra, timeMode }) => {
     }
 
     const averagedData = [];
-    if (extra.average) {
+    if (extra.average && dataPoints.length) {
         averagedData.push({
             x: xDomain.min,
             y: scaleY(extra.average.value),

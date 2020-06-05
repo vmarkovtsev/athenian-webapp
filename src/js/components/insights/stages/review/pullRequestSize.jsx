@@ -92,6 +92,7 @@ const pullRequestSize = {
             },
             content: [
                 {
+                    empty: computed.chartData.length === 0,
                     chart: {
                         component: BubbleChart,
                         params: {

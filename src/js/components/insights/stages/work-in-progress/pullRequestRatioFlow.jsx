@@ -75,6 +75,7 @@ const pullRequestRatioFlow = {
         },
         content: [
             {
+                empty: computed.chartData.filter(v => v[computed.axisKeys.y] !== null).length === 0,
                 chart: {
                     component: TimeSeries,
                     params: {
