@@ -8,12 +8,11 @@ import FiltersContext from 'js/context/Filters'
 
 import TopFilter from 'js/components/pipeline/TopFilter'
 
-import MultiSelect from 'js/components/ui/filters/MultiSelect'
-import { usersLabelFormat } from 'js/components/ui/filters/MultiSelect/CustomComponents'
+import { RepositoriesMultiSelect, UsersMultiSelect } from 'js/components/ui/filters/MultiSelect'
 import DateInterval, { EOD, YEAR_AGO, TWO_WEEKS_AGO } from 'js/components/ui/filters/DateInterval'
 
 import { getRepos, getContributors, getTeams, buildApi } from 'js/services/api'
-import { dateTime, github } from 'js/services/format'
+import { dateTime } from 'js/services/format'
 
 import { useMountEffect } from 'js/hooks'
 
@@ -23,6 +22,7 @@ import {
   setReady,
   setDateInterval,
   setContribs,
+  setRepos,
   setTeams,
   setAppliedRepos,
   setAppliedContribs,
@@ -86,14 +86,15 @@ export default function Filters({ children }) {
     // TODO: Find a different approach to Teams
     setGlobalData(
       ['filter.repos', 'filter.contribs', 'filter.teams'],
-      [updatedRepos, updatedContribs, updatedTeams]
+      [filterData.repos.applied, filterData.contribs.applied, filterData.teams.data]
     )
 
     dispatchFilter(setExcludeInactive(excludeInactive))
     dispatchFilter(setDateInterval(selectedDateInterval))
-    dispatchFilter(init({
-      repos: updatedRepos, contribs: updatedContribs, teams: updatedTeams, ready: true
-    }))
+    dispatchFilter(setRepos(updatedRepos))
+    dispatchFilter(setTeams(updatedTeams))
+    dispatchFilter(setContribs(updatedContribs))
+    dispatchFilter(setReady(true))
   }
 
   const onReposApplyChange = useCallback(async (selectedRepos, dateInterval) => {
@@ -110,15 +111,14 @@ export default function Filters({ children }) {
 
     setGlobalData(
       ['filter.contribs', 'filter.teams', 'filter.repos'],
-      [contribs, teams, selectedRepos]
+      [filterData.contribs.applied, teams, selectedRepos]
     )
 
     dispatchFilter(setAppliedRepos(selectedRepos))
     dispatchFilter(setTeams(teams))
     dispatchFilter(setContribs(contribs))
-    dispatchFilter(setAppliedContribs(contribs))
     dispatchFilter(setReady(true))
-  }, [accountID, contextRepos, filterData.dateInterval, resetData, setGlobalData])
+  }, [accountID, contextRepos, filterData.contribs.applied, filterData.dateInterval, resetData, setGlobalData])
 
   const onContribsApplyChange = useCallback(async selectedContribs => {
     dispatchFilter(setReady(false))
@@ -128,17 +128,13 @@ export default function Filters({ children }) {
 
     setGlobalData(
       ['filter.repos', 'filter.contribs', 'filter.teams'],
-      [filterData.repos.data, selectedContribs, teams]
+      [filterData.repos.applied, selectedContribs, teams]
     )
 
     dispatchFilter(setAppliedContribs(selectedContribs))
     dispatchFilter(setTeams(teams))
     dispatchFilter(setReady(true))
-  }, [accountID, filterData.repos.data, resetData, setGlobalData])
-
-  const reposLabelFormat = repo => (github.repoName(repo) || 'UNKNOWN')
-  const getOptionValueRepos = val => val
-  const getOptionValueUsers = val => `${val.team} ${val.name} ${val.login}`
+  }, [accountID, filterData.repos.applied, resetData, setGlobalData])
 
   const reposOptions = [...filterData.repos.data]
 
@@ -167,32 +163,19 @@ export default function Filters({ children }) {
     >
       <TopFilter
         reposFilter={
-          <MultiSelect
-            label="Repositories"
-            className="filter"
-            name="repositories"
-            noDataMsg="There are no repositories for the date interval filter"
+          <RepositoriesMultiSelect
             isLoading={!filterData.ready}
-            getOptionLabel={reposLabelFormat}
-            getOptionValue={getOptionValueRepos}
             options={reposOptions}
             onApply={onReposApplyChange}
             initialValues={reposValue}
           />
         }
         contribsFilter={
-          <MultiSelect
-            label="Users"
-            className="filter"
-            name="users"
-            noDataMsg="There are no users for the date interval and repositories filters"
+          <UsersMultiSelect
             isLoading={!filterData.ready}
-            getOptionLabel={usersLabelFormat}
-            getOptionValue={getOptionValueUsers}
             options={teamsOptions}
             onApply={onContribsApplyChange}
             initialValues={teamsValue}
-            uniquenessKey={"login"}
           />
         }
         dateIntervalFilter={
