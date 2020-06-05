@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import Select from 'react-select'
 import { Dropdown, Group, Placeholder, Option, Menu as CustomMenu } from './CustomComponents'
 import { customStyles as styles } from './CustomStyles'
-import { useMountEffect } from 'js/hooks'
 
 import _ from 'lodash'
 
@@ -40,15 +39,22 @@ const MultiSelect = multiSelectProps => {
   const [currentCount, setCurrentCount] = useState(initialCount.current)
 
   const toggle = () => setMenuOpen(!isMenuOpen)
-  const closeMenu = () =>{
+  const closeMenu = useCallback(() => {
     setCurrentCount(initialCount.current)
     setMenuOpen(false)
-  }
+  }, [])
 
-  useMountEffect(() => {
-    window.addEventListener('click', closeMenu)
-    return () => window.removeEventListener('click', closeMenu)
-  })
+  useEffect(() => {
+    const closeMenuIfNotThis = (e) => {
+      if (!e.target.closest(`#multi-select-${label}`)) {
+        closeMenu()
+      }
+    }
+
+    const body = window.document.body
+    body.addEventListener('click', closeMenuIfNotThis)
+    return () => body.removeEventListener('click', closeMenuIfNotThis)
+  }, [closeMenu, label])
 
   useEffect(() => {
     initialCount.current = multiSelectSelectedCount(initialValues, uniquenessKey)
@@ -60,7 +66,7 @@ const MultiSelect = multiSelectProps => {
       onApply(values)
       setMenuOpen(false)
     }, closeMenu
-  ), [onApply])
+  ), [closeMenu, onApply])
 
   const noData = formatMessage(noDataMsg)
   const loading = formatMessage('loading...')
@@ -70,7 +76,7 @@ const MultiSelect = multiSelectProps => {
   }
 
   return (
-    <div onClick={(e) => e.stopPropagation()}>
+    <div id={`multi-select-${label}`}>
       <Dropdown
         label={label}
         isLoading={isLoading}
