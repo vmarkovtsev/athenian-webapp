@@ -256,7 +256,9 @@ export const fetchFilteredPRs = async (
   
     filter_.timezone = getOffset();
 
-    filter_.exclude_inactive = exclude_inactive
+    if (exclude_inactive) {
+      filter_.exclude_inactive = exclude_inactive
+    }
 
     const prs = await withSentryCapture(
         api.filterPrs({ filterPullRequestsRequest: filter_ }),
@@ -312,7 +314,9 @@ export const fetchPRsMetrics = async (
 
   body.timezone = getOffset();
 
-  body.exclude_inactive = exclude_inactive
+  if (exclude_inactive) {
+    body.exclude_inactive = exclude_inactive
+  }
 
   return withSentryCapture(
     api.calcMetricsPrLinear(body),
