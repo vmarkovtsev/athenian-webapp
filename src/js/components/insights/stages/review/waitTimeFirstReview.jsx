@@ -10,9 +10,9 @@ import { dateTime, number, isNumber } from 'js/services/format';
 
 const waitTimeFirstReview = {
     plumber: (data) => {
-        const waitFirstReviewVariation = data.global['prs-metrics.variations']['wait-first-review'];
+        const waitFirstReviewVariation = data.global['prs-metrics.variations']['wait-first-review-time'];
 
-        const currWaitFirstReview = data.global['prs-metrics.values'].all['wait-first-review'];
+        const currWaitFirstReview = data.global['prs-metrics.values'].all['wait-first-review-time'];
         const currCycleTime = data.global['prs-metrics.values'].all['cycle-time'];
 
         let currOverallProportion = null;
@@ -23,7 +23,7 @@ const waitTimeFirstReview = {
         }
 
         return {
-            chartData: _(data.global['prs-metrics.values'].custom['wait-first-review'])
+            chartData: _(data.global['prs-metrics.values'].custom['wait-first-review-time'])
                 .map(v => ({day: v.date, value: v.value === null ? null : v.value * 1000}))
                 .value(),
             KPIsData: {
