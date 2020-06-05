@@ -74,7 +74,7 @@ export default ({id, component, fetcher, plumber, globalDataIDs, config, propaga
                 console.error(error);
             } else {
                 widgetData = data;
-                status = widgetData ? READY : EMPTY;
+                status = widgetData && !widgetData.empty  ? READY : EMPTY;
             }
 
             console.log(`---> Rendering CHART: useEffect 1 | found ${error ? 'error' : 'data'}:`, error ? error : widgetData);
