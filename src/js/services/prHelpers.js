@@ -177,7 +177,7 @@ export const isInStage = (pr, stage) => {
     return stageHappening(pr, stage) || stageCompleted(pr, stage)
 };
 
-const stageHappening = (pr, stage) => _(pr.properties).includes(stage);
+export const stageHappening = (pr, stage) => _(pr.properties).includes(stage);
 const stageCompleted = (pr, stage) => _(pr.completedStages).includes(stage);
 
 const getCurrentStageHappening = (pr) => {
