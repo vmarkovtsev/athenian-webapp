@@ -1,4 +1,4 @@
-import { PR_STAGE as prStage, isInStage, happened, authored, PR_EVENT as prEvent } from 'js/services/prHelpers';
+import { isInStage, happened, authored, stageHappening, PR_STAGE as prStage, PR_EVENT as prEvent } from 'js/services/prHelpers';
 import { number } from 'js/services/format';
 import { palette } from 'js/res/palette';
 
@@ -27,7 +27,7 @@ export const pipelineStagesConf = [
             after: 'Review Requested',
         },
         prs: prs => prs.filter(pr => isInStage(pr, prStage.WIP)),
-        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.WIP)).length,
+        stageCompleteCount: prs => prs.filter(pr => stageHappening(pr, prStage.WIP)).length,
         summary: (stageProportion, prs, dateInterval) => {
             const authoredPRs = authored(prs);
             const createdPrs = authoredPRs.filter(pr => dateInterval.from <= pr.created);
@@ -52,7 +52,7 @@ export const pipelineStagesConf = [
             after: 'Approved',
         },
         prs: prs => prs.filter(pr => isInStage(pr, prStage.REVIEW)),
-        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.REVIEW)).length,
+        stageCompleteCount: prs => prs.filter(pr => stageHappening(pr, prStage.REVIEW)).length,
         summary: (stageProportion, prs) => {
             const authoredPRs = authored(prs);
             const reviewAndReviewCompletePRs = authoredPRs.filter(pr => isInStage(pr, prStage.REVIEW));
@@ -81,7 +81,7 @@ export const pipelineStagesConf = [
             after: 'Merged',
         },
         prs: prs => prs.filter(pr => isInStage(pr, prStage.MERGE)),
-        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.MERGE)).length,
+        stageCompleteCount: prs => prs.filter(pr => stageHappening(pr, prStage.MERGE)).length,
         summary: (stageProportion, prs) => {
             const authoredPRs = authored(prs);
             const mergedPRs = authoredPRs.filter(pr => pr.merged);
@@ -106,7 +106,7 @@ export const pipelineStagesConf = [
             after: 'Released',
         },
         prs: prs => prs.filter(pr => isInStage(pr, prStage.RELEASE)),
-        stageCompleteCount: prs => prs.filter(pr => pr.completedStages.includes(prStage.RELEASE)).length,
+        stageCompleteCount: prs => prs.filter(pr => stageHappening(pr, prStage.RELEASE)).length,
         summary: (stageProportion, prs) => {
             const authoredPRs = authored(prs);
             const releasedPRs = authoredPRs.filter(pr => pr.release_url);
