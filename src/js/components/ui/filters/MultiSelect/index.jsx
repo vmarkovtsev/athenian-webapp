@@ -224,7 +224,10 @@ const extendOptions = (options, previousSelection) => {
   const extendedOptions = [...options]
 
   return _(previousSelection).reduce((extOpts, prevSel) => {
-    if (!_(extOpts).includes(prevSel)) {
+    const missing = !(_.isObject(prevSel) ?
+                      _(extOpts).find(prevSel) :
+                      _(extOpts).includes(prevSel))
+    if (missing) {
       extOpts.push(prevSel)
     }
 
