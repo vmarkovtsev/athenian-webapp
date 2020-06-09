@@ -71,10 +71,17 @@ export default function Filters({ children }) {
 
   const onDateIntervalChange = async selectedDateInterval => {
     dispatchFilter(setReady(false))
+    resetData()
+
     const updatedRepos = await getReposForFilter(
       tokenRef.current, accountID, selectedDateInterval)
     const updatedContribs = await getContribsForFilter(
       tokenRef.current, accountID, selectedDateInterval, updatedRepos)
+
+    setGlobalData(
+      ['filter.repos', 'filter.contribs', 'filter.teams'],
+      [filterData.repos.applied, filterData.contribs.applied, filterData.teams.data]
+    )
 
     dispatchFilter(setExcludeInactive(excludeInactive))
     dispatchFilter(setDateInterval(selectedDateInterval))
