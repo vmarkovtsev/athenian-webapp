@@ -69,7 +69,7 @@ export default {
     factory: (computed) => ({
         meta: {
             title: 'Abandoned Work',
-            description: `Evaluate the amount of work and time lost in closed PRs. Show the first ${firstNRepos} closed Pull Requests.`
+            description: `Evaluate the amount of work and time spent in closed pull requests.`
         },
         content: [
             {
@@ -81,7 +81,7 @@ export default {
                         timeMode: false,
                         extra: {
                             axisLabels: {
-                                y: 'time lost'
+                                y: 'PR lifetime'
                             },
                             axisFormat: {
                                 y: y => dateTime.human(y),

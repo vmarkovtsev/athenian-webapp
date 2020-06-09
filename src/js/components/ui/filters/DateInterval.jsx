@@ -116,7 +116,7 @@ export default function DateInterval({
                 renderCalendarInfo={() => (
                     <FilterFooter
                         extra={<Checkbox
-                            label="Include inactive Pull Requests"
+                            label="Include stalled pull requests"
                             isChecked={!isExcludeInactive}
                             onClick={onExcludeInactive} />
                         }

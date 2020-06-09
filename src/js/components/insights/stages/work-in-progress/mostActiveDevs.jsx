@@ -49,7 +49,7 @@ const mostActiveDevs = {
     factory: (computed) => ({
         meta: {
             title: 'Pull Request Authors',
-            description: 'Pull Request throughput of the team.'
+            description: 'Pull request throughput of the team.'
         },
         content: [
             {
@@ -57,7 +57,7 @@ const mostActiveDevs = {
                 chart: {
                     component: HorizontalBarChart,
                     params: {
-                        title: 'Pull Requests created',
+                        title: 'Pull requests created',
                         data: computed.chartData,
                         extra: {
                             yAxis: {

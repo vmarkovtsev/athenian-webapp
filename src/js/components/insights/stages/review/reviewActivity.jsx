@@ -214,7 +214,7 @@ const reviewActivity = {
                   color: '#FC1763',
                 },
                 reviewsPerc: {
-                  name: 'Pull Requests reviewed',
+                  name: 'Pull requests reviewed',
                   color: '#FFC507',
                 }
               },
