@@ -1,5 +1,6 @@
 import React, { useReducer, useRef, useCallback, useState } from 'react'
 import moment from 'moment'
+import _ from 'lodash'
 
 import { useAuth0 } from 'js/context/Auth0'
 import { useUserContext } from 'js/context/User'
@@ -78,9 +79,14 @@ export default function Filters({ children }) {
     const updatedContribs = await getContribsForFilter(
       tokenRef.current, accountID, selectedDateInterval, updatedRepos)
 
+    // TODO(se7entyse7en): This should be handled elsewhere, this component doesn't
+    // actually need to work with the `contribs.applied` that contains also the team
+    // information causing duplicates. This should be handled by `MultiSelect`.
+    const uniqueContribs = _(filterData.contribs.applied).uniqBy("login").value()
+
     setGlobalData(
       ['filter.repos', 'filter.contribs', 'filter.teams'],
-      [filterData.repos.applied, filterData.contribs.applied, filterData.teams.data]
+      [filterData.repos.applied, uniqueContribs, filterData.teams.data]
     )
 
     dispatchFilter(setExcludeInactive(excludeInactive))
@@ -100,9 +106,14 @@ export default function Filters({ children }) {
     const contribs = await getContribsForFilter(
       tokenRef.current, accountID, dateInterval, selectedRepos)
 
+    // TODO(se7entyse7en): This should be handled elsewhere, this component doesn't
+    // actually need to work with the `contribs.applied` that contains also the team
+    // information causing duplicates. This should be handled by `MultiSelect`.
+    const uniqueContribs = _(filterData.contribs.applied).uniqBy("login").value()
+
     setGlobalData(
       ['filter.contribs', 'filter.teams', 'filter.repos'],
-      [filterData.contribs.applied, filterData.teams.data, selectedRepos]
+      [uniqueContribs, filterData.teams.data, selectedRepos]
     )
 
     dispatchFilter(setAppliedRepos(selectedRepos))
