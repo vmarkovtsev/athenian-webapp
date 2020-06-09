@@ -153,10 +153,11 @@ const MultiSelect = multiSelectProps => {
   const Menu = useMemo(() => CustomMenu(
     (values) => {
       previousSelection.current = values
-      onApply(values)
+      const appliedValues = uniquenessKey ? _(values).uniqBy(uniquenessKey).value() : values
+      onApply(appliedValues)
       setMenuOpen(false)
     }, closeMenu
-  ), [closeMenu, onApply])
+  ), [closeMenu, onApply, uniquenessKey])
 
   const noData = formatMessage(noDataMsg)
   const loading = formatMessage('loading...')
