@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import Select from 'react-select'
 import { usersLabelFormat, Dropdown, Group, Placeholder, Option, Menu as CustomMenu } from './CustomComponents'
 import { customStyles as styles } from './CustomStyles'
+import { mapContribsToTeam } from 'js/pages/pipeline/Filters/filterReducer'
 
 import { github } from 'js/services/format'
 
@@ -56,9 +57,19 @@ export const UsersMultiSelect = props => {
     isLoading,
     options,
     initialValues,
+    teams,
   } = props
 
   const getOptionValueUsers = val => `${val.team} ${val.name} ${val.login}`
+
+  let processedOpts, extOptsFn
+  if (teams.length > 0) {
+    processedOpts =  mapContribsToTeam(options, teams)
+    extOptsFn = extendOptionsUser
+  } else {
+    processedOpts = options
+    extOptsFn = null
+  }
 
   return (
     <MultiSelect
@@ -69,12 +80,12 @@ export const UsersMultiSelect = props => {
       isLoading={isLoading}
       getOptionLabel={usersLabelFormat}
       getOptionValue={getOptionValueUsers}
-      options={options}
+      options={processedOpts}
       onApply={onApply}
       initialValues={initialValues}
       uniquenessKey={"login"}
       keepSelectedOptionsOnApply={true}
-      extendOptionsFn={extendOptionsUser}
+      extendOptionsFn={extOptsFn}
     />
   )
 

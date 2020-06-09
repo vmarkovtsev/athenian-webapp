@@ -16,7 +16,7 @@ import { dateTime } from 'js/services/format'
 
 import { useMountEffect } from 'js/hooks'
 
-import { filterReducer, defaultFilter, mapContribsToTeam } from './filterReducer'
+import { filterReducer, defaultFilter } from './filterReducer'
 import {
   init,
   setReady,
@@ -123,11 +123,6 @@ export default function Filters({ children }) {
     dispatchFilter(setReady(true))
   }, [filterData.repos.applied, filterData.teams.data, resetData, setGlobalData])
 
-  const teamsOptions = mapContribsToTeam(
-    filterData.contribs.data,
-    filterData.teams.data
-  )
-
   const onExcludeInactive = () => setExclude(!excludeInactive)
 
   return (
@@ -150,9 +145,10 @@ export default function Filters({ children }) {
         contribsFilter={
           <UsersMultiSelect
             isLoading={!filterData.ready}
-            options={teamsOptions}
+            options={filterData.contribs.data}
             onApply={onContribsApplyChange}
             initialValues={filterData.contribs.applied}
+            teams={filterData.teams.data}
           />
         }
         dateIntervalFilter={
