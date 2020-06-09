@@ -12,7 +12,7 @@ export const pipelineStagesConf = [
         metric: 'lead-time',
         stageName: 'leadtime',
         color: palette.stages.leadtime,
-        hint: 'From the 1st commit of the Pull Requests until the code is being used in production',
+        hint: 'Average time from the initial commit on a pull request until it is released.',
     }, {
         metric: 'cycle-time',
     }, {
@@ -21,7 +21,7 @@ export const pipelineStagesConf = [
         metric: 'wip-time',
         stageName: prStage.WIP,
         color: palette.stages.wip,
-        hint: 'From the 1st commit of the Pull Request until the review is requested',
+        hint: 'From the 1st commit of the pull request until the review is requested.',
         event: {
             before: 'First Commit',
             after: 'Review Requested',
@@ -46,7 +46,7 @@ export const pipelineStagesConf = [
         metric: 'review-time',
         stageName: prStage.REVIEW,
         color: palette.stages.review,
-        hint: 'From the moment the review is requested until the Pull Request is approved',
+        hint: 'From the moment the review is requested until the pull request is approved.',
         event: {
             before: 'Review Requested',
             after: 'Approved',
@@ -75,7 +75,7 @@ export const pipelineStagesConf = [
         metric: 'merging-time',
         stageName: prStage.MERGE,
         color: palette.stages.merge,
-        hint: 'From the moment the Pull Request is approved until it gets merged',
+        hint: 'From the moment the pull request is approved until it is merged.',
         event: {
             before: 'Approved',
             after: 'Merged',
@@ -100,7 +100,7 @@ export const pipelineStagesConf = [
         metric: 'release-time',
         stageName: prStage.RELEASE,
         color: palette.stages.release,
-        hint: 'From the moment the Pull Request gets merged until it is shipped into production',
+        hint: 'From the moment the pull request gets merged until it is released.',
         event: {
             before: 'Merged',
             after: 'Released',

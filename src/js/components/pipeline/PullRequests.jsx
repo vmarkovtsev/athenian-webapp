@@ -89,7 +89,7 @@ export default ({ stage, data, status }) => {
       <div className="table-responsive mb-4">
         <div className="d-flex" style={{ marginBottom: '-28px', justifyContent: 'flex-start' }}>
           <div style={{ zIndex: 4, marginLeft: '40.5rem', textAlign: 'right' }}>
-            <Info content={`You can search by PR title, repository or participant, or use this other syntax for these other filters:<br />
+            <Info content={`You can search by pull request title, repository or participant, or use this other syntax for these other filters:<br />
               <b>by status:</b> <span class="code">status:merged</span>, <span class="code">status:closed</span>, <span class="code">status:opened</span><br />
               <b>by number:</b> <span class="code">number:354</span><br />
               <b>by author:</b> <span class="code">author:user_handler</span><br />

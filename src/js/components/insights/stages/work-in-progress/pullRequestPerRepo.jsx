@@ -42,7 +42,7 @@ export default {
     factory: (computed) => ({
             meta: {
                 title: 'Pull Requests Created per Repo',
-                description: `Identify the first ${firstNRepos} repositories where more pull requests has been created.`,
+                description: `Identify the repositories that show the biggest number of pull requests created.`,
             },
             content: [
                 {

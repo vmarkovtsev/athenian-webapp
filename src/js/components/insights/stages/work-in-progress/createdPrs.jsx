@@ -47,7 +47,7 @@ export default {
     factory: (computed) => ({
         meta: {
             title: 'Pull Requests Created',
-            description: 'Pull Request throughput through time.'
+            description: 'Pull request throughput through time.'
         },
         content: [
             {
