@@ -123,19 +123,9 @@ export default function Filters({ children }) {
     dispatchFilter(setReady(true))
   }, [filterData.repos.applied, filterData.teams.data, resetData, setGlobalData])
 
-  const reposOptions = [...filterData.repos.data]
-
   const teamsOptions = mapContribsToTeam(
     filterData.contribs.data,
     filterData.teams.data
-  )
-
-  const reposValue = filterData.repos.data.filter(repo =>
-    ~filterData.repos.applied.indexOf(repo)
-  )
-
-  const teamsValue = filterData.contribs.data.filter(c =>
-    filterData.contribs.applied.find(e => e.login === c.login && e.team === c.team)
   )
 
   const onExcludeInactive = () => setExclude(!excludeInactive)
@@ -152,9 +142,9 @@ export default function Filters({ children }) {
         reposFilter={
           <RepositoriesMultiSelect
             isLoading={!filterData.ready}
-            options={reposOptions}
+            options={filterData.repos.data}
             onApply={onReposApplyChange}
-            initialValues={reposValue}
+            initialValues={filterData.repos.applied}
           />
         }
         contribsFilter={
@@ -162,7 +152,7 @@ export default function Filters({ children }) {
             isLoading={!filterData.ready}
             options={teamsOptions}
             onApply={onContribsApplyChange}
-            initialValues={teamsValue}
+            initialValues={filterData.contribs.applied}
           />
         }
         dateIntervalFilter={
