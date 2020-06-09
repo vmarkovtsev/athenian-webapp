@@ -16,7 +16,7 @@ import { dateTime } from 'js/services/format'
 
 import { useMountEffect } from 'js/hooks'
 
-import { filterReducer, defaultFilter, mapContribsToTeam } from './filterReducer'
+import { filterReducer, defaultFilter } from './filterReducer'
 import {
   init,
   setReady,
@@ -123,21 +123,6 @@ export default function Filters({ children }) {
     dispatchFilter(setReady(true))
   }, [filterData.repos.applied, filterData.teams.data, resetData, setGlobalData])
 
-  const reposOptions = [...filterData.repos.data]
-
-  const teamsOptions = mapContribsToTeam(
-    filterData.contribs.data,
-    filterData.teams.data
-  )
-
-  const reposValue = filterData.repos.data.filter(repo =>
-    ~filterData.repos.applied.indexOf(repo)
-  )
-
-  const teamsValue = filterData.contribs.data.filter(c =>
-    filterData.contribs.applied.find(e => e.login === c.login && e.team === c.team)
-  )
-
   const onExcludeInactive = () => setExclude(!excludeInactive)
 
   return (
@@ -152,17 +137,18 @@ export default function Filters({ children }) {
         reposFilter={
           <RepositoriesMultiSelect
             isLoading={!filterData.ready}
-            options={reposOptions}
+            options={filterData.repos.data}
             onApply={onReposApplyChange}
-            initialValues={reposValue}
+            initialValues={filterData.repos.applied}
           />
         }
         contribsFilter={
           <UsersMultiSelect
             isLoading={!filterData.ready}
-            options={teamsOptions}
+            options={filterData.contribs.data}
             onApply={onContribsApplyChange}
-            initialValues={teamsValue}
+            initialValues={filterData.contribs.applied}
+            teams={filterData.teams.data}
           />
         }
         dateIntervalFilter={
