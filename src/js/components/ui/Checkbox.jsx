@@ -18,7 +18,7 @@ const Checkbox = ({ isChecked, isIndeterminate, onClick, label, info }) => {
   ) : null
 
   return (
-    <label onClick={onClick} className="d-flex align-iteams-center checkbox">
+    <label onClick={onClick} className="d-flex justify-content-between align-items-center checkbox">
       <svg width="16px" height="16px" viewBox="0 0 16 16">
         <rect stroke="#D6DBE4" strokeWidth="1" x="0" y="0" width="16" height="16" fill="#fff"></rect>
         {mark}
