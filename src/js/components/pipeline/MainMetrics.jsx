@@ -127,7 +127,7 @@ export default () => {
                 variation: data.global['prs-metrics.variations']['cycle-time']
             },
             releasedPRs: {
-                avg: data.global['prs-metrics.values'].all['lead-count'],
+                avg: data.global['prs-metrics.values'].all['lead-count'] || 0,
                 variation: data.global['prs-metrics.variations']['lead-count']
             },
             contribs: {
