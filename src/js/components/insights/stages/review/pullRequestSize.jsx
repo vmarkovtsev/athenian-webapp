@@ -28,10 +28,7 @@ const pullRequestSize = {
                     const reviewed = !!pr.first_review || !!pr.closed;
 
                     const author = pr.authors[0] ? github.userName(pr.authors[0]) : undefined;
-                    const timeWaiting = dateTime.interval(
-                        pr.review_requested || pr.created,
-                        pr.first_review || endTime
-                    );
+                    const timeWaiting = (pr.first_review || endTime) - (pr.review_requested || pr.created);
                     const tooltip = {
                         number: pr.number,
                         repository: pr.organization + '/' + pr.repo,
@@ -39,13 +36,13 @@ const pullRequestSize = {
                         image: userImages[author],
                         reviewed,
                         author: author || 'unknown',
-                        timeWaiting,
+                        timeWaiting: dateTime.human(timeWaiting),
                     };
 
                     return {
                         loc: pr.size_added + pr.size_removed,
                         files: pr.files_changed,
-                        age: endTime.diff(pr.created, 'hours'),
+                        age: timeWaiting,
                         reviewed,
                         tooltip,
                     };
