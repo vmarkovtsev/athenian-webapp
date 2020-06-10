@@ -1,5 +1,7 @@
 import React from 'react'
 
+import Info from "js/components/ui/Info";
+
 /**
  * Checkbox
  * @param {boolean} props.isChecked
@@ -7,7 +9,7 @@ import React from 'react'
  * @param {function} props.onClick
  * @param {string} props.label
  */
-const Checkbox = ({ isChecked, isIndeterminate, onClick, label }) => {
+const Checkbox = ({ isChecked, isIndeterminate, onClick, label, info }) => {
   const mark = isChecked ? (
     isIndeterminate ?
       <rect stroke="#24C7CC" strokeWidth="1" x="3" y="7.375" width="10" height="1.25" fill="#24C7CC"></rect>
@@ -22,6 +24,7 @@ const Checkbox = ({ isChecked, isIndeterminate, onClick, label }) => {
         {mark}
       </svg>
       { label && <span className="checkbox-label">{label}</span> }
+      { info && <Info content={info} /> }
     </label>
   )
 }

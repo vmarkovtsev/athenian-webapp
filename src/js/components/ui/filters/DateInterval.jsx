@@ -118,8 +118,9 @@ export default function DateInterval({
                         extra={<Checkbox
                             label="Include stalled pull requests"
                             isChecked={!isExcludeInactive}
-                            onClick={onExcludeInactive} />
-                        }
+                            onClick={onExcludeInactive}
+                            info="Include open pull requests which do not show any activity during the selected timeframe"
+                        />}
                         onCancel={cancel}
                         onApply={() => setFocusedInputState(null)}
                         isAcceptable={validState}
