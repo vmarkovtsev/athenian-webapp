@@ -7,7 +7,6 @@ import { UserReviewer } from 'js/components/charts/Tooltip';
 
 import { fetchDevsMetrics } from 'js/services/api/index';
 import { github, number } from 'js/services/format';
-import { happened, authored, PR_EVENT as prEvent } from 'js/services/prHelpers';
 
 const reviewActivity = {
   fetcher: async (api, context) => {
@@ -40,6 +39,10 @@ const reviewActivity = {
 
     const totalPRsComments = _(metrics.calculated)
       .map(v => v.values[0][prComments])
+      .sum();
+
+    const totalPRsCreated = _(metrics.calculated)
+      .map(v => v.values[0][prsCreated])
       .sum();
 
     const totalReviewedPRs = _(metrics.calculated)
@@ -124,14 +127,8 @@ const reviewActivity = {
         },
         avatarMapping,
         KPIsData: {
-          // We're interested in the very same data than in the WIP.created and Review.reviewed Summary Metrics
-          createdPRs: authored(global.prs.prs)
-            .filter(pr => data.interval.from <= pr.created)
-            .length,
-          reviewedPRs: authored(global.prs.prs)
-            .filter(pr => {
-                return happened(pr, prEvent.REVIEW) || happened(pr, prEvent.REJECTION) || happened(pr, prEvent.APPROVE);
-            }).length,
+          createdPRs: totalPRsCreated,
+          reviewedPRs: totalReviewedPRs,
           avgReviewedPRsPerDev: totalReviewedPRs / totalReviewers
         }
       },
