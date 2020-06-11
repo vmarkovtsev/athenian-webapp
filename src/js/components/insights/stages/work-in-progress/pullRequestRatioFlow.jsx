@@ -36,8 +36,8 @@ const pullRequestRatioFlow = {
                     const ratio = v[0].value;
                     const opened = v[1].value;
                     const closed = v[2].value;
-                    const trickedOpened = opened !== null || closed !== null ? opened + 1 : null;
-                    const trickedClosed = opened !== null || closed !== null ? closed + 1 : null;
+                    const trickedOpened = opened !== null || closed !== null ? (opened + 1).toFixed() : null;
+                    const trickedClosed = opened !== null || closed !== null ? (closed + 1).toFixed() : null;
                     return {
                         day: v[0].date,
                         value: ratio,
