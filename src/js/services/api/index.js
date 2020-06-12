@@ -275,12 +275,11 @@ export const fetchPRsMetrics = async (
   granularities,
   dateInterval,
   metrics = [],
-  filter = { repositories: [], developers: [], with: {}},
+  filter = { repositories: [], with: {}},
   groupBy,
   exclude_inactive,
 ) => {
   filter.repositories = filter.repositories || [];
-  filter.developers = _(filter.developers || []).map(v => v.login).value();
   filter.with = _(filter.with || {})
     .transform((result, v, k) => {
       result[k] = _(v).map(v => v.login).value();
